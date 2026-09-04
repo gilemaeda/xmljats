@@ -1,0 +1,29 @@
+# saidas geradas pela PoC (recriaveis com os scripts)
+poc/saida/
+
+# video da demonstracao (1,3 GB) e outros binarios grandes
+*.mp4
+*.mov
+*.zip
+
+# credenciais e configuracao local (tokens dos paineis das VPS, chaves de API)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+
+# editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

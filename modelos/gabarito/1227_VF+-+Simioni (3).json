@@ -1,0 +1,19 @@
+{
+  "_fonte": "lido à mão do PDF (dump poc/saida). ANAMORPHOSIS v.11 n.1 e1227. Sem heading e sem datas no PDF. ORCID quebrado em duas linhas no PDF.",
+  "heading": null,
+  "titulo": "REFLEXÕES METODOLÓGICAS PARA PESQUISAS SOBRE DIREITO E ARTES VISUAIS",
+  "titulos_traduzidos": {
+    "es": "REFLEXIONES METODOLÓGICAS PARA INVESTIGACIONES SOBRE DERECHO Y ARTES VISUALES",
+    "en": "METHODOLOGICAL REFLECTIONS ON LEGAL RESEARCH AND VISUAL ARTS"
+  },
+  "autores": [
+    {"nome": "Rafael Lazzarotto Simioni", "orcid": "0000-0002-8484-4491", "instituicao": "Faculdade de Direito do Sul de Minas", "pais_iso": "BR"}
+  ],
+  "citacoes_min": 16,
+  "referencias": 34,
+  "_referencias_nota": "contadas no dump p.21-23; a linha 'NEAD, Lynda (org.)' é continuação da entrada TAYLOR",
+  "doi": "10.21119/anamps.11.1.e1227",
+  "idioma": "pt",
+  "resumos": ["pt", "es", "en"],
+  "datas": {}
+}

@@ -1,0 +1,71 @@
+{
+  "_nota": "Cadastro de revistas da PoC (o que na plataforma sera a tabela journals). Campos marcados 'confirmar' nao foram verificados na fonte oficial.",
+  "revistas": [
+    {
+      "acronimo": "rdp",
+      "titulo": "Revista Direito e Práxis",
+      "abrev": "Rev. Direito Práx.",
+      "issn_epub": "2179-8966",
+      "issn_ppub": null,
+      "editora": "Universidade do Estado do Rio de Janeiro",
+      "doi_prefixo": "10.1590/2179-8966",
+      "na_scielo": true,
+      "modo_publicacao": "continua",
+      "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
+      "_fonte": "XML oficial SciELO do artigo e92016"
+    },
+    {
+      "acronimo": "anamps",
+      "titulo": "ANAMORPHOSIS – Revista Internacional de Direito e Literatura",
+      "abrev": "Anamorphosis",
+      "issn_epub": "2446-8088",
+      "issn_ppub": null,
+      "editora": "Rede Brasileira de Direito e Literatura",
+      "doi_prefixo": "10.21119/anamps",
+      "na_scielo": false,
+      "modo_publicacao": "continua",
+      "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
+      "secao_padrao": "Artigos",
+      "_fonte": "site da revista (OJS); acrônimo deduzido do DOI; título abreviado: confirmar"
+    },
+    {
+      "acronimo": "pensar",
+      "titulo": "Pensar – Revista de Ciências Jurídicas",
+      "abrev": "Pensar",
+      "issn_epub": "2317-2150",
+      "issn_ppub": null,
+      "editora": "Universidade de Fortaleza",
+      "doi_prefixo": "10.5020/2317-2150",
+      "na_scielo": false,
+      "modo_publicacao": "continua",
+      "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
+      "_fonte": "PDF; acrônimo e título abreviado: confirmar"
+    },
+    {
+      "acronimo": "rbdpp",
+      "titulo": "Revista Brasileira de Direito Processual Penal",
+      "abrev": "Rev. Bras. de Direito Processual Penal",
+      "issn_epub": "2525-510X",
+      "issn_ppub": null,
+      "editora": "Instituto Brasileiro de Direito Processual Penal",
+      "doi_prefixo": "10.22197/rbdpp",
+      "na_scielo": true,
+      "modo_publicacao": "continua",
+      "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
+      "_fonte": "PDF (rodapé) e site da revista; e-ISSN e acrônimo SciELO: confirmar"
+    },
+    {
+      "acronimo": "opiniaojuridica",
+      "titulo": "Revista Opinião Jurídica",
+      "abrev": "R. Opin. Jur.",
+      "issn_epub": "2447-6641",
+      "issn_ppub": null,
+      "editora": "Centro Universitário Christus",
+      "doi_prefixo": "10.12662/2447-6641oj",
+      "na_scielo": false,
+      "modo_publicacao": "continua",
+      "licenca_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+      "_fonte": "PDF; acrônimo: confirmar"
+    }
+  ]
+}

@@ -1,0 +1,955 @@
+<title>Protótipo xmljats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F3F5F8; --surface:#FFFFFF; --surface-2:#EAEEF4; --border:#D5DCE6; --border-strong:#B9C3D0;
+  --text:#17202B; --muted:#5B6774; --faint:#8A95A3;
+  --brand:#1C3A63; --brand-ink:#FFFFFF; --brand-soft:#E2EAF5; --brand-hover:#16304F; --link:#1F4E8C; --teal:#1F8A70;
+  --crit:#B3261E; --crit-bg:#FBEAE8; --crit-ink:#7A1A14;
+  --warn:#B5650A; --warn-bg:#FFF3DF; --warn-ink:#6E3D03;
+  --ok:#1F7A4D; --ok-bg:#E4F4EA; --ok-ink:#155236;
+  --info:#2F5FA5; --info-bg:#E6EEF9; --info-ink:#1E3F70;
+  --mark:#FFE58A; --mark-ink:#3B2E00;
+  --focus:#2F5FA5;
+  --shadow:0 1px 2px rgba(23,32,43,.06),0 10px 28px -18px rgba(23,32,43,.28);
+  --radius:6px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E141C; --surface:#151D27; --surface-2:#1C2633; --border:#2B3745; --border-strong:#3C4A5B;
+    --text:#E7ECF2; --muted:#9AA7B6; --faint:#6F7C8B;
+    --brand:#3E76C4; --brand-ink:#FFFFFF; --brand-soft:#1B2C45; --brand-hover:#4F86D3; --link:#8FB5EC; --teal:#3FB897;
+    --crit:#F0857B; --crit-bg:#3A1D1B; --crit-ink:#FFD9D5;
+    --warn:#F1B45B; --warn-bg:#3B2A10; --warn-ink:#FFE4B8;
+    --ok:#6CCB92; --ok-bg:#153524; --ok-ink:#CDEFD9;
+    --info:#7FA8E6; --info-bg:#1B2A42; --info-ink:#D6E4F8;
+    --mark:#5B4A10; --mark-ink:#FFF0B8;
+    --focus:#8FB5EC;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E141C; --surface:#151D27; --surface-2:#1C2633; --border:#2B3745; --border-strong:#3C4A5B;
+  --text:#E7ECF2; --muted:#9AA7B6; --faint:#6F7C8B;
+  --brand:#3E76C4; --brand-ink:#FFFFFF; --brand-soft:#1B2C45; --brand-hover:#4F86D3; --link:#8FB5EC; --teal:#3FB897;
+  --crit:#F0857B; --crit-bg:#3A1D1B; --crit-ink:#FFD9D5;
+  --warn:#F1B45B; --warn-bg:#3B2A10; --warn-ink:#FFE4B8;
+  --ok:#6CCB92; --ok-bg:#153524; --ok-ink:#CDEFD9;
+  --info:#7FA8E6; --info-bg:#1B2A42; --info-ink:#D6E4F8;
+  --mark:#5B4A10; --mark-ink:#FFF0B8;
+  --focus:#8FB5EC;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 28px -18px rgba(0,0,0,.7);
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"IBM Plex Sans","Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.5}
+h1,h2,h3,h4{margin:0;font-weight:600;line-height:1.25;text-wrap:balance}
+h1{font-size:22px}
+h2{font-size:17px}
+h3{font-size:14px}
+p{margin:0}
+a{color:var(--link)}
+code,.mono{font-family:"IBM Plex Mono",Consolas,"Courier New",monospace;font-size:12.5px}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+
+/* shell */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20}
+.topbar .in{max-width:1180px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:20px;height:56px}
+.brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text)}
+.brand .mark{font-family:"IBM Plex Mono",Consolas,monospace;font-weight:500;font-size:15px;background:var(--brand);color:var(--brand-ink);padding:3px 7px;border-radius:4px;letter-spacing:.02em}
+.brand .name{font-weight:600;font-size:16px}
+.brand .name b{color:var(--teal);font-weight:600}
+.nav{display:flex;gap:2px;margin-left:8px}
+.nav button{background:none;border:0;padding:8px 11px;border-radius:5px;color:var(--muted);cursor:pointer;font-weight:500}
+.nav button:hover{background:var(--surface-2);color:var(--text)}
+.nav button.active{background:var(--brand-soft);color:var(--brand)}
+.topbar .who{margin-left:auto;display:flex;align-items:center;gap:14px;color:var(--muted);font-size:13px}
+.topbar .who .quota{font-variant-numeric:tabular-nums}
+.ribbon{background:var(--brand-soft);color:var(--brand);font-size:12.5px;border-bottom:1px solid var(--border)}
+.ribbon .in{max-width:1180px;margin:0 auto;padding:6px 20px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ribbon .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block}
+main{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+.screen{display:none}
+.screen.on{display:block}
+
+/* primitives */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+.card.pad{padding:20px}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--border-strong);background:var(--surface);padding:8px 14px;border-radius:5px;cursor:pointer;font-weight:500;line-height:1.2;text-decoration:none;color:var(--text)}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.primary:hover{background:var(--brand-hover);border-color:var(--brand-hover)}
+.btn.small{padding:5px 10px;font-size:12.5px}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--link)}
+.btn.quiet:hover{background:var(--surface-2)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:500;border:1px solid transparent;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.chip.crit{background:var(--crit-bg);color:var(--crit-ink);border-color:color-mix(in srgb,var(--crit) 40%,transparent)}
+.chip.warn{background:var(--warn-bg);color:var(--warn-ink);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}
+.chip.ok{background:var(--ok-bg);color:var(--ok-ink);border-color:color-mix(in srgb,var(--ok) 40%,transparent)}
+.chip.info{background:var(--info-bg);color:var(--info-ink);border-color:color-mix(in srgb,var(--info) 40%,transparent)}
+.chip.neutral{background:var(--surface-2);color:var(--muted);border-color:var(--border)}
+.chip.crit::before{background:var(--crit)}.chip.warn::before{background:var(--warn)}.chip.ok::before{background:var(--ok)}.chip.info::before{background:var(--info)}
+.eyebrow{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.muted{color:var(--muted)}
+.faint{color:var(--faint)}
+.small{font-size:12.5px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.stack{display:flex;flex-direction:column;gap:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 18px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px 18px}
+hr.sep{border:0;border-top:1px solid var(--border);margin:6px 0}
+.tnum{font-variant-numeric:tabular-nums}
+
+/* fields */
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:12.5px;font-weight:600;color:var(--text)}
+.field label .opt{font-weight:400;color:var(--faint)}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);padding:7px 9px;border-radius:4px;font:inherit;font-size:13.5px}
+.field textarea{min-height:88px;resize:vertical;line-height:1.5}
+.field input.mono,.field textarea.mono{font-family:"IBM Plex Mono",Consolas,monospace;font-size:12.5px}
+.field .hint{font-size:12px;color:var(--faint)}
+.field.is-block input,.field.is-block select,.field.is-block textarea{border-color:var(--crit)}
+.msg{border-left:3px solid;padding:6px 9px;border-radius:0 4px 4px 0;font-size:12.5px;line-height:1.4}
+.msg.block{border-color:var(--crit);background:var(--crit-bg);color:var(--crit-ink)}
+.msg.warn{border-color:var(--warn);background:var(--warn-bg);color:var(--warn-ink)}
+.msg.auto{border-color:var(--ok);background:var(--ok-bg);color:var(--ok-ink)}
+.msg.note{border-color:var(--info);background:var(--info-bg);color:var(--info-ink)}
+.msg b{font-weight:600}
+.src{font-size:11px;color:var(--faint);letter-spacing:.02em}
+
+/* validador */
+.hero{display:grid;grid-template-columns:1.6fr 1fr;gap:22px;align-items:start}
+.opt-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.opt-card{border:1px solid var(--border-strong);border-radius:5px;padding:10px 12px;cursor:pointer;display:flex;gap:9px;align-items:flex-start;background:var(--surface)}
+.opt-card input{margin-top:3px}
+.opt-card.sel{border-color:var(--brand);background:var(--brand-soft)}
+.opt-card .t{font-weight:600;font-size:13px}
+.opt-card .d{font-size:12px;color:var(--muted)}
+.drop{border:1.5px dashed var(--border-strong);border-radius:6px;padding:16px;display:flex;align-items:center;gap:14px;background:var(--surface-2)}
+.drop .file{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);padding:7px 10px;border-radius:4px}
+.drop .file .ext{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;background:var(--brand);color:var(--brand-ink);padding:2px 5px;border-radius:3px}
+.suggest{border:1px solid var(--border-strong);border-top:0;border-radius:0 0 4px 4px;background:var(--surface);box-shadow:var(--shadow)}
+.suggest .it{padding:8px 10px;display:flex;justify-content:space-between;gap:10px;align-items:center;cursor:pointer}
+.suggest .it:hover,.suggest .it.sel{background:var(--brand-soft)}
+.suggest .it .t{font-weight:500}
+.steps{counter-reset:s;display:grid;gap:12px}
+.steps li{list-style:none;display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start}
+.steps li::before{counter-increment:s;content:counter(s);width:26px;height:26px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:600;font-size:12.5px}
+.steps h3{margin-bottom:2px}
+ol.steps{margin:0;padding:0}
+
+/* resultado */
+.result-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.result-head .file{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.findings{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start}
+.group{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+.group header{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border)}
+.group header .n{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:500}
+.finding{display:grid;grid-template-columns:4px 1fr auto;gap:0 12px;padding:10px 14px 10px 0;border-bottom:1px solid var(--border)}
+.finding:last-child{border-bottom:0}
+.finding .stripe{border-radius:0 2px 2px 0}
+.finding.crit .stripe{background:var(--crit)}.finding.warn .stripe{background:var(--warn)}.finding.auto .stripe{background:var(--ok)}
+.finding .body{display:flex;flex-direction:column;gap:3px;min-width:0}
+.finding .id{font-family:"IBM Plex Mono",Consolas,monospace;font-size:11px;color:var(--faint)}
+.finding .where{font-size:12px;color:var(--muted)}
+.finding .act{align-self:center}
+.extract{display:grid;grid-template-columns:repeat(5,1fr);gap:0}
+.extract div{padding:10px 14px;border-right:1px solid var(--border)}
+.extract div:last-child{border-right:0}
+.extract .v{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
+.extract .k{font-size:12px;color:var(--muted)}
+
+/* revisar */
+.review{display:grid;grid-template-columns:3fr 2fr;gap:18px;align-items:start}
+.fs{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+.fs>header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface-2);border-radius:var(--radius) var(--radius) 0 0}
+.fs>.in{padding:16px;display:flex;flex-direction:column;gap:14px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border)}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;padding:7px 12px;margin-bottom:-1px;color:var(--muted);cursor:pointer;font-weight:500;display:inline-flex;gap:6px;align-items:center}
+.tabs button.active{color:var(--brand);border-bottom-color:var(--brand)}
+.tabs .badge{font-size:10.5px;padding:0 5px;border-radius:999px;background:var(--crit);color:#fff;font-variant-numeric:tabular-nums}
+.pane{display:none;flex-direction:column;gap:14px}
+.pane.on{display:flex}
+.author{border:1px solid var(--border);border-radius:5px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.author .head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.aff{border:1px solid var(--border);border-radius:5px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.check{display:flex;align-items:center;gap:7px;font-size:13px}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+table.tbl th{text-align:left;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--border)}
+table.tbl td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+table.tbl tr:last-child td{border-bottom:0}
+.tblwrap{overflow-x:auto}
+.orig{position:sticky;top:96px}
+.orig .doc{border:1px solid var(--border);background:var(--surface);padding:26px 28px;font-family:Georgia,"Times New Roman",serif;font-size:13px;line-height:1.5;max-height:72vh;overflow:auto;border-radius:0 0 var(--radius) var(--radius)}
+.orig .doc .hdr{text-align:right;font-size:11.5px;color:var(--muted)}
+.orig .doc .kind{text-align:right;font-style:italic;margin:10px 0}
+.orig .doc .ttl{text-align:center;font-weight:700;font-size:15px;margin:8px 0}
+.orig .doc .ttl.tr{font-style:italic;font-weight:600;font-size:13.5px}
+.orig .doc .aut{text-align:right;margin:14px 0 6px}
+.orig .doc .aff{font-size:12px;margin:2px 0;border:0;padding:0;display:block}
+.orig .doc .res{margin-top:12px;text-align:justify}
+.orig .doc sup{font-size:9px}
+mark{background:var(--mark);color:var(--mark-ink);padding:0 3px;border-radius:2px}
+mark.miss{background:var(--crit-bg);color:var(--crit-ink);outline:1px dashed var(--crit)}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:12px;height:12px;border-radius:2px;display:inline-block}
+.actionbar{position:sticky;bottom:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);margin-top:16px;z-index:10}
+.prov{display:inline-flex;gap:5px;align-items:center;font-size:11px;color:var(--faint)}
+.prov i{width:8px;height:8px;border-radius:50%;display:inline-block;background:var(--faint)}
+.prov.read i{background:var(--brand)}.prov.inf i{background:var(--ok)}.prov.jrn i{background:var(--teal)}.prov.edit i{background:var(--warn)}
+
+/* painel */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.kpis div{padding:14px 16px;border-right:1px solid var(--border)}
+.kpis div:last-child{border-right:0}
+.kpis .v{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.1}
+.kpis .k{font-size:12.5px;color:var(--muted);margin-top:4px}
+.stepper{display:flex;align-items:center;gap:3px}
+.stepper i{width:9px;height:9px;border-radius:50%;background:var(--border-strong);display:inline-block}
+.stepper i.done{background:var(--brand)}
+.stepper i.cur{background:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+.stepper i.warn{background:var(--crit)}
+.stepper i.wait{background:var(--border-strong)}
+.stepname{font-size:12px;color:var(--muted);margin-top:3px}
+.queue{display:flex;flex-direction:column;gap:8px}
+.queue .it{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 12px;border:1px solid var(--border);border-radius:5px}
+.bar{height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:3px}
+
+/* revistas */
+.jlist .it{display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border);align-items:center}
+.jlist .it:last-child{border-bottom:0}
+.jlist .it.sel{background:var(--brand-soft)}
+.taglist{display:flex;gap:6px;flex-wrap:wrap}
+.tag{background:var(--surface-2);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:12px}
+
+/* pacote */
+.checks{display:grid;gap:0;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+.checks .it{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);align-items:center}
+.checks .it:last-child{border-bottom:0}
+.checks .ok{width:18px;height:18px;border-radius:50%;background:var(--ok-bg);color:var(--ok);display:grid;place-items:center;font-size:12px;font-weight:700}
+.checks .wn{width:18px;height:18px;border-radius:50%;background:var(--warn-bg);color:var(--warn);display:grid;place-items:center;font-size:12px;font-weight:700}
+.tree{font-family:"IBM Plex Mono",Consolas,monospace;font-size:12.5px;line-height:1.7;white-space:pre;overflow-x:auto;padding:14px 16px;background:var(--surface-2);border-radius:5px}
+pre.xml{margin:0;font-family:"IBM Plex Mono",Consolas,monospace;font-size:12px;line-height:1.55;overflow:auto;max-height:420px;padding:14px 16px;background:var(--surface-2);border-radius:5px;color:var(--text)}
+pre.xml .tg{color:var(--brand)}pre.xml .at{color:var(--warn-ink)}pre.xml .cm{color:var(--faint)}
+:root[data-theme="dark"] pre.xml .at{color:var(--warn)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) pre.xml .at{color:var(--warn)}}
+.scielo{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.scielo div{padding:10px 14px;border-right:1px solid var(--border);font-size:13px}
+.scielo div:last-child{border-right:0}
+.scielo div.cur{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.scielo .d{font-size:11.5px;color:var(--muted);font-weight:400}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(10px);background:var(--text);color:var(--bg);padding:9px 14px;border-radius:6px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;z-index:50;max-width:90vw}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:900px){
+  .hero,.findings,.review,.grid5,.grid4,.grid3{grid-template-columns:1fr}
+  .grid2{grid-template-columns:1fr}
+  .opt-cards{grid-template-columns:1fr}
+  .kpis,.scielo{grid-template-columns:1fr 1fr}
+  .extract{grid-template-columns:repeat(2,1fr)}
+  .orig{position:static}
+  .nav{overflow-x:auto}
+}
+</style>
+
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="#" data-go="validador"><span class="mark">&lt;/&gt;</span><span class="name">xml<b>jats</b></span></a>
+    <nav class="nav" aria-label="Telas">
+      <button data-go="validador" class="active">Validador</button>
+      <button data-go="resultado">Resultado</button>
+      <button data-go="revisar">Revisar e editar</button>
+      <button data-go="painel">Painel</button>
+      <button data-go="revistas">Revistas</button>
+      <button data-go="pacote">Pacote</button>
+    </nav>
+    <div class="who"><span class="quota">Conversões: 3 de 5 usadas</span><span>Conta: RDL (piloto) · operador</span></div>
+  </div>
+</header>
+<div class="ribbon"><div class="in"><span class="dot"></span><span><b>Protótipo navegável</b> · dados de exemplo fictícios · fluxo inspirado no validador da Wise Thorough, adaptado ao plano v3.1 · botões de download são simulados</span></div></div>
+
+<main>
+
+<!-- ===================== 1. VALIDADOR ===================== -->
+<section class="screen on" id="s-validador" aria-label="Validador">
+  <div class="hero">
+    <div class="stack">
+      <div>
+        <h1>Validar manuscrito para XML SciELO</h1>
+        <p class="muted" style="margin-top:6px">Envie o DOCX final do artigo. A validação é gratuita e lista tudo o que reprovaria no QA da SciELO antes de gerar o XML.</p>
+      </div>
+
+      <div class="card pad stack">
+        <div class="field">
+          <label for="jsearch">Revista <span class="opt">(opcional, mas evita os erros mais comuns)</span></label>
+          <input id="jsearch" value="ANAMORPHOSIS" placeholder="Buscar por título, acrônimo ou ISSN" autocomplete="off">
+          <div class="suggest" role="listbox" aria-label="Revistas encontradas">
+            <div class="it sel" role="option" aria-selected="true">
+              <div><div class="t">ANAMORPHOSIS – Revista Internacional de Direito e Literatura</div><div class="small muted"><span class="mono">e-ISSN 2446-8088</span> · acrônimo <span class="mono">anamps</span> · Rede Brasileira de Direito e Literatura</div></div>
+              <span class="chip ok">Minhas revistas</span>
+            </div>
+            <div class="it" role="option" aria-selected="false">
+              <div><div class="t">Anamorphosis (Journal of the International Society for Applied Mathematics)</div><div class="small muted"><span class="mono">ISSN 1234-5678</span> · fonte OpenAlex</div></div>
+              <span class="chip neutral">Não cadastrada</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Origem do arquivo</label>
+          <div class="opt-cards" role="radiogroup">
+            <label class="opt-card sel"><input type="radio" name="origem" checked><span><span class="t">DOCX no modelo da revista</span><br><span class="d">Extração por estilos. Sem IA, sem surpresas. Recomendado.</span></span></label>
+            <label class="opt-card"><input type="radio" name="origem"><span><span class="t">DOCX livre</span><br><span class="d">Heurísticas visuais + IA para o front matter. Revise com atenção.</span></span></label>
+            <label class="opt-card"><input type="radio" name="origem"><span><span class="t">PDF publicado</span><br><span class="d">Retroconversão de números antigos. IA em tudo; revisão obrigatória.</span></span></label>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="field">
+            <label for="fmt">Formato de saída</label>
+            <select id="fmt"><option>SciELO PS 1.10 · JATS 1.3</option><option>JATS 1.3 puro (outros indexadores)</option></select>
+          </div>
+          <div class="field">
+            <label for="modo">Modo de publicação</label>
+            <select id="modo"><option>Publicação contínua (elocation-id)</option><option>Fascículo (volume, número, páginas)</option><option>Ahead of print</option></select>
+            <span class="hint">Padrão da revista cadastrada. Muda o que é obrigatório.</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Arquivo</label>
+          <div class="drop">
+            <div class="file"><span class="ext">DOCX</span><span class="mono">correia-lima-e1222.docx</span><span class="faint small">2,3 MB</span></div>
+            <span class="muted small">Arraste outro arquivo aqui ou <a href="#" data-toast="No protótipo, a seleção de arquivo é simulada.">escolha no computador</a>. Aceita .docx e .pdf até 50 MB.</span>
+          </div>
+        </div>
+
+        <div class="row between">
+          <span class="small muted">Nada é publicado. O arquivo fica visível só para a sua conta.</span>
+          <button class="btn primary" data-go="resultado">Validar arquivo</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="stack">
+      <div class="card pad">
+        <p class="eyebrow" style="margin-bottom:12px">Como funciona</p>
+        <ol class="steps">
+          <li><div><h3>Envie o DOCX</h3><p class="muted small">Lemos título, autores, ORCID, afiliações, resumos, seções, notas, figuras e referências.</p></div></li>
+          <li><div><h3>Corrija o que for bloqueante</h3><p class="muted small">No formulário, com o original ao lado, ou direto no DOCX (recomendado) e reenvie.</p></div></li>
+          <li><div><h3>Gere o pacote</h3><p class="muted small">XML validado no packtools (motor oficial da SciELO), PDF e imagens já com os nomes que a SciELO exige.</p></div></li>
+        </ol>
+      </div>
+      <div class="card pad stack" style="gap:8px">
+        <h3>Modelo DOCX da revista</h3>
+        <p class="small muted">O modelo usa estilos nomeados e uma tabela de metadados na primeira página. Com ele, a conversão dispensa IA.</p>
+        <a class="btn small" href="#" data-toast="No protótipo, o download é simulado.">Baixar anamps-modelo-v1.dotx</a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===================== 2. RESULTADO ===================== -->
+<section class="screen" id="s-resultado" aria-label="Resultado da validação">
+  <div class="stack" style="gap:18px">
+    <div class="result-head">
+      <div class="stack" style="gap:6px">
+        <p class="eyebrow">Resultado da validação</p>
+        <div class="file"><h1 class="mono" style="font-size:18px">correia-lima-e1222.docx</h1><span class="muted">ANAMORPHOSIS · publicação contínua · SciELO PS 1.10</span></div>
+        <div class="row" style="gap:8px">
+          <span class="chip crit">Não pronto</span>
+          <span class="chip crit">6 bloqueantes</span>
+          <span class="chip warn">5 avisos</span>
+          <span class="chip ok">4 preenchidos automaticamente</span>
+          <span class="small faint">validado hoje, 15:06 · 4,2 s · sem IA</span>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn" data-toast="No protótipo, o reenvio é simulado.">Reenviar DOCX corrigido</button>
+        <button class="btn primary" data-go="revisar">Revisar e editar</button>
+      </div>
+    </div>
+
+    <div class="card extract">
+      <div><div class="v">92%</div><div class="k">do texto atribuído a uma seção</div></div>
+      <div><div class="v">4</div><div class="k">seções do corpo</div></div>
+      <div><div class="v">12</div><div class="k">notas de rodapé</div></div>
+      <div><div class="v">38</div><div class="k">referências</div></div>
+      <div><div class="v">0</div><div class="k">figuras · 0 tabelas · 0 equações</div></div>
+    </div>
+
+    <div class="findings">
+      <div class="stack" style="gap:16px">
+        <div class="group">
+          <header><span class="chip crit">Bloqueantes</span><span class="n">6</span><span class="small muted">impedem a geração do XML</span></header>
+          <div class="finding crit"><span class="stripe"></span><div class="body"><span class="id">J01 · Revista › Acrônimo</span><b>Acrônimo da revista ausente.</b><span class="where">Deve ser o publisher-id registrado na SciELO (ex.: anamps). Cadastre a revista uma vez e isso some.</span></div><a class="btn small act" href="#f-acronimo" data-go="revisar">Ir para o campo</a></div>
+          <div class="finding crit"><span class="stripe"></span><div class="body"><span class="id">J03 · Revista › Título abreviado</span><b>Título abreviado da revista ausente.</b><span class="where">Entra em abbrev-journal-title. Use a forma registrada pela revista.</span></div><a class="btn small act" href="#f-abrev" data-go="revisar">Ir para o campo</a></div>
+          <div class="finding crit"><span class="stripe"></span><div class="body"><span class="id">C02 · Autores › Ana Beatriz Correia</span><b>ORCID ausente para a primeira autora.</b><span class="where">Obrigatório para todos os autores. Informe a URL completa https://orcid.org/…; o dígito verificador é conferido.</span></div><a class="btn small act" href="#f-orcid1" data-go="revisar">Ir para o campo</a></div>
+          <div class="finding crit"><span class="stripe"></span><div class="body"><span class="id">C07 · Autor correspondente</span><b>Nenhum e-mail de autor correspondente.</b><span class="where">O DOCX não traz a linha "Autor para correspondência". Indique nome e e-mail.</span></div><a class="btn small act" href="#f-corresp" data-go="revisar">Ir para o campo</a></div>
+          <div class="finding crit"><span class="stripe"></span><div class="body"><span class="id">A06 · Títulos › inglês</span><b>Resumo e palavras-chave em inglês encontrados, mas sem título em inglês.</b><span class="where">Cada idioma com resumo precisa de trans-title.</span></div><a class="btn small act" href="#f-titulo-en" data-go="revisar">Ir para o campo</a></div>
+          <div class="finding crit"><span class="stripe"></span><div class="body"><span class="id">H01 · Histórico</span><b>Datas de recebimento e aceite não encontradas no DOCX.</b><span class="where">Nunca preenchemos datas automaticamente. Pegue no OJS (Submissão › Histórico) ou na tabela de metadados do modelo.</span></div><a class="btn small act" href="#f-hist" data-go="revisar">Ir para o campo</a></div>
+        </div>
+
+        <div class="group">
+          <header><span class="chip warn">Avisos</span><span class="n">5</span><span class="small muted">o XML sai, mas alguém precisa olhar</span></header>
+          <div class="finding warn"><span class="stripe"></span><div class="body"><span class="id">C04 · Afiliações › aff2</span><b>Afiliação "Universidade de São Paulo" declarada sem nenhum autor vinculado.</b><span class="where">Vincule a um autor ou remova.</span></div><a class="btn small act" href="#f-aff2" data-go="revisar">Ver</a></div>
+          <div class="finding warn"><span class="stripe"></span><div class="body"><span class="id">N01 · Notas</span><b>Notas fn3, fn7 e fn9 existem, mas não têm chamada no texto.</b><span class="where">Provável nota do Word apagada no corpo. Confira no original.</span></div><a class="btn small act" href="#f-notas" data-go="revisar">Ver</a></div>
+          <div class="finding warn"><span class="stripe"></span><div class="body"><span class="id">R05 · Referências</span><b>2 referências não são citadas no texto</b> (ABREU, 2013; ALVAREZ, 2020).<span class="where">Normal em ensaios; confirme com o editor.</span></div><a class="btn small act" href="#f-refs" data-go="revisar">Ver</a></div>
+          <div class="finding warn"><span class="stripe"></span><div class="body"><span class="id">J05 · Revista › Editora</span><b>Nome da editora ausente.</b><span class="where">Sugestão pelo cadastro: Rede Brasileira de Direito e Literatura.</span></div><a class="btn small act" href="#f-editora" data-go="revisar">Ver</a></div>
+          <div class="finding warn"><span class="stripe"></span><div class="body"><span class="id">J06 · Revista</span><b>Revista não encontrada na lista pública da SciELO por ISSN ou acrônimo.</b><span class="where">Se a revista ainda não foi admitida, o pacote serve para a avaliação de entrada.</span></div><span></span></div>
+        </div>
+
+        <div class="group">
+          <header><span class="chip ok">Preenchidos automaticamente</span><span class="n">4</span><span class="small muted">confirme antes de gerar</span></header>
+          <div class="finding auto"><span class="stripe"></span><div class="body"><span class="id">A03 · Tipo de artigo</span><b>research-article</b>, inferido da seção "Artigos" do cadastro.</div><a class="btn small act" href="#f-tipo" data-go="revisar">Confirmar</a></div>
+          <div class="finding auto"><span class="stripe"></span><div class="body"><span class="id">A08 · Modo de publicação</span><b>Publicação contínua</b>, elocation-id e1222 lido do cabeçalho do DOCX.</div><a class="btn small act" href="#f-eloc" data-go="revisar">Confirmar</a></div>
+          <div class="finding auto"><span class="stripe"></span><div class="body"><span class="id">L01 · Licença</span><b>CC BY 4.0</b>, padrão da revista. Texto da licença em português.</div><a class="btn small act" href="#f-lic" data-go="revisar">Confirmar</a></div>
+          <div class="finding auto"><span class="stripe"></span><div class="body"><span class="id">A07 · Idioma</span><b>pt</b>, detectado no corpo do texto (99%).</div><a class="btn small act" href="#f-idioma" data-go="revisar">Confirmar</a></div>
+        </div>
+      </div>
+
+      <aside class="stack">
+        <div class="card pad stack" style="gap:10px">
+          <h3>O que fazer agora</h3>
+          <p class="small">Os seis bloqueantes são de metadado, não de texto. Dois deles somem ao cadastrar a revista.</p>
+          <p class="small muted">Se for mexer em muita coisa, corrija no DOCX e reenvie: a reextração é mais limpa do que edições no formulário.</p>
+          <hr class="sep">
+          <p class="small"><b>Cota</b> · 3 de 5 conversões gratuitas usadas este mês. A validação não consome cota.</p>
+        </div>
+        <div class="card pad stack" style="gap:8px">
+          <h3>Proveniência dos campos</h3>
+          <div class="legend"><span><i style="background:var(--brand)"></i>lido do arquivo</span><span><i style="background:var(--ok)"></i>inferido</span><span><i style="background:var(--teal)"></i>cadastro da revista</span><span><i style="background:var(--warn)"></i>editado à mão</span></div>
+          <p class="small muted">Todo campo carrega de onde veio. Nada inferido entra no XML sem confirmação.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 3. REVISAR E EDITAR ===================== -->
+<section class="screen" id="s-revisar" aria-label="Revisar e editar">
+  <div class="row between" style="margin-bottom:14px">
+    <div class="stack" style="gap:4px">
+      <p class="eyebrow">Revisar e editar</p>
+      <div class="row"><h1 class="mono" style="font-size:18px">correia-lima-e1222.docx</h1><span class="chip crit">6 bloqueantes restantes</span><span class="chip warn">5 avisos</span></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--brand)"></i>lido</span><span><i style="background:var(--ok)"></i>inferido</span><span><i style="background:var(--teal)"></i>cadastro</span><span><i style="background:var(--warn)"></i>editado</span></div>
+  </div>
+
+  <div class="review">
+    <div class="stack" style="gap:16px">
+
+      <!-- Revista -->
+      <div class="fs">
+        <header><h2>Revista</h2><span class="small muted">journal-meta · vem do cadastro da revista</span></header>
+        <div class="in">
+          <div class="msg note">Publicação contínua: volume e ano de coleção são obrigatórios; número é opcional; elocation-id substitui as páginas.</div>
+          <div class="grid3">
+            <div class="field"><label>Título da revista</label><input value="ANAMORPHOSIS – Revista Internacional de Direito e Literatura"><span class="prov read"><i></i>lido do cabeçalho</span></div>
+            <div class="field is-block" id="f-acronimo"><label>Acrônimo (publisher-id)</label><input class="mono" placeholder="anamps"><div class="msg block"><b>Obrigatório.</b> Deve ser igual ao acrônimo registrado na SciELO.</div></div>
+            <div class="field is-block" id="f-abrev"><label>Título abreviado</label><input placeholder="Anamorphosis"><div class="msg block"><b>Obrigatório.</b> Forma registrada pela revista.</div></div>
+          </div>
+          <div class="grid3">
+            <div class="field"><label>e-ISSN</label><input class="mono" value="2446-8088"><span class="prov read"><i></i>lido · dígito verificador ok</span></div>
+            <div class="field"><label>ISSN impresso <span class="opt">(se houver)</span></label><input class="mono" placeholder="0000-0000"></div>
+            <div class="field" id="f-editora"><label>Editora</label><input placeholder="Rede Brasileira de Direito e Literatura"><div class="msg warn">Obrigatório na SPS. Sugestão pelo cadastro da revista.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Artigo -->
+      <div class="fs">
+        <header><h2>Artigo</h2><span class="small muted">article-meta</span></header>
+        <div class="in">
+          <div class="grid3">
+            <div class="field"><label>DOI</label><input class="mono" value="10.21119/anamps.11.1.e1222"><span class="prov jrn"><i></i>gerado pelo padrão de DOI da revista</span></div>
+            <div class="field" id="f-tipo"><label>Tipo de artigo</label><select><option>research-article</option><option>review-article</option><option>editorial</option><option>book-review</option><option>letter</option><option>correction</option><option>retraction</option><option>other</option></select><div class="msg auto">Inferido da seção "Artigos". Confirme.</div></div>
+            <div class="field"><label>Seção (heading)</label><select><option>Artigos</option><option>Resenhas</option><option>Traduções</option><option>Editorial</option></select><span class="prov jrn"><i></i>seções do cadastro</span></div>
+          </div>
+          <div class="grid3">
+            <div class="field" id="f-idioma"><label>Idioma do artigo</label><select><option>pt</option><option>en</option><option>es</option></select><div class="msg auto">Detectado no corpo (99%). Confirme.</div></div>
+            <div class="field" id="f-eloc"><label>Modo de publicação</label><select><option>Publicação contínua</option><option>Fascículo</option><option>Ahead of print</option></select><div class="msg auto">elocation-id e1222 lido do cabeçalho. Confirme.</div></div>
+            <div class="field"><label>Order (5 dígitos)</label><input class="mono" value="01222"><div class="msg auto">Derivado do elocation-id. Confirme com o sumário do número.</div></div>
+          </div>
+          <div class="grid5">
+            <div class="field"><label>Volume</label><input class="mono" value="11"><span class="prov read"><i></i>lido</span></div>
+            <div class="field"><label>Número</label><input class="mono" value="1"><span class="prov read"><i></i>lido</span></div>
+            <div class="field"><label>Ano de coleção</label><input class="mono" value="2026"><span class="prov read"><i></i>lido</span></div>
+            <div class="field"><label>elocation-id</label><input class="mono" value="e1222"><span class="prov read"><i></i>lido</span></div>
+            <div class="field"><label>Páginas (PDF)</label><input class="mono" value="24"><span class="prov inf"><i></i>contado no PDF enviado</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Títulos e resumos -->
+      <div class="fs">
+        <header><h2>Títulos, resumos e palavras-chave</h2><span class="small muted">um conjunto por idioma</span></header>
+        <div class="in">
+          <div class="tabs" role="tablist">
+            <button class="active" role="tab" data-tab="pt">Português <span class="small muted">(original)</span></button>
+            <button role="tab" data-tab="en">Inglês <span class="badge">1</span></button>
+            <button role="tab" data-tab="es">Espanhol <span class="small muted">(sem resumo)</span></button>
+          </div>
+          <div class="pane on" data-pane="pt">
+            <div class="field"><label>Título</label><input value="A Constituição como narrativa: direito e literatura em Machado de Assis"><span class="prov read"><i></i>lido (estilo SPS Título)</span></div>
+            <div class="field"><label>Resumo</label><textarea>Este artigo lê a Constituição como narrativa a partir de Dom Casmurro e propõe que a interpretação constitucional compartilha com a ficção machadiana a instabilidade do narrador. Discute-se o método do direito e literatura, a figura do narrador não confiável e as consequências para a teoria da interpretação. Conclui-se que a leitura literária oferece critérios de suspeita úteis ao controle da argumentação jurídica.</textarea><span class="hint">Parágrafo único, sem citações. 87 palavras: abaixo do mínimo da revista (100). <span class="chip warn" style="vertical-align:middle">aviso</span></span></div>
+            <div class="field"><label>Palavras-chave</label><input value="Direito e literatura; Constituição; Machado de Assis; narrativa"><span class="hint">Separadas por ponto e vírgula. 4 termos.</span></div>
+          </div>
+          <div class="pane" data-pane="en">
+            <div class="field is-block" id="f-titulo-en"><label>Title</label><input placeholder="The Constitution as narrative: law and literature in Machado de Assis"><div class="msg block"><b>Obrigatório.</b> Há abstract e keywords em inglês, então o título traduzido é exigido (trans-title).</div></div>
+            <div class="field"><label>Abstract</label><textarea>This article reads the Constitution as narrative through Dom Casmurro and argues that constitutional interpretation shares with Machado's fiction the instability of the narrator. It discusses the law and literature method, the unreliable narrator and the consequences for interpretation theory.</textarea><span class="prov read"><i></i>lido (estilo SPS Abstract)</span></div>
+            <div class="field"><label>Keywords</label><input value="Law and literature; Constitution; Machado de Assis; narrative"></div>
+          </div>
+          <div class="pane" data-pane="es">
+            <p class="small muted">Nenhum resumo em espanhol foi encontrado. Adicione título, resumo e palavras-chave se a revista exigir o terceiro idioma.</p>
+            <button class="btn small" data-toast="No protótipo, os campos em espanhol não são adicionados.">Adicionar espanhol</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Autores -->
+      <div class="fs">
+        <header><h2>Autores e afiliações</h2><span class="small muted">contrib-group · aff · author-notes</span></header>
+        <div class="in">
+          <div class="author">
+            <div class="head"><b>1 · Ana Beatriz Correia</b><span class="row" style="gap:8px"><span class="prov read"><i></i>lido</span><button class="btn small quiet" data-toast="No protótipo, a reordenação é simulada.">Mover</button></span></div>
+            <div class="grid4">
+              <div class="field"><label>Sobrenome</label><input value="Correia"></div>
+              <div class="field"><label>Nomes próprios</label><input value="Ana Beatriz"></div>
+              <div class="field is-block" id="f-orcid1"><label>ORCID</label><input class="mono" placeholder="https://orcid.org/0000-0000-0000-0000"><div class="msg block"><b>Obrigatório.</b> URL completa. O dígito verificador é conferido.</div></div>
+              <div class="field"><label>Afiliações</label><input class="mono" value="aff1"><span class="hint">ids separados por vírgula</span></div>
+            </div>
+            <label class="check"><input type="checkbox"> Autor correspondente</label>
+          </div>
+          <div class="author">
+            <div class="head"><b>2 · Rafael Nogueira Lima</b><span class="prov read"><i></i>lido</span></div>
+            <div class="grid4">
+              <div class="field"><label>Sobrenome</label><input value="Nogueira Lima"></div>
+              <div class="field"><label>Nomes próprios</label><input value="Rafael"></div>
+              <div class="field"><label>ORCID</label><input class="mono" value="https://orcid.org/0000-0002-1825-0097"><span class="hint">Verificador ok · registro público confere o nome <span class="chip ok" style="vertical-align:middle">ok</span></span></div>
+              <div class="field"><label>Afiliações</label><input class="mono" value="aff1"></div>
+            </div>
+            <label class="check"><input type="checkbox"> Autor correspondente</label>
+          </div>
+
+          <div class="aff">
+            <div class="head row between"><b class="mono">aff1</b><span class="prov read"><i></i>lido · normalizado por IA, confira</span></div>
+            <div class="grid5">
+              <div class="field"><label>Instituição</label><input value="Universidade Federal do Paraná"></div>
+              <div class="field"><label>Divisão</label><input value="Programa de Pós-Graduação em Direito"></div>
+              <div class="field"><label>Cidade</label><input value="Curitiba"></div>
+              <div class="field"><label>Estado</label><input value="PR"></div>
+              <div class="field"><label>País (ISO)</label><input class="mono" value="BR"></div>
+            </div>
+            <div class="field"><label>Texto original da afiliação</label><input value="Universidade Federal do Paraná (UFPR), Programa de Pós-Graduação em Direito, Curitiba, PR, Brasil." readonly><span class="hint">Preservado no XML como conteúdo do elemento aff.</span></div>
+          </div>
+          <div class="aff" id="f-aff2">
+            <div class="head row between"><b class="mono">aff2</b><span class="chip warn">nenhum autor vinculado</span></div>
+            <div class="grid5">
+              <div class="field"><label>Instituição</label><input value="Universidade de São Paulo"></div>
+              <div class="field"><label>Divisão</label><input value="Faculdade de Direito"></div>
+              <div class="field"><label>Cidade</label><input value="São Paulo"></div>
+              <div class="field"><label>Estado</label><input value="SP"></div>
+              <div class="field"><label>País (ISO)</label><input class="mono" value="BR"></div>
+            </div>
+            <div class="row"><button class="btn small" data-toast="No protótipo, a vinculação é simulada.">Vincular a um autor</button><button class="btn small quiet" data-toast="No protótipo, a remoção é simulada.">Remover afiliação</button></div>
+          </div>
+
+          <div class="grid2" id="f-corresp">
+            <div class="field is-block"><label>Autor correspondente</label><select><option value="">Selecione…</option><option>Ana Beatriz Correia</option><option>Rafael Nogueira Lima</option></select></div>
+            <div class="field is-block"><label>E-mail de correspondência</label><input class="mono" placeholder="nome@instituicao.br"><div class="msg block"><b>Obrigatório.</b> Nenhuma linha "Autor para correspondência" no DOCX.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Histórico e licença -->
+      <div class="fs">
+        <header><h2>Histórico e licença</h2><span class="small muted">history · permissions</span></header>
+        <div class="in">
+          <div class="grid4" id="f-hist">
+            <div class="field is-block"><label>Recebido</label><input class="mono" placeholder="DD/MM/AAAA"><div class="msg block"><b>Obrigatório</b> para research-article. Nunca preenchido automaticamente.</div></div>
+            <div class="field"><label>Revisado <span class="opt">(opcional)</span></label><input class="mono" placeholder="DD/MM/AAAA"></div>
+            <div class="field is-block"><label>Aceito</label><input class="mono" placeholder="DD/MM/AAAA"><div class="msg block"><b>Obrigatório.</b> Deve ser posterior ao recebimento.</div></div>
+            <div class="field"><label>Publicado</label><input class="mono" value="18/07/2026"><span class="prov read"><i></i>lido do cabeçalho</span></div>
+          </div>
+          <div class="grid2" id="f-lic">
+            <div class="field"><label>Licença</label><select><option>CC BY 4.0</option><option>CC BY-NC 4.0</option><option>CC BY-NC-ND 4.0</option></select><div class="msg auto">Padrão da revista. Confirme.</div></div>
+            <div class="field"><label>Texto da licença (pt)</label><textarea style="min-height:60px">Este é um artigo publicado em acesso aberto sob uma licença Creative Commons Atribuição 4.0 Internacional.</textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corpo -->
+      <div class="fs">
+        <header><h2>Corpo do texto</h2><span class="small muted">4 seções · 1 nível · 0 figuras · 0 tabelas · 0 equações</span></header>
+        <div class="in">
+          <div class="tblwrap"><table class="tbl">
+            <thead><tr><th>Ordem</th><th>Título da seção</th><th>sec-type</th><th>Parágrafos</th><th>Citações</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="tnum">1</td><td>Introdução</td><td><select class="mono"><option>intro</option><option>other</option></select></td><td class="tnum">6</td><td class="tnum">4</td><td><button class="btn small quiet" data-toast="No protótipo, o conteúdo da seção não abre.">Abrir texto</button></td></tr>
+              <tr><td class="tnum">2</td><td>1 Direito e literatura como método</td><td><select class="mono"><option>other</option><option>methods</option></select></td><td class="tnum">11</td><td class="tnum">14</td><td><button class="btn small quiet" data-toast="No protótipo, o conteúdo da seção não abre.">Abrir texto</button></td></tr>
+              <tr><td class="tnum">3</td><td>2 O narrador e a lei em Dom Casmurro</td><td><select class="mono"><option>other</option></select></td><td class="tnum">19</td><td class="tnum">17</td><td><button class="btn small quiet" data-toast="No protótipo, o conteúdo da seção não abre.">Abrir texto</button></td></tr>
+              <tr><td class="tnum">4</td><td>Considerações finais</td><td><select class="mono"><option>conclusions</option><option>other</option></select></td><td class="tnum">4</td><td class="tnum">1</td><td><button class="btn small quiet" data-toast="No protótipo, o conteúdo da seção não abre.">Abrir texto</button></td></tr>
+            </tbody>
+          </table></div>
+          <p class="small muted">Parágrafos e chamadas (citações, notas, figuras) são marcados automaticamente. Abra o texto para corrigir uma chamada não reconhecida.</p>
+        </div>
+      </div>
+
+      <!-- Notas -->
+      <div class="fs" id="f-notas">
+        <header><h2>Notas de rodapé</h2><span class="chip warn">3 sem chamada no texto</span></header>
+        <div class="in">
+          <div class="tblwrap"><table class="tbl">
+            <thead><tr><th>ID</th><th>Chamada</th><th>fn-type</th><th>Início do texto</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">fn1</td><td><span class="chip ok">§ 2</span></td><td><select class="mono"><option>other</option><option>current-aff</option><option>financial-disclosure</option><option>conflict</option></select></td><td class="muted">Diz-se "ferida aberta" porque…</td></tr>
+              <tr><td class="mono">fn2</td><td><span class="chip ok">§ 5</span></td><td><select class="mono"><option>other</option></select></td><td class="muted">Sobre o método, ver também…</td></tr>
+              <tr><td class="mono">fn3</td><td><span class="chip warn">sem chamada</span></td><td><select class="mono"><option>other</option></select></td><td class="muted">Alusão ao poema Quadrilha…</td></tr>
+              <tr><td class="mono">fn7</td><td><span class="chip warn">sem chamada</span></td><td><select class="mono"><option>other</option></select></td><td class="muted">O tempo do relógio…</td></tr>
+              <tr><td class="mono">fn9</td><td><span class="chip warn">sem chamada</span></td><td><select class="mono"><option>other</option></select></td><td class="muted">Exemplo de teórico que…</td></tr>
+              <tr><td class="mono">fn12</td><td><span class="chip ok">autor 1</span></td><td><select class="mono"><option>current-aff</option><option>other</option></select></td><td class="muted">Mestranda em Direito pela… <span class="chip ok">virou biografia da autora</span></td></tr>
+            </tbody>
+          </table></div>
+          <p class="small muted">Mostrando 6 de 12. Notas que descrevem o autor viram bio, não título.</p>
+        </div>
+      </div>
+
+      <!-- Referências -->
+      <div class="fs" id="f-refs">
+        <header><h2>Referências</h2><span class="small muted">38 · classificadas por IA · DOI via Crossref</span></header>
+        <div class="in">
+          <div class="tblwrap"><table class="tbl">
+            <thead><tr><th>#</th><th>Referência (mixed-citation)</th><th>Tipo</th><th>Citada</th><th>DOI</th></tr></thead>
+            <tbody>
+              <tr><td class="tnum">1</td><td>ABREU, Caio Fernando. <i>Morangos mofados</i>. Rio de Janeiro: Nova Fronteira, 2013.</td><td><span class="chip info">book</span></td><td><span class="chip warn">não</span></td><td class="faint">—</td></tr>
+              <tr><td class="tnum">2</td><td>ALVES, Miriam C. F.; SANTOS, Carlos A. F. "Estou aqui": o direito de existir em A Hora da Estrela. <i>Revista de Direito, Arte e Literatura</i>, v. 8, n. 1, p. 32-46, 2022.</td><td><span class="chip info">journal</span></td><td><span class="chip ok">§ 3</span></td><td class="mono small">10.26668/…</td></tr>
+              <tr><td class="tnum">3</td><td>ASSIS, Machado de. <i>Dom Casmurro</i>. São Paulo: Penguin-Companhia, 2016.</td><td><span class="chip info">book</span></td><td><span class="chip ok">12×</span></td><td class="faint">—</td></tr>
+              <tr><td class="tnum">4</td><td>CHUEIRI, Vera Karam de. Constituição radical. <i>Revista Direito e Práxis</i>, v. 15, n. 2, 2024.</td><td><span class="chip info">journal</span></td><td><span class="chip ok">§ 1</span></td><td class="mono small">10.1590/…</td></tr>
+            </tbody>
+          </table></div>
+          <div class="row between"><span class="small muted">Mostrando 4 de 38. Texto original sempre preservado; a classificação alimenta o element-citation.</span><button class="btn small" data-toast="No protótipo, a edição de referências é simulada.">Editar lista (uma por linha)</button></div>
+        </div>
+      </div>
+
+      <div class="actionbar">
+        <button class="btn primary" data-toast="Alterações salvas (simulação). 6 bloqueantes restantes.">Salvar alterações</button>
+        <button class="btn" data-go="resultado">Revalidar</button>
+        <span class="small muted">Edições ficam registradas por campo (quem, quando, valor anterior). O DOCX original não muda.</span>
+        <span style="margin-left:auto" class="chip crit">6 bloqueantes</span>
+      </div>
+    </div>
+
+    <!-- Original ao lado -->
+    <aside class="orig">
+      <div class="fs">
+        <header><h2>Original</h2><div class="row" style="gap:6px"><button class="btn small">DOCX</button><button class="btn small quiet" data-toast="No protótipo, a visualização do PDF é simulada.">PDF</button></div></header>
+        <div class="doc" aria-label="Primeira página do DOCX renderizada">
+          <p class="hdr"><mark>e-ISSN 2446-8088 · v. 11 · n. 1 · e1222 · 2026</mark><br><mark>DOI 10.21119/anamps.11.1.e1222</mark></p>
+          <p class="kind">ARTIGO</p>
+          <p class="ttl"><mark>A Constituição como narrativa: direito e literatura em Machado de Assis</mark></p>
+          <p class="ttl tr"><mark class="miss">título em inglês ausente</mark></p>
+          <p class="aut"><mark>Ana Beatriz Correia</mark><sup>1</sup> <mark class="miss">ORCID ausente</mark><br><mark>Rafael Nogueira Lima</mark><sup>1</sup> <mark>0000-0002-1825-0097</mark></p>
+          <p class="aff"><sup>1</sup> <mark>Universidade Federal do Paraná (UFPR), Programa de Pós-Graduação em Direito, Curitiba, PR, Brasil.</mark></p>
+          <p class="aff"><sup>2</sup> <mark>Universidade de São Paulo (USP), Faculdade de Direito, São Paulo, SP, Brasil.</mark> <mark class="miss">sem autor</mark></p>
+          <p class="aff"><mark class="miss">linha "Autor para correspondência" ausente</mark></p>
+          <p class="res"><b>Resumo:</b> <mark>Este artigo lê a Constituição como narrativa a partir de Dom Casmurro e propõe que a interpretação constitucional compartilha com a ficção machadiana a instabilidade do narrador. Discute-se o método do direito e literatura, a figura do narrador não confiável e as consequências para a teoria da interpretação. Conclui-se que a leitura literária oferece critérios de suspeita úteis ao controle da argumentação jurídica.</mark></p>
+          <p class="res"><b>Palavras-chave:</b> <mark>Direito e literatura; Constituição; Machado de Assis; narrativa</mark></p>
+          <p class="res"><b>Abstract:</b> <mark>This article reads the Constitution as narrative through Dom Casmurro…</mark></p>
+          <p class="res"><b>Keywords:</b> <mark>Law and literature; Constitution; Machado de Assis; narrative</mark></p>
+          <p class="res" style="margin-top:16px"><b>Introdução</b></p>
+          <p class="res">No Brasil, a leitura literária do texto constitucional tem sido proposta como método<sup>1</sup> e como crítica (CHUEIRI, 2024). Este trabalho…</p>
+        </div>
+        <div style="padding:10px 14px" class="legend"><span><i style="background:var(--mark)"></i>trecho reconhecido</span><span><i style="background:var(--crit-bg);outline:1px dashed var(--crit)"></i>ausente ou não reconhecido</span></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===================== 4. PAINEL ===================== -->
+<section class="screen" id="s-painel" aria-label="Painel">
+  <div class="stack" style="gap:18px">
+    <div class="row between">
+      <div class="stack" style="gap:4px"><p class="eyebrow">Painel · setembro de 2026</p><h1>Documentos</h1></div>
+      <div class="row"><button class="btn" data-go="revistas">Cadastrar revista</button><button class="btn primary" data-go="validador">Enviar novo arquivo</button></div>
+    </div>
+
+    <div class="kpis">
+      <div><div class="v">12</div><div class="k">documentos enviados este mês</div></div>
+      <div><div class="v">7</div><div class="k">pacotes prontos</div></div>
+      <div><div class="v">4</div><div class="k">aguardando revisão humana</div></div>
+      <div><div class="v">3</div><div class="k">na SciELO (Pré-QA ou QA)</div></div>
+    </div>
+
+    <div class="card">
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Arquivo</th><th>Revista</th><th>Enviado</th><th>Etapa</th><th>Situação</th><th></th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="mono">correia-lima-e1222.docx</span><div class="small faint">DOCX no modelo · 24 p.</div></td>
+            <td>ANAMORPHOSIS</td><td class="tnum">hoje, 15:06</td>
+            <td><div class="stepper"><i class="done"></i><i class="done"></i><i class="warn"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="stepname">Validado · não pronto</div></td>
+            <td><span class="chip crit">6 bloqueantes</span></td>
+            <td><button class="btn small" data-go="revisar">Revisar</button></td>
+          </tr>
+          <tr>
+            <td><span class="mono">oliveira-e1227.docx</span><div class="small faint">DOCX no modelo · 18 p.</div></td>
+            <td>ANAMORPHOSIS</td><td class="tnum">ontem, 10:41</td>
+            <td><div class="stepper"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="cur"></i><i></i><i></i><i></i><i></i></div><div class="stepname">Pacote pronto</div></td>
+            <td><span class="chip ok">Pronto · packtools 0 erros</span></td>
+            <td><button class="btn small" data-go="pacote">Baixar pacote</button></td>
+          </tr>
+          <tr>
+            <td><span class="mono">pereira-santos-e1243.docx</span><div class="small faint">DOCX livre · 31 p. · IA no front matter</div></td>
+            <td>ANAMORPHOSIS</td><td class="tnum">28 ago</td>
+            <td><div class="stepper"><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="done"></i><i class="cur"></i><i></i><i></i></div><div class="stepname">Pré-QA na SciELO</div></td>
+            <td><span class="chip info">Entregue em 30 ago</span></td>
+            <td><button class="btn small" data-toast="No protótipo, o acompanhamento é simulado.">Acompanhar</button></td>
+          </tr>
+          <tr>
+            <td><span class="mono">ferreira-2019-v5n2.pdf</span><div class="small faint">PDF · retroconversão · 22 p.</div></td>
+            <td>ANAMORPHOSIS</td><td class="tnum">26 ago</td>
+            <td><div class="stepper"><i class="done"></i><i class="done"></i><i class="cur"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="stepname">Extraído · aguardando revisão</div></td>
+            <td><span class="chip warn">IA em tudo · revisar</span></td>
+            <td><button class="btn small" data-toast="No protótipo, só o primeiro documento abre na revisão.">Revisar</button></td>
+          </tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <div class="grid2">
+      <div class="card pad stack" style="gap:10px">
+        <div class="row between"><h3>Fila de processamento</h3><span class="small muted">2 em andamento</span></div>
+        <div class="queue">
+          <div class="it"><div><span class="mono">martins-e1250.docx</span><div class="small muted">Extraindo referências (IA, lote) · 38 de 61</div><div class="bar"><i style="width:62%"></i></div></div><span class="chip info">2 min</span></div>
+          <div class="it"><div><span class="mono">souza-2020-v6n1.pdf</span><div class="small muted">Aguardando OCR</div><div class="bar"><i style="width:0"></i></div></div><span class="chip neutral">na fila</span></div>
+        </div>
+      </div>
+      <div class="card pad stack" style="gap:10px">
+        <h3>Etapas de um documento</h3>
+        <p class="small muted">Enviado → Extraído → Validado → Revisado → XML → Pacote → Entregue à SciELO → Pré-QA → QA → QA finalizado.</p>
+        <p class="small muted">Os quatro últimos usam os mesmos nomes dos e-mails da SciELO, para o editor da revista reconhecer onde o artigo está.</p>
+        <hr class="sep">
+        <div class="row between small"><span class="muted">Custo médio de IA por artigo (30 dias)</span><b class="tnum">US$ 0,11</b></div>
+        <div class="row between small"><span class="muted">Tempo médio de revisão humana</span><b class="tnum">14 min</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 5. REVISTAS ===================== -->
+<section class="screen" id="s-revistas" aria-label="Revistas">
+  <div class="stack" style="gap:18px">
+    <div class="row between">
+      <div class="stack" style="gap:4px"><p class="eyebrow">Cadastro</p><h1>Revistas</h1></div>
+      <button class="btn primary" data-toast="No protótipo, o cadastro de nova revista é simulado.">Adicionar revista</button>
+    </div>
+    <p class="muted" style="max-width:70ch">Tudo daqui entra no journal-meta de todo XML da revista e some da lista de bloqueantes. Cadastre antes do primeiro envio.</p>
+
+    <div class="grid2" style="grid-template-columns:1fr 2fr">
+      <div class="card jlist">
+        <div class="it sel"><div><b>ANAMORPHOSIS</b><div class="small muted"><span class="mono">2446-8088</span> · anamps · 12 usos · hoje</div></div><span class="chip ok">completo</span></div>
+        <div class="it"><div><b>Revista de exemplo B</b><div class="small muted"><span class="mono">0000-0000</span> · sem acrônimo · 0 usos</div></div><span class="chip warn">incompleto</span></div>
+      </div>
+
+      <div class="fs">
+        <header><h2>ANAMORPHOSIS – Revista Internacional de Direito e Literatura</h2><span class="chip warn">não está na lista SciELO</span></header>
+        <div class="in">
+          <div class="grid3">
+            <div class="field"><label>Título</label><input value="ANAMORPHOSIS – Revista Internacional de Direito e Literatura"></div>
+            <div class="field"><label>Título abreviado</label><input value="Anamorphosis"></div>
+            <div class="field"><label>Acrônimo (publisher-id)</label><input class="mono" value="anamps"><span class="hint">Igual ao registrado na SciELO. Aparece no DOI e no nome dos arquivos.</span></div>
+          </div>
+          <div class="grid3">
+            <div class="field"><label>e-ISSN</label><input class="mono" value="2446-8088"></div>
+            <div class="field"><label>ISSN impresso</label><input class="mono" placeholder="—"></div>
+            <div class="field"><label>Editora</label><input value="Rede Brasileira de Direito e Literatura"></div>
+          </div>
+          <div class="grid3">
+            <div class="field"><label>Modo de publicação padrão</label><select><option>Publicação contínua</option><option>Fascículo</option><option>Ahead of print</option></select></div>
+            <div class="field"><label>Padrão de DOI</label><input class="mono" value="10.21119/anamps.{vol}.{num}.{eloc}"><span class="hint">Usado para gerar e conferir o DOI de cada artigo.</span></div>
+            <div class="field"><label>Licença padrão</label><select><option>CC BY 4.0</option><option>CC BY-NC 4.0</option></select></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Seções (headings)</label><div class="taglist"><span class="tag">Artigos</span><span class="tag">Resenhas</span><span class="tag">Traduções</span><span class="tag">Editorial</span><button class="btn small quiet" data-toast="No protótipo, a edição de seções é simulada.">+ seção</button></div></div>
+            <div class="field"><label>Idiomas aceitos</label><div class="taglist"><span class="tag">pt</span><span class="tag">en</span><span class="tag">es</span><span class="tag">fr</span><span class="tag">it</span><span class="tag">de</span></div></div>
+          </div>
+          <div class="grid2">
+            <div class="field"><label>Modelo DOCX da revista</label><div class="row"><span class="mono small">anamps-modelo-v1.dotx</span><span class="faint small">enviado 02 set</span><button class="btn small" data-toast="No protótipo, o download é simulado.">Baixar</button><button class="btn small quiet" data-toast="No protótipo, o envio é simulado.">Substituir</button></div></div>
+            <div class="field"><label>OJS <span class="opt">(fase 5)</span></label><div class="row"><input class="mono" value="https://rdl.org.br/seer/index.php/anamps" style="max-width:360px"><button class="btn small" disabled>Conectar via API</button></div></div>
+          </div>
+          <div class="row between"><span class="small muted">Registro privado da conta. Nada aqui é compartilhado.</span><button class="btn primary" data-toast="Cadastro da revista salvo (simulação).">Salvar revista</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 6. PACOTE ===================== -->
+<section class="screen" id="s-pacote" aria-label="Pacote">
+  <div class="stack" style="gap:18px">
+    <div class="row between">
+      <div class="stack" style="gap:4px">
+        <p class="eyebrow">Pacote SPS</p>
+        <div class="row"><h1 class="mono" style="font-size:18px">2446-8088-anamps-11-01-e1222</h1><span class="chip ok">Pronto para entrega</span></div>
+        <p class="small muted">oliveira-e1227.docx foi usado como exemplo de pacote concluído; o nome abaixo segue o artigo e1222 para manter a mesma amostra.</p>
+      </div>
+      <div class="row"><button class="btn" data-toast="No protótipo, os downloads são simulados.">Baixar XML</button><button class="btn primary" data-toast="No protótipo, os downloads são simulados.">Baixar pacote .zip</button></div>
+    </div>
+
+    <div class="grid2" style="grid-template-columns:1.1fr 1fr;align-items:start">
+      <div class="stack" style="gap:16px">
+        <div class="checks">
+          <div class="it"><span class="ok">✓</span><div><b>DTD JATS 1.3</b><div class="small muted">Journal Publishing DTD v1.3, validação estrutural</div></div><span class="chip ok">0 erros</span></div>
+          <div class="it"><span class="ok">✓</span><div><b>Schematron SPS 1.10</b><div class="small muted">packtools 4.16, mesmas regras do Style Checker da SciELO</div></div><span class="chip ok">0 erros · 2 avisos</span></div>
+          <div class="it"><span class="ok">✓</span><div><b>Nomenclatura</b><div class="small muted">ISSN-acrônimo-volume-número-elocation, só hífens, dois dígitos</div></div><span class="chip ok">ok</span></div>
+          <div class="it"><span class="ok">✓</span><div><b>PDF incluído</b><div class="small muted">Mesmo nome base; 24 páginas, igual ao page-count</div></div><span class="chip ok">ok</span></div>
+          <div class="it"><span class="ok">✓</span><div><b>Imagens referenciadas</b><div class="small muted">0 graphic no XML, 0 arquivos no pacote</div></div><span class="chip ok">ok</span></div>
+          <div class="it"><span class="wn">!</span><div><b>Avisos do packtools</b><div class="small muted">2 referências sem DOI encontrado no Crossref (livros). Não bloqueia.</div></div><button class="btn small quiet" data-toast="No protótipo, o relatório completo é simulado.">Ver relatório</button></div>
+        </div>
+
+        <div class="card pad stack" style="gap:8px">
+          <h3>Conteúdo do pacote</h3>
+<div class="tree">2446-8088-anamps-11-01-e1222/
+├─ 2446-8088-anamps-11-01-e1222.xml
+├─ 2446-8088-anamps-11-01-e1222.pdf
+└─ relatorio-validacao.html        (fica fora do zip enviado à SciELO)</div>
+          <p class="small muted">Se houver figuras: <span class="mono">2446-8088-anamps-11-01-e1222-gf01.tif</span>, em sequência. Tradução em PDF: sufixo <span class="mono">-en.pdf</span>.</p>
+        </div>
+
+        <div class="card pad stack" style="gap:10px">
+          <h3>Depois da entrega</h3>
+          <div class="scielo">
+            <div class="cur">Entregue<div class="d">FTP da SciELO · 04 set</div></div>
+            <div>Pré-QA<div class="d">verificação automática</div></div>
+            <div>QA<div class="d">revisão da equipe SciELO</div></div>
+            <div>QA finalizado<div class="d">publicação</div></div>
+          </div>
+          <p class="small muted">Os nomes são os mesmos dos e-mails da SciELO. O prazo de cada etapa é da SciELO, não nosso; o que garantimos é o pacote correto.</p>
+        </div>
+      </div>
+
+      <div class="card pad stack" style="gap:8px">
+        <div class="row between"><h3>Prévia do XML</h3><span class="small muted mono">2446-8088-anamps-11-01-e1222.xml · 61 KB</span></div>
+<pre class="xml"><span class="cm">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.3 20210610//EN" "JATS-journalpublishing1-3.dtd"&gt;</span>
+<span class="tg">&lt;article</span> <span class="at">xmlns:xlink</span>="http://www.w3.org/1999/xlink" <span class="at">xmlns:mml</span>="http://www.w3.org/1998/Math/MathML"
+         <span class="at">article-type</span>="research-article" <span class="at">dtd-version</span>="1.3" <span class="at">specific-use</span>="sps-1.10" <span class="at">xml:lang</span>="pt"<span class="tg">&gt;</span>
+  <span class="tg">&lt;front&gt;</span>
+    <span class="tg">&lt;journal-meta&gt;</span>
+      <span class="tg">&lt;journal-id</span> <span class="at">journal-id-type</span>="publisher-id"<span class="tg">&gt;</span>anamps<span class="tg">&lt;/journal-id&gt;</span>
+      <span class="tg">&lt;journal-title-group&gt;</span>
+        <span class="tg">&lt;journal-title&gt;</span>ANAMORPHOSIS – Revista Internacional de Direito e Literatura<span class="tg">&lt;/journal-title&gt;</span>
+        <span class="tg">&lt;abbrev-journal-title</span> <span class="at">abbrev-type</span>="publisher"<span class="tg">&gt;</span>Anamorphosis<span class="tg">&lt;/abbrev-journal-title&gt;</span>
+      <span class="tg">&lt;/journal-title-group&gt;</span>
+      <span class="tg">&lt;issn</span> <span class="at">pub-type</span>="epub"<span class="tg">&gt;</span>2446-8088<span class="tg">&lt;/issn&gt;</span>
+      <span class="tg">&lt;publisher&gt;&lt;publisher-name&gt;</span>Rede Brasileira de Direito e Literatura<span class="tg">&lt;/publisher-name&gt;&lt;/publisher&gt;</span>
+    <span class="tg">&lt;/journal-meta&gt;</span>
+    <span class="tg">&lt;article-meta&gt;</span>
+      <span class="tg">&lt;article-id</span> <span class="at">pub-id-type</span>="publisher-id"<span class="tg">&gt;</span>e1222<span class="tg">&lt;/article-id&gt;</span>
+      <span class="tg">&lt;article-id</span> <span class="at">pub-id-type</span>="doi"<span class="tg">&gt;</span>10.21119/anamps.11.1.e1222<span class="tg">&lt;/article-id&gt;</span>
+      <span class="tg">&lt;article-id</span> <span class="at">pub-id-type</span>="other"<span class="tg">&gt;</span>01222<span class="tg">&lt;/article-id&gt;</span>
+      <span class="tg">&lt;article-categories&gt;</span>
+        <span class="tg">&lt;subj-group</span> <span class="at">subj-group-type</span>="heading"<span class="tg">&gt;&lt;subject&gt;</span>Artigos<span class="tg">&lt;/subject&gt;&lt;/subj-group&gt;</span>
+      <span class="tg">&lt;/article-categories&gt;</span>
+      <span class="tg">&lt;title-group&gt;</span>
+        <span class="tg">&lt;article-title&gt;</span>A Constituição como narrativa: direito e literatura em Machado de Assis<span class="tg">&lt;/article-title&gt;</span>
+        <span class="tg">&lt;trans-title-group</span> <span class="at">xml:lang</span>="en"<span class="tg">&gt;&lt;trans-title&gt;</span>The Constitution as narrative: law and literature in Machado de Assis<span class="tg">&lt;/trans-title&gt;&lt;/trans-title-group&gt;</span>
+      <span class="tg">&lt;/title-group&gt;</span>
+      <span class="tg">&lt;contrib-group&gt;</span>
+        <span class="tg">&lt;contrib</span> <span class="at">contrib-type</span>="author"<span class="tg">&gt;</span>
+          <span class="tg">&lt;contrib-id</span> <span class="at">contrib-id-type</span>="orcid"<span class="tg">&gt;</span>0000-0002-9079-593X<span class="tg">&lt;/contrib-id&gt;</span>
+          <span class="tg">&lt;name&gt;&lt;surname&gt;</span>Correia<span class="tg">&lt;/surname&gt;&lt;given-names&gt;</span>Ana Beatriz<span class="tg">&lt;/given-names&gt;&lt;/name&gt;</span>
+          <span class="tg">&lt;xref</span> <span class="at">ref-type</span>="aff" <span class="at">rid</span>="aff1"<span class="tg">&gt;</span>1<span class="tg">&lt;/xref&gt;</span>
+          <span class="tg">&lt;xref</span> <span class="at">ref-type</span>="corresp" <span class="at">rid</span>="c1"<span class="tg">&gt;</span>*<span class="tg">&lt;/xref&gt;</span>
+        <span class="tg">&lt;/contrib&gt;</span>
+        <span class="cm">…</span>
+      <span class="tg">&lt;/contrib-group&gt;</span>
+      <span class="tg">&lt;aff</span> <span class="at">id</span>="aff1"<span class="tg">&gt;</span>
+        <span class="tg">&lt;label&gt;</span>1<span class="tg">&lt;/label&gt;</span>
+        <span class="tg">&lt;institution</span> <span class="at">content-type</span>="orgname"<span class="tg">&gt;</span>Universidade Federal do Paraná<span class="tg">&lt;/institution&gt;</span>
+        <span class="tg">&lt;institution</span> <span class="at">content-type</span>="orgdiv1"<span class="tg">&gt;</span>Programa de Pós-Graduação em Direito<span class="tg">&lt;/institution&gt;</span>
+        <span class="tg">&lt;addr-line&gt;&lt;city&gt;</span>Curitiba<span class="tg">&lt;/city&gt;&lt;state&gt;</span>PR<span class="tg">&lt;/state&gt;&lt;/addr-line&gt;</span>
+        <span class="tg">&lt;country</span> <span class="at">country</span>="BR"<span class="tg">&gt;</span>Brasil<span class="tg">&lt;/country&gt;</span>
+        <span class="tg">&lt;institution</span> <span class="at">content-type</span>="original"<span class="tg">&gt;</span>Universidade Federal do Paraná (UFPR), Programa de Pós-Graduação em Direito, Curitiba, PR, Brasil.<span class="tg">&lt;/institution&gt;</span>
+      <span class="tg">&lt;/aff&gt;</span>
+      <span class="tg">&lt;pub-date</span> <span class="at">date-type</span>="pub" <span class="at">publication-format</span>="electronic"<span class="tg">&gt;&lt;day&gt;</span>18<span class="tg">&lt;/day&gt;&lt;month&gt;</span>07<span class="tg">&lt;/month&gt;&lt;year&gt;</span>2026<span class="tg">&lt;/year&gt;&lt;/pub-date&gt;</span>
+      <span class="tg">&lt;pub-date</span> <span class="at">date-type</span>="collection" <span class="at">publication-format</span>="electronic"<span class="tg">&gt;&lt;year&gt;</span>2026<span class="tg">&lt;/year&gt;&lt;/pub-date&gt;</span>
+      <span class="tg">&lt;volume&gt;</span>11<span class="tg">&lt;/volume&gt;&lt;issue&gt;</span>1<span class="tg">&lt;/issue&gt;&lt;elocation-id&gt;</span>e1222<span class="tg">&lt;/elocation-id&gt;</span>
+      <span class="cm">… history, permissions, abstract, trans-abstract, kwd-group, counts …</span>
+    <span class="tg">&lt;/article-meta&gt;</span>
+  <span class="tg">&lt;/front&gt;</span>
+  <span class="tg">&lt;body&gt;</span><span class="cm">… 4 sec …</span><span class="tg">&lt;/body&gt;</span>
+  <span class="tg">&lt;back&gt;</span><span class="cm">… fn-group (12), ref-list (38) …</span><span class="tg">&lt;/back&gt;</span>
+<span class="tg">&lt;/article&gt;</span></pre>
+        <p class="small muted">Dados de exemplo. Todo valor do XML nasce de um campo confirmado; nenhum placeholder é escrito.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  var screens=['validador','resultado','revisar','painel','revistas','pacote'];
+  var toastEl=document.getElementById('toast'),toastT=null;
+  function toast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(function(){toastEl.classList.remove('show');},2600);}
+  function go(id,anchor){
+    if(screens.indexOf(id)<0)return;
+    screens.forEach(function(s){document.getElementById('s-'+s).classList.toggle('on',s===id);});
+    document.querySelectorAll('.nav button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-go')===id);});
+    try{localStorage.setItem('xmljats-proto-screen',id);}catch(e){}
+    if(anchor){
+      var el=document.getElementById(anchor);
+      if(el){
+        // switch language tab if the target sits in a hidden pane
+        var pane=el.closest('.pane');
+        if(pane&&!pane.classList.contains('on')){setTab(pane.getAttribute('data-pane'));}
+        el.scrollIntoView({block:'center'});
+        var inp=el.querySelector('input,select,textarea');
+        if(inp){inp.focus({preventScroll:true});}
+      }
+    }else{window.scrollTo(0,0);}
+  }
+  function setTab(name){
+    document.querySelectorAll('.tabs button[data-tab]').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-tab')===name);});
+    document.querySelectorAll('.pane[data-pane]').forEach(function(p){p.classList.toggle('on',p.getAttribute('data-pane')===name);});
+  }
+  document.addEventListener('click',function(ev){
+    var t=ev.target.closest('[data-go],[data-toast],[data-tab],.opt-card,.suggest .it');
+    if(!t)return;
+    if(t.hasAttribute('data-go')){
+      ev.preventDefault();
+      var href=t.getAttribute('href')||'';
+      go(t.getAttribute('data-go'),href.charAt(0)==='#'?href.slice(1):null);
+      return;
+    }
+    if(t.hasAttribute('data-toast')){ev.preventDefault();toast(t.getAttribute('data-toast'));return;}
+    if(t.hasAttribute('data-tab')){setTab(t.getAttribute('data-tab'));return;}
+    if(t.classList.contains('opt-card')){document.querySelectorAll('.opt-card').forEach(function(c){c.classList.remove('sel');});t.classList.add('sel');return;}
+    if(t.classList.contains('it')&&t.parentElement.classList.contains('suggest')){
+      t.parentElement.querySelectorAll('.it').forEach(function(i){i.classList.remove('sel');i.setAttribute('aria-selected','false');});
+      t.classList.add('sel');t.setAttribute('aria-selected','true');
+      document.getElementById('jsearch').value=t.querySelector('.t').textContent;
+      return;
+    }
+  });
+  var start='validador';
+  try{var saved=localStorage.getItem('xmljats-proto-screen');if(saved&&screens.indexOf(saved)>=0)start=saved;}catch(e){}
+  go(start);
+})();
+</script>

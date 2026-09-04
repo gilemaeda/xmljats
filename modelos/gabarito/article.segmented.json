@@ -1,0 +1,21 @@
+{
+  "_fonte": "lido à mão do PDF (dump poc/saida). Revista Opinião Jurídica ano 24 n.45 e5842 (Unichristus). Três autores com marcadores *, **, ***; ORCID da editora no cabeçalho; datas na margem esquerda.",
+  "heading": null,
+  "titulo": "A DEFENSORIA PÚBLICA COMO INSTRUMENTO DE DEFESA DO REGIME DEMOCRÁTICO: POSSIBILIDADES PROCESSUAIS EM TEMPOS DE CRISE INSTITUCIONAL",
+  "titulos_traduzidos": {
+    "en": "THE PUBLIC DEFENDER'S OFFICE AS AN INSTRUMENT TO DEFEND THE DEMOCRATIC REGIME: PROCEDURAL POSSIBILITIES IN TIMES OF INSTITUTIONAL CRISIS",
+    "es": "LA DEFENSORÍA PÚBLICA COMO INSTRUMENTO DE DEFENSA DEL RÉGIMEN DEMOCRÁTICO: POSIBILIDADES PROCESALES EN TIEMPOS DE CRISIS INSTITUCIONAL"
+  },
+  "autores": [
+    {"nome": "Bernard dos Reis Alô", "orcid": "0009-0004-3553-806X", "instituicao": "Defensoria Pública da União", "pais_iso": "BR"},
+    {"nome": "Cleber Francisco Alves", "orcid": "0000-0003-4544-1005", "instituicao": "Universidade Católica de Petrópolis", "pais_iso": "BR"},
+    {"nome": "Jorge Bheron Rocha", "orcid": "0000-0002-6673-7174", "instituicao": "Universidade Christus", "pais_iso": "BR"}
+  ],
+  "citacoes_min": 10,
+  "referencias": 27,
+  "_referencias_nota": "contadas no dump p.25-28: 26 entradas com SOBRENOME + a entrada 'XENOFOBIA: Defensoria processa...'; 'EDWARDS, David' é continuação de POPPER; 'ALÔ, Bernard...' é o bloco 'Como citar'",
+  "doi": "10.12662/2447-6641oj.v24i45.5842.pe5842.2026",
+  "idioma": "pt",
+  "resumos": ["pt", "en", "es"],
+  "datas": {"recebido": "2025-06-30", "aceito": "2025-11-11"}
+}

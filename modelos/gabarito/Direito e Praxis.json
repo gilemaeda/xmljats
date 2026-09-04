@@ -1,0 +1,18 @@
+{
+  "_fonte": "XML oficial SciELO (modelos/gabarito/rdp-R5b6JFS9XcMzLF9CTsncxQm.xml) + PDF. Rev. Direito e Práxis v.17 n.3 e92016.",
+  "heading": "Artigos inéditos",
+  "titulo": "A contribuição da dialética hegeliana no estudo da jurisdição: as tensões entre direito, privilégio e arbítrio",
+  "titulos_traduzidos": {
+    "en": "The contribution of hegelian dialectics to the study of jurisdiction: the tensions between law, privilege, and arbitrariness"
+  },
+  "autores": [
+    {"nome": "Sara da Nova Quadros Côrtes", "orcid": "0000-0002-6969-7585", "instituicao": "Universidade Federal da Bahia", "pais_iso": "BR"}
+  ],
+  "citacoes_min": 7,
+  "_citacoes_nota": "o XML oficial tem 44 xref bibr apontando para 7 referências distintas",
+  "referencias": 13,
+  "doi": "10.1590/2179-8966/2026/92016",
+  "idioma": "pt",
+  "resumos": ["pt", "en"],
+  "datas": {"recebido": "2025-05-25", "aceito": "2026-04-17"}
+}

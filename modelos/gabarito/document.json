@@ -1,0 +1,20 @@
+{
+  "_fonte": "lido à mão do PDF (dump poc/saida). Pensar – Revista de Ciências Jurídicas v.31 e16796 (Unifor). Artigo em inglês; quadro lateral com datas e editores.",
+  "heading": "Artigo Internacional",
+  "titulo": "Algorithmic Design, Product Liability, and the Protection of Children Online: K.G.M. v. Meta Platforms, Inc., et al. and Lessons for Brazil’s Digital ECA",
+  "titulos_traduzidos": {
+    "pt": "Design Algorítmico, Responsabilidade pelo Produto e a Proteção de Crianças On-line: o caso K.G.M. v. Meta Platforms, Inc., et al. e Lições para o ECA Digital do Brasil",
+    "es": "Diseño Algorítmico, Responsabilidad por Producto y la Protección de Niños en Línea: K.G.M. v. Meta Platforms, Inc., et al. y Lecciones para el ECA Digital de Brasil"
+  },
+  "autores": [
+    {"nome": "Carolina Almeida Antunes Rossini", "orcid": "0009-0008-9498-8676", "instituicao": "University of Massachusetts", "pais_iso": "US"},
+    {"nome": "Rafael Augusto Ferreira Zanatta", "orcid": "0000-0001-9111-7594", "instituicao": "University of São Paulo", "pais_iso": null}
+  ],
+  "citacoes_min": 23,
+  "referencias": 48,
+  "_referencias_nota": "contadas no dump p.11-14, uma a uma (ALLUHIDAN … XIAO)",
+  "doi": "10.5020/2317-2150.2026.16796",
+  "idioma": "en",
+  "resumos": ["en", "pt", "es"],
+  "datas": {"recebido": "2026-04-19", "aceito": "2026-04-22"}
+}

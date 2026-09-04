@@ -1,0 +1,19 @@
+{
+  "_fonte": "lido à mão do PDF (dump poc/saida). Rev. Bras. de Direito Processual Penal v.12 n.2 e1498. Editorial em espanhol; referências APA; datas do processo editorial na última página.",
+  "heading": "Dossier",
+  "titulo": "Editorial del dossier “Reformas judiciales y burocracias penales en América Latina”- El malestar en la cultura judicial: Desigualdades, incomprensión y cinismo en tribunales",
+  "titulos_traduzidos": {
+    "en": "Editorial of the dossier “Judicial reforms and criminal bureaucracies in Latin America”: Discomfort in judicial culture: inequalities, incomprehension, and cynicism in courts",
+    "pt": "Editorial do dossiê “Reformas judiciais e burocracias penais na América Latina”: O mal-estar na cultura judicial: desigualdades, incompreensão e cinismo nos Tribunais"
+  },
+  "autores": [
+    {"nome": "Ezequiel Kostenwein", "orcid": "0000-0003-0191-3744", "instituicao": "Universidad Nacional de La Plata", "pais_iso": "AR"}
+  ],
+  "citacoes_min": 9,
+  "referencias": 17,
+  "_referencias_nota": "contadas uma a uma no dump (p.27-28): Bourdieu, Casagrande, Deleuze, Dubet 2007, Dubet 2020, Kessler, Kostenwein 2016/2021/2024/2025/2025b, Lahire 2005/2016, Oliveira, Rancière, Sedeillan, Thompson",
+  "doi": "10.22197/rbdpp.v12i2.1498",
+  "idioma": "es",
+  "resumos": ["es", "en", "pt"],
+  "datas": {"recebido": "2026-05-20", "aceito": "2026-05-28"}
+}
