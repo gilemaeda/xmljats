@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.*
+data/
+poc/saida/
+*.mp4
+*.mov
+modelos/*.pdf
+article.segmented.pdf
+prototipo_ui.html
+__pycache__/
+*.pyc
+.venv/
+.vscode/
+.idea/

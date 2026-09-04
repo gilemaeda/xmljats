@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}xmljats{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <a class="brand" href="/"><span class="mark">&lt;/&gt;</span><span class="name">xml<b>jats</b></span></a>
+    <nav class="nav">
+      <a href="/" class="{% if ativo == 'validador' %}active{% endif %}">Validador</a>
+      <a href="/revistas" class="{% if ativo == 'revistas' %}active{% endif %}">Revistas</a>
+    </nav>
+    <div class="who">{{ usuario }} · MVP {{ '0.1' }}</div>
+  </div>
+</header>
+<main>
+{% block conteudo %}{% endblock %}
+</main>
+<footer class="rodape">Motor: extrator de PDF + gerador SciELO PS + packtools. Nada é inventado: o que falta no PDF vira bloqueante.</footer>
+</body>
+</html>

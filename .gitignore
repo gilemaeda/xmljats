@@ -1,5 +1,6 @@
-# saidas geradas pela PoC (recriaveis com os scripts)
+# saidas geradas pela PoC (recriaveis com os scripts) e dados do site (uploads, XML gerados)
 poc/saida/
+data/
 
 # video da demonstracao (1,3 GB) e outros binarios grandes
 *.mp4

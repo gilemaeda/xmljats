@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% set ativo = 'validador' %}
+{% block titulo %}Validador · xmljats{% endblock %}
+{% block conteudo %}
+<div class="hero">
+  <div class="stack">
+    <div>
+      <h1>Validar artigo para XML SciELO</h1>
+      <p class="muted">Envie o PDF do artigo. O motor extrai os metadados, gera o XML SciELO PS e valida no packtools, o validador oficial da SciELO. O que não estiver no PDF vira bloqueante, nunca é inventado.</p>
+    </div>
+    <form class="card pad stack" method="post" action="/validar" enctype="multipart/form-data">
+      <div class="grid2">
+        <div class="field">
+          <label for="revista">Revista</label>
+          <select id="revista" name="revista">
+            <option value="">Detectar pelo ISSN / DOI do PDF</option>
+            {% for r in revistas %}<option value="{{ r.acronimo }}">{{ r.titulo }} ({{ r.acronimo }})</option>{% endfor %}
+          </select>
+          <span class="hint">O cadastro da revista fornece acrônimo, título abreviado, editora e licença.</span>
+        </div>
+        <div class="field">
+          <label for="sps">Versão SPS</label>
+          <select id="sps" name="sps">
+            <option value="1.9">SciELO PS 1.9 · JATS 1.1 (a que a SciELO usa hoje)</option>
+            <option value="1.10">SciELO PS 1.10 · JATS 1.3</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="arquivo">Arquivo PDF</label>
+        <input id="arquivo" type="file" name="arquivo" accept="application/pdf" required>
+        <span class="hint">Até 50 MB. DOCX entra na próxima fase.</span>
+      </div>
+      <div class="row between">
+        <span class="small muted">O processamento leva alguns segundos. Nada é publicado.</span>
+        <button class="btn primary" type="submit">Validar arquivo</button>
+      </div>
+    </form>
+  </div>
+  <aside class="card pad">
+    <p class="eyebrow">Como funciona</p>
+    <ol class="steps">
+      <li><h3>Extração</h3><p class="muted small">Título, autores, ORCID, afiliações, resumos, seções, notas, referências, datas e licença.</p></li>
+      <li><h3>XML + validação</h3><p class="muted small">XML no nome-base da SPS, validado no DTD JATS e no Schematron SPS.</p></li>
+      <li><h3>Correção</h3><p class="muted small">Bloqueantes dizem o que falta e de onde vem (OJS, cadastro da revista, DOCX).</p></li>
+    </ol>
+  </aside>
+</div>
+
+<section class="card" style="margin-top:22px">
+  <header class="cardhead"><h2>Documentos recentes</h2><span class="muted small">{{ docs|length }} exibidos</span></header>
+  {% if docs %}
+  <div class="tblwrap"><table class="tbl">
+    <thead><tr><th>Quando</th><th>Arquivo</th><th>Revista</th><th>Situação</th><th>Bloq.</th><th>Avisos</th><th>packtools</th><th></th></tr></thead>
+    <tbody>
+    {% for d in docs %}
+      <tr>
+        <td class="tnum">{{ d.criado_em[:16].replace('T',' ') }}</td>
+        <td><span class="mono">{{ d.arquivo_original }}</span><div class="small faint">{{ d.titulo[:80] }}</div></td>
+        <td>{{ d.revista or '—' }}</td>
+        <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">Não pronto</span>{% endif %}</td>
+        <td class="tnum">{{ d.bloqueantes|length }}</td>
+        <td class="tnum">{{ (d.avisos_gerador|length) + (d.avisos_extrator|length) }}</td>
+        <td class="tnum">DTD {{ 'ok' if d.dtd_ok else 'erro' }} · SPS {{ 'ok' if d.sps_ok else 'erro' }}</td>
+        <td><a class="btn small" href="/doc/{{ d.id }}">Abrir</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <p class="pad muted">Nenhum documento ainda.</p>
+  {% endif %}
+</section>
+{% endblock %}

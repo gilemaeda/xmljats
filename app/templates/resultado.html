@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% set ativo = 'validador' %}
+{% block titulo %}Resultado · {{ r.nome_base }}{% endblock %}
+{% block conteudo %}
+<div class="result-head">
+  <div class="stack" style="gap:6px">
+    <p class="eyebrow">Resultado da validação</p>
+    <div class="row"><h1 class="mono" style="font-size:18px">{{ r.arquivo_original }}</h1><span class="muted">{{ r.revista_titulo or 'revista não cadastrada' }} · SPS {{ r.versao_sps }}</span></div>
+    <div class="row" style="gap:8px">
+      {% if r.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">Não pronto</span>{% endif %}
+      <span class="chip {{ 'ok' if not r.bloqueantes else 'crit' }}">{{ r.bloqueantes|length }} bloqueantes</span>
+      <span class="chip warn">{{ (r.avisos_gerador|length) + (r.avisos_extrator|length) }} avisos</span>
+      <span class="chip {{ 'ok' if r.dtd_ok else 'crit' }}">DTD {{ 'válido' if r.dtd_ok else 'inválido' }}</span>
+      <span class="chip {{ 'ok' if r.sps_ok else 'crit' }}">Schematron SPS {{ 'ok' if r.sps_ok else (r.packtools|length ~ ' erros') }}</span>
+      <span class="small faint">{{ r.criado_em[:16].replace('T',' ') }}</span>
+    </div>
+  </div>
+  <div class="row">
+    <a class="btn" href="/doc/{{ r.id }}/resumo.md">Resumo da extração</a>
+    <a class="btn" href="/doc/{{ r.id }}/modelo.json">Modelo (JSON)</a>
+    <a class="btn primary" href="/doc/{{ r.id }}/xml">Baixar {{ r.nome_base }}.xml</a>
+  </div>
+</div>
+
+<div class="card extract">
+  <div><div class="v">{{ r.contagens.paginas }}</div><div class="k">páginas</div></div>
+  <div><div class="v">{{ r.contagens.autores }}</div><div class="k">autores</div></div>
+  <div><div class="v">{{ r.contagens.resumos }}</div><div class="k">resumos</div></div>
+  <div><div class="v">{{ r.contagens.secoes }}</div><div class="k">seções</div></div>
+  <div><div class="v">{{ r.contagens.notas }}</div><div class="k">notas</div></div>
+  <div><div class="v">{{ r.contagens.referencias }}</div><div class="k">referências ({{ r.extracao.estilo_referencias or '?' }})</div></div>
+  <div><div class="v">{{ r.contagens.citacoes }}</div><div class="k">citações únicas</div></div>
+</div>
+
+<div class="findings">
+  <div class="stack" style="gap:16px">
+    <div class="group">
+      <header><span class="chip crit">Bloqueantes</span><span class="n">{{ r.bloqueantes|length }}</span><span class="small muted">impedem a entrega do XML</span></header>
+      {% for b in r.bloqueantes %}<div class="finding crit"><span class="stripe"></span><div class="body">{{ b }}</div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">Nenhum bloqueante.</div></div>{% endfor %}
+    </div>
+    <div class="group">
+      <header><span class="chip warn">Erros do packtools</span><span class="n">{{ r.packtools|length }}</span><span class="small muted">validador oficial da SciELO · {{ r.packtools_detalhe }}</span></header>
+      {% for e in r.packtools %}<div class="finding warn"><span class="stripe"></span><div class="body mono small">{{ e }}</div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">DTD e Schematron sem erros.</div></div>{% endfor %}
+    </div>
+    <div class="group">
+      <header><span class="chip warn">Avisos</span><span class="n">{{ (r.avisos_gerador|length) + (r.avisos_extrator|length) }}</span><span class="small muted">confira antes de entregar</span></header>
+      {% for a in r.avisos_extrator %}<div class="finding warn"><span class="stripe"></span><div class="body">{{ a }}</div></div>{% endfor %}
+      {% for a in r.avisos_gerador %}<div class="finding auto"><span class="stripe"></span><div class="body">{{ a }}</div></div>{% endfor %}
+    </div>
+  </div>
+
+  <aside class="stack">
+    <div class="card pad stack" style="gap:8px">
+      <h3>O que foi extraído</h3>
+      <p class="small"><b>DOI</b> <span class="mono">{{ r.extracao.doi or '—' }}</span></p>
+      <p class="small"><b>Idioma</b> {{ r.extracao.idioma or '—' }} · <b>Seção</b> {{ r.extracao.heading or '—' }} · <b>v.</b> {{ r.extracao.volume or '—' }} <b>n.</b> {{ r.extracao.numero or '—' }} · {{ r.extracao.elocation or '' }}</p>
+      <p class="small"><b>Datas</b> recebido {{ r.extracao.datas.recebido or '—' }} · aceito {{ r.extracao.datas.aceito or '—' }} · publicado {{ r.extracao.datas.publicado or '—' }}</p>
+      <p class="small"><b>Licença</b> {{ r.extracao.licenca or '—' }}</p>
+      <hr class="sep">
+      {% for t in r.extracao.titulos %}<p class="small"><b>{{ t.tipo }}</b> [{{ t.idioma or '?' }}] {{ t.texto }}</p>{% endfor %}
+      <hr class="sep">
+      {% for a in r.extracao.autores %}
+        <p class="small"><b>{{ a.nome }}</b> · ORCID <span class="mono">{{ a.orcid or 'ausente' }}</span> · {{ a.email or 'sem e-mail' }}</p>
+        {% for af in a.afiliacoes %}<p class="small muted">{{ af.id }}: {{ af.instituicao or '?' }}{% if af.divisao %} · {{ af.divisao }}{% endif %} · {{ af.cidade or '?' }}/{{ af.estado or '?' }}/{{ af.pais_iso or '?' }} <span class="faint">({{ af.origem }}, confiança {{ af.confianca }})</span></p>{% endfor %}
+      {% endfor %}
+      <hr class="sep">
+      {% for res in r.extracao.resumos %}<p class="small"><b>{{ res.rotulo }}</b> [{{ res.idioma or '?' }}] {{ res.palavras }} palavras · {{ res.palavras_chave|join('; ') }}</p>{% endfor %}
+    </div>
+    <div class="card pad stack" style="gap:6px">
+      <h3>Seções ({{ r.extracao.secoes|length }})</h3>
+      {% for s in r.extracao.secoes %}<p class="small" style="padding-left:{{ (s.nivel - 1) * 14 }}px">{{ s.titulo }} <span class="faint">· {{ s.paragrafos }} §</span></p>{% endfor %}
+    </div>
+  </aside>
+</div>
+{% endblock %}
