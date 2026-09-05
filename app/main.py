@@ -71,6 +71,9 @@ def lista_docs(limite=30):
                 with io.open(v, encoding="utf-8") as f:
                     d = json.load(f)
                 d["id"] = pasta.name
+                nome = pasta / "nome_original.txt"
+                if d.get("arquivo_original") in (None, "original.pdf") and nome.exists():
+                    d["arquivo_original"] = nome.read_text(encoding="utf-8").strip()
                 itens.append(d)
             except Exception:  # noqa: BLE001
                 continue
