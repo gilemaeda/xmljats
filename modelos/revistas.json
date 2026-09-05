@@ -12,7 +12,9 @@
       "na_scielo": true,
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
-      "_fonte": "XML oficial SciELO do artigo e92016"
+      "_fonte": "XML oficial SciELO do artigo e92016",
+      "area": "Ciências Sociais Aplicadas (Direito, Administração, Economia)",
+      "estilo_referencias": "ABNT"
     },
     {
       "acronimo": "anamps",
@@ -26,7 +28,9 @@
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
       "secao_padrao": "Artigos",
-      "_fonte": "site da revista (OJS); acrônimo deduzido do DOI; título abreviado: confirmar"
+      "_fonte": "site da revista (OJS); acrônimo deduzido do DOI; título abreviado: confirmar",
+      "area": "Ciências Sociais Aplicadas (Direito, Administração, Economia)",
+      "estilo_referencias": "ABNT"
     },
     {
       "acronimo": "pensar",
@@ -39,7 +43,9 @@
       "na_scielo": false,
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
-      "_fonte": "PDF; acrônimo e título abreviado: confirmar"
+      "_fonte": "PDF; acrônimo e título abreviado: confirmar",
+      "area": "Ciências Sociais Aplicadas (Direito, Administração, Economia)",
+      "estilo_referencias": "ABNT"
     },
     {
       "acronimo": "rbdpp",
@@ -52,7 +58,9 @@
       "na_scielo": true,
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
-      "_fonte": "PDF (rodapé) e site da revista; e-ISSN e acrônimo SciELO: confirmar"
+      "_fonte": "PDF (rodapé) e site da revista; e-ISSN e acrônimo SciELO: confirmar",
+      "area": "Ciências Sociais Aplicadas (Direito, Administração, Economia)",
+      "estilo_referencias": "APA"
     },
     {
       "acronimo": "opiniaojuridica",
@@ -65,7 +73,9 @@
       "na_scielo": false,
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
-      "_fonte": "PDF; acrônimo: confirmar"
+      "_fonte": "PDF; acrônimo: confirmar",
+      "area": "Ciências Sociais Aplicadas (Direito, Administração, Economia)",
+      "estilo_referencias": "ABNT"
     },
     {
       "acronimo": "rbef",
@@ -78,7 +88,9 @@
       "na_scielo": true,
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
-      "_fonte": "XML oficial SciELO dos artigos baixados em 05/09/2026"
+      "_fonte": "XML oficial SciELO dos artigos baixados em 05/09/2026",
+      "area": "Ciências Exatas e da Terra",
+      "estilo_referencias": "numérico"
     },
     {
       "acronimo": "rsp",
@@ -91,7 +103,9 @@
       "na_scielo": true,
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
-      "_fonte": "XML oficial SciELO dos artigos baixados em 05/09/2026"
+      "_fonte": "XML oficial SciELO dos artigos baixados em 05/09/2026",
+      "area": "Ciências da Saúde",
+      "estilo_referencias": "numérico"
     }
   ]
 }

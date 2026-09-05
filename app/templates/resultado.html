@@ -28,7 +28,7 @@
     <button class="btn small" type="submit">Mudar etapa</button>
   </form>
   {% if historico %}<details class="small muted" style="flex-basis:100%"><summary>Histórico ({{ historico|length }}){% if criado_por %} · enviado por {{ criado_por }}{% endif %}</summary>
-    {% for h in historico|reverse %}<div>{{ h.em[:16].replace('T',' ') }} · {{ ETAPA_ROTULO.get(h.etapa, h.etapa) }} · {{ h.por }}{% if h.nota %} · {{ h.nota }}{% endif %}</div>{% endfor %}</details>{% endif %}
+    {% for h in historico|reverse %}<div>{{ h.em|quando }} · {{ ETAPA_ROTULO.get(h.etapa, h.etapa) }} · {{ h.por }}{% if h.nota %} · {{ h.nota }}{% endif %}</div>{% endfor %}</details>{% endif %}
 </div>
 
 <div class="status {{ 'ok' if r.pronto else 'crit' }}">

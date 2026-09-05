@@ -48,6 +48,23 @@
             {% if erros.get('licenca_url') %}<div class="msg block">{{ erros['licenca_url'] }}</div>{% else %}<span class="hint">Usada quando o PDF não traz a licença.</span>{% endif %}
           </div>
         </div>
+        <div class="grid2">
+          <div class="field {% if erros.get('area') %}is-block{% endif %}">
+            <label for="area">Área do conhecimento <span class="opt">(opcional)</span></label>
+            <select id="area" name="area">
+              <option value="">Não informada</option>
+              {% for a in areas %}<option value="{{ a }}" {% if v.get('area') == a %}selected{% endif %}>{{ a }}</option>{% endfor %}
+            </select>
+            {% if erros.get('area') %}<div class="msg block">{{ erros['area'] }}</div>{% else %}<span class="hint">Não muda o XML: serve para saber o que esperar do artigo (tabelas, equações, estilo de citação).</span>{% endif %}
+          </div>
+          <div class="field {% if erros.get('estilo_referencias') %}is-block{% endif %}">
+            <label for="estilo_referencias">Estilo das referências</label>
+            <select id="estilo_referencias" name="estilo_referencias">
+              {% for cod, rotulo in estilos %}<option value="{{ cod }}" {% if (v.get('estilo_referencias') or '') == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+            </select>
+            {% if erros.get('estilo_referencias') %}<div class="msg block">{{ erros['estilo_referencias'] }}</div>{% else %}<span class="hint">Se o texto for lido em outro estilo, o resultado avisa.</span>{% endif %}
+          </div>
+        </div>
         <div class="grid3">
           <div class="field">
             <label for="modo_publicacao">Modo de publicação</label>

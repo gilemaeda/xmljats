@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.7.1). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.8.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 27 de 27 verificações passaram.
+- **Site:** 32 de 32 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -63,6 +63,11 @@ Gerada por `python ops/auditoria.py` (app 0.7.1). Cada número vem de uma mediç
 - ok — admin vê visão geral com métricas
 - ok — admin vê todos os documentos
 - ok — sessão com cookie adulterado é recusada
+- ok — horários no fuso de Brasília (-03)
+- ok — atividade do usuário é registrada (último acesso e IP)
+- ok — painel administrativo mostra contas, uso e filtro por conta
+- ok — admin edita nome e e-mail de um usuário
+- ok — cadastro de revista tem área e estilo de referências
 - ok — sair encerra a sessão
 
 ## 5. O que o validador oficial ainda aponta

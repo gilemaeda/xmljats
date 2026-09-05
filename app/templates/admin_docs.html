@@ -53,7 +53,7 @@
     <tbody>
     {% for d in docs %}
       <tr>
-        <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
+        <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)|quando }}</td>
         <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.nome_base }}</div></td>
         <td>{{ d.revista or '—' }}</td>
         <td class="small">{{ d.criado_por or '—' }}</td>

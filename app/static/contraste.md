@@ -7,51 +7,51 @@ Texto normal precisa de 4.5:1; texto grande, ícones, bordas de campo e indicado
 
 | Par | Tinta | Fundo | Razão | Mínimo | |
 |---|---|---|---|---|---|
-| texto principal em cartão | `#131A24` | `#FFFFFF` | 17.49 | 4.5 | ok |
-| texto principal no fundo da página | `#131A24` | `#F3F5F9` | 16.02 | 4.5 | ok |
-| texto principal em surface-2 (cabeçalho de grupo, tabela) | `#131A24` | `#F6F8FB` | 16.44 | 4.5 | ok |
-| texto principal em surface-3 (hover) | `#131A24` | `#ECF0F5` | 15.28 | 4.5 | ok |
-| text-2 (subtítulos, rótulos) em cartão | `#3E4B5B` | `#FFFFFF` | 8.89 | 4.5 | ok |
-| text-2 em surface-2 | `#3E4B5B` | `#F6F8FB` | 8.36 | 4.5 | ok |
-| text-2 em surface-3 (code.rule) | `#3E4B5B` | `#ECF0F5` | 7.77 | 4.5 | ok |
-| muted (legendas) em cartão | `#5C6979` | `#FFFFFF` | 5.60 | 4.5 | ok |
-| muted em surface-2 | `#5C6979` | `#F6F8FB` | 5.26 | 4.5 | ok |
-| muted em surface-3 (chip neutro) | `#5C6979` | `#ECF0F5` | 4.89 | 4.5 | ok |
-| muted no fundo da página | `#5C6979` | `#F3F5F9` | 5.13 | 4.5 | ok |
-| faint (dicas, rodapé, versão) em cartão | `#5F6C7B` | `#FFFFFF` | 5.36 | 4.5 | ok |
-| faint em surface-2 (sem imagem) | `#5F6C7B` | `#F6F8FB` | 5.04 | 4.5 | ok |
-| faint no fundo da página | `#5F6C7B` | `#F3F5F9` | 4.91 | 4.5 | ok |
-| link em cartão | `#1F4E8C` | `#FFFFFF` | 8.31 | 4.5 | ok |
-| link no fundo da página | `#1F4E8C` | `#F3F5F9` | 7.61 | 4.5 | ok |
-| accent ('jats' da marca) em topbar | `#157A62` | `#FFFFFF` | 5.26 | 4.5 | ok |
+| texto principal em cartão | `#131A24` | `#FAFBFD` | 16.89 | 4.5 | ok |
+| texto principal no fundo da página | `#131A24` | `#EDF0F5` | 15.31 | 4.5 | ok |
+| texto principal em surface-2 (cabeçalho de grupo, tabela) | `#131A24` | `#F2F5F9` | 15.99 | 4.5 | ok |
+| texto principal em surface-3 (hover) | `#131A24` | `#E7ECF3` | 14.73 | 4.5 | ok |
+| text-2 (subtítulos, rótulos) em cartão | `#3E4B5B` | `#FAFBFD` | 8.59 | 4.5 | ok |
+| text-2 em surface-2 | `#3E4B5B` | `#F2F5F9` | 8.13 | 4.5 | ok |
+| text-2 em surface-3 (code.rule) | `#3E4B5B` | `#E7ECF3` | 7.49 | 4.5 | ok |
+| muted (legendas) em cartão | `#5C6979` | `#FAFBFD` | 5.41 | 4.5 | ok |
+| muted em surface-2 | `#5C6979` | `#F2F5F9` | 5.12 | 4.5 | ok |
+| muted em surface-3 (chip neutro) | `#5C6979` | `#E7ECF3` | 4.72 | 4.5 | ok |
+| muted no fundo da página | `#5C6979` | `#EDF0F5` | 4.90 | 4.5 | ok |
+| faint (dicas, rodapé, versão) em cartão | `#5F6C7B` | `#FAFBFD` | 5.18 | 4.5 | ok |
+| faint em surface-2 (sem imagem) | `#5F6C7B` | `#F2F5F9` | 4.90 | 4.5 | ok |
+| faint no fundo da página | `#5F6C7B` | `#EDF0F5` | 4.69 | 4.5 | ok |
+| link em cartão | `#1F4E8C` | `#FAFBFD` | 8.03 | 4.5 | ok |
+| link no fundo da página | `#1F4E8C` | `#EDF0F5` | 7.28 | 4.5 | ok |
+| accent ('jats' da marca) em topbar | `#157A62` | `#FAFBFD` | 5.08 | 4.5 | ok |
 | brand-ink em brand (botão primário, ícone do status) | `#FFFFFF` | `#1B3A66` | 11.39 | 4.5 | ok |
 | brand-ink em brand-2 (hover do botão) | `#FFFFFF` | `#2B5AA0` | 6.83 | 4.5 | ok |
 | brand-text em brand-soft (nav ativo, passos, avatar) | `#1B3A66` | `#E4ECF8` | 9.57 | 4.5 | ok |
-| brand-text em surface (seletor de tema) | `#1B3A66` | `#FFFFFF` | 11.39 | 4.5 | ok |
+| brand-text em surface (seletor de tema) | `#1B3A66` | `#FAFBFD` | 11.00 | 4.5 | ok |
 | crit-ink em crit-bg (chip, mensagem) | `#7A1A14` | `#FBE9E7` | 9.02 | 4.5 | ok |
 | warn-ink em warn-bg | `#6B3B00` | `#FFF1DA` | 8.37 | 4.5 | ok |
 | ok-ink em ok-bg | `#14502F` | `#E3F3E9` | 8.23 | 4.5 | ok |
 | info-ink em info-bg | `#1B3D6E` | `#E6EEF9` | 9.26 | 4.5 | ok |
-| texto no cartão de status 'pronto' (ok-bg 50%) | `#131A24` | `#F1F9F4` | 16.32 | 4.5 | ok |
-| text-2 no status 'pronto' | `#3E4B5B` | `#F1F9F4` | 8.30 | 4.5 | ok |
-| texto no status 'não pronto' (crit-bg 40%) | `#131A24` | `#FDF6F5` | 16.39 | 4.5 | ok |
-| text-2 no status 'não pronto' | `#3E4B5B` | `#FDF6F5` | 8.33 | 4.5 | ok |
-| texto digitado em campo bloqueante (crit-bg 45%) | `#131A24` | `#FDF5F4` | 16.27 | 4.5 | ok |
+| texto no cartão de status 'pronto' (ok-bg 50%) | `#131A24` | `#EEF7F3` | 16.02 | 4.5 | ok |
+| text-2 no status 'pronto' | `#3E4B5B` | `#EEF7F3` | 8.14 | 4.5 | ok |
+| texto no status 'não pronto' (crit-bg 40%) | `#131A24` | `#FAF4F4` | 16.08 | 4.5 | ok |
+| text-2 no status 'não pronto' | `#3E4B5B` | `#FAF4F4` | 8.17 | 4.5 | ok |
+| texto digitado em campo bloqueante (crit-bg 45%) | `#131A24` | `#FAF3F3` | 15.97 | 4.5 | ok |
 | texto em seleção (brand-soft-2) | `#131A24` | `#D2DFF3` | 12.98 | 4.5 | ok |
 | texto em brand-soft (dropzone em hover) | `#131A24` | `#E4ECF8` | 14.70 | 4.5 | ok |
 | muted em brand-soft (dropzone em hover) | `#5C6979` | `#E4ECF8` | 4.71 | 4.5 | ok |
-| crit como texto ('vermelho', botão danger) no fundo | `#B3261E` | `#F3F5F9` | 5.99 | 4.5 | ok |
-| warn como texto ('laranja') no fundo | `#995607` | `#F3F5F9` | 5.22 | 4.5 | ok |
+| crit como texto ('vermelho', botão danger) no fundo | `#B3261E` | `#EDF0F5` | 5.72 | 4.5 | ok |
+| warn como texto ('laranja') no fundo | `#995607` | `#EDF0F5` | 4.98 | 4.5 | ok |
 | crit-ink em crit-bg (hover do botão danger) | `#7A1A14` | `#FBE9E7` | 9.02 | 4.5 | ok |
-| listra/borda crit em cartão | `#B3261E` | `#FFFFFF` | 6.54 | 3.0 | ok |
-| listra/borda warn em cartão | `#995607` | `#FFFFFF` | 5.69 | 3.0 | ok |
-| listra/borda ok em cartão | `#1F7A4D` | `#FFFFFF` | 5.32 | 3.0 | ok |
-| borda info | `#2F5FA5` | `#FFFFFF` | 6.36 | 3.0 | ok |
-| borda de campo e botão (border-strong) em cartão | `#7F8C9C` | `#FFFFFF` | 3.42 | 3.0 | ok |
-| borda de campo em surface-2 (dropzone) | `#7F8C9C` | `#F6F8FB` | 3.22 | 3.0 | ok |
-| borda de foco (brand-2) em cartão | `#2B5AA0` | `#FFFFFF` | 6.83 | 3.0 | ok |
-| borda de foco no fundo | `#2B5AA0` | `#F3F5F9` | 6.26 | 3.0 | ok |
-| ícone do seletor de tema (muted) em surface-2 | `#5C6979` | `#F6F8FB` | 5.26 | 3.0 | ok |
+| listra/borda crit em cartão | `#B3261E` | `#FAFBFD` | 6.31 | 3.0 | ok |
+| listra/borda warn em cartão | `#995607` | `#FAFBFD` | 5.50 | 3.0 | ok |
+| listra/borda ok em cartão | `#1F7A4D` | `#FAFBFD` | 5.14 | 3.0 | ok |
+| borda info | `#2F5FA5` | `#FAFBFD` | 6.14 | 3.0 | ok |
+| borda de campo e botão (border-strong) em cartão | `#7C8998` | `#FAFBFD` | 3.44 | 3.0 | ok |
+| borda de campo em surface-2 (dropzone) | `#7C8998` | `#F2F5F9` | 3.26 | 3.0 | ok |
+| borda de foco (brand-2) em cartão | `#2B5AA0` | `#FAFBFD` | 6.60 | 3.0 | ok |
+| borda de foco no fundo | `#2B5AA0` | `#EDF0F5` | 5.98 | 3.0 | ok |
+| ícone do seletor de tema (muted) em surface-2 | `#5C6979` | `#F2F5F9` | 5.12 | 3.0 | ok |
 
 ## Tema escuro
 

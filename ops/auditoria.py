@@ -120,6 +120,12 @@ def roda_site():
     check("admin vê visão geral com métricas", "Bloqueantes mais frequentes" in c.get("/admin").text)
     check("admin vê todos os documentos", c.get("/admin/documentos").status_code == 200)
     check("sessão com cookie adulterado é recusada", TestClient(app, follow_redirects=False, cookies={"xmljats_sessao": "x"}).get("/").status_code == 303)
+    import tempo as _t
+    check("horários no fuso de Brasília (-03)", _t.agora().utcoffset().total_seconds() == -10800 and _t.formata("2026-01-02T15:00:00+00:00") == "02/01/2026 12:00")
+    check("atividade do usuário é registrada (último acesso e IP)", (json.load(io.open(os.path.join(tmp, "usuarios.json"), encoding="utf-8"))["usuarios"][0].get("atividade") or {}).get("ultimo_acesso"))
+    check("painel administrativo mostra contas, uso e filtro por conta", all(x in c.get("/admin").text for x in ("Contas e uso", "Validações por dia", "Filtrar")))
+    check("admin edita nome e e-mail de um usuário", c.post("/usuarios/" + json.load(io.open(os.path.join(tmp, "usuarios.json"), encoding="utf-8"))["usuarios"][0]["id"] + "/dados", data={"nome": "Administrador", "email": "admin"}).status_code == 303)
+    check("cadastro de revista tem área e estilo de referências", all(x in c.get("/revistas/nova").text for x in ("Área do conhecimento", "Estilo das referências")))
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)

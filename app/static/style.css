@@ -10,8 +10,8 @@
 
 :root{
   color-scheme:light;
-  --bg:#F3F5F9; --bg-2:#E9EDF4; --surface:#FFFFFF; --surface-2:#F6F8FB; --surface-3:#ECF0F5;
-  --border:#D9E0E9; --border-strong:#7F8C9C;
+  --bg:#EDF0F5; --bg-2:#E4E9F1; --surface:#FAFBFD; --surface-2:#F2F5F9; --surface-3:#E7ECF3;
+  --border:#D5DCE6; --border-strong:#7C8998;
   --text:#131A24; --text-2:#3E4B5B; --muted:#5C6979; --faint:#5F6C7B;
   --brand:#1B3A66; --brand-2:#2B5AA0; --brand-ink:#FFFFFF; --brand-soft:#E4ECF8; --brand-soft-2:#D2DFF3; --brand-text:#1B3A66; --link:#1F4E8C;
   --accent:#157A62; --accent-soft:#DDF2EC;

@@ -2,48 +2,59 @@
 {% set ativo = 'conta' %}
 {% block titulo %}Minha conta · xmljats{% endblock %}
 {% block conteudo %}
+{% set sem_conta = usuario.id in ('local', 'api') %}
 <div class="page-head">
   <div>
     <p class="eyebrow">Conta</p>
     <h1 style="margin-top:4px">Minha conta</h1>
-    <p class="lead">Seus dados de acesso e o que você já enviou.</p>
+    <p class="lead">Seus dados de acesso e o que você já enviou. Horários no {{ FUSO }}.</p>
   </div>
 </div>
 {% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
 {% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+{% if sem_conta %}
+<div class="msg note" style="margin-bottom:var(--s-4)">
+  Você está numa sessão sem conta própria{% if usuario.id == 'api' %} (entrou pela senha única do sistema, usada por scripts){% else %} (modo local de desenvolvimento){% endif %}.
+  Para ter dados próprios e trocar a senha, <a href="/entrar">entre com sua conta</a>.
+</div>
+{% endif %}
 
 <div class="kpis">
   <div class="card kpi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></span><div><div class="v">{{ total_docs }}</div><div class="k">documentos enviados</div></div></div>
   <div class="card kpi"><span class="ico ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="v">{{ docs|selectattr('pronto')|list|length }}</div><div class="k">prontos para entrega</div></div></div>
   <div class="card kpi"><span class="ico crit"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5"/><path d="M10.3 3.9L2.5 18a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></span><div><div class="v">{{ docs|rejectattr('pronto')|list|length }}</div><div class="k">com bloqueantes</div></div></div>
-  <div class="card kpi"><span class="ico info"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span><div><div class="v" style="font-size:15px;line-height:1.3">{{ {'admin': 'Administrador', 'operador': 'Operador', 'cliente': 'Cliente'}.get(usuario.papel, usuario.papel) }}</div><div class="k">seu papel</div></div></div>
+  <div class="card kpi"><span class="ico info"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span><div><div class="v" style="font-size:15px;line-height:1.3">{{ ROTULO_PAPEL.get(usuario.papel, usuario.papel)|capitalize }}</div><div class="k">seu papel</div></div></div>
 </div>
 
 <div class="review" style="grid-template-columns:1fr 1fr">
-  <section class="card pad stack">
-    <div><h2>Dados</h2><p class="small muted" style="margin-top:4px">Para mudar nome ou e-mail, peça a um administrador.</p></div>
+  <form class="card pad stack" method="post" action="/conta/dados">
+    <div><h2>Meus dados</h2><p class="small muted" style="margin-top:4px">Nome e e-mail que aparecem no sistema.</p></div>
+    <div class="field"><label for="nome">Nome</label><input id="nome" name="nome" value="{{ usuario.nome }}" {% if sem_conta %}disabled{% endif %} required></div>
+    <div class="field"><label for="email">E-mail</label><input id="email" name="email" value="{{ usuario.email }}" {% if sem_conta %}disabled{% endif %} required></div>
     <dl class="kv">
-      <dt>Nome</dt><dd>{{ usuario.nome }}</dd>
-      <dt>E-mail</dt><dd class="mono">{{ usuario.email }}</dd>
       <dt>Papel</dt><dd>{{ {'admin': 'administrador (gerencia usuários e revistas)', 'operador': 'operador (vê todos os documentos)', 'cliente': 'cliente (vê os próprios documentos)'}.get(usuario.papel, usuario.papel) }}</dd>
+      {% if usuario.criado_em %}<dt>Conta criada em</dt><dd>{{ usuario.criado_em|quando }}</dd>{% endif %}
+      {% if usuario.atividade and usuario.atividade.ultimo_login %}<dt>Última entrada</dt><dd>{{ usuario.atividade.ultimo_login|quando }}{% if usuario.atividade.ip %} · <span class="mono">{{ usuario.atividade.ip }}</span>{% endif %}</dd>{% endif %}
     </dl>
-  </section>
+    <button class="btn primary" type="submit" {% if sem_conta %}disabled{% endif %}><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Salvar dados</button>
+  </form>
+
   <form class="card pad stack" method="post" action="/conta/senha">
     <div><h2>Trocar senha</h2><p class="small muted" style="margin-top:4px">Informe a senha atual e escolha a nova.</p></div>
     <div class="field">
       <label for="atual">Senha atual</label>
-      <div class="senha-wrap"><input id="atual" name="atual" type="password" autocomplete="current-password" required><button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button></div>
+      <div class="senha-wrap"><input id="atual" name="atual" type="password" autocomplete="current-password" {% if sem_conta %}disabled{% endif %} required><button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button></div>
     </div>
     <div class="field">
       <label for="nova">Nova senha</label>
-      <div class="senha-wrap"><input id="nova" name="nova" type="password" autocomplete="new-password" minlength="8" required><button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button></div>
+      <div class="senha-wrap"><input id="nova" name="nova" type="password" autocomplete="new-password" minlength="8" {% if sem_conta %}disabled{% endif %} required><button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button></div>
       <span class="hint">Mínimo de 8 caracteres.</span>
     </div>
     <div class="field">
       <label for="nova2">Repita a nova senha</label>
-      <div class="senha-wrap"><input id="nova2" name="nova2" type="password" autocomplete="new-password" minlength="8" required><button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button></div>
+      <div class="senha-wrap"><input id="nova2" name="nova2" type="password" autocomplete="new-password" minlength="8" {% if sem_conta %}disabled{% endif %} required><button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button></div>
     </div>
-    <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Trocar senha</button>
+    <button class="btn primary" type="submit" {% if sem_conta %}disabled{% endif %}><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Trocar senha</button>
   </form>
 </div>
 {% endblock %}

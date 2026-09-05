@@ -6,7 +6,7 @@
   <div>
     <p class="eyebrow">Administração</p>
     <h1 style="margin-top:4px">Visão geral</h1>
-    <p class="lead">Números do sistema inteiro: documentos de todas as contas, onde eles emperram e quem está usando.</p>
+    <p class="lead">O sistema inteiro: documentos de todas as contas, onde eles emperram e quem está usando. Horários no {{ FUSO }}.</p>
   </div>
   <div class="acoes">
     <a class="btn" href="/admin/documentos">Todos os documentos</a>
@@ -15,14 +15,64 @@
   </div>
 </div>
 
+<form class="card filtros" method="get" action="/admin">
+  <div class="field larga">
+    <label for="f-dono">Conta</label>
+    <select id="f-dono" name="dono">
+      <option value="">Todas as contas</option>
+      {% for u in usuarios %}<option value="{{ u.id }}" {% if filtros.dono == u.id %}selected{% endif %}>{{ u.nome }} ({{ ROTULO_PAPEL.get(u.papel, u.papel) }})</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label for="f-desde">Enviados a partir de</label>
+    <input id="f-desde" name="desde" type="date" value="{{ filtros.desde }}">
+  </div>
+  <button class="btn" type="submit">Filtrar</button>
+  {% if filtro_ativo %}<a class="btn quiet" href="/admin">Limpar</a>{% endif %}
+</form>
+
 <div class="kpis">
-  <div class="card kpi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></span><div><div class="v">{{ total }}</div><div class="k">documentos</div></div></div>
+  <div class="card kpi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></span><div><div class="v">{{ total }}</div><div class="k">validações{% if filtro_ativo %} no filtro{% endif %}</div></div></div>
   <div class="card kpi"><span class="ico ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="v">{{ prontos }}</div><div class="k">prontos para entrega</div></div></div>
-  <div class="card kpi"><span class="ico info"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 5.5a3.4 3.4 0 010 5"/></svg></span><div><div class="v">{{ usuarios|length }}</div><div class="k">contas ({{ por_papel.admin }} admin · {{ por_papel.operador }} oper. · {{ por_papel.cliente }} cliente)</div></div></div>
+  <div class="card kpi"><span class="ico info"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 5.5a3.4 3.4 0 010 5"/></svg></span><div><div class="v">{{ usuarios|length }}</div><div class="k">contas · {{ online }} online agora</div></div></div>
   <div class="card kpi"><span class="ico warn"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5"/></svg></span><div><div class="v">{{ revistas|length }}</div><div class="k">revistas cadastradas</div></div></div>
 </div>
 
+<section class="card" style="margin-bottom:var(--s-5)">
+  <header class="cardhead"><h2>Contas e uso</h2><a class="btn small" href="/usuarios">Gerenciar usuários</a></header>
+  <div class="tblwrap"><table class="tbl">
+    <thead><tr><th>Pessoa</th><th>Papel</th><th>Situação</th><th>Último acesso</th><th>Origem</th><th>Validações</th><th></th></tr></thead>
+    <tbody>
+    {% for u in uso %}
+      <tr>
+        <td><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="avatar" style="width:28px;height:28px;font-size:12px">{{ (u.nome or 'x')[:1]|upper }}</span>
+          <span><b>{{ u.nome }}</b><div class="small muted mono">{{ u.email }}</div></span></div></td>
+        <td><span class="chip {{ 'crit' if u.papel == 'admin' else ('info' if u.papel == 'operador' else 'neutral') }}">{{ ROTULO_PAPEL.get(u.papel, u.papel) }}</span></td>
+        <td>{% if u.ultimo_acesso|online %}<span class="chip ok">online</span>{% elif u.ultimo_acesso %}<span class="small muted">{{ u.ultimo_acesso|ha_quanto }}</span>{% else %}<span class="small faint">nunca entrou</span>{% endif %}</td>
+        <td class="small muted tnum">{{ u.ultimo_acesso|quando }}{% if u.logins %}<div class="small faint">{{ u.logins }} entrada(s)</div>{% endif %}</td>
+        <td class="small mono faint" title="{{ u.navegador or '' }}">{{ u.ip or '—' }}</td>
+        <td class="tnum">{{ u.validacoes }}{% if u.prontos %} <span class="faint small">({{ u.prontos }} prontos)</span>{% endif %}</td>
+        <td style="text-align:right"><a class="btn small" href="/admin?dono={{ u.id }}">Ver</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
 <div class="review" style="grid-template-columns:1fr 1fr">
+  <section class="card pad stack">
+    <h2>Validações por dia</h2>
+    <p class="small muted" style="margin-top:-6px">Últimos {{ dias|length }} dia(s) com envio.</p>
+    {% if dias %}
+    <div class="bars">
+      {% set maxd = (dias|map(attribute=1)|list|max) %}
+      {% for dia, n in dias %}
+      <div class="b"><span class="t">{{ dia[8:10] }}/{{ dia[5:7] }}</span><span class="g"><i style="width:{{ (100 * n / maxd)|round|int }}%"></i></span><span class="n">{{ n }}</span></div>
+      {% endfor %}
+    </div>
+    {% else %}<p class="muted small">Nenhum envio no filtro.</p>{% endif %}
+  </section>
+
   <section class="card pad stack">
     <h2>Documentos por etapa</h2>
     <div class="bars">
@@ -42,7 +92,7 @@
       <div class="b"><span class="t">{{ nome }}</span><span class="g"><i style="width:{{ (100 * n / maxr)|round|int }}%"></i></span><span class="n">{{ n }}</span></div>
       {% endfor %}
     </div>
-    {% else %}<p class="muted small">Nenhum documento ainda.</p>{% endif %}
+    {% else %}<p class="muted small">Nenhum documento.</p>{% endif %}
   </section>
 
   <section class="card pad stack">
@@ -62,24 +112,25 @@
     </div>
     {% else %}<p class="muted small">Nenhum bloqueante registrado.</p>{% endif %}
   </section>
-
-  <section class="card">
-    <header class="cardhead"><h2>Últimos documentos</h2><a class="btn small" href="/admin/documentos">Ver todos</a></header>
-    {% if recentes %}
-    <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Quando</th><th>Artigo</th><th>Conta</th><th>Situação</th></tr></thead>
-      <tbody>
-        {% for d in recentes %}
-        <tr>
-          <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
-          <td><a href="/doc/{{ d.id }}">{{ (d.titulo or d.arquivo_original)[:60] }}</a><div class="small muted mono">{{ d.revista or '—' }}</div></td>
-          <td class="small">{{ d.criado_por or '—' }}</td>
-          <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table></div>
-    {% else %}<div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento ainda.</div>{% endif %}
-  </section>
 </div>
+
+<section class="card" style="margin-top:var(--s-5)">
+  <header class="cardhead"><h2>Últimas validações</h2><a class="btn small" href="/admin/documentos">Ver todas</a></header>
+  {% if recentes %}
+  <div class="tblwrap"><table class="tbl">
+    <thead><tr><th>Quando</th><th>Artigo</th><th>Conta</th><th>Revista</th><th>Situação</th></tr></thead>
+    <tbody>
+      {% for d in recentes %}
+      <tr>
+        <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)|quando }}</td>
+        <td><a href="/doc/{{ d.id }}">{{ (d.titulo or d.arquivo_original)[:70] }}</a></td>
+        <td class="small">{{ d.criado_por or '—' }}</td>
+        <td class="small">{{ d.revista or '—' }}</td>
+        <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento{% if filtro_ativo %} neste filtro{% endif %}.</div>{% endif %}
+</section>
 {% endblock %}

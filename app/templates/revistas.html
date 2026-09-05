@@ -12,7 +12,7 @@
 </div>
 {% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
 <div class="card"><div class="tblwrap"><table class="tbl">
-  <thead><tr><th>Acrônimo</th><th>Título</th><th>Abreviado</th><th>e-ISSN</th><th>Editora</th><th>Prefixo DOI</th><th>SciELO</th><th>Licença</th><th>Observações</th><th></th></tr></thead>
+  <thead><tr><th>Acrônimo</th><th>Título</th><th>Abreviado</th><th>e-ISSN</th><th>Editora</th><th>Prefixo DOI</th><th>Área</th><th>Refs.</th><th>SciELO</th><th>Licença</th><th>Observações</th><th></th></tr></thead>
   <tbody>
   {% for r in revistas %}
     <tr>
@@ -22,6 +22,8 @@
       <td class="mono">{{ r.issn_epub or '—' }}</td>
       <td>{{ r.editora }}</td>
       <td class="mono">{{ r.doi_prefixo or '—' }}</td>
+      <td class="small">{{ (r.area or '—').split(' (')[0] }}</td>
+      <td class="small">{{ r.estilo_referencias or 'detectar' }}</td>
       <td>{% if r.na_scielo %}<span class="chip ok">sim</span>{% else %}<span class="chip neutral">não</span>{% endif %}</td>
       <td class="small">{{ (r.licenca_url or '').replace('https://creativecommons.org/licenses/','CC ').rstrip('/') or '—' }}</td>
       <td class="small faint">{{ r._fonte or '' }}</td>

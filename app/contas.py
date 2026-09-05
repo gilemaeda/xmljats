@@ -1,15 +1,20 @@
 """
-Contas de usuário e sessão do xmljats.
+Contas de usuário, sessão e registro de atividade do xmljats.
 
-Armazenamento: XMLJATS_DATA/usuarios.json (lista de {id, email, nome, papel, senha, criado_em}); a senha guarda só o
-hash PBKDF2-HMAC-SHA256 com sal. Sessão: cookie "xmljats_sessao" assinado com HMAC-SHA256 (segredo em APP_SEGREDO ou,
-na falta, gerado uma vez em XMLJATS_DATA/segredo.txt). Papéis: "admin" (gerencia usuários e revistas), "operador" (vê todos os documentos) e "cliente" (vê só os seus).
+Armazenamento: XMLJATS_DATA/usuarios.json (lista de {id, email, nome, papel, senha, criado_em, atividade}); a senha
+guarda só o hash PBKDF2-HMAC-SHA256 com sal. Sessão: cookie "xmljats_sessao" assinado com HMAC-SHA256 (segredo em
+APP_SEGREDO ou, na falta, gerado uma vez em XMLJATS_DATA/segredo.txt).
+
+Papéis: "admin" (administra usuários, revistas e vê o sistema inteiro), "operador" (vê todos os documentos) e
+"cliente" (vê apenas os próprios documentos).
+
+Atividade: cada requisição autenticada atualiza `atividade` com o último acesso, o IP e o navegador. É o que alimenta
+"online agora" e "última vez visto" no painel administrativo. Todos os horários usam o fuso de Brasília (app/tempo.py).
 
 Bootstrap: sem usuários cadastrados e com APP_SENHA definida, o primeiro acesso cria o admin "admin" com essa senha.
 Sem usuários e sem APP_SENHA (desenvolvimento local), o app roda sem login como "local".
 """
 import base64
-import datetime as dt
 import hashlib
 import hmac
 import io
@@ -21,10 +26,14 @@ import time
 from pathlib import Path
 from typing import List, Optional
 
+from tempo import agora, agora_iso, le  # noqa: E402  (app/tempo.py)
+
 RE_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$|^[a-z0-9_.-]{3,32}$")  # e-mail ou login simples (ex.: admin)
 PAPEIS = ("admin", "operador", "cliente")
+ROTULO_PAPEL = {"admin": "administrador", "operador": "operador", "cliente": "cliente"}
 COOKIE = "xmljats_sessao"
 DURACAO_SESSAO = 12 * 3600  # 12 horas
+INTERVALO_ATIVIDADE = 60  # só regrava a atividade se passou mais de 1 min (evita escrever a cada clique)
 
 
 class Contas:
@@ -36,8 +45,11 @@ class Contas:
     def _carrega(self) -> List[dict]:
         if not self.arquivo.exists():
             return []
-        with io.open(self.arquivo, encoding="utf-8") as f:
-            return json.load(f).get("usuarios", [])
+        try:
+            with io.open(self.arquivo, encoding="utf-8") as f:
+                return json.load(f).get("usuarios", [])
+        except (OSError, ValueError):
+            return []
 
     def _grava(self, usuarios: List[dict]):
         self.pasta.mkdir(parents=True, exist_ok=True)
@@ -56,6 +68,10 @@ class Contas:
     def por_id(self, uid: str) -> Optional[dict]:
         return next((self._publico(u) for u in self._carrega() if u["id"] == uid), None)
 
+    def por_email(self, email: str) -> Optional[dict]:
+        email = (email or "").strip().lower()
+        return next((self._publico(u) for u in self._carrega() if u["email"] == email), None)
+
     # ------------------------------------------------------------ senhas
     @staticmethod
     def hash_senha(senha: str, sal: Optional[bytes] = None) -> str:
@@ -66,7 +82,7 @@ class Contas:
     @staticmethod
     def verifica_senha(senha: str, guardada: str) -> bool:
         try:
-            _, sal_hex, h_hex = guardada.split("$")
+            _, sal_hex, h_hex = (guardada or "").split("$")
         except ValueError:
             return False
         h = hashlib.pbkdf2_hmac("sha256", senha.encode("utf-8"), bytes.fromhex(sal_hex), 200_000)
@@ -95,33 +111,55 @@ class Contas:
         if any(u["email"] == email for u in usuarios):
             raise ValueError(f"Já existe usuário com o e-mail {email}.")
         u = {"id": secrets.token_hex(6), "email": email, "nome": nome, "papel": papel, "senha": self.hash_senha(senha),
-             "criado_em": dt.datetime.now().isoformat(timespec="seconds")}
+             "criado_em": agora_iso(), "atividade": {}}
         usuarios.append(u)
         self._grava(usuarios)
         return self._publico(u)
+
+    def _altera(self, uid: str, muda):
+        usuarios = self._carrega()
+        for u in usuarios:
+            if u["id"] == uid:
+                muda(u, usuarios)
+                self._grava(usuarios)
+                return self._publico(u)
+        raise ValueError("Usuário não encontrado.")
 
     def define_senha(self, uid: str, senha: str):
         erro = self.valida_senha(senha)
         if erro:
             raise ValueError(erro)
-        usuarios = self._carrega()
-        for u in usuarios:
-            if u["id"] == uid:
-                u["senha"] = self.hash_senha(senha)
-                self._grava(usuarios)
-                return
-        raise ValueError("Usuário não encontrado.")
+        return self._altera(uid, lambda u, _: u.update(senha=self.hash_senha(senha)))
 
     def define_papel(self, uid: str, papel: str):
         if papel not in PAPEIS:
             raise ValueError("Papel inválido.")
-        usuarios = self._carrega()
-        for u in usuarios:
-            if u["id"] == uid:
-                u["papel"] = papel
-                self._grava(usuarios)
-                return
-        raise ValueError("Usuário não encontrado.")
+
+        def muda(u, usuarios):
+            if u["papel"] == "admin" and papel != "admin" and sum(1 for x in usuarios if x["papel"] == "admin") == 1:
+                raise ValueError("Este é o último administrador; promova outro antes de rebaixar este.")
+            u["papel"] = papel
+
+        return self._altera(uid, muda)
+
+    def define_dados(self, uid: str, nome: Optional[str] = None, email: Optional[str] = None):
+        """Muda nome e/ou e-mail (usado pelo administrador e pela própria pessoa)."""
+        nome = (nome or "").strip()
+        email = (email or "").strip().lower()
+
+        def muda(u, usuarios):
+            if nome:
+                u["nome"] = nome
+            if email and email != u["email"]:
+                if not RE_EMAIL.match(email):
+                    raise ValueError("Informe um e-mail válido.")
+                if any(x["email"] == email and x["id"] != uid for x in usuarios):
+                    raise ValueError(f"Já existe usuário com o e-mail {email}.")
+                u["email"] = email
+
+        if not nome and not email:
+            raise ValueError("Nada para alterar.")
+        return self._altera(uid, muda)
 
     def remove(self, uid: str):
         usuarios = self._carrega()
@@ -144,6 +182,41 @@ class Contas:
         if self._carrega() or not senha_inicial:
             return None
         return self.cria("admin", "Administrador", senha_inicial, "admin")
+
+    # ------------------------------------------------------------ atividade
+    def registra_acesso(self, uid: str, ip: Optional[str], navegador: Optional[str], rota: Optional[str] = None):
+        """Marca o último acesso do usuário. Só grava se passou INTERVALO_ATIVIDADE desde a última vez."""
+        usuarios = self._carrega()
+        for u in usuarios:
+            if u["id"] != uid:
+                continue
+            at = u.setdefault("atividade", {})
+            ultimo = le(at.get("ultimo_acesso"))
+            if ultimo and (agora() - ultimo).total_seconds() < INTERVALO_ATIVIDADE and at.get("ip") == ip:
+                return
+            at["ultimo_acesso"] = agora_iso()
+            at["ip"] = ip
+            at["navegador"] = (navegador or "")[:200]
+            if rota:
+                at["ultima_rota"] = rota[:120]
+            at["acessos"] = int(at.get("acessos") or 0) + 1
+            self._grava(usuarios)
+            return
+
+    def registra_login(self, uid: str, ip: Optional[str], navegador: Optional[str]):
+        def muda(u, _):
+            at = u.setdefault("atividade", {})
+            at["ultimo_login"] = agora_iso()
+            at["ultimo_acesso"] = agora_iso()
+            at["ip"] = ip
+            at["navegador"] = (navegador or "")[:200]
+            at["logins"] = int(at.get("logins") or 0) + 1
+            at["acessos"] = int(at.get("acessos") or 0) + 1
+
+        try:
+            self._altera(uid, muda)
+        except ValueError:
+            pass
 
     # ------------------------------------------------------------ sessão (cookie assinado)
     def _segredo(self) -> bytes:

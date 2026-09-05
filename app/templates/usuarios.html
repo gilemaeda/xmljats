@@ -6,37 +6,64 @@
   <div>
     <p class="eyebrow">Administração</p>
     <h1 style="margin-top:4px">Usuários</h1>
-    <p class="lead">Quem pode entrar no xmljats. Administradores gerenciam usuários e revistas; operadores veem todos os documentos; clientes veem apenas os próprios.</p>
+    <p class="lead">Quem pode entrar no xmljats, o que cada um já validou e quando esteve aqui pela última vez. Horários no {{ FUSO }}.</p>
   </div>
   <div class="acoes"><a class="btn" href="/admin">Visão geral</a></div>
 </div>
 {% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
 {% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+
+<div class="kpis">
+  <div class="card kpi"><span class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 5.5a3.4 3.4 0 010 5M17.5 20a6.5 6.5 0 00-2-4.7"/></svg></span><div><div class="v">{{ usuarios|length }}</div><div class="k">contas</div></div></div>
+  <div class="card kpi"><span class="ico ok"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></span><div><div class="v">{{ usuarios|selectattr('ultimo_acesso')|selectattr('ultimo_acesso','online')|list|length }}</div><div class="k">online agora</div></div></div>
+  <div class="card kpi"><span class="ico info"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></span><div><div class="v">{{ usuarios|sum(attribute='validacoes') }}</div><div class="k">validações no total</div></div></div>
+  <div class="card kpi"><span class="ico warn"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg></span><div><div class="v">{{ usuarios|sum(attribute='logins') }}</div><div class="k">entradas registradas</div></div></div>
+</div>
+
 <div class="review" style="grid-template-columns:3fr 2fr">
   <section class="card">
-    <header class="cardhead"><h2>Contas</h2><span class="muted small">{{ usuarios|length }} usuário(s)</span></header>
+    <header class="cardhead"><h2>Contas</h2><span class="muted small">clique em Editar para mudar nome, e-mail, papel ou senha</span></header>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Nome</th><th>E-mail / login</th><th>Papel</th><th>Desde</th><th></th></tr></thead>
+      <thead><tr><th>Pessoa</th><th>Papel</th><th>Situação</th><th>Validações</th><th>Desde</th><th></th></tr></thead>
       <tbody>
       {% for u in usuarios %}
         <tr>
-          <td><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="avatar" style="width:26px;height:26px;font-size:11px">{{ (u.nome or 'x')[:1]|upper }}</span><b>{{ u.nome }}</b>{% if u.id == usuario.id %}<span class="chip info">você</span>{% endif %}</div></td>
-          <td class="mono small">{{ u.email }}</td>
           <td>
-            <form method="post" action="/usuarios/{{ u.id }}/papel" class="row" style="gap:6px;flex-wrap:nowrap">
-              <select name="papel" class="mini" aria-label="Papel" {% if u.id == usuario.id %}disabled{% endif %}>
-                <option value="cliente" {% if u.papel == 'cliente' %}selected{% endif %}>cliente</option>
-                <option value="operador" {% if u.papel == 'operador' %}selected{% endif %}>operador</option>
-                <option value="admin" {% if u.papel == 'admin' %}selected{% endif %}>admin</option>
-              </select>
-              {% if u.id != usuario.id %}<button class="btn small" type="submit">Salvar</button>{% endif %}
-            </form>
+            <div class="row" style="gap:8px;flex-wrap:nowrap">
+              <span class="avatar" style="width:28px;height:28px;font-size:12px">{{ (u.nome or 'x')[:1]|upper }}</span>
+              <span><b>{{ u.nome }}</b>{% if u.id == usuario.id %} <span class="chip info">você</span>{% endif %}
+                <div class="small muted mono">{{ u.email }}</div></span>
+            </div>
           </td>
-          <td class="small muted tnum">{{ (u.criado_em or '')[:10] }}</td>
+          <td><span class="chip {{ 'crit' if u.papel == 'admin' else ('info' if u.papel == 'operador' else 'neutral') }}">{{ ROTULO_PAPEL.get(u.papel, u.papel) }}</span></td>
+          <td>
+            {% if u.ultimo_acesso|online %}<span class="chip ok">online</span>
+            {% elif u.ultimo_acesso %}<span class="small">visto {{ u.ultimo_acesso|ha_quanto }}</span><div class="small faint">{{ u.ultimo_acesso|quando }}</div>
+            {% else %}<span class="small faint">nunca entrou</span>{% endif %}
+            {% if u.ip %}<div class="small faint mono" title="{{ u.navegador }}">{{ u.ip }}</div>{% endif %}
+          </td>
+          <td class="tnum">{{ u.validacoes }}{% if u.prontos %} <span class="faint small">({{ u.prontos }} prontos)</span>{% endif %}
+            {% if u.ultima_validacao %}<div class="small faint">última {{ u.ultima_validacao|ha_quanto }}</div>{% endif %}</td>
+          <td class="small muted tnum">{{ u.criado_em|quando_dia }}</td>
           <td style="text-align:right">
             <details class="acoes">
-              <summary class="btn small">Ações</summary>
-              <div class="card pad stack pop" style="gap:10px">
+              <summary class="btn small">Editar</summary>
+              <div class="card pad stack pop" style="gap:12px;min-width:320px">
+                <form method="post" action="/usuarios/{{ u.id }}/dados" class="stack" style="gap:8px">
+                  <div class="field"><label for="n-{{ u.id }}">Nome</label><input id="n-{{ u.id }}" name="nome" value="{{ u.nome }}" required></div>
+                  <div class="field"><label for="e-{{ u.id }}">E-mail</label><input id="e-{{ u.id }}" name="email" value="{{ u.email }}" required></div>
+                  <button class="btn small primary" type="submit">Salvar dados</button>
+                </form>
+                <hr class="sep">
+                <form method="post" action="/usuarios/{{ u.id }}/papel" class="row" style="gap:8px;flex-wrap:nowrap">
+                  <div class="field" style="flex:1"><label for="p-{{ u.id }}">Papel</label>
+                    <select id="p-{{ u.id }}" name="papel">
+                      {% for p in papeis %}<option value="{{ p }}" {% if u.papel == p %}selected{% endif %}>{{ ROTULO_PAPEL.get(p, p) }}</option>{% endfor %}
+                    </select>
+                  </div>
+                  <button class="btn small" type="submit" style="align-self:flex-end">Salvar</button>
+                </form>
+                <hr class="sep">
                 <form method="post" action="/usuarios/{{ u.id }}/senha" class="stack" style="gap:8px">
                   <div class="field"><label for="s-{{ u.id }}">Nova senha</label>
                     <div class="senha-wrap"><input id="s-{{ u.id }}" name="senha" type="password" minlength="8" required autocomplete="new-password"><button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button></div>
@@ -44,7 +71,8 @@
                   <button class="btn small" type="submit">Trocar senha</button>
                 </form>
                 {% if u.id != usuario.id %}
-                <form method="post" action="/usuarios/{{ u.id }}/remover" onsubmit="return confirm('Remover {{ u.nome }}?')"><button class="btn small danger" type="submit">Remover usuário</button></form>
+                <hr class="sep">
+                <form method="post" action="/usuarios/{{ u.id }}/remover" onsubmit="return confirm('Remover {{ u.nome }}? Os documentos enviados por ele continuam no sistema.')"><button class="btn small danger" type="submit">Remover usuário</button></form>
                 {% endif %}
               </div>
             </details>
@@ -67,7 +95,7 @@
         <select id="n-papel" name="papel">
           <option value="cliente">cliente — vê os próprios documentos</option>
           <option value="operador" selected>operador — vê todos os documentos</option>
-          <option value="admin">admin — também administra</option>
+          <option value="admin">administrador — também administra</option>
         </select>
       </div>
       <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Criar usuário</button>
