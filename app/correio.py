@@ -125,6 +125,9 @@ class Correio:
         c["pendencias"] = pend
         c["remetente_teste"] = REMETENTE_TESTE
         c["usando_remetente_teste"] = c["remetente_email"] == REMETENTE_TESTE
+        dominio = c["remetente_email"].split("@")[-1].lower() if c["remetente_email"] else ""
+        c["remetente_dominio_pessoal"] = dominio in DOMINIOS_PUBLICOS
+        c["falta_para_confirmar"] = self._falta_para_confirmar(self.config())
         return c
 
     def salva_config(self, dados: dict):
@@ -138,18 +141,44 @@ class Correio:
                 c[k] = (dados.get(k) or "").strip()
         if c["remetente_email"] and not RE_EMAIL_SIMPLES.match(c["remetente_email"]):
             raise ValueError("O e-mail remetente precisa ser um endereço válido.")
-        dominio = c["remetente_email"].split("@")[-1].lower() if c["remetente_email"] else ""
-        if dominio in DOMINIOS_PUBLICOS:
-            raise ValueError(f"O Resend não deixa enviar em nome de {dominio}: esse domínio não é seu e não pode ser "
-                             f"verificado. Use {REMETENTE_TESTE} enquanto não tiver um domínio próprio verificado.")
+        # remetente de domínio pessoal não trava o salvamento: fica gravado com aviso, para ninguém ficar preso
+        # numa tela que não salva. O que ele impede é ligar a confirmação obrigatória (ver abaixo).
         if c["url_base"] and not re.match(r"^https?://", c["url_base"]):
             raise ValueError("O endereço do site precisa começar com http:// ou https://.")
         c["url_base"] = c["url_base"].rstrip("/")
-        c["exigir_confirmacao"] = bool(dados.get("exigir_confirmacao"))
-        if c["exigir_confirmacao"] and not (c["resend_chave"] and c["remetente_email"]):
-            raise ValueError("Para exigir confirmação por e-mail, configure antes a chave do Resend e o remetente.")
+        if "exigir_confirmacao" in dados:
+            pedido = bool(dados.get("exigir_confirmacao"))
+            if pedido:
+                falta = self._falta_para_confirmar(c)
+                if falta:
+                    raise ValueError("Para exigir confirmação por e-mail: " + falta)
+            c["exigir_confirmacao"] = pedido
         if not c.get("webhook_segredo"):
             c["webhook_segredo"] = secrets.token_urlsafe(24)
+        _grava(self.arq_config, c)
+        return self.config_publica()
+
+    @staticmethod
+    def _falta_para_confirmar(c: dict) -> str:
+        """O que impede exigir confirmação por e-mail. String vazia = pode ligar."""
+        if not c.get("resend_chave"):
+            return "falta a chave da API do Resend."
+        if not c.get("remetente_email"):
+            return "falta o e-mail remetente."
+        dominio = c["remetente_email"].split("@")[-1].lower()
+        if dominio in DOMINIOS_PUBLICOS:
+            return (f"o remetente é de {dominio}, um domínio pessoal que o Resend não verifica. "
+                    f"Use {REMETENTE_TESTE} ou um endereço de domínio seu.")
+        return ""
+
+    def define_confirmacao(self, exigir: bool):
+        """Liga ou desliga a confirmação de conta, sem depender do resto do formulário."""
+        c = self.config()
+        if exigir:
+            falta = self._falta_para_confirmar(c)
+            if falta:
+                raise ValueError("Para exigir confirmação por e-mail: " + falta)
+        c["exigir_confirmacao"] = bool(exigir)
         _grava(self.arq_config, c)
         return self.config_publica()
 

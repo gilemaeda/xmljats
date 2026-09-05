@@ -21,6 +21,8 @@
         {% if cfg.pronto_para_enviar %}<span class="chip ok">pronto para enviar</span>{% else %}<span class="chip warn">falta configurar</span>{% endif %}
       </div>
       {% if cfg.pendencias %}<div class="msg warn">Falta: {{ cfg.pendencias|join('; ') }}.</div>{% endif %}
+      {% if cfg.remetente_dominio_pessoal %}<div class="msg warn">Esse remetente é de um domínio pessoal, que o Resend não
+        verifica: o envio vai falhar. Troque por <span class="mono">{{ cfg.remetente_teste }}</span> ou por um endereço de domínio seu.</div>{% endif %}
       {% if cfg.usando_remetente_teste %}<div class="msg note">Você está usando o remetente de teste do Resend. Ele só entrega
         para o e-mail dono da conta do Resend, e a mensagem chega como "onboarding". Para enviar a qualquer pessoa, verifique um domínio seu.</div>{% endif %}
       <div class="field">
@@ -50,11 +52,31 @@
         <input id="url_base" name="url_base" value="{{ cfg.url_base }}" placeholder="https://xmljats.seudominio.com.br">
         <span class="hint">Usado para montar o link de confirmação enviado por e-mail.</span>
       </div>
-      <label class="check"><input type="checkbox" name="exigir_confirmacao" {% if cfg.exigir_confirmacao %}checked{% endif %}>
-        Exigir confirmação de e-mail antes de enviar arquivos</label>
-      <span class="hint" style="margin-top:-8px">Só pode ser ligado com a chave e o remetente preenchidos. Administradores nunca ficam bloqueados.</span>
       <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Salvar configuração</button>
     </form>
+
+    <div class="card pad stack">
+      <div class="row between">
+        <h2>Confirmação de conta</h2>
+        {% if cfg.exigir_confirmacao %}<span class="chip warn">obrigatória</span>{% else %}<span class="chip ok">desativada</span>{% endif %}
+      </div>
+      {% if cfg.exigir_confirmacao %}
+      <p class="small muted" style="margin-top:-6px">Quem se cadastra recebe um link por e-mail e só consegue enviar arquivos
+        depois de confirmar. Administradores nunca ficam bloqueados.</p>
+      <form method="post" action="/admin/config/confirmacao">
+        <input type="hidden" name="exigir" value="0">
+        <button class="btn" type="submit"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>Desativar confirmação</button>
+      </form>
+      {% else %}
+      <p class="small muted" style="margin-top:-6px">Está <b>desativada</b>: quem se cadastra já pode enviar arquivos na hora.
+        É o que faz sentido enquanto o envio de e-mail não estiver funcionando.</p>
+      <form method="post" action="/admin/config/confirmacao">
+        <input type="hidden" name="exigir" value="1">
+        <button class="btn" type="submit" {% if cfg.falta_para_confirmar %}disabled{% endif %}><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Exigir confirmação por e-mail</button>
+        {% if cfg.falta_para_confirmar %}<p class="small muted" style="margin-top:8px">Para ligar: {{ cfg.falta_para_confirmar }}</p>{% endif %}
+      </form>
+      {% endif %}
+    </div>
 
     <form class="card pad stack" method="post" action="/admin/config/testar">
       <h2>Testar envio</h2>

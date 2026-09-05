@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.9.2). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.10.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 42 de 42 verificações passaram.
+- **Site:** 43 de 43 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -72,6 +72,7 @@ Gerada por `python ops/auditoria.py` (app 0.9.2). Cada número vem de uma mediç
 - ok — menu alterna entre lateral e topo
 - ok — correio tem as cinco caixas
 - ok — configuração do Resend com chave mascarada
+- ok — confirmação de conta pode ser ligada e desligada por um controle próprio
 - ok — mensagem sem envio configurado fica na caixa de saída
 - ok — webhook do correio exige segredo
 - ok — foto de perfil e confirmação de e-mail na conta

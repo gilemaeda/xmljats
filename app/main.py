@@ -64,7 +64,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.10.0"
+VERSAO_APP = "0.10.1"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -1111,6 +1111,19 @@ async def config_salva(request: Request, usuario: dict = Depends(exige_admin)):
     except ValueError as e:
         return RedirectResponse(url="/admin/config?erro=" + urllib.parse.quote(str(e)), status_code=303)
     return RedirectResponse(url="/admin/config?mensagem=" + urllib.parse.quote("Configuração salva."), status_code=303)
+
+
+@app.post("/admin/config/confirmacao")
+async def config_confirmacao(request: Request, usuario: dict = Depends(exige_admin)):
+    """Liga ou desliga a confirmação de conta por e-mail, sem mexer no resto da configuração."""
+    form = await request.form()
+    exigir = str(form.get("exigir") or "") == "1"
+    try:
+        CORREIO.define_confirmacao(exigir)
+    except ValueError as e:
+        return RedirectResponse(url="/admin/config?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    recado = "Confirmação de e-mail passa a ser obrigatória no cadastro." if exigir else         "Confirmação de e-mail desativada: quem se cadastrar já pode enviar arquivos."
+    return RedirectResponse(url="/admin/config?mensagem=" + urllib.parse.quote(recado), status_code=303)
 
 
 @app.post("/admin/config/testar")

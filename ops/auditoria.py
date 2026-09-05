@@ -130,6 +130,9 @@ def roda_site():
     check("menu alterna entre lateral e topo", all(x in c.get("/admin").text for x in ('data-menu="lado"', 'data-menu="topo"', 'class="barra-topo"')))
     check("correio tem as cinco caixas", all(c.get(f"/admin/correio?caixa={cx}").status_code == 200 for cx in ("entrada", "saida", "enviados", "rascunhos", "lixeira")))
     check("configuração do Resend com chave mascarada", "Chave da API" in c.get("/admin/config").text)
+    check("confirmação de conta pode ser ligada e desligada por um controle próprio",
+          "Confirmação de conta" in c.get("/admin/config").text and
+          c.post("/admin/config/confirmacao", data={"exigir": "0"}).status_code == 303)
     check("mensagem sem envio configurado fica na caixa de saída",
           c.post("/admin/correio/nova", data={"para": "a@b.org", "assunto": "t", "texto": "t", "acao": "enviar"}).headers.get("location", "").find("saida") > 0)
     check("webhook do correio exige segredo", c.post("/webhook/resend", json={"type": "email.delivered"}).status_code == 403)
