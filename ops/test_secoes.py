@@ -122,7 +122,7 @@ pasta2 = __import__("pathlib").Path(tmp) / "docs" / doc2
 antes = M.modelo_efetivo(pasta2)
 falta_antes = M.obrigatorios.pendencias(antes, rev)
 pag2 = c2.get(f"/doc/{doc2}/editar").text
-ok("preenchido pelo cadastro" in pag2, "a tela avisa quais campos vieram do cadastro da revista")
+ok("preenchido automaticamente" in pag2 and "cadastro de" in pag2, "a tela avisa quais campos vieram do cadastro da revista")
 da_rev = M.campos_da_revista(antes, rev)
 print("     o cadastro forneceu:", {k: t[0] for k, t in da_rev.items()})
 ok("licenca" in da_rev or (antes.get("licenca_url") or ""), "a licenca da revista preenche o artigo")

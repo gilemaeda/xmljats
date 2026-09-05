@@ -10,7 +10,7 @@
       dessa revista e o nome dos arquivos do pacote (<span class="mono">e-ISSN-acrônimo-vol-num-elocation</span>). Sem a revista
       cadastrada, o artigo não passa: acrônimo, título abreviado e editora não estão no PDF e não podem ser inventados.</p>
   </div>
-  {% if usuario.papel == 'admin' %}<a class="btn primary" href="/revistas/nova"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nova revista</a>{% endif %}
+  <a class="btn primary" href="/revistas/nova"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nova revista</a>
 </div>
 {% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
 <form class="card pad row" method="post" action="/revistas/importar" style="gap:var(--s-4);align-items:flex-end;margin-bottom:var(--s-4)">
@@ -21,7 +21,7 @@
     <span class="hint">Puxa título, abreviado, acrônimo, editora, licença e área do Portal do ISSN, da SciELO, do DOAJ, do Crossref e do OpenAlex.</span>
   </div>
   <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Buscar e cadastrar</button>
-  {% if usuario.papel == 'admin' %}<a class="btn" href="/revistas/nova">Conferir antes de salvar</a>{% endif %}
+  <a class="btn" href="/revistas/nova">Conferir antes de salvar</a>
 </form>
 <div class="card pad stack" style="gap:8px;margin-bottom:var(--s-4)">
   <h3>De onde vêm os dados</h3>

@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.14.1). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.15.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 86 de 86 verificações passaram.
+- **Site:** 92 de 92 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -56,7 +56,8 @@ Gerada por `python ops/auditoria.py` (app 0.14.1). Cada número vem de uma medi�
 - ok — conta nova é cliente
 - ok — cliente não vê documento de outra conta
 - ok — cliente não acessa administração
-- ok — cliente não edita cadastro de revistas
+- ok — cliente cadastra revista, mas não remove
+- ok — cliente não edita revista já cadastrada
 - ok — painel do cliente vem vazio
 - ok — tela da conta com troca de senha
 - ok — tela de ajuda
@@ -103,6 +104,11 @@ Gerada por `python ops/auditoria.py` (app 0.14.1). Cada número vem de uma medi�
 - ok — revisar completa pelo DOI e confere o ORCID
 - ok — item removido pode voltar (campo escondido antes da caixa)
 - ok — pré-visualização do artigo (htmlgenerator do packtools)
+- ok — declarações editoriais no revisar (7 campos)
+- ok — situação dos dados e 'como citar' na tela
+- ok — campo preenchido sozinho é marcado em azul
+- ok — cadastro de revista tem editor-chefe, ORCID e Lattes
+- ok — Lattes fora do cnpq.br é recusado
 - ok — texto de cada seção do corpo é editável
 - ok — inserir tabela/imagem/equação/quadro/diálogo dentro da seção
 - ok — vincular a revista preenche o que é dado dela
@@ -174,6 +180,10 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Texto de cada seção editável no revisar | pronto | ops/test_secoes.py |
 | Anexos ancorados no ponto do texto (seção + parágrafo) | pronto | ops/test_secoes.py |
 | Vincular a revista preenche licença, seção e idioma | pronto | ops/test_secoes.py |
+| Declarações editoriais (agradecimento, financiamento, contribuição, dados, conflito, IA, editor) | pronto | ops/test_declaracoes.py |
+| Editor-chefe da revista com ORCID e Lattes no cadastro | pronto | ops/test_declaracoes.py |
+| Cliente cadastra revista (editar e remover seguem do administrador) | pronto | verificação "cliente cadastra revista" |
+| Campos preenchidos automaticamente destacados em azul | pronto | ops/test_declaracoes.py |
 | Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |

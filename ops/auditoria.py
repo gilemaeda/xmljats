@@ -114,7 +114,10 @@ def roda_site():
     check("conta nova é cliente", next(u for u in json.load(io.open(os.path.join(tmp, "usuarios.json"), encoding="utf-8"))["usuarios"] if u["email"] == "cliente@auditoria.org")["papel"] == "cliente")
     check("cliente não vê documento de outra conta", c2.get(doc).status_code == 403)
     check("cliente não acessa administração", c2.get("/admin").status_code == 403 and c2.get("/usuarios").status_code == 403)
-    check("cliente não edita cadastro de revistas", c2.get("/revistas/nova").status_code == 403)
+    check("cliente cadastra revista, mas não remove",
+          c2.get("/revistas/nova").status_code == 200 and c2.post("/revistas/rdp/remover").status_code == 403)
+    # a pedido do Murillo, cadastrar revista deixou de ser so do administrador; editar e remover continuam sendo
+    check("cliente não edita revista já cadastrada", c2.post("/revistas/rdp", data={"acronimo": "rdp"}).status_code == 403)
     check("painel do cliente vem vazio", "Nenhum documento" in c2.get("/painel").text)
     check("tela da conta com troca de senha", "Trocar senha" in c2.get("/conta").text)
     check("tela de ajuda", c2.get("/ajuda").status_code == 200)
@@ -210,6 +213,21 @@ def roda_site():
         prev = c.get(doc + "/previa")
         check("pré-visualização do artigo (htmlgenerator do packtools)",
               prev.status_code == 200 and len(prev.text) > 20000 and "-gf01.tif" not in prev.text)
+    if doc:
+        ver5 = c.get(doc + "/editar").text
+        check("declarações editoriais no revisar (7 campos)",
+              all(f'name="dec_{k}"' in ver5 for k in ("agradecimentos", "financiamento", "contribuicao",
+                                                      "dados", "conflito", "ia", "editor")))
+        check("situação dos dados e 'como citar' na tela",
+              'name="dec_dados_situacao"' in ver5 and "Como citar este documento" in ver5)
+        check("campo preenchido sozinho é marcado em azul",
+              "is-auto" in open(os.path.join(RAIZ, "app", "static", "style.css"), encoding="utf-8").read())
+    check("cadastro de revista tem editor-chefe, ORCID e Lattes",
+          all(x in c.get("/revistas/nova").text for x in ("Editor-chefe", "ORCID do editor", "Currículo Lattes")))
+    check("Lattes fora do cnpq.br é recusado",
+          c.post("/revistas/nova", data={"acronimo": "xled", "titulo": "T", "abrev": "T", "issn_epub": "2446-8088",
+                                         "editora": "E", "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
+                                         "editor_lattes": "https://exemplo.org/x"}).status_code == 400)
     from app import main as _am
     campos_rev_ok = _am.campos_da_revista({}, {"licenca_url": "https://creativecommons.org/licenses/by/4.0/", "titulo": "T"}).get("licenca") is not None
     if doc:
@@ -356,6 +374,10 @@ def main():
           "| Texto de cada seção editável no revisar | pronto | ops/test_secoes.py |",
           "| Anexos ancorados no ponto do texto (seção + parágrafo) | pronto | ops/test_secoes.py |",
           "| Vincular a revista preenche licença, seção e idioma | pronto | ops/test_secoes.py |",
+          "| Declarações editoriais (agradecimento, financiamento, contribuição, dados, conflito, IA, editor) | pronto | ops/test_declaracoes.py |",
+          "| Editor-chefe da revista com ORCID e Lattes no cadastro | pronto | ops/test_declaracoes.py |",
+          "| Cliente cadastra revista (editar e remover seguem do administrador) | pronto | verificação \"cliente cadastra revista\" |",
+          "| Campos preenchidos automaticamente destacados em azul | pronto | ops/test_declaracoes.py |",
           "| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",

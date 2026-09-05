@@ -52,6 +52,28 @@ CREDIT = [
     ("writing-review-editing", "Escrita: revisão e edição"),
 ]
 ROTULO_CREDIT = dict(CREDIT)
+# Declaracoes editoriais, com o rotulo e o lugar no XML tirados do XML oficial da propria revista piloto
+# (modelos/gabarito/rdp-*.xml): a SciELO publica conflito e editor em author-notes, financiamento e IA em
+# back/fn-group, dados como secao do back, e agradecimento em <ack>. Os fn-type sao os que o Schematron aceita.
+DECLARACOES = [
+    ("agradecimentos", "Agradecimentos", "ack"),
+    ("financiamento", "Informações sobre financiamento", "fn-group:financial-disclosure"),
+    ("contribuicao", "Declaração de contribuição dos autores", "author-notes:con"),
+    ("dados", "Declaração de disponibilidade de dados", "sec:data-availability"),
+    ("conflito", "Declaração sobre conflito de interesses", "author-notes:conflict"),
+    ("ia", "Declaração sobre o uso de inteligência artificial", "fn-group:other"),
+    ("editor", "Editor responsável pela avaliação", "author-notes:edited-by"),
+]
+ROTULO_DECLARACAO = {k: r for k, r, _ in DECLARACOES}
+DESTINO_DECLARACAO = {k: d for k, _, d in DECLARACOES}
+# situacao dos dados: os valores que a SPS 1.10 aceita em specific-use
+SITUACAO_DADOS = [
+    ("", "não informar"),
+    ("data-available", "os dados estão disponíveis"),
+    ("data-available-upon-request", "disponíveis mediante pedido"),
+    ("data-not-available", "não estão disponíveis"),
+    ("uninformed", "não informado"),
+]
 PAIS_NOME = {"BR": "Brasil", "AR": "Argentina", "PT": "Portugal", "US": "United States of America", "ES": "España", "MX": "México", "CO": "Colombia", "CL": "Chile", "UY": "Uruguay", "PE": "Perú", "IT": "Italia", "FR": "France", "DE": "Deutschland", "GB": "United Kingdom", "CA": "Canada"}
 
 
@@ -400,16 +422,15 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             fn = _sub(an, "fn", fn_type="other", id=n["id"])  # nota do titulo (financiamento, origem do texto): 'other' e aceito em todas as versoes
             _sub(fn, "label", n["rotulo"])
             _sub(fn, "p", n["texto"])
-    # declaracoes do back matter (conflito de interesses, financiamento, dados, editores, IA) viram fn tipadas
-    for b in model.get("back_matter", []):
-        tipo = _tipo_declaracao(b.get("titulo", ""))
-        if tipo and versao == "1.9":
-            # JATS 1.1 / SPS 1.9 so aceitam a lista fechada de fn-type: coi-statement e data-availability nao existem nela
-            tipo = {"coi-statement": "conflict", "data-availability": "other"}.get(tipo, tipo)
-        if tipo and b.get("texto"):
-            fn = _sub(an, "fn", fn_type=tipo, id=f"fn{len(an) + 1}d")
-            _sub(fn, "label", b["titulo"].rstrip(":"))
-            _sub(fn, "p", b["texto"])
+    # declaracoes editoriais que a SciELO publica em author-notes
+    for chave in ("contribuicao", "conflito", "editor"):
+        texto = (model.get("dec_" + chave) or "").strip()
+        if not texto:
+            continue
+        tipo = DESTINO_DECLARACAO[chave].split(":")[1]
+        fn = _sub(an, "fn", fn_type=tipo, id=f"fn-{chave}")
+        _sub(fn, "label", ROTULO_DECLARACAO[chave])
+        _sub(fn, "p", texto)
     if len(an) == 0:
         am.remove(an)
 
@@ -733,14 +754,35 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
 
     # ---- back
     back = _sub(art, "back")
+    # agradecimentos: <ack> nao pode conter <sec> (Schematron: pattern ack)
+    agradece = (model.get("dec_agradecimentos") or "").strip()
+    if agradece:
+        ack = _sub(back, "ack")
+        _sub(ack, "title", ROTULO_DECLARACAO["agradecimentos"])
+        for par in [x.strip() for x in agradece.split("\n") if x.strip()]:
+            _sub(ack, "p", par)
     # A SciELO cruza o financiamento: todo award-id do funding-group tem de aparecer, literalmente, no texto
     # de uma nota fn-type="financial-disclosure" (ou do ack). Sem isso o validador oficial reprova. E o
     # contrário também vale: nota de financiamento sem award-id nenhum é erro, então a nota só sai quando há.
     processos = [f["processo"].strip() for f in fomentos if (f.get("processo") or "").strip()]
-    if fns or processos:
+    dec_ia = (model.get("dec_ia") or "").strip()
+    dec_fin = (model.get("dec_financiamento") or "").strip()
+    if fns or processos or dec_ia or (dec_fin and not processos):
         fg = _sub(back, "fn-group")
+        if dec_fin and not processos:
+            # Sem numero de processo nao ha award-id, e o validador da SciELO (catalogs/checks.py) recusa
+            # fn financial-disclosure sem award-id correspondente. O elemento certo para "apoio sem numero"
+            # e supported-by, que a lista de fn-type aceita e que diz a mesma coisa.
+            fn = _sub(fg, "fn", fn_type="supported-by", id="fn-financiamento")
+            _sub(fn, "label", ROTULO_DECLARACAO["financiamento"])
+            _sub(fn, "p", dec_fin)
+        if dec_ia:
+            fn = _sub(fg, "fn", fn_type="other", id="fn-ia")
+            _sub(fn, "label", ROTULO_DECLARACAO["ia"])
+            _sub(fn, "p", dec_ia)
         if processos:
-            partes = [(model.get("financiamento_texto") or "").strip()] if (model.get("financiamento_texto") or "").strip() else []
+            declarado = dec_fin or (model.get("financiamento_texto") or "").strip()
+            partes = [declarado] if declarado else []
             partes += [f"{f['fonte'].strip()}: {f['processo'].strip()}" for f in fomentos if (f.get("processo") or "").strip()]
             fn = _sub(fg, "fn", fn_type="financial-disclosure", id="fn-financiamento")
             _sub(fn, "p", " ".join(partes))
@@ -750,6 +792,16 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             _sub(fn, "p", n["texto"])
             if notas_rid.get(str(n.get("rotulo") or "")) and n["id"] in notas_rid[str(n.get("rotulo") or "")]:
                 res.aviso(f"Nota {n['id']} (rótulo {n['rotulo']}) sem chamada no texto do corpo; fica no fn-group sem xref (N01).")
+    dados = (model.get("dec_dados") or "").strip()
+    if dados:
+        situacao = (model.get("dec_dados_situacao") or "").strip() or None
+        if situacao and situacao not in {v for v, _ in SITUACAO_DADOS if v}:
+            situacao = None
+        sec_dados = _sub(back, "sec", sec_type="data-availability", specific_use=situacao)
+        _sub(sec_dados, "title", ROTULO_DECLARACAO["dados"])
+        for par in [x.strip() for x in dados.split("\n") if x.strip()]:
+            _sub(sec_dados, "p", par)
+
     refs = model.get("referencias", [])
     if refs:
         rl = _sub(back, "ref-list")

@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.15.0"
+VERSAO_APP = "0.16.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -157,7 +157,7 @@ TIPOS_ARTIGO = ["research-article", "review-article", "editorial", "book-review"
                 "article-commentary", "correction", "retraction", "addendum", "rapid-communication", "other"]
 IDIOMAS = ["pt", "en", "es", "fr", "it", "de"]
 CAMPOS_SIMPLES = ("heading", "tipo_artigo", "idioma", "volume", "numero", "ano", "elocation", "order", "doi",
-                  "licenca", "financiamento_texto")
+                  "licenca", "financiamento_texto") + tuple("dec_" + k for k, _, _ in xml_jats.DECLARACOES) + ("dec_dados_situacao",)
 # grupos editaveis em lista: o indice pode passar do que foi extraido, e ai o item e criado a mao
 GRUPOS_LISTA = {"titulo": "titulos", "autor": "autores", "aff": "afiliacoes", "resumo": "resumos",
                 "secao": "secoes", "tabela": "tabelas", "figura": "figuras", "equacao": "equacoes",
@@ -291,7 +291,8 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
     from extrator.util import issn_valido  # noqa: WPS433
     d = {k: (form.get(k) or "").strip() for k in ("acronimo", "titulo", "abrev", "issn_epub", "issn_ppub", "editora", "doi_prefixo",
                                                    "licenca_url", "modo_publicacao", "secao_padrao", "site", "_fonte",
-                                                   "area", "estilo_referencias", "idioma_padrao")}
+                                                   "area", "estilo_referencias", "idioma_padrao",
+                                                   "editor_chefe", "editor_lattes", "editor_orcid")}
     d["acronimo"] = d["acronimo"].lower()
     d["na_scielo"] = (form.get("na_scielo") or "").strip() == "sim"
     erros = {}
@@ -321,9 +322,19 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
         erros["estilo_referencias"] = "Escolha um estilo da lista."
     if d["site"] and not re.match(r"^https?://", d["site"]):
         erros["site"] = "O site precisa começar com http:// ou https://."
+    if d["editor_lattes"] and not re.match(r"^https?://(lattes\.cnpq\.br|buscatextual)", d["editor_lattes"]):
+        erros["editor_lattes"] = "O currículo Lattes começa com http://lattes.cnpq.br/ seguido do número."
+    if d["editor_orcid"]:
+        from extrator.util import orcid_valido  # noqa: WPS433
+        so = RE_ORCID.search(d["editor_orcid"])
+        if not so or not orcid_valido(so.group(1)):
+            erros["editor_orcid"] = "ORCID inválido: use 0000-0000-0000-0000 com dígito verificador correto."
+        else:
+            d["editor_orcid"] = so.group(1).upper()
     if d["idioma_padrao"] and d["idioma_padrao"] not in IDIOMAS:
         erros["idioma_padrao"] = "Use o código de duas letras: " + ", ".join(IDIOMAS) + "."
-    for k in ("doi_prefixo", "secao_padrao", "site", "_fonte", "area", "estilo_referencias", "idioma_padrao"):
+    for k in ("doi_prefixo", "secao_padrao", "site", "_fonte", "area", "estilo_referencias", "idioma_padrao",
+              "editor_chefe", "editor_lattes", "editor_orcid"):
         d[k] = d[k] or None
     return d, erros
 
@@ -429,6 +440,9 @@ def valores_editaveis(modelo: dict) -> dict:
         v[f"resumo_{k}_texto"] = r.get("texto") or ""
         v[f"resumo_{k}_kw"] = "; ".join(r.get("palavras_chave", []))
     v["financiamento_texto"] = modelo.get("financiamento_texto") or ""
+    for chave, _rot, _dest in xml_jats.DECLARACOES:
+        v["dec_" + chave] = modelo.get("dec_" + chave) or ""
+    v["dec_dados_situacao"] = modelo.get("dec_dados_situacao") or ""
     for k, f in enumerate(modelo.get("financiamentos", [])):
         v[f"fomento_{k}_fonte"] = f.get("fonte") or ""
         v[f"fomento_{k}_processo"] = f.get("processo") or ""
@@ -600,11 +614,26 @@ def sem_vagas_vazias(modelo: dict) -> dict:
 DA_REVISTA = {"licenca": "licenca_url", "heading": "secao_padrao", "idioma": "idioma_padrao"}
 
 
+def editor_da_revista(revista: Optional[dict]) -> str:
+    """Linha do editor responsável a partir do cadastro: nome, ORCID e Lattes."""
+    if not revista:
+        return ""
+    partes = [(revista.get("editor_chefe") or "").strip()]
+    if (revista.get("editor_orcid") or "").strip():
+        partes.append("ORCID: https://orcid.org/" + revista["editor_orcid"].strip().rsplit("/", 1)[-1])
+    if (revista.get("editor_lattes") or "").strip():
+        partes.append("Lattes: " + revista["editor_lattes"].strip())
+    return ". ".join(p for p in partes if p)
+
+
 def campos_da_revista(modelo: dict, revista: Optional[dict]) -> dict:
     """O que o cadastro da revista preenche nos campos do artigo que estão vazios. Devolve {campo: (valor, de_onde)}."""
     if not revista:
         return {}
     fora = {}
+    linha_editor = editor_da_revista(revista)
+    if linha_editor and not (modelo.get("dec_editor") or "").strip():
+        fora["dec_editor"] = (linha_editor, f"editor responsável no cadastro de {revista.get('titulo') or revista.get('acronimo')}")
     for campo, no_cadastro in DA_REVISTA.items():
         valor = (revista.get(no_cadastro) or "").strip()
         if not valor:
@@ -615,6 +644,73 @@ def campos_da_revista(modelo: dict, revista: Optional[dict]) -> dict:
         rotulo = {"licenca_url": "licença padrão", "secao_padrao": "seção padrão", "idioma_padrao": "idioma"}[no_cadastro]
         fora[campo] = (valor, f"{rotulo} do cadastro de {revista.get('titulo') or revista.get('acronimo')}")
     return fora
+
+
+# titulo da declaracao no artigo -> campo do formulario. O extrator ja separa esses blocos do texto
+# (corpo._back_matter); aqui eles deixam de ficar escondidos e viram campo editavel.
+PISTAS_DECLARACAO = [
+    ("agradecimentos", re.compile(r"(?i)agradecimento|acknowledg|agradecemos")),
+    ("financiamento", re.compile(r"(?i)financiamento|financiad|funding|fomento|apoio financeiro")),
+    ("contribuicao", re.compile(r"(?i)contribui[çc]|contribution|autoria|authorship|credit")),
+    ("dados", re.compile(r"(?i)disponibilidade de dados|data availability|dados de pesquisa|dados abertos")),
+    ("conflito", re.compile(r"(?i)conflito|conflict|interesse")),
+    ("ia", re.compile(r"(?i)intelig[êe]ncia artificial|artificial intelligence|uso de ia\b|\bIA\b")),
+    ("editor", re.compile(r"(?i)editor")),
+]
+# titulos que contem a palavra da pista mas nao sao a declaracao: "Editorial process dates" traz datas
+# do fluxo editorial, nao o nome do editor responsavel.
+NAO_E_DECLARACAO = {
+    "editor": re.compile(r"(?i)process|dates|datas|prazo|pol[íi]tica|guidelines|norma"),
+    "dados": re.compile(r"(?i)banco de dados do artigo|coleta de dados"),
+}
+
+
+def declaracoes_do_artigo(modelo: dict) -> dict:
+    """As declarações que o próprio arquivo traz, casadas por título. Devolve {campo: (texto, de_onde)}."""
+    fora = {}
+    for b in modelo.get("back_matter") or []:
+        titulo = (b.get("titulo") or "").strip()
+        texto = (b.get("texto") or "").strip()
+        if not texto:
+            continue
+        for chave, rx in PISTAS_DECLARACAO:
+            campo = "dec_" + chave
+            if campo in fora or (modelo.get(campo) or "").strip():
+                continue
+            nao = NAO_E_DECLARACAO.get(chave)
+            if rx.search(titulo) and not (nao and nao.search(titulo)):
+                fora[campo] = (texto, f"lido do próprio arquivo, na parte \"{titulo.rstrip(':')[:48]}\"")
+                break
+    return fora
+
+
+def como_citar(modelo: dict, revista: Optional[dict]) -> str:
+    """A referência do próprio artigo, montada dos metadados. A SciELO gera isso sozinha a partir do XML;
+    mostrar aqui serve de prova real: se a citação sai errada, é porque um metadado está errado."""
+    autores = [a for a in (modelo.get("autores") or []) if not a.get("_removido")]
+    nomes = "; ".join(f"{(a.get('sobrenome') or '').upper()}, {a.get('nomes') or ''}".strip(", ")
+                      for a in autores[:6]) or "[autoria não lida]"
+    titulo = next((t.get("texto") for t in (modelo.get("titulos") or []) if t.get("tipo") == "article-title"), "") or "[título]"
+    partes = [f"{nomes}. {titulo.rstrip('.')}."]
+    if revista:
+        partes.append(f" {revista.get('titulo') or ''},")
+    ano = ((modelo.get("datas") or {}).get("publicado") or "")[:4] or modelo.get("ano") or ""
+    ident = []
+    if modelo.get("volume"):
+        ident.append("v. " + modelo["volume"])
+    if modelo.get("numero"):
+        ident.append("n. " + modelo["numero"])
+    if modelo.get("elocation"):
+        ident.append(modelo["elocation"])
+    elif modelo.get("fpage"):
+        ident.append("p. " + str(modelo["fpage"]))
+    if ident:
+        partes.append(" " + ", ".join(ident) + ",")
+    if ano:
+        partes.append(f" {ano}.")
+    if modelo.get("doi"):
+        partes.append(f" DOI: https://doi.org/{modelo['doi']}.")
+    return "".join(partes).replace("  ", " ").strip()
 
 
 def modelo_para_xml(modelo: dict) -> dict:
@@ -1009,14 +1105,12 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
     modelo = sem_vagas_vazias(modelo_efetivo(pasta) if modelo is None else modelo)
     revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
     # vincular o artigo a uma revista já preenche o que é dado da revista, e não do artigo
-    da_revista = campos_da_revista(modelo, revista)
+    da_revista = dict(declaracoes_do_artigo(modelo))
+    da_revista.update(campos_da_revista(modelo, revista))
     for campo, (valor, de_onde) in da_revista.items():
         if not (valores.get(campo) or "").strip():
             valores[campo] = valor
-            if campo == "licenca":
-                modelo["licenca_url"] = valor
-            else:
-                modelo[campo] = valor
+            modelo["licenca_url" if campo == "licenca" else campo] = valor
     pend = obrigatorios.pendencias(modelo, revista, cfg.get("versao_sps") or "1.9") if pendencias is None else pendencias
     return templates.TemplateResponse(request, "editar.html", {
         "id": doc_id, "m": modelo, "v": valores, "editados": editados, "bloq": r.get("campos_bloqueados", {}),
@@ -1025,6 +1119,8 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
         "tipos": TIPOS_ARTIGO, "idiomas": IDIOMAS, "original_html": markdown_html(original), "usuario": usuario, "r": r,
         "obrig": pend, "obrig_grupos": obrigatorios.resumo_por_grupo(pend), "paginas": visual.resumo(pasta),
         "credit": xml_jats.CREDIT, "da_revista": {k: t[1] for k, t in da_revista.items()},
+        "declaracoes": xml_jats.DECLARACOES, "situacao_dados": xml_jats.SITUACAO_DADOS,
+        "como_citar": como_citar(modelo, revista),
         "mensagem": mensagem, "erro": erro, "vagas": VAGAS_NOVAS,
     }, status_code=400 if erro else 200)
 
@@ -1476,7 +1572,7 @@ def _form_revista(request: Request, usuario: dict, v: dict, erros: dict, nova: b
 
 
 @app.get("/revistas/nova", response_class=HTMLResponse)
-def revista_nova(request: Request, usuario: dict = Depends(exige_admin), issn: str = ""):
+def revista_nova(request: Request, usuario: dict = Depends(autentica), issn: str = ""):
     """Formulário em branco ou preenchido com o que as bases de ISSN sabem (quem cadastra confere antes de salvar)."""
     v = {"licenca_url": LICENCAS[0][0], "modo_publicacao": "continua"}
     busca = None
@@ -1516,7 +1612,7 @@ async def revista_importar(request: Request, usuario: dict = Depends(autentica))
 
 
 @app.post("/revistas/nova", response_class=HTMLResponse)
-async def revista_criar(request: Request, usuario: dict = Depends(exige_admin)):
+async def revista_criar(request: Request, usuario: dict = Depends(autentica)):
     form = dict((await request.form()).items())
     lista = carrega_revistas()
     dados, erros = valida_revista(form, lista)

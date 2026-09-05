@@ -5,7 +5,7 @@
 {#- marca de campo: vermelho quando a SciELO exige e está vazio, laranja quando foi editado à mão -#}
 {% macro estado(nome) -%}
   {%- set ob = obrig.get(nome) -%}
-  {%- if ob %}is-block{% elif bloq.get(nome) %}is-block{% elif nome in editados or da_revista.get(nome) %}is-edit{% endif -%}
+  {%- if ob %}is-block{% elif bloq.get(nome) %}is-block{% elif da_revista.get(nome) %}is-auto{% elif nome in editados %}is-edit{% endif -%}
 {%- endmacro %}
 {% macro aviso(nome, hint='') -%}
   {%- set ob = obrig.get(nome) -%}
@@ -13,7 +13,7 @@
   {% if ob %}<div class="msg block"><b>Obrigatório.</b> {{ ob.motivo }}<span class="fonte-regra">{{ ob.fonte }}</span></div>
   {% elif b and b[0] %}<div class="msg block">{{ b[0]|regra }}</div>
   {% elif b %}<span class="prov crit-text">bloqueante: veja ao lado</span>
-  {% elif da_revista.get(nome) %}<span class="prov">preenchido pelo cadastro: {{ da_revista[nome] }} — confirme e salve</span>
+  {% elif da_revista.get(nome) %}<span class="prov auto">preenchido automaticamente: {{ da_revista[nome] }} — confirme e salve</span>
   {% elif nome in editados %}<span class="prov">editado à mão</span>
   {% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
 {%- endmacro %}
@@ -490,6 +490,39 @@
         {% endfor %}
         <div class="novos"></div>
         <button class="btn small" type="button" data-add="dialogo">+ Inserir diálogo</button>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Declarações editoriais</h2><span class="small muted">ack · author-notes · fn-group · o que a SciELO publica no fim do artigo</span></header>
+      <div class="in stack">
+        <p class="small muted" style="margin:0">São opcionais para o validador, mas a SciELO as publica e a maioria das
+          revistas exige. O que o arquivo já declarava vem preenchido e marcado; confira antes de salvar.</p>
+        {{ area('dec_agradecimentos', 'Agradecimentos', 3, 'Sai em <ack> no fim do artigo.') }}
+        {{ area('dec_financiamento', 'Financiamento', 3, 'Texto da declaração. As agências e os números de processo ficam no bloco Financiamento, acima.') }}
+        {{ area('dec_contribuicao', 'Declaração de contribuição dos autores', 3, 'Sai em author-notes como fn-type="con". O detalhe por autor fica no CRediT de cada um.') }}
+        <div class="grid3" style="grid-template-columns:1fr 2fr">
+          <div class="field {{ estado('dec_dados_situacao') }}" id="f-dec_dados_situacao">
+            <label for="dec_dados_situacao">Situação dos dados</label>
+            <select id="dec_dados_situacao" name="dec_dados_situacao">
+              {% for valor, rotulo in situacao_dados %}<option value="{{ valor }}" {% if v.get('dec_dados_situacao') == valor %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+            </select>
+            <span class="hint">Vai no specific-use, como a SPS 1.10 espera.</span>
+          </div>
+          {{ area('dec_dados', 'Declaração de disponibilidade de dados', 3, 'Sai como seção do back com sec-type="data-availability".') }}
+        </div>
+        {{ area('dec_conflito', 'Conflito de interesses', 3, 'Sai em author-notes como fn-type="conflict".') }}
+        {{ area('dec_ia', 'Declaração de uso de inteligência artificial', 3, 'Sai em fn-group como fn-type="other", com o rótulo que a SciELO usa.') }}
+        {{ area('dec_editor', 'Editor responsável pela avaliação', 2, 'Nome, ORCID e Lattes. Vem do cadastro da revista quando estiver preenchido lá.') }}
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Como citar este documento</h2><span class="small muted">montado dos metadados · a SciELO gera assim no site</span></header>
+      <div class="in stack">
+        <p class="small muted" style="margin:0">Não é um campo do XML: a SciELO monta esta citação a partir dos metadados.
+          Serve de prova real — se a citação abaixo sai errada, é porque algum metadado está errado.</p>
+        <pre class="xmlprev como-citar">{{ como_citar }}</pre>
       </div>
     </div>
 

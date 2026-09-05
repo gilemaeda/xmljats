@@ -107,6 +107,11 @@
             </select>
           </div>
         </div>
+        <div class="grid3">
+          {{ campo('editor_chefe', 'Editor-chefe', 'nome como assina na revista') }}
+          {{ campo('editor_orcid', 'ORCID do editor', '0000-0000-0000-0000') }}
+          {{ campo('editor_lattes', 'Currículo Lattes do editor', 'http://lattes.cnpq.br/0000000000000000') }}
+        </div>
         <div class="grid2">
           {{ campo('site', 'Site da revista (OJS)', 'para conferir datas e sumários', tipo='url', placeholder='https://') }}
           {{ campo('idioma_padrao', 'Idioma em que publica', 'pt, en, es… preenche o idioma do artigo quando o arquivo não diz; vem do DOAJ na busca por ISSN') }}
