@@ -230,7 +230,9 @@ Pendências conhecidas: extração de imagens; equações; CRediT; separação d
 
 ### 6.2 O que o XML gerado ainda não tem
 
-tabelas e equações, e CRediT em `role`. Tudo isso é trabalho de código, não de IA, menos a normalização de afiliações em prosa.
+CRediT em `role`. Tudo isso é trabalho de código, não de IA, menos a normalização de afiliações em prosa.
+
+**Amostras da SciELO com tabelas e equações (05/09/2026).** Como nenhum dos seis PDFs iniciais tem tabela ou equação, foram baixados da SciELO quatro artigos com PDF **e** XML oficial: dois da Revista Brasileira de Ensino de Física (34 e 39 equações; 5 tabelas) e dois da Revista de Saúde Pública (20 e 16 `table-wrap`). Eles estão em `modelos/rbef-*.pdf` e `modelos/rsp-*.pdf`, com os XML oficiais em `modelos/gabarito/`. Resultado: as tabelas com grade viram `<table>` de verdade (5 de 5 e 4 de 4 com colunas corretas na Saúde Pública); as tabelas em estilo booktabs da Física têm as colunas marcadas como incertas e vão como imagem, com aviso; as equações batem 30 de 33 e 37 de 38 números com o XML oficial; as referências batem exatamente (28/28, 30/30, 40/40, 30/30) depois da inclusão do estilo numérico. O front matter dessas duas revistas (autores em spans separados por ORCID gráfico, afiliação com marcador romano, resumo estruturado) ainda não é lido: o sistema acusa isso como bloqueante em vez de inventar.
 
 Já resolvidos em 05/09: figuras (`fig`/`graphic`, TIFF no pacote, `xref` no texto); chamadas de notas de rodapé no corpo (`<xref ref-type="fn"><sup>n</sup></xref>`, a partir dos sobrescritos do PDF; nos seis PDFs todas as notas do corpo têm chamada ligada, inclusive as que antes se perdiam porque o rótulo no pé da página era tomado por número de página, e a citação em bloco da Opinião Jurídica deixou de virar nota falsa); e o `element-citation` completo (`poc/extrator/citacao.py`), medido contra o XML oficial da Direito e Práxis: 69 de 76 campos iguais, e os 7 que diferem são do próprio oficial ("LYRA FILHO" cortado para "LYRA", edição "6ª" contra "6") ou de referências mal formatadas no PDF. O gabarito de referências está em `modelos/gabarito/rdp-referencias.json`.
 

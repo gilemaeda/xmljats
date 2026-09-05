@@ -12,7 +12,7 @@ RE_LATTES = re.compile(r"lattes\.cnpq\.br/\d+")
 SUPERSCRITOS = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9"}
 # marcador de nota no inicio da linha: 1-3 digitos (nao seguidos de digito, hifen, barra, virgula, parentese ou ordinal),
 # asteriscos, digitos sobrescritos, adagas. '§' fica de fora (e simbolo de paragrafo de lei, comum em citacoes).
-RE_CHAMADA_NOTA = re.compile(r"\[\^([^\]]{1,4})\]")  # chamada de nota embutida no texto do corpo: "palavra[^3]"
+RE_CHAMADA_NOTA = re.compile(r"\[\^([^\]]{1,16})\]")  # chamada de nota embutida no texto do corpo: "palavra[^3]"
 
 
 def limpa_chamadas(t):

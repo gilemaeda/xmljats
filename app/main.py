@@ -61,7 +61,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.7.0"
+VERSAO_APP = "0.7.1"
 CONTAS = Contas(DATA)
 
 # etapas do artigo no fluxo de entrega a SciELO (anotadas a mao no painel)

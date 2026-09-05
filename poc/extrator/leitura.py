@@ -140,7 +140,8 @@ RE_URL_CONT = re.compile(r"^[a-z0-9][\w\-./%?=&#~]*(?:[\s.,;]|$)")
 
 # ---------------------------------------------------------------- leitura das linhas
 
-RE_CHAMADA_SUP = re.compile(r"^(\d{1,3}|\*{1,4}|†|‡|[¹²³⁰-⁹]{1,3})$")
+# chamada sobrescrita: "3", "1,2", "4-6" (citacao numerica agrupada), asterisco, adaga
+RE_CHAMADA_SUP = re.compile(r"^(\d{1,3}(?:\s*[,;–—-]\s*\d{1,3})*|\*{1,4}|†|‡|[¹²³⁰-⁹]{1,3})$")
 
 
 def _bold(s):

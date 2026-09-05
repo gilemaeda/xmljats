@@ -184,7 +184,8 @@ def main(args):
         linhas = [f"# {nome}", "", f"- XML: `{xml_path}` ({len(res.xml)} bytes) · revista: {rev['acronimo'] if rev else 'NÃO CADASTRADA'} · {detalhe}",
                   f"- DTD: {dtd_ok} · Schematron SPS: {sps_ok} · erros packtools: {len(erros)}", "", "## Bloqueantes (regras nossas)"] + [f"- {b}" for b in res.bloqueantes] + ["", "## Avisos"] + [f"- {a}" for a in res.avisos] + ["", "## Erros do packtools"] + [f"- {e}" for e in erros[:80]]
         # comparacao com XML oficial (por acrônimo no nome do arquivo)
-        oficial = next((v for k, v in oficiais.items() if rev and k.startswith(rev["acronimo"] + "-")), None)
+        # gabarito: primeiro o de mesmo nome do modelo (modelos/gabarito/<nome>.xml); senao um do mesmo acronimo
+        oficial = oficiais.get(nome + ".xml") or next((v for k, v in oficiais.items() if rev and k.startswith(rev["acronimo"] + "-")), None)
         if oficial:
             try:
                 comp = compara_com_oficial(xml_path, oficial)

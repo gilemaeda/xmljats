@@ -120,7 +120,8 @@ def nome_base_sps(rev: Optional[dict], model: dict) -> Optional[str]:
 
 
 def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[dict]] = None, notas_rid: Optional[dict] = None,
-               sem_nota: Optional[list] = None, tabelas: Optional[List[dict]] = None, equacoes: Optional[List[dict]] = None):
+               sem_nota: Optional[list] = None, tabelas: Optional[List[dict]] = None, equacoes: Optional[List[dict]] = None,
+               refs_numericas: int = 0):
     """Preenche <p> com texto e <xref> para referencias (bibr), figuras (fig) e notas de rodape (fn).
     As chamadas de nota chegam embutidas no texto como "[^3]" (ver leitura.texto_marcado); cada uma vira
     <xref ref-type="fn" rid="fnN"><sup>3</sup></xref>. Sem nota correspondente, sai so <sup>3</sup> e o rotulo vai para sem_nota."""
@@ -130,6 +131,10 @@ def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[di
         fila = (notas_rid or {}).get(rotulo) or []
         if fila:
             marcas.append((m.start(), m.end(), fila.pop(0), "fn"))
+        elif refs_numericas and _numeros_citados(rotulo, refs_numericas):
+            # revista de estilo numerico (Vancouver/IEEE): o sobrescrito e chamada de referencia, nao de nota.
+            # "1,2" e "4-6" viram varios xref no mesmo lugar.
+            marcas.append((m.start(), m.end(), _numeros_citados(rotulo, refs_numericas), "bibr-sup"))
         else:
             marcas.append((m.start(), m.end(), rotulo, "sup"))
             if sem_nota is not None:
@@ -174,6 +179,14 @@ def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[di
         if tipo == "fn":
             ultimo = _sub(p_el, "xref", ref_type="fn", rid=rid)
             _sub(ultimo, "sup", RE_CHAMADA_NOTA.match(texto[ini:fim]).group(1))
+        elif tipo == "bibr-sup":
+            rotulo_sup = RE_CHAMADA_NOTA.match(texto[ini:fim]).group(1)
+            partes = re.split(r"\s*[,;]\s*", rotulo_sup)
+            for k, n in enumerate(rid):
+                ultimo = _sub(p_el, "xref", ref_type="bibr", rid=f"B{n}")
+                _sub(ultimo, "sup", partes[k] if k < len(partes) and len(partes) == len(rid) else str(n))
+                if k < len(rid) - 1 and len(partes) == len(rid):
+                    ultimo.tail = ","
         elif tipo == "sup":
             ultimo = _sub(p_el, "sup", rid)
         else:
@@ -184,6 +197,23 @@ def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[di
         p_el.text = (p_el.text or "") + resto
     else:
         ultimo.tail = (ultimo.tail or "") + resto
+
+
+def _numeros_citados(rotulo: str, n_refs: int):
+    """"1,2" -> [1, 2]; "4-6" -> [4, 5, 6]; devolve [] se nao for citacao numerica valida."""
+    nums = []
+    for parte in re.split(r"\s*[,;]\s*", rotulo.strip()):
+        m = re.fullmatch(r"(\d{1,3})\s*[–—-]\s*(\d{1,3})", parte)
+        if m:
+            a, b = int(m.group(1)), int(m.group(2))
+            if not (1 <= a <= b <= n_refs) or b - a > 30:
+                return []
+            nums.extend(range(a, b + 1))
+        elif parte.isdigit() and 1 <= int(parte) <= n_refs:
+            nums.append(int(parte))
+        else:
+            return []
+    return nums
 
 
 def _tipo_declaracao(titulo: str) -> Optional[str]:
@@ -480,6 +510,9 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     for n in fns:
         notas_rid.setdefault(str(n.get("rotulo") or ""), []).append(n["id"])
     chamadas_sem_nota: list = []
+    # em revistas de estilo numerico as chamadas no texto apontam para as referencias
+    estilo_num = "numérico" in (model.get("estilo_referencias") or "")
+    refs_numericas = len(model.get("referencias", [])) if estilo_num else 0
 
     def _emite_tabela(pai_el, t):
         tw = _sub(pai_el, "table-wrap", id=t["_rid"])
@@ -547,7 +580,7 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             for e in eqs_secao:
                 if (e.get("pos_paragrafo") or 0) == k:
                     _emite_equacao(sec, e)
-            _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml, notas_rid, chamadas_sem_nota, tabs_xml, eqs_xml)
+            _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml, notas_rid, chamadas_sem_nota, tabs_xml, eqs_xml, refs_numericas)
         for f in figs_secao:
             if (f.get("pos_paragrafo") or 0) >= len(pars):
                 _emite_fig(sec, f)
@@ -558,6 +591,15 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             if (e.get("pos_paragrafo") or 0) >= len(pars):
                 _emite_equacao(sec, e)
         pilha.append((nivel, sec))
+    # figuras, tabelas e equacoes que nao caíram em nenhuma secao (legenda fora do corpo, ou artigo sem secoes)
+    # entram no fim do corpo: o contador do XML precisa refletir o que realmente foi emitido
+    indices_secoes = set(range(len(model.get("secoes", []))))
+    orfas = [(figs_xml, _emite_fig), (tabs_xml, _emite_tabela), (eqs_xml, _emite_equacao)]
+    for lista, emite in orfas:
+        for item in lista:
+            if item.get("secao_indice") not in indices_secoes:
+                alvo = pilha[-1][1] if pilha else body
+                emite(alvo, item)
     if not model.get("secoes"):
         res.bloqueia("Corpo do texto sem seções (S01).")
     sem_imagem = [f["rotulo"] for f in figs if not f.get("arquivo")]

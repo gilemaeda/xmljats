@@ -77,6 +77,8 @@ def _texto_em(linhas):
     return juntar_linhas([l.texto for l in linhas])
 
 
+# "Rev Saude Publica. 2024;58:34" / "Cad Saude Publica. 2013;29(4):691-701"
+RE_CITACAO_PROPRIA = re.compile(r"\b(19[5-9]\d|20[0-4]\d)\s*;\s*(\d{1,3})(?:\s*\(\s*([\w/-]{1,8})\s*\))?\s*:\s*(e?\d{1,6})(?:\s*[-–]\s*(\d{1,6}))?", re.I)
 RE_CAB_REVISTA = re.compile(r"\b(v|vol|volume)\.?\s*\d|\bn\.?\s*\d|issn|\be\d{3,}\b|\bano\s+\d", re.I)
 
 
@@ -261,6 +263,27 @@ def extrai_identificadores(doc: Documento, model: ArticleModel, linhas_front: Li
     model.issn = [i for i in issns if issn_valido(i)] or issns[:2]
     if model.issn:
         model.marca("issn", "lido")
+    # citacao da propria revista: "Rev Saude Publica. 2024;58:34" ou "Cad. Saude Publica. 2013;29(4):691-701"
+    # (ano;volume(numero):pagina), padrao das revistas de saude; costuma estar na coluna lateral da primeira pagina
+    for l in list(p1) + [x for x in doc.laterais if x.pagina == 1] + [type("L", (), {"texto": c})() for c in doc.cabecalhos]:
+        m = RE_CITACAO_PROPRIA.search(getattr(l, "texto", ""))
+        if not m:
+            continue
+        if not model.ano:
+            model.ano = m.group(1); model.marca("ano", "lido (citação da própria revista)")
+        if not model.volume:
+            model.volume = m.group(2); model.marca("volume", "lido (citação da própria revista)")
+        if m.group(3) and not model.numero:
+            model.numero = m.group(3); model.marca("numero", "lido (citação da própria revista)")
+        if not model.elocation and not model.fpage:
+            pag = m.group(4)
+            if re.fullmatch(r"e\d+", pag, re.I):
+                model.elocation = pag.lower(); model.marca("elocation", "lido (citação da própria revista)")
+            elif m.group(5):
+                model.fpage, model.lpage = pag, m.group(5); model.marca("paginas", "lido (citação da própria revista)")
+            else:
+                model.elocation = pag; model.marca("elocation", "lido (citação da própria revista; confirmar se é elocation ou página)")
+        break
     # volume, numero, ano, elocation, paginas: cabeçalhos primeiro, depois página 1
     for origem, t in [("cabeçalho", c) for c in doc.cabecalhos] + [("página 1", l.texto) for l in p1]:
         m = re.search(r"\b(?:v|vol|volume)\.?\s*(\d+)", t, re.I)
