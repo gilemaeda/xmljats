@@ -280,7 +280,12 @@ def extrai_identificadores(doc: Documento, model: ArticleModel, linhas_front: Li
             model.fpage, model.lpage = m.group(1), m.group(2); model.marca("paginas", f"lido ({origem})")
         m = re.search(r"\b(19[5-9]\d|20[0-4]\d)\b", t)
         if m and not model.ano:
-            model.ano = m.group(1); model.marca("ano", f"lido ({origem})")
+            model.ano = m.group(1)
+            if re.search(r"©|copyright", t, re.I):
+                model.marca("ano", f"lido ({origem}, linha de copyright); confirmar o ano do fascículo")
+                model.aviso(f"Ano {m.group(1)} veio da linha de copyright (©); confirmar se é o ano do fascículo (A08).")
+            else:
+                model.marca("ano", f"lido ({origem})")
     # titulo da revista: prefixo do cabeçalho antes de ", v." ou "Vol."
     for c in doc.cabecalhos:
         c_limpo = re.sub(r"^\s*\d+\s*[•|·]\s*", "", c)
