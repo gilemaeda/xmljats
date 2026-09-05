@@ -24,7 +24,13 @@ Abra http://127.0.0.1:8000. Sem `APP_SENHA` definida, o site não pede senha (us
 
 No primeiro acesso com `APP_SENHA` definida, entre com login `admin` e essa senha; depois crie as contas em Usuários. A partir do momento em que existem contas, `APP_SENHA` deixa de valer no navegador (continua valendo para scripts, que não pedem HTML): quem abrir o site vai para a tela de login. Sem `APP_SENHA` e sem usuários cadastrados (desenvolvimento local), o app abre sem login como `local`.
 
-Papéis: **administrador** (administra usuários e revistas, vê o sistema inteiro), **operador** (vê todos os documentos) e **cliente** (vê apenas os próprios documentos; é o papel de quem se cadastra sozinho).
+Papéis: **administrador** (administra usuários, revistas, correio e configurações; não usa o validador, a home dele é o painel administrativo), **operador** (vê todos os documentos e valida) e **cliente** (vê apenas os próprios documentos; é o papel de quem se cadastra sozinho).
+
+## E-mail (Resend)
+
+Em **Configurações**, dentro da administração: chave da API do Resend, e-mail remetente de um domínio verificado, endereço público do site e o interruptor de confirmação de conta. A chave fica em `XMLJATS_DATA/config.json`, no volume do servidor, e nunca aparece inteira na tela.
+
+Com isso ligado, quem se cadastra recebe o link de confirmação e só pode enviar arquivos depois de confirmar. O **Correio** guarda tudo em cinco caixas (entrada, saída, enviados, rascunhos, lixeira): sem configuração, a mensagem espera na caixa de saída com o motivo, em vez de sumir. Para registrar entrega e abertura, e para receber mensagens, cadastre no Resend o webhook `<site>/webhook/resend?k=<segredo>`; o segredo está no mesmo arquivo de configuração.
 
 ## Fuso horário
 
@@ -63,6 +69,7 @@ Ordem: homologação primeiro, produção depois. Banco de dados ainda não é n
 - Interface em modo claro e escuro (seletor no topo, ou o tema do sistema), com contraste medido par a par: `python ops/audita_contraste.py` regenera `app/static/contraste.md` e falha se algum par ficar abaixo do mínimo WCAG.
 - Contas: login por sessão (cookie assinado) e registro público, papéis admin, operador e cliente (o cliente só vê e abre os próprios documentos), tela Usuários (criar, trocar senha, papel, remover), tela Minha conta e área de administração separada com métricas. Com `APP_SENHA` definida e nenhum usuário, o primeiro acesso cria o admin `admin` com essa senha; `APP_SENHA` continua valendo como HTTP Basic para scripts. Usuários em `XMLJATS_DATA/usuarios.json` (senhas só como hash PBKDF2).
 - Cadastro de revistas editável na tela (admin): acrônimo, ISSN com dígito verificador conferido, título, abreviado, editora, prefixo DOI, licença, modo de publicação, seção padrão, site e observações. Vive em `XMLJATS_DATA/revistas.json`, semeado de `modelos/revistas.json`.
+- Interface: menu na lateral ou no topo (a escolha fica no navegador), tema claro ou escuro e foto de perfil.
 - Painel administrativo: filtro por conta e por data, validações por dia, quem está online agora, último acesso com IP e navegador, quantas validações cada conta fez, e edição de nome, e-mail, papel e senha de qualquer usuário.
 - Cadastro de revistas tem área do conhecimento e estilo de referências esperado. A área não muda o XML (JATS é o mesmo para toda área), mas registra o que esperar do artigo; se o texto for lido num estilo diferente do cadastrado, o resultado avisa.
 - Painel: documentos com filtros por revista, etapa e situação; a etapa do artigo no fluxo SciELO (Recebido → Em revisão → Pronto para entrega → Entregue à SciELO → Pré-QA → QA → QA finalizado → Publicado) é anotada à mão, com histórico de quem mudou e quando.
