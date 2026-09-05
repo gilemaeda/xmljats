@@ -53,6 +53,39 @@
       <header><span class="chip warn">Validador oficial</span><span class="n">{{ r.packtools|length }}</span><span class="small muted" title="{{ r.packtools_detalhe }}">packtools · DTD JATS + Schematron SPS</span></header>
       {% for e in r.packtools %}<div class="finding warn"><span class="stripe"></span><div class="body mono small">{{ e }}</div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">DTD e Schematron sem erros.</div></div>{% endfor %}
     </div>
+    {% if r.referencias %}
+    <div class="group">
+      <header><span class="chip neutral">Referências</span><span class="n">{{ r.referencias|length }}</span><span class="small muted">element-citation · {{ r.estilo_referencias or 'estilo não identificado' }} · {{ r.referencias|selectattr('confianca', 'equalto', 'alta')|list|length }} reconhecidas por inteiro</span></header>
+      {% for ref in r.referencias %}
+      <div class="finding {{ 'auto' if ref.confianca == 'alta' else 'warn' }}"><span class="stripe"></span>
+        <div class="body">
+          <div class="row" style="gap:8px"><span class="mono faint small">B{{ loop.index }}</span><span class="chip neutral">{{ ref.tipo }}</span>{% if ref.confianca != 'alta' %}<span class="chip warn">campos parciais</span>{% endif %}</div>
+          <p class="small" style="margin-top:4px">{{ ref.texto }}</p>
+          <p class="small muted" style="margin-top:4px">
+            {% if ref.autores %}<span class="k">autores</span> {% for a in ref.autores %}{{ a[0] }}{% if a[1] %}, {{ a[1] }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %} · {% endif %}
+            {% if ref.editores %}<span class="k">org.</span> {% for a in ref.editores %}{{ a[0] }}{% if a[1] %}, {{ a[1] }}{% endif %}{% if not loop.last %}; {% endif %}{% endfor %} · {% endif %}
+            {% set rotulos = {'article-title': 'título do artigo', 'chapter-title': 'capítulo', 'source': 'fonte', 'edition': 'ed.', 'volume': 'v.', 'issue': 'n.', 'fpage': 'p. inicial', 'lpage': 'p. final', 'year': 'ano', 'comment': 'nota', 'doi': 'DOI', 'ext-link': 'link', 'date-in-citation': 'acesso'} %}
+            {% for k in ['article-title', 'chapter-title', 'source', 'edition', 'volume', 'issue', 'fpage', 'lpage', 'year', 'comment', 'doi', 'ext-link', 'date-in-citation'] %}{% if ref.campos.get(k) %}<span class="k">{{ rotulos[k] }}</span> {{ ref.campos[k] }} · {% endif %}{% endfor %}
+            {% if ref.campos.get('publisher-name') %}{% for nome in ref.campos['publisher-name'] %}<span class="k">editora</span> {% if ref.campos.get('publisher-loc') and ref.campos['publisher-loc']|length > loop.index0 %}{{ ref.campos['publisher-loc'][loop.index0] }}: {% endif %}{{ nome }}{% if not loop.last %} · {% endif %}{% endfor %}{% endif %}
+          </p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if r.notas %}
+    <div class="group">
+      <header><span class="chip neutral">Notas</span><span class="n">{{ r.notas|length }}</span><span class="small muted">fn-group · chamadas no texto viram xref</span></header>
+      {% for n in r.notas %}
+      <div class="finding {{ 'auto' if n.chamada or n.ligada_a else 'warn' }}"><span class="stripe"></span>
+        <div class="body small"><span class="mono faint">{{ n.id }}</span> <b>{{ n.rotulo }}</b> <span class="chip neutral">{{ n.tipo }}</span>
+          {% if n.ligada_a %}<span class="chip info">{{ 'nota de autor' if n.ligada_a.startswith('autor') else 'nota do título' }}</span>{% elif n.chamada %}<span class="chip ok">chamada no texto</span>{% else %}<span class="chip warn">sem chamada no texto</span>{% endif %}
+          <div class="muted" style="margin-top:3px">{{ n.texto }}{% if n.texto|length >= 160 %}…{% endif %}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
     <div class="group">
       <header><span class="chip warn">Avisos</span><span class="n">{{ (r.avisos_gerador|length) + (r.avisos_extrator|length) }}</span><span class="small muted">confira antes de entregar</span></header>
       {% for a in r.avisos_extrator %}<div class="finding warn"><span class="stripe"></span><div class="body">{{ a|regra }}</div></div>{% endfor %}

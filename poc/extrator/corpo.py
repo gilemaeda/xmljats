@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from .leitura import Documento, Paragrafo
 from .modelo import ArticleModel, Secao, Citacao, Nota, Figura
-from .util import RE_MARCADOR, SUPERSCRITOS, normaliza, marcador_normalizado
+from .util import RE_MARCADOR, RE_CHAMADA_NOTA, SUPERSCRITOS, normaliza, marcador_normalizado, limpa_chamadas
 
 RE_NUM = re.compile(r"^\s*(\d+(?:\.\d+)*)\.?\s+(\S.*)$")
 RE_FIG = re.compile(r"^\s*(Figura|Figure|Fig\.|Tabela|Table|Quadro|Gr[aá]fico|Imagem|Ilustra[çc][ãa]o)\s*(\d+)\s*[-–:.]?\s*(.*)$", re.I)
@@ -129,12 +129,13 @@ def extrai_corpo(doc: Documento, model: ArticleModel, i_sec: Optional[int], i_re
         if RE_FIG.match(t) or RE_FONTE.match(t):
             _registra_figura(model, p, t, doc, atual)
             continue
-        # continuacao de paragrafo entre paginas
+        # continuacao de paragrafo entre paginas; os paragrafos guardam as chamadas de nota como "[^n]"
+        tm = (p.texto_marcado or t).strip()
         if atual.paragrafos and ultimo_par_texto is not None and not ultimo_par_texto.rstrip().endswith((".", "!", "?", ":", "”", "\"", ")")) and t[:1].islower():
-            atual.paragrafos[-1] = (atual.paragrafos[-1] + " " + t).strip()
+            atual.paragrafos[-1] = (atual.paragrafos[-1] + " " + tm).strip()
         else:
-            atual.paragrafos.append(t)
-        ultimo_par_texto = atual.paragrafos[-1]
+            atual.paragrafos.append(tm)
+        ultimo_par_texto = limpa_chamadas(atual.paragrafos[-1])
     if model.secoes:
         model.marca("secoes", "lido (negrito / tamanho / numeração / fonte diferente do corpo)")
     _citacoes(model)
@@ -208,6 +209,9 @@ def _citacoes(model: ArticleModel):
 def _notas(doc: Documento, model: ArticleModel, i_sec, fim):
     # chamadas no texto: sobrescritos numericos nas linhas do corpo + caracteres unicode
     chamadas = set()
+    for sec in model.secoes:
+        for par in sec.paragrafos:
+            chamadas.update(RE_CHAMADA_NOTA.findall(par))
     for p in doc.paragrafos:
         for s in p.sups:
             s2 = marcador_normalizado(s)

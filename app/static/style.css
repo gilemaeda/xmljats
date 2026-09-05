@@ -244,6 +244,7 @@ table.tbl tr:last-child td{border-bottom:0}
 .finding.crit .stripe{background:var(--crit)}.finding.warn .stripe{background:var(--warn)}.finding.auto .stripe{background:var(--ok)}
 .finding .body{min-width:0;overflow-wrap:anywhere;color:var(--text)}
 .finding .body a{margin-left:6px;font-size:12px}
+.finding .body .k{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-right:2px}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px}
 .kv dt{color:var(--muted);font-weight:500;white-space:nowrap}.kv dd{margin:0;min-width:0;overflow-wrap:anywhere;color:var(--text)}
 

@@ -12,7 +12,8 @@ from typing import List, Optional, Tuple
 
 from lxml import etree
 
-from .util import normaliza, divide_nome
+from .util import normaliza, divide_nome, RE_CHAMADA_NOTA
+from .citacao import campos_referencia
 
 XLINK = "http://www.w3.org/1999/xlink"
 MML = "http://www.w3.org/1998/Math/MathML"
@@ -48,6 +49,7 @@ class Resultado:
         self.xml: Optional[bytes] = None
         self.nome_base: Optional[str] = None
         self.imagens: List[tuple] = []  # (arquivo de origem do extrator, nome SPS no pacote)
+        self.campos_referencias: List[dict] = []  # campos do element-citation de cada referencia, na ordem, com confianca
 
     def aviso(self, m):
         self.avisos.append(m)
@@ -117,9 +119,20 @@ def nome_base_sps(rev: Optional[dict], model: dict) -> Optional[str]:
     return "-".join(p for p in partes if p)
 
 
-def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[dict]] = None):
-    """Preenche <p> com texto e <xref> para referencias (bibr) e figuras (fig)."""
+def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[dict]] = None, notas_rid: Optional[dict] = None, sem_nota: Optional[list] = None):
+    """Preenche <p> com texto e <xref> para referencias (bibr), figuras (fig) e notas de rodape (fn).
+    As chamadas de nota chegam embutidas no texto como "[^3]" (ver leitura.texto_marcado); cada uma vira
+    <xref ref-type="fn" rid="fnN"><sup>3</sup></xref>. Sem nota correspondente, sai so <sup>3</sup> e o rotulo vai para sem_nota."""
     marcas: List[Tuple[int, int, str, str]] = []
+    for m in RE_CHAMADA_NOTA.finditer(texto):
+        rotulo = m.group(1)
+        fila = (notas_rid or {}).get(rotulo) or []
+        if fila:
+            marcas.append((m.start(), m.end(), fila.pop(0), "fn"))
+        else:
+            marcas.append((m.start(), m.end(), rotulo, "sup"))
+            if sem_nota is not None:
+                sem_nota.append(rotulo)
     for c in citacoes:
         if c.get("ref_index") is None:
             continue
@@ -145,7 +158,13 @@ def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[di
             p_el.text = (p_el.text or "") + trecho
         else:
             ultimo.tail = (ultimo.tail or "") + trecho
-        ultimo = _sub(p_el, "xref", texto[ini:fim], ref_type=tipo, rid=rid)
+        if tipo == "fn":
+            ultimo = _sub(p_el, "xref", ref_type="fn", rid=rid)
+            _sub(ultimo, "sup", RE_CHAMADA_NOTA.match(texto[ini:fim]).group(1))
+        elif tipo == "sup":
+            ultimo = _sub(p_el, "sup", rid)
+        else:
+            ultimo = _sub(p_el, "xref", texto[ini:fim], ref_type=tipo, rid=rid)
         cursor = fim
     resto = texto[cursor:]
     if ultimo is None:
@@ -168,52 +187,6 @@ def _tipo_declaracao(titulo: str) -> Optional[str]:
         return "other"
     return None
 
-
-def _pessoas(autores: List[str]):
-    out = []
-    for a in autores:
-        if a.startswith("("):
-            continue
-        if "," in a:
-            sob, nomes = a.split(",", 1)
-        else:
-            sob, nomes = divide_nome(a)
-        out.append((sob.strip(" ."), nomes.strip(" .")))
-    return out
-
-
-def _campos_referencia(r: dict):
-    """Heuristica minima para element-citation: fonte/titulo a partir do texto ABNT ou APA."""
-    t = r["texto"]
-    campos = {}
-    m = re.search(r"\((\d{4}[a-z]?)\)\.?\s*(.+)$", t)
-    if r.get("tipo") in ("journal",):
-        mj = re.search(r"\.\s+([^.]+?)\s*,\s*(?:\[s\.?\s*l\.?\]\s*,\s*)?(?:v|vol)\.?\s*(\d+)", t, re.I)
-        if mj:
-            campos["source"] = mj.group(1).strip()
-            campos["volume"] = mj.group(2)
-        mn = re.search(r"\bn\.?\s*(\d+)", t)
-        if mn:
-            campos["issue"] = mn.group(1)
-        mp = re.search(r"\bp\.?\s*(\d+)\s*[-–]\s*(\d+)", t)
-        if mp:
-            campos["fpage"], campos["lpage"] = mp.group(1), mp.group(2)
-        ma = re.search(r"^[^.]+\.\s+(?:[A-Z]\.\s+)*([^.]{10,}?)\.\s", t)
-        if ma:
-            campos["article-title"] = ma.group(1).strip()
-    else:
-        if m:  # APA: Sobrenome, I. (ano). Titulo. Local. Editora
-            partes = [p.strip() for p in m.group(2).split(". ") if p.strip()]
-            if partes:
-                campos["source"] = partes[0].rstrip(".")
-        else:  # ABNT: AUTORES. Titulo. Local: Editora, ano.
-            mt = re.search(r"^[^.]+\.\s+(?:[A-Z]\.\s+)*([^.]{4,}?)\.\s", t)
-            if mt:
-                campos["source"] = mt.group(1).strip()
-            ml = re.search(r"\.\s+([A-ZÀ-Ú][^:.,;]{2,40}):\s*([^,;.]{2,60}),\s*\d{4}", t)
-            if ml:
-                campos["publisher-loc"], campos["publisher-name"] = ml.group(1).strip(), ml.group(2).strip()
-    return campos
 
 
 # ---------------------------------------------------------------- gerador
@@ -468,6 +441,12 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     body = _sub(art, "body")
     citacoes = model.get("citacoes", [])
     pilha = []  # (nivel, elemento)
+    # notas de rodape do corpo (as ligadas a autor/titulo ja sairam em author-notes): rotulo -> fila de ids, na ordem
+    fns = [n for n in notas if not (n.get("ligada_a") or "").startswith("autor") and n.get("ligada_a") != "titulo"]
+    notas_rid: dict = {}
+    for n in fns:
+        notas_rid.setdefault(str(n.get("rotulo") or ""), []).append(n["id"])
+    chamadas_sem_nota: list = []
 
     def _emite_fig(pai_el, f):
         fig = _sub(pai_el, "fig", id=f["_rid"])
@@ -492,7 +471,7 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             for f in figs_secao:
                 if (f.get("pos_paragrafo") or 0) == k:
                     _emite_fig(sec, f)
-            _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml)
+            _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml, notas_rid, chamadas_sem_nota)
         for f in figs_secao:
             if (f.get("pos_paragrafo") or 0) >= len(pars):
                 _emite_fig(sec, f)
@@ -506,44 +485,68 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         if not f.get("chamada_no_texto"):
             res.aviso(f"{f['rotulo']} não é citada no texto (F01).")
 
+    if chamadas_sem_nota:
+        res.aviso(f"Chamada(s) de nota no texto sem nota de rodapé correspondente (ficaram como sobrescrito): {', '.join(sorted(set(chamadas_sem_nota), key=lambda x: (len(x), x)))} (N01).")
+
     # ---- back
     back = _sub(art, "back")
-    fns = [n for n in notas if not (n.get("ligada_a") or "").startswith("autor") and n.get("ligada_a") != "titulo"]
     if fns:
         fg = _sub(back, "fn-group")
         for n in fns:
             fn = _sub(fg, "fn", fn_type=n.get("tipo") or "other", id=n["id"])
             _sub(fn, "label", n["rotulo"])
             _sub(fn, "p", n["texto"])
-            if not n.get("chamada_no_texto"):
-                res.aviso(f"Nota {n['id']} (rótulo {n['rotulo']}) sem chamada detectada no texto (N01).")
+            if notas_rid.get(str(n.get("rotulo") or "")) and n["id"] in notas_rid[str(n.get("rotulo") or "")]:
+                res.aviso(f"Nota {n['id']} (rótulo {n['rotulo']}) sem chamada no texto do corpo; fica no fn-group sem xref (N01).")
     refs = model.get("referencias", [])
     if refs:
         rl = _sub(back, "ref-list")
         _sub(rl, "title", "Referências" if lang == "pt" else ("Referencias" if lang == "es" else "References"))
+        conf = {"alta": 0, "media": 0, "baixa": 0}
         for k, r in enumerate(refs, start=1):
             ref = _sub(rl, "ref", id=f"B{k}")
             _sub(ref, "mixed-citation", r["texto"])
-            ec = _sub(ref, "element-citation", publication_type=r.get("tipo") or "other")
-            pessoas = _pessoas(r.get("autores", []))
-            if pessoas:
-                pg = _sub(ec, "person-group", person_group_type="author")
-                for sob, nomes in pessoas:
-                    nm = _sub(pg, "name")
-                    _sub(nm, "surname", sob)
-                    if nomes:
-                        _sub(nm, "given-names", nomes)
-            campos = _campos_referencia(r)
-            for tag in ("article-title", "chapter-title", "source", "publisher-loc", "publisher-name", "volume", "issue", "fpage", "lpage"):
+            tipo_ref = r.get("tipo") or "other"
+            ec = _sub(ref, "element-citation", publication_type=tipo_ref)
+            campos = campos_referencia(r["texto"], tipo_ref, r.get("autores", []))
+            res.campos_referencias.append(campos)
+            conf[campos.get("confianca", "baixa")] += 1
+            for grupo, tipo_pg in (("autores", "author"), ("editores", "editor")):
+                if campos.get(grupo):
+                    pg = _sub(ec, "person-group", person_group_type=tipo_pg)
+                    for sob, nomes in campos[grupo]:
+                        if nomes is None:  # autor institucional
+                            _sub(pg, "collab", sob)
+                            continue
+                        nm = _sub(pg, "name")
+                        _sub(nm, "surname", sob)
+                        if nomes:
+                            _sub(nm, "given-names", nomes)
+            for tag in ("article-title", "chapter-title", "source", "edition"):
                 if campos.get(tag):
                     _sub(ec, tag, campos[tag])
-            if r.get("ano"):
-                _sub(ec, "year", r["ano"])
-            if r.get("doi"):
-                _sub(ec, "pub-id", r["doi"], pub_id_type="doi")
-            if r.get("url"):
-                _sub(ec, "ext-link", r["url"], ext_link_type="uri", xlink_href=r["url"])
-        res.aviso("element-citation preenchido por heurística (autores, ano, fonte, DOI/URL); os demais campos exigem revisão (R02).")
+            for loc, nome in zip(campos.get("publisher-loc") or [], campos.get("publisher-name") or []):
+                _sub(ec, "publisher-loc", loc)
+                _sub(ec, "publisher-name", nome)
+            for tag in ("volume", "issue", "fpage", "lpage"):
+                if campos.get(tag):
+                    _sub(ec, tag, campos[tag])
+            ano_ref = campos.get("year") or r.get("ano")
+            if ano_ref:
+                _sub(ec, "year", ano_ref)
+            if campos.get("comment"):
+                _sub(ec, "comment", campos["comment"])
+            doi_ref = campos.get("doi") or r.get("doi")
+            if doi_ref:
+                _sub(ec, "pub-id", doi_ref, pub_id_type="doi")
+            url_ref = campos.get("ext-link") or (r.get("url") if not doi_ref else None)
+            if url_ref:
+                _sub(ec, "ext-link", url_ref, ext_link_type="uri", xlink_href=url_ref)
+            if campos.get("date-in-citation"):
+                _sub(ec, "date-in-citation", campos["date-in-citation"], content_type="access-date")
+        if conf["media"] or conf["baixa"]:
+            res.aviso(f"element-citation: {conf['alta']} de {len(refs)} referências com estrutura reconhecida por inteiro; "
+                      f"{conf['media'] + conf['baixa']} com campos parciais, conferir na lista de referências (R02).")
     else:
         res.bloqueia("Lista de referências vazia (R01).")
 

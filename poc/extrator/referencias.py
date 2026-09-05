@@ -5,7 +5,7 @@ from typing import Optional, Tuple
 
 from .leitura import Documento, juntar_linhas
 from .modelo import ArticleModel, Referencia
-from .util import RE_DOI, RE_URL, limpa_doi, normaliza
+from .util import RE_DOI, RE_URL, limpa_doi, normaliza, cabecalho_autores
 from .corpo import KW_BACK
 
 RE_HEAD_REF = re.compile(r"^(refer[êe]ncias?(\s+bibliogr[áa]ficas?)?|references|bibliografia|bibliography|referencias(\s+bibliogr[áa]ficas)?|obras citadas|fontes|works cited|literatura citada)\s*[:.]?$", re.I)
@@ -169,7 +169,7 @@ def _autores(t):
     if m and RE_APA.match(t):
         cab = t[: m.start()]
     else:
-        cab = re.split(r"\.\s", t, maxsplit=1)[0]
+        cab = cabecalho_autores(t)
         if len(cab) > 160:
             cab = cab[:160]
     partes = re.split(r";\s*|\s+(?:e|and|y|&)\s+(?=[A-ZÀ-Ú])", cab)

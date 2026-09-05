@@ -12,6 +12,14 @@ RE_LATTES = re.compile(r"lattes\.cnpq\.br/\d+")
 SUPERSCRITOS = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9"}
 # marcador de nota no inicio da linha: 1-3 digitos (nao seguidos de digito, hifen, barra, virgula, parentese ou ordinal),
 # asteriscos, digitos sobrescritos, adagas. '§' fica de fora (e simbolo de paragrafo de lei, comum em citacoes).
+RE_CHAMADA_NOTA = re.compile(r"\[\^([^\]]{1,4})\]")  # chamada de nota embutida no texto do corpo: "palavra[^3]"
+
+
+def limpa_chamadas(t):
+    """Remove as chamadas [^n] de um texto."""
+    return RE_CHAMADA_NOTA.sub("", t or "")
+
+
 RE_MARCADOR = re.compile(r"^\s*(\d{1,3}(?![\d\-–/,)%º°])\.?|\*{1,4}|[¹²³⁴⁵⁶⁷⁸⁹⁰]+|†|‡)\s*")
 
 
@@ -217,3 +225,24 @@ def titulo_caixa(s):
             palavras.append(w if (len(w) <= 3 and w.isalpha()) else w.capitalize())
         return " ".join(palavras)
     return s
+
+
+RE_INICIAL_FIM = re.compile(r"(?:^|[\s,;])[A-ZÀ-Ú]$")
+RE_CONTINUA_AUTOR = re.compile(r"^(?:[A-ZÀ-Ú](?:\.?;\s*[A-ZÀ-Ú][A-ZÀ-Ú'’\- ]+,\s*[^.]*)?|[A-ZÀ-Ú][A-ZÀ-Ú'’\-]+(?: [A-ZÀ-Ú][A-ZÀ-Ú'’\-]+)*,\s*[^.]*)$")
+
+
+def cabecalho_autores(t):
+    """Bloco de autores ABNT no inicio da referencia: vai ate o primeiro ". " que nao venha logo depois de uma inicial
+    ("SILVA, J. A. Titulo" -> "SILVA, J. A."). Depois de uma inicial, so continua se o trecho seguinte for outra inicial
+    ou outro autor em CAIXA ALTA ("C.; HOLMES, E. N."), nunca um titulo ("S. Marx e Hegel...")."""
+    pontos = list(re.finditer(r"\.\s+", t))
+    for k, m in enumerate(pontos):
+        antes = t[: m.start()]
+        if RE_INICIAL_FIM.search(antes):
+            prox = pontos[k + 1].start() if k + 1 < len(pontos) else len(t)
+            trecho = t[m.end(): prox].strip()
+            if RE_CONTINUA_AUTOR.match(trecho):
+                continue
+            return antes + "."
+        return antes
+    return t

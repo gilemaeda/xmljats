@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 
 import pymupdf
 
-from .util import RE_MARCADOR
+from .util import RE_MARCADOR, marcador_normalizado
 
 RE_ROTULO_CAIXA = re.compile(
     r"^(contrib|aff|abstract|sec|ref|article-title|trans-title|kwd|kwd-group|fn|title|body|back|front|p\[\d+\]|Legenda tags JATS.*)$",
@@ -41,6 +41,7 @@ class Linha:
     sups: List[str] = field(default_factory=list)
     rotacionada: bool = False
     zona: str = "corpo"
+    texto_marcado: str = ""  # texto com as chamadas de nota no lugar: "palavra[^3]" (sobrescrito numerico ou simbolo)
 
     @property
     def largura(self):
@@ -64,6 +65,7 @@ class Paragrafo:
     y0: float
     x1: float
     y1: float
+    texto_marcado: str = ""
 
     @property
     def sups(self):
@@ -122,12 +124,21 @@ def juntar_linhas(textos: List[str]) -> str:
                 out = (out + t) if prefixo in PREFIXOS_HIFEN else (out[:-1] + t)
             else:
                 out = out + t
+        elif RE_URL_FIM.search(out) and RE_URL_CONT.match(t):
+            out = out + t  # URL quebrada em duas linhas sem hifen: "https://www.planalto.gov.br/ccivil_03/" + "leis/lcp80.htm"
         else:
             out = out + " " + t
     return out
 
 
+RE_URL_FIM = re.compile(r"https?://[^\s]*[/._\-=?&]$")
+RE_URL_CONT = re.compile(r"^[a-z0-9][\w\-./%?=&#~]*(?:[\s.,;]|$)")
+
+
 # ---------------------------------------------------------------- leitura das linhas
+
+RE_CHAMADA_SUP = re.compile(r"^(\d{1,3}|\*{1,4}|†|‡|[¹²³⁰-⁹]{1,3})$")
+
 
 def _bold(s):
     f = s["font"].lower()
@@ -165,6 +176,17 @@ def _linhas_pagina(page, pno):
             texto = re.sub(r"\s+", " ", texto).strip()
             if not texto:
                 continue
+            # texto_marcado: sobrescritos que parecem chamada de nota (numero ou simbolo, nao no inicio) viram "[^n]"
+            partes_m = []
+            for s in spans_todos:
+                if any(s is o for o in sup_objs):
+                    t = s["text"].strip()
+                    if RE_CHAMADA_SUP.match(t) and not (sups and sups[0][0] == t and sups[0][1] == "inicio"):
+                        partes_m.append("[^" + marcador_normalizado(t) + "]")
+                    continue
+                partes_m.append(s["text"])
+            texto_marcado = re.sub(r"\s+", " ", "".join(partes_m)).strip()
+            texto_marcado = re.sub(r"\s+(\[\^[^\]]+\])", r"\1", texto_marcado)  # "palavra [^3]" -> "palavra[^3]"
             sizes, fonts = Counter(), Counter()
             bold = ital = total = 0
             for s in partes:
@@ -187,6 +209,7 @@ def _linhas_pagina(page, pno):
                     sup_fim=next((t for t, p in sups if p == "fim"), ""),
                     sups=[t for t, _ in sups],
                     rotacionada=abs(dx - 1.0) > 0.01 or abs(dy) > 0.01,
+                    texto_marcado=texto_marcado,
                 )
             )
     return out
@@ -224,7 +247,7 @@ def _classifica(paginas: Dict[int, List[Linha]], W, H, corpo):
                 if exemplo[k] not in cabecalhos:
                     cabecalhos.append(exemplo[k])
                 continue
-            if RE_NUM_PAGINA.match(ln.texto) and (ln.y0 < 0.12 * H or ln.y1 > 0.88 * H):
+            if RE_NUM_PAGINA.match(ln.texto) and (ln.y0 < 0.12 * H or ln.y1 > 0.88 * H) and not _tem_texto_ao_lado(ln, lines, corpo):
                 ln.zona = "rodape"
                 continue
     # coluna lateral (quadro com metadados editoriais): linhas pequenas, estreitas, alinhadas entre si
@@ -257,7 +280,15 @@ def _classifica(paginas: Dict[int, List[Linha]], W, H, corpo):
             if len(g) >= 5:
                 for ln in g:
                     ln.zona = "lateral"
-    # notas de rodape: comecam num marcador em fonte pequena e, a partir dali, so ha linhas pequenas ate o fim da pagina
+    # notas de rodape: comecam num marcador em fonte pequena e, a partir dali, so ha linhas pequenas ate o fim da pagina.
+    # Tamanho tipico das notas do documento (inicios confiaveis: sobrescrito ou fonte <= 80% do corpo); um inicio
+    # candidato maior que isso (ex.: citacao em bloco a 85% do corpo comecando por "1.") so vale se tiver esse tamanho.
+    tam_notas = Counter()
+    for pno, lines in paginas.items():
+        for ln in lines:
+            if ln.zona == "corpo" and _eh_inicio_nota(ln, corpo) and (ln.sup_inicio or ln.size <= corpo * 0.8):
+                tam_notas[round(ln.size, 1)] += 1
+    nota_size = tam_notas.most_common(1)[0][0] if tam_notas else None
     for pno, lines in paginas.items():
         livres = sorted([ln for ln in lines if ln.zona == "corpo"], key=lambda l: (l.y0, l.x0))
         em_nota = False
@@ -270,12 +301,43 @@ def _classifica(paginas: Dict[int, List[Linha]], W, H, corpo):
                     continue
                 else:
                     em_nota = False
+            if nota_size is not None and ln.size > corpo * 0.8 and abs(ln.size - nota_size) > 0.6 and not ln.sup_inicio:
+                continue  # fonte de citacao em bloco, nao de nota
+            if ln.size > corpo * 0.8 and not ln.sup_inicio and _recuada_sem_vizinho(ln, livres, corpo):
+                continue  # citacao em bloco recuada ("1. ...") com o mesmo tamanho das notas: nota comeca na margem
             if _eh_inicio_nota(ln, corpo) and (ln.y0 > 0.5 * H or ln.size <= corpo * 0.75):
                 resto = livres[i + 1:]
                 if all(l.size <= corpo * 0.93 + 0.05 or l.texto.startswith("©") for l in resto):
                     ln.zona = "nota"
                     em_nota = True
     return cabecalhos
+
+
+def _recuada_sem_vizinho(ln: Linha, livres: List[Linha], corpo) -> bool:
+    """Linha recuada (> 2 corpos a direita da margem principal da pagina) sem nenhuma linha a sua esquerda na mesma
+    altura: e um bloco recuado (citacao longa), nao uma nota de rodape nem a coluna direita de um layout em colunas."""
+    grandes = [round(l.x0) for l in livres if l.size >= corpo * 0.9]
+    if not grandes:
+        return False
+    x_main = Counter(grandes).most_common(1)[0][0]
+    if ln.x0 <= x_main + 2 * corpo:
+        return False
+    for outra in livres:
+        if outra is not ln and outra.x1 <= ln.x0 and min(ln.y1, outra.y1) - max(ln.y0, outra.y0) > 0:
+            return False
+    return True
+
+
+def _tem_texto_ao_lado(ln: Linha, lines: List[Linha], corpo) -> bool:
+    """Numero pequeno com texto pequeno logo a direita, na mesma altura: e rotulo de nota de rodape, nao numero de pagina."""
+    if ln.size > corpo * 0.7:
+        return False
+    for outra in lines:
+        if outra is ln or outra.x0 < ln.x1 - 1 or outra.x0 > ln.x1 + 3 * corpo:
+            continue
+        if outra.size <= corpo * 0.93 + 0.05 and min(ln.y1, outra.y1) - max(ln.y0, outra.y0) > 0:
+            return True
+    return False
 
 
 def _eh_inicio_nota(ln: Linha, corpo):
@@ -347,6 +409,7 @@ def _paragrafos(lines: List[Linha], zona: str, col_left: float) -> List[Paragraf
         out.append(
             Paragrafo(
                 pagina=grupo[0].pagina, zona=zona, linhas=grupo, texto=juntar_linhas(textos),
+                texto_marcado=juntar_linhas([g.texto_marcado or g.texto for g in grupo]),
                 size=Counter(round(g.size, 1) for g in grupo).most_common(1)[0][0],
                 bold=sum(g.bold for g in grupo) > len(grupo) / 2, italic=sum(g.italic for g in grupo) > len(grupo) / 2,
                 font=grupo[0].font, x0=min(g.x0 for g in grupo), y0=grupo[0].y0, x1=max(g.x1 for g in grupo), y1=grupo[-1].y1,

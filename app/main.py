@@ -49,7 +49,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.4.0"
+VERSAO_APP = "0.5.0"
 
 app = FastAPI(title="xmljats", version=VERSAO_APP, docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=str(RAIZ / "app" / "static")), name="static")
@@ -330,6 +330,13 @@ def gera_e_valida(pasta: Path) -> dict:
         "editados": editados,
         "figuras": [{"rotulo": f["rotulo"], "legenda": f.get("legenda"), "fonte": f.get("fonte"), "arquivo": f.get("arquivo"),
                      "href": figuras_pacote.get(f.get("arquivo")), "chamada": f.get("chamada_no_texto")} for f in modelo.get("figuras", []) if f["tipo"] == "fig"],
+        "notas": [{"id": n["id"], "rotulo": n["rotulo"], "tipo": n.get("tipo"), "chamada": n.get("chamada_no_texto"), "ligada_a": n.get("ligada_a"),
+                   "texto": (n.get("texto") or "")[:160]} for n in modelo.get("notas", [])],
+        "referencias": [{"texto": r["texto"], "tipo": r.get("tipo"), "confianca": c.get("confianca", "baixa"),
+                         "autores": c.get("autores", []), "editores": c.get("editores", []),
+                         "campos": {k: v for k, v in c.items() if k not in ("autores", "editores", "confianca")}}
+                        for r, c in zip(modelo.get("referencias", []), res.campos_referencias)],
+        "estilo_referencias": modelo.get("estilo_referencias"),
         "contagens": {
             "paginas": modelo.get("paginas"),
             "autores": len(modelo.get("autores", [])),
