@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.16.0"
+VERSAO_APP = "0.17.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"

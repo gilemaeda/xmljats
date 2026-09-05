@@ -848,6 +848,17 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
                 _sub(ec, "ext-link", url_ref, ext_link_type="uri", xlink_href=url_ref)
             if campos.get("date-in-citation"):
                 _sub(ec, "date-in-citation", campos["date-in-citation"], content_type="access-date")
+        # referencia que ninguem chama no texto: nao reprova no validador, mas a SciELO cobra na revisao
+        citados = {m.group(1) for m in re.finditer(r'rid="(B\d+)"', etree.tostring(art, encoding="unicode"))}
+        orfas = [f"B{k}" for k in range(1, len(refs) + 1) if f"B{k}" not in citados]
+        if orfas:
+            res.aviso(f"{len(orfas)} referência(s) sem chamada no texto ({', '.join(orfas[:12])}"
+                      f"{'…' if len(orfas) > 12 else ''}). Toda entrada da lista deveria ser citada no corpo; "
+                      f"confira se a chamada existe no artigo ou se a referência sobra (R03).")
+        sem_link = [f"B{k}" for k, campos in enumerate(res.campos_referencias, start=1) if campos.get("_acesso_sem_link")]
+        if sem_link:
+            res.aviso(f"{len(sem_link)} referência(s) com data de acesso mas sem endereço: {', '.join(sem_link[:12])}. "
+                      f"O próprio artigo traz \"Disponível em:\" vazio; a data de acesso sozinha não entra no XML (R04).")
         if conf["media"] or conf["baixa"]:
             res.aviso(f"element-citation: {conf['alta']} de {len(refs)} referências com estrutura reconhecida por inteiro; "
                       f"{conf['media'] + conf['baixa']} com campos parciais, conferir na lista de referências (R02).")

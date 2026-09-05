@@ -228,6 +228,22 @@ def roda_site():
           c.post("/revistas/nova", data={"acronimo": "xled", "titulo": "T", "abrev": "T", "issn_epub": "2446-8088",
                                          "editora": "E", "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
                                          "editor_lattes": "https://exemplo.org/x"}).status_code == 400)
+    # pontos levantados na analise externa do XML (PDF "Analise XML SciELO", 05/09/2026)
+    from extrator.citacao import campos_referencia as _cr
+    _eds = _cr("GEWIRTZ, Paul; BROOKS, P. (eds.). Law stories. Yale University Press, 1996.", "book",
+               ["GEWIRTZ, Paul", "BROOKS, P."])
+    check("(eds.) na abertura da referência vira person-group editor",
+          bool(_eds.get("editores")) and not _eds.get("autores"))
+    _sem = _cr("SILVA, A. Artigo. Revista, 2019. Disponivel em: . Acesso em: 18 dez. 2024.", "journal", ["SILVA, A."])
+    check("data de acesso sem endereço não entra no element-citation", "date-in-citation" not in _sem)
+    from extrator import referencias as _rf
+    check("rodapé da revista não gruda na última referência",
+          bool(_rf.RE_RODAPE_ARTIGO.search("Contraponto, 2013. Recebido: 23/12/24 Aceito: 05/01/25")) and
+          not _rf.RE_RODAPE_ARTIGO.search("SILVA, A. Como citar Hegel. Sao Paulo, 2020."))
+    import glob as _g
+    check("nenhum XML publicado pela SciELO usa page-count (o nosso também não, em publicação contínua)",
+          not [f for f in _g.glob(os.path.join(RAIZ, "modelos", "gabarito", "*.xml"))
+               if "<page-count" in io.open(f, encoding="utf-8", errors="replace").read()])
     from app import main as _am
     campos_rev_ok = _am.campos_da_revista({}, {"licenca_url": "https://creativecommons.org/licenses/by/4.0/", "titulo": "T"}).get("licenca") is not None
     if doc:
@@ -378,6 +394,10 @@ def main():
           "| Editor-chefe da revista com ORCID e Lattes no cadastro | pronto | ops/test_declaracoes.py |",
           "| Cliente cadastra revista (editar e remover seguem do administrador) | pronto | verificação \"cliente cadastra revista\" |",
           "| Campos preenchidos automaticamente destacados em azul | pronto | ops/test_declaracoes.py |",
+          "| Referência sem chamada no texto vira aviso (R03) | pronto | ops/test_referencias_analise.py |",
+          "| Data de acesso sem endereço não entra no XML (R04) | pronto | ops/test_referencias_analise.py |",
+          "| (eds.)/(org.) na abertura da referência viram editor, não autor | pronto | ops/test_referencias_analise.py |",
+          "| Rodapé da revista não gruda na última referência | pronto | ops/test_referencias_analise.py |",
           "| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",

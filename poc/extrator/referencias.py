@@ -12,6 +12,13 @@ RE_HEAD_REF = re.compile(r"^(refer[êe]ncias?(\s+bibliogr[áa]ficas?)?|reference
 RE_ABNT = re.compile(r"^[A-ZÀ-Ú][A-ZÀ-Ú'’\-]+(?: [A-ZÀ-Ú][A-ZÀ-Ú'’\-]+)*\s*[,.:]\s")
 RE_ABNT_ENT = re.compile(r"^[A-ZÀ-Ú]{3,}(?: [A-ZÀ-Ú]{2,})*\s+[a-zà-ú]")  # ACAO da Defensoria / ORGANIZACAO das Nacoes
 RE_APA = re.compile(r"^[A-ZÀ-Ú][a-zà-ú'’\-]+(?:,?\s+[A-ZÀ-Ú]\.)+|^[A-ZÀ-Ú][a-zà-ú'’\-]+,\s+[A-ZÀ-Ú][a-zà-ú'’\-]+.{0,80}\(\d{4}[a-z]?\)")
+# Rodape que a revista imprime depois das referencias e que o layout gruda na ultima entrada:
+# "Idioma original: Portugues Recebido: 23/12/24 Aceito: 05/01/25". Nao e parte da referencia.
+RE_RODAPE_ARTIGO = re.compile(
+    r"\s*(?:(?:Idioma original|Original language|Idioma de publica[^:]{0,12}|Recebido(?: em)?|Received|"
+    r"Recibido|Aceito(?: em)?|Accepted|Aceptado|Aprovado(?: em)?|Submetido(?: em)?|Submitted|Submission|"
+    r"Data de submiss[^:]{0,8}|Como citar|How to cite|C[oó]mo citar|Editor(?:es)? respons[^:]{0,10})\s*:|"
+    r"Esta obra est[aá] licenciada|This work is licensed).*$", re.I | re.S)
 RE_TRACO = re.compile(r"^_{3,}")
 RE_ANO_PAREN = re.compile(r"\((\d{4}[a-z]?)\)")
 RE_ANO = re.compile(r"(?<![\d./-])(1[6-9]\d{2}|20[0-4]\d)[a-z]?(?![\d/])")
@@ -163,6 +170,11 @@ def _monta_entradas(model: ArticleModel, entradas, origem: str):
         if len(texto) < 15:
             continue
         texto = RE_NUM_ENTRADA.sub("", texto, count=1) if origem.startswith("numeração") else texto
+        if e is entradas[-1]:
+            # o rodape da revista so gruda na ultima entrada; cortar em todas arriscaria comer titulo
+            texto = RE_RODAPE_ARTIGO.sub("", texto).strip(" ;,")
+            if len(texto) < 15:
+                continue
         r = Referencia(texto=texto)
         m = RE_ANO_PAREN.search(texto)
         sem_acesso = RE_ACESSO.sub("", texto)

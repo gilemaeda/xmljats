@@ -119,8 +119,21 @@ def campos_referencia(texto: str, tipo: str, autores: List[str]) -> Dict:
         if not (md and md.group(0) in url and "doi.org" in url):
             out["ext-link"] = url
     ma = RE_ACESSO.search(t)
-    if ma:
+    if ma and (out.get("ext-link") or out.get("doi")):
         out["date-in-citation"] = _limpa(ma.group(2))
+    elif ma:
+        # "Disponivel em: . Acesso em: 18 dez. 2024" — a propria referencia ficou sem o endereco.
+        # Data de acesso sozinha nao diz nada e a SciELO cobra o ext-link junto, entao ela nao sai.
+        out["_acesso_sem_link"] = _limpa(ma.group(2))
+    # "GEWIRTZ, Paul; BROOKS, P. (eds.). Law's stories..." — quem abre a referencia sao os organizadores
+    # da obra, nao os autores. Sem isso os dois saem como author, que e o que a SciELO le errado.
+    cabecalho = cabecalho_autores(t)
+    # o "(eds.)" costuma cair logo DEPOIS do bloco de nomes ("BROOKS, P. (eds.)."), entao a janela
+    # olha um pouco alem do cabecalho. "In: FULANO (org.)" e outro caso, tratado no capitulo de livro.
+    janela = t[: len(cabecalho) + 30]
+    if RE_ORG.search(janela) and not re.search("In:", janela):
+        out["editores"] = out["autores"]
+        out["autores"] = []
     apa = bool(RE_ANO_PAREN.search(t)) and not re.match(r"^[A-ZÀ-Ú]{2,}", t)
     corpo = _tira_autores(t, autores)
     corpo = RE_DISPONIVEL.split(corpo)[0]

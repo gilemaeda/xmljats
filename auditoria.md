@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.15.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.16.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 92 de 92 verificações passaram.
+- **Site:** 96 de 96 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -109,6 +109,10 @@ Gerada por `python ops/auditoria.py` (app 0.15.0). Cada número vem de uma medi�
 - ok — campo preenchido sozinho é marcado em azul
 - ok — cadastro de revista tem editor-chefe, ORCID e Lattes
 - ok — Lattes fora do cnpq.br é recusado
+- ok — (eds.) na abertura da referência vira person-group editor
+- ok — data de acesso sem endereço não entra no element-citation
+- ok — rodapé da revista não gruda na última referência
+- ok — nenhum XML publicado pela SciELO usa page-count (o nosso também não, em publicação contínua)
 - ok — texto de cada seção do corpo é editável
 - ok — inserir tabela/imagem/equação/quadro/diálogo dentro da seção
 - ok — vincular a revista preenche o que é dado dela
@@ -184,6 +188,10 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Editor-chefe da revista com ORCID e Lattes no cadastro | pronto | ops/test_declaracoes.py |
 | Cliente cadastra revista (editar e remover seguem do administrador) | pronto | verificação "cliente cadastra revista" |
 | Campos preenchidos automaticamente destacados em azul | pronto | ops/test_declaracoes.py |
+| Referência sem chamada no texto vira aviso (R03) | pronto | ops/test_referencias_analise.py |
+| Data de acesso sem endereço não entra no XML (R04) | pronto | ops/test_referencias_analise.py |
+| (eds.)/(org.) na abertura da referência viram editor, não autor | pronto | ops/test_referencias_analise.py |
+| Rodapé da revista não gruda na última referência | pronto | ops/test_referencias_analise.py |
 | Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |
