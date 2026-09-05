@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.17.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.18.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 101 de 101 verificações passaram.
+- **Site:** 106 de 106 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -137,6 +137,11 @@ Gerada por `python ops/auditoria.py` (app 0.17.0). Cada número vem de uma medi�
 - ok — licença CC BY-SA não vira CC BY-NC-SA
 - ok — LaTeX vira MathML
 - ok — LaTeX quebrado explica o erro em vez de gerar XML inválido
+- ok — lista mostra quando o documento foi aberto pela última vez
+- ok — lista tem seletor de ordenação, com 'aberto mais recente'
+- ok — ordem escolhida fica marcada e convive com filtro
+- ok — ordem desconhecida não quebra a lista
+- ok — a abertura fica gravada com quem abriu
 - ok — sair encerra a sessão
 
 ## 5. O que o validador oficial ainda aponta
@@ -202,6 +207,7 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Declarações reconhecidas em português, inglês e espanhol | pronto | ops/test_counts_idiomas.py |
 | Datas de recebido/aceite lidas da caixa editorial (ano de 2 dígitos) | pronto | ops/test_counts_idiomas.py |
 | Imagens aparecem na pré-visualização | pronto | ops/test_counts_idiomas.py |
+| Data da última abertura e ordenação na lista de documentos | pronto | ops/test_lista_ordem.py |
 | Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |

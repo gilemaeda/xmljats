@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.18.0"
+VERSAO_APP = "0.19.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -359,6 +359,43 @@ def pode_ver(doc: dict, usuario: dict) -> bool:
     return (doc.get("criado_por_id") or doc.get("criado_por")) in (usuario.get("id"), usuario.get("nome"))
 
 
+def marca_aberto(pasta: Path, usuario: dict) -> None:
+    """Guarda quando e por quem o documento foi aberto pela ultima vez. Serve para achar de novo o que
+    se estava mexendo, que e como o trabalho realmente acontece: abre, sai, volta."""
+    cfg = le_json(pasta / "config.json", {}) or {}
+    agora = tempo.agora_iso()
+    # nao reescreve o arquivo a cada clique dentro do mesmo minuto
+    anterior = cfg.get("aberto_em") or ""
+    if anterior[:16] == agora[:16] and cfg.get("aberto_por") == usuario.get("nome"):
+        return
+    cfg["aberto_em"] = agora
+    cfg["aberto_por"] = usuario.get("nome")
+    cfg["aberturas"] = int(cfg.get("aberturas") or 0) + 1
+    grava_json(pasta / "config.json", cfg)
+
+
+# como a lista pode ser ordenada. O valor e a chave da URL; a funcao diz por onde ordenar.
+ORDENS = [
+    ("atualizado", "Atualizado mais recente", lambda d: (d.get("atualizado_em") or d.get("criado_em") or "", ), True),
+    ("aberto", "Aberto mais recente", lambda d: (d.get("aberto_em") or "", ), True),
+    ("criado", "Enviado mais recente", lambda d: (d.get("criado_em") or "", ), True),
+    ("antigo", "Enviado mais antigo", lambda d: (d.get("criado_em") or "", ), False),
+    ("titulo", "Título (A-Z)", lambda d: ((d.get("titulo") or d.get("arquivo_original") or "").lower(), ), False),
+    ("revista", "Revista", lambda d: ((d.get("revista") or "zzz").lower(), d.get("titulo") or ""), False),
+    ("situacao", "Com mais bloqueantes", lambda d: (len(d.get("bloqueantes") or []), ), True),
+    ("etapa", "Etapa no fluxo", lambda d: (ETAPAS_ORDEM.get(d.get("etapa") or "recebido", 0), ), False),
+]
+ROTULO_ORDEM = {c: r for c, r, _f, _rev in ORDENS}
+ETAPAS_ORDEM = {cod: i for i, (cod, _r) in enumerate(ETAPAS)}
+
+
+def ordena_docs(docs: list, ordem: str) -> list:
+    """Ordena a lista pelo criterio escolhido. Documento nunca aberto vai para o fim em 'aberto'."""
+    escolha = next((o for o in ORDENS if o[0] == ordem), None) or ORDENS[0]
+    _cod, _rot, chave, decrescente = escolha
+    return sorted(docs, key=chave, reverse=decrescente)
+
+
 def lista_docs(limite=30, usuario: Optional[dict] = None):
     itens = []
     for pasta in DOCS.iterdir():
@@ -377,6 +414,9 @@ def lista_docs(limite=30, usuario: Optional[dict] = None):
             continue
         hist = cfg.get("historico_etapas") or []
         d["etapa_por"] = hist[-1].get("por") if hist else None
+        d["aberto_em"] = cfg.get("aberto_em")
+        d["aberto_por"] = cfg.get("aberto_por")
+        d["aberturas"] = cfg.get("aberturas") or 0
         itens.append(d)
     itens.sort(key=lambda d: d.get("atualizado_em") or d.get("criado_em", ""), reverse=True)
     return itens[:limite] if limite else itens
@@ -1077,6 +1117,7 @@ def ver_doc(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
     r = le_json(pasta / "validacao.json")
     if not r:
         raise HTTPException(404, "Documento sem resultado")
+    marca_aberto(pasta, usuario)
     r["id"] = doc_id
     cfg = le_json(pasta / "config.json", {}) or {}
     return templates.TemplateResponse(request, "resultado.html", {"r": r, "usuario": usuario, "etapas": ETAPAS, "etapa": cfg.get("etapa") or "recebido",
@@ -1143,6 +1184,7 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
 @app.get("/doc/{doc_id}/editar", response_class=HTMLResponse)
 def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica), mensagem: str = ""):
     pasta = _pasta(doc_id, usuario)
+    marca_aberto(pasta, usuario)
     modelo = le_json(pasta / "model.json", {})
     campos = (le_json(pasta / "edicoes.json", {}) or {}).get("campos", {})
     valores = valores_editaveis(modelo)
@@ -1680,7 +1722,8 @@ def revista_remover(acronimo: str, usuario: dict = Depends(exige_admin)):
 # ---------------------------------------------------------------- painel
 
 @app.get("/painel", response_class=HTMLResponse)
-def painel(request: Request, usuario: dict = Depends(autentica), revista: str = "", etapa: str = "", situacao: str = ""):
+def painel(request: Request, usuario: dict = Depends(autentica), revista: str = "", etapa: str = "", situacao: str = "",
+           ordem: str = "atualizado"):
     if usuario.get("papel") == "admin":
         return RedirectResponse(url="/admin/documentos", status_code=303)
     docs = lista_docs(0, usuario)
@@ -1692,10 +1735,12 @@ def painel(request: Request, usuario: dict = Depends(autentica), revista: str = 
         docs = [d for d in docs if d.get("pronto")]
     elif situacao == "bloqueado":
         docs = [d for d in docs if not d.get("pronto")]
-    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao}
+    docs = ordena_docs(docs, ordem)
+    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao, "ordem": ordem if ordem != "atualizado" else ""}
     query = "?" + urllib.parse.urlencode({k: v for k, v in filtros.items() if v}) if any(filtros.values()) else ""
     return templates.TemplateResponse(request, "painel.html", {"docs": docs, "revistas": carrega_revistas(), "etapas": ETAPAS, "filtros": filtros,
-                                                               "filtro_ativo": any(filtros.values()), "query": query, "usuario": usuario,
+                                                               "filtro_ativo": any(v for k, v in filtros.items() if k != "ordem"),
+                                                               "query": query, "usuario": usuario, "ordens": ORDENS, "ordem": ordem,
                                                                "total_docs": len(lista_docs(0, usuario))})
 
 
@@ -2057,7 +2102,7 @@ def admin(request: Request, usuario: dict = Depends(exige_admin), dono: str = ""
 
 @app.get("/admin/documentos", response_class=HTMLResponse)
 def admin_documentos(request: Request, usuario: dict = Depends(exige_admin), revista: str = "", etapa: str = "",
-                     situacao: str = "", dono: str = ""):
+                     situacao: str = "", dono: str = "", ordem: str = "atualizado"):
     docs = lista_docs(0)
     if revista:
         docs = [d for d in docs if d.get("revista") == revista]
@@ -2069,11 +2114,14 @@ def admin_documentos(request: Request, usuario: dict = Depends(exige_admin), rev
         docs = [d for d in docs if not d.get("pronto")]
     if dono:
         docs = [d for d in docs if (d.get("criado_por_id") or "") == dono]
-    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao, "dono": dono}
+    docs = ordena_docs(docs, ordem)
+    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao, "dono": dono,
+               "ordem": ordem if ordem != "atualizado" else ""}
     query = "?" + urllib.parse.urlencode({k: v for k, v in filtros.items() if v}) if any(filtros.values()) else ""
     return templates.TemplateResponse(request, "admin_docs.html", {
         "docs": docs, "revistas": carrega_revistas(), "etapas": ETAPAS, "filtros": filtros, "usuarios": CONTAS.lista(),
-        "filtro_ativo": any(filtros.values()), "query": query, "usuario": usuario})
+        "filtro_ativo": any(v for k, v in filtros.items() if k != "ordem"), "query": query, "usuario": usuario,
+        "ordens": ORDENS, "ordem": ordem})
 
 
 @app.post("/sair")

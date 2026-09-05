@@ -41,6 +41,12 @@
       {% for u in usuarios %}<option value="{{ u.id }}" {% if filtros.dono == u.id %}selected{% endif %}>{{ u.nome }}</option>{% endfor %}
     </select>
   </div>
+  <div class="field">
+    <label for="f-ordem">Ordenar por</label>
+    <select id="f-ordem" name="ordem" onchange="this.form.submit()">
+      {% for cod, rotulo, _f, _r in ordens %}<option value="{{ cod }}" {% if ordem == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+    </select>
+  </div>
   <button class="btn" type="submit">Filtrar</button>
   {% if filtro_ativo %}<a class="btn quiet" href="/admin/documentos">Limpar</a>{% endif %}
 </form>
@@ -49,11 +55,12 @@
   <header class="cardhead"><h2>Lista</h2><span class="muted small">{{ docs|length }} documento(s)</span></header>
   {% if docs %}
   <div class="tblwrap"><table class="tbl">
-    <thead><tr><th>Atualizado</th><th>Artigo</th><th>Revista</th><th>Conta</th><th>Situação</th><th>Etapa</th><th></th></tr></thead>
+    <thead><tr><th>Atualizado</th><th>Aberto</th><th>Artigo</th><th>Revista</th><th>Conta</th><th>Situação</th><th>Etapa</th><th></th></tr></thead>
     <tbody>
     {% for d in docs %}
       <tr>
         <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)|quando }}</td>
+        <td class="tnum muted small">{% if d.aberto_em %}{{ d.aberto_em|quando }}<div class="faint" style="font-size:11px">{{ d.aberto_em|ha_quanto }}{% if d.aberto_por and usuario.papel != 'cliente' %} · {{ d.aberto_por }}{% endif %}</div>{% else %}<span class="faint">nunca aberto</span>{% endif %}</td>
         <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }} · {{ d.nome_base }}</div></td>
         <td>{{ d.revista or '—' }}</td>
         <td class="small">{{ d.criado_por or '—' }}</td>

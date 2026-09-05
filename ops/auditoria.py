@@ -319,6 +319,20 @@ def roda_site():
     mml, erro_mml = app_main.latex_para_mathml("E = mc^2")
     check("LaTeX vira MathML", erro_mml is None and "<math" in (mml or ""))
     check("LaTeX quebrado explica o erro em vez de gerar XML inválido", app_main.latex_para_mathml(chr(92) + "frac{a}{")[1] is not None)
+    # lista de documentos: ultima abertura e ordenacao
+    if doc:
+        c.get(doc)  # abrir o resultado registra a abertura
+        _lista = c.get("/admin/documentos").text
+        check("lista mostra quando o documento foi aberto pela última vez",
+              "<th>Aberto</th>" in _lista and ("nunca aberto" in _lista or "há" in _lista))
+        check("lista tem seletor de ordenação, com 'aberto mais recente'",
+              'name="ordem"' in _lista and "Aberto mais recente" in _lista)
+        check("ordem escolhida fica marcada e convive com filtro",
+              'value="aberto" selected' in c.get("/admin/documentos?ordem=aberto&situacao=bloqueado").text)
+        check("ordem desconhecida não quebra a lista", c.get("/admin/documentos?ordem=xxx").status_code == 200)
+        import json as _js
+        _cfg = _js.load(io.open(os.path.join(tmp, "docs", doc.rsplit("/", 1)[-1], "config.json"), encoding="utf-8"))
+        check("a abertura fica gravada com quem abriu", bool(_cfg.get("aberto_em")) and bool(_cfg.get("aberto_por")))
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)
@@ -420,6 +434,7 @@ def main():
           "| Declarações reconhecidas em português, inglês e espanhol | pronto | ops/test_counts_idiomas.py |",
           "| Datas de recebido/aceite lidas da caixa editorial (ano de 2 dígitos) | pronto | ops/test_counts_idiomas.py |",
           "| Imagens aparecem na pré-visualização | pronto | ops/test_counts_idiomas.py |",
+          "| Data da última abertura e ordenação na lista de documentos | pronto | ops/test_lista_ordem.py |",
           "| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",
