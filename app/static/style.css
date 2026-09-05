@@ -448,6 +448,54 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 .bars .b .g i{display:block;height:100%;background:linear-gradient(90deg,var(--brand-2),var(--accent));border-radius:999px}
 .bars .b .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
 
+/* ---------- revisar e editar: formulario + visualizador do original ---------- */
+.revisar{display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,44%);gap:var(--s-5);align-items:start}
+.revisar-form{min-width:0}
+.req{color:var(--crit);font-weight:700}
+.fonte-regra{display:block;margin-top:6px;font-size:11px;color:var(--muted);font-family:var(--mono);letter-spacing:.01em}
+.pendencias .pend-lista{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.pendencias .pend-lista li{display:flex;align-items:baseline;gap:8px;font-size:13px;flex-wrap:wrap}
+.bloco.anexo{border-left:3px solid var(--border-strong)}
+.bloco.anexo.novo{border-left-color:var(--accent)}
+.check.remover{color:var(--muted);font-size:12px}
+.previa{margin-top:var(--s-3)}
+.tbl.mini{font-size:12px}
+.tbl.mini td,.tbl.mini th{padding:4px 8px}
+.fig-previa{width:150px;flex:0 0 150px;border:1px solid var(--border);border-radius:var(--r-1);background:var(--surface-2);
+  display:grid;place-items:center;min-height:96px;overflow:hidden}
+.fig-previa img{max-width:100%;height:auto;display:block}
+.fig-previa.eq{width:220px;flex-basis:220px;min-height:60px}
+.fig-previa .sem-img{font-size:12px;color:var(--faint);padding:var(--s-4)}
+
+.visor{position:sticky;top:var(--s-4);max-height:calc(100vh - var(--s-5));display:flex;flex-direction:column;
+  border:1px solid var(--border);border-radius:var(--r-2);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-1)}
+.visor-abas{display:flex;gap:2px;padding:6px 6px 0;background:var(--surface-2);border-bottom:1px solid var(--border)}
+.visor-abas .aba{border:1px solid transparent;border-bottom:none;background:none;color:var(--muted);cursor:pointer;
+  padding:8px 14px;border-radius:var(--r-1) var(--r-1) 0 0;font:inherit;font-size:13px;font-weight:600}
+.visor-abas .aba:hover{color:var(--text)}
+.visor-abas .aba.ativa{background:var(--surface);border-color:var(--border);color:var(--text)}
+.visor-barra{display:flex;align-items:center;gap:6px;padding:8px 10px;border-bottom:1px solid var(--border);background:var(--surface)}
+.visor-barra .sep{width:1px;height:18px;background:var(--border);margin:0 4px}
+.visor-corpo{flex:1;overflow:auto;background:var(--bg-2)}
+.visor-corpo .painel{display:none}
+.visor-corpo .painel.ativo{display:block}
+.visor-corpo .doc{padding:var(--s-4);background:var(--surface)}
+.pdf-paginas{display:flex;flex-direction:column;align-items:center;gap:var(--s-4);padding:var(--s-4)}
+.pdf-pagina{position:relative;background:#fff;box-shadow:var(--shadow-2);border-radius:2px}
+.pdf-pagina img{width:100%;height:100%;display:block;border-radius:2px}
+.pdf-num{position:absolute;right:6px;bottom:4px;font-size:10px;color:#666;background:rgba(255,255,255,.85);
+  padding:1px 5px;border-radius:6px;font-family:var(--mono)}
+.camada-texto{position:absolute;inset:0;overflow:hidden;line-height:1;cursor:text}
+.camada-texto span{position:absolute;white-space:pre;color:transparent;transform-origin:0 0;user-select:text}
+.camada-texto span::selection{background:rgba(56,132,255,.35)}
+.visor-selecao{display:flex;align-items:center;gap:8px;padding:8px 10px;border-top:1px solid var(--border);
+  background:var(--surface-2);flex-wrap:wrap}
+.visor-selecao select{max-width:230px;height:32px;padding:0 8px;font-size:12.5px}
+.anexo-card{border:1px solid var(--border);border-radius:var(--r-1);padding:10px;margin:8px 0;background:var(--surface)}
+.anexo-card img{max-width:100%;height:auto;border-radius:4px;margin-top:6px}
+@media (max-width:1200px){.revisar{grid-template-columns:1fr}.visor{position:static;max-height:none}
+  .visor-corpo{max-height:70vh}}
+
 /* ---------- consulta por ISSN (validador, revistas) ---------- */
 .issn-box{border:1px dashed var(--border-strong);border-radius:var(--r-3);padding:var(--s-4);background:var(--surface-2)}
 .issn-saida{margin-top:var(--s-3);border-top:1px solid var(--border);padding-top:var(--s-3)}

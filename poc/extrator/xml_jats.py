@@ -76,6 +76,12 @@ def _sub(parent, tag, text=None, **attrs):
     return el
 
 
+def _mml_com_prefixo(mathml: str) -> bytes:
+    """O latex2mathml devolve <math xmlns=...>; o JATS espera o MathML no namespace MathML (prefixo mml no nosso XML).
+    Como o namespace ja vem declarado, basta entregar a arvore ao lxml: o prefixo sai do nsmap do documento."""
+    return (mathml or "").encode("utf-8")
+
+
 def _data(parent, tag, iso, **attrs):
     """iso 'AAAA-MM-DD' -> <tag><day/><month/><year/>."""
     if not iso:
@@ -481,13 +487,16 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         tabs_xml.append(t)
     eqs_xml = []
     for e in model.get("equacoes", []):
-        if not e.get("arquivo"):
-            continue  # sem recorte nao ha o que emitir
+        if not (e.get("arquivo") or e.get("mathml")):
+            continue  # sem recorte e sem MathML nao ha o que emitir
         e = dict(e)
         e["_rid"] = f"e{len(eqs_xml) + 1:02d}"
-        e["_href"] = f"{res.nome_base}-e{len(eqs_xml) + 1:02d}.tif"
-        res.imagens.append((e["arquivo"], e["_href"]))
+        if e.get("arquivo") and not e.get("mathml"):
+            e["_href"] = f"{res.nome_base}-e{len(eqs_xml) + 1:02d}.tif"
+            res.imagens.append((e["arquivo"], e["_href"]))
         eqs_xml.append(e)
+    quadros_xml = [dict(q, _rid=f"q{i}") for i, q in enumerate(model.get("quadros", []), start=1) if (q.get("texto") or "").strip()]
+    dialogos_xml = [dict(d, _rid=f"d{i}") for i, d in enumerate(model.get("dialogos", []), start=1) if d.get("turnos")]
 
     # ---- counts
     figs = [f for f in model.get("figuras", []) if f["tipo"] == "fig"]
@@ -547,7 +556,38 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         df = _sub(pai_el, "disp-formula", id=e["_rid"])
         if e.get("rotulo"):
             _sub(df, "label", e["rotulo"])
+        if e.get("mathml"):
+            # o guia de entrega da SciELO exige a formula codificada (MathML ou LaTeX), nao como imagem
+            try:
+                df.append(etree.fromstring(_mml_com_prefixo(e["mathml"])))
+                return
+            except etree.XMLSyntaxError as erro:
+                res.bloqueia(f"{e.get('rotulo') or 'Equação'}: o MathML gerado não é XML válido ({str(erro)[:80]}) (E01).")
         _sub(df, "graphic", xlink_href=e["_href"])
+
+    def _emite_quadro(pai_el, q):
+        """Quadro: texto destacado do fluxo, com rotulo e legenda. Em JATS e <boxed-text>."""
+        bt = _sub(pai_el, "boxed-text", id=q["_rid"])
+        if q.get("rotulo"):
+            _sub(bt, "label", q["rotulo"])
+        if q.get("legenda"):
+            _sub(_sub(bt, "caption"), "title", q["legenda"])
+        for par in [x.strip() for x in (q.get("texto") or "").split("\n") if x.strip()]:
+            _sub(bt, "p", par)
+
+    def _emite_dialogo(pai_el, d):
+        """Dialogo, entrevista ou depoimento: cada fala e um <speech> com <speaker>. Rotulo e legenda ficam na caixa."""
+        alvo = pai_el
+        if d.get("rotulo") or d.get("legenda"):
+            alvo = _sub(pai_el, "boxed-text", id=d["_rid"], content_type="dialogue")
+            if d.get("rotulo"):
+                _sub(alvo, "label", d["rotulo"])
+            if d.get("legenda"):
+                _sub(_sub(alvo, "caption"), "title", d["legenda"])
+        for t in d.get("turnos") or []:
+            sp = _sub(alvo, "speech")
+            _sub(sp, "speaker", t.get("falante") or "—")
+            _sub(sp, "p", t.get("fala") or "")
 
     def _emite_fig(pai_el, f):
         fig = _sub(pai_el, "fig", id=f["_rid"])
@@ -569,6 +609,8 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         figs_secao = [f for f in figs_xml if f.get("secao_indice") == si]
         tabs_secao = [t for t in tabs_xml if t.get("secao_indice") == si]
         eqs_secao = [e for e in eqs_xml if e.get("secao_indice") == si]
+        qds_secao = [q for q in quadros_xml if q.get("secao_indice") == si]
+        dls_secao = [d for d in dialogos_xml if d.get("secao_indice") == si]
         pars = s.get("paragrafos", [])
         for k, par in enumerate(pars):
             for f in figs_secao:
@@ -580,6 +622,12 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             for e in eqs_secao:
                 if (e.get("pos_paragrafo") or 0) == k:
                     _emite_equacao(sec, e)
+            for q in qds_secao:
+                if (q.get("pos_paragrafo") or 0) == k:
+                    _emite_quadro(sec, q)
+            for dl in dls_secao:
+                if (dl.get("pos_paragrafo") or 0) == k:
+                    _emite_dialogo(sec, dl)
             _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml, notas_rid, chamadas_sem_nota, tabs_xml, eqs_xml, refs_numericas)
         for f in figs_secao:
             if (f.get("pos_paragrafo") or 0) >= len(pars):
@@ -590,11 +638,18 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         for e in eqs_secao:
             if (e.get("pos_paragrafo") or 0) >= len(pars):
                 _emite_equacao(sec, e)
+        for q in qds_secao:
+            if (q.get("pos_paragrafo") or 0) >= len(pars):
+                _emite_quadro(sec, q)
+        for dl in dls_secao:
+            if (dl.get("pos_paragrafo") or 0) >= len(pars):
+                _emite_dialogo(sec, dl)
         pilha.append((nivel, sec))
     # figuras, tabelas e equacoes que nao caíram em nenhuma secao (legenda fora do corpo, ou artigo sem secoes)
     # entram no fim do corpo: o contador do XML precisa refletir o que realmente foi emitido
     indices_secoes = set(range(len(model.get("secoes", []))))
-    orfas = [(figs_xml, _emite_fig), (tabs_xml, _emite_tabela), (eqs_xml, _emite_equacao)]
+    orfas = [(figs_xml, _emite_fig), (tabs_xml, _emite_tabela), (eqs_xml, _emite_equacao),
+             (quadros_xml, _emite_quadro), (dialogos_xml, _emite_dialogo)]
     for lista, emite in orfas:
         for item in lista:
             if item.get("secao_indice") not in indices_secoes:
@@ -615,9 +670,24 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     sem_grade = [t.get("rotulo") for t in model.get("tabelas", []) if not t.get("celulas")]
     if sem_grade:
         res.aviso(f"Tabela(s) com legenda mas sem grade reconhecida no PDF, fora do XML: {', '.join(x or '?' for x in sem_grade)} (T01).")
-    if eqs_xml:
-        res.aviso(f"{len(eqs_xml)} equação(ões) em <disp-formula> como imagem: o PDF não guarda MathML. "
-                  f"Para MathML é preciso o DOCX ou o LaTeX original (E01).")
+    # legenda: a SPS pede <caption><title> em toda figura e tabela, e o Schematron recusa caption sem title
+    for f in figs_xml:
+        if not (f.get("legenda") or "").strip():
+            res.bloqueia(f"{f.get('rotulo') or 'Figura'} sem legenda; a SPS exige título na legenda (F02).")
+    for t in tabs_xml:
+        if not (t.get("legenda") or "").strip():
+            res.bloqueia(f"{t.get('rotulo') or 'Tabela'} sem legenda; a SPS exige título na legenda (T02).")
+    imagem_pura = [e for e in eqs_xml if not e.get("mathml")]
+    if imagem_pura:
+        # "Tabelas, formulas e equacoes devem obrigatoriamente ser codificadas em MathML ou Latex"
+        # (Guia de entrega de pacote XML para publicacao em SciELO, dez/2024, item Formato dos arquivos)
+        res.bloqueia(f"{len(imagem_pura)} equação(ões) sairiam como imagem. O guia de entrega da SciELO exige fórmula "
+                     f"em MathML ou LaTeX: escreva o LaTeX de cada uma em Revisar e editar (E01).")
+    com_erro = [e for e in model.get("equacoes", []) if e.get("erro_mathml")]
+    for e in com_erro:
+        res.bloqueia(f"{e.get('rotulo') or 'Equação'}: {e['erro_mathml']} (E01).")
+    if [e for e in eqs_xml if e.get("mathml")]:
+        res.aviso(f"{len([e for e in eqs_xml if e.get('mathml')])} equação(ões) saíram em MathML, como a SciELO exige (E01).")
         numeros = [int(e["numero"]) for e in eqs_xml if (e.get("numero") or "").isdigit()]
         if numeros:
             faltando = sorted(set(range(min(numeros), max(numeros) + 1)) - set(numeros))

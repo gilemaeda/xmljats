@@ -4,6 +4,8 @@ lxml>=5.0
 # packtools: usar a versao do GitHub (a do PyPI e antiga e nao instala no Python 3.12)
 packtools @ https://github.com/scieloorg/packtools/archive/refs/tags/4.16.0.zip
 Pillow>=10
+# LaTeX -> MathML: o guia de entrega da SciELO exige formula codificada, nao imagem
+latex2mathml>=3.77
 picles.plumber
 setuptools
 

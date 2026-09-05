@@ -1,10 +1,24 @@
 {% extends "base.html" %}
 {% set ativo = 'validador' %}
 {% block titulo %}Revisar · {{ r.nome_base }}{% endblock %}
+
+{#- marca de campo: vermelho quando a SciELO exige e está vazio, laranja quando foi editado à mão -#}
+{% macro estado(nome) -%}
+  {%- set ob = obrig.get(nome) -%}
+  {%- if ob %}is-block{% elif bloq.get(nome) %}is-block{% elif nome in editados %}is-edit{% endif -%}
+{%- endmacro %}
+{% macro aviso(nome, hint='') -%}
+  {%- set ob = obrig.get(nome) -%}
+  {%- set b = bloq.get(nome) -%}
+  {% if ob %}<div class="msg block"><b>Obrigatório.</b> {{ ob.motivo }}<span class="fonte-regra">{{ ob.fonte }}</span></div>
+  {% elif b and b[0] %}<div class="msg block">{{ b[0]|regra }}</div>
+  {% elif b %}<span class="prov crit-text">bloqueante: veja ao lado</span>
+  {% elif nome in editados %}<span class="prov">editado à mão</span>
+  {% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
+{%- endmacro %}
 {% macro campo(nome, rotulo, tipo='text', hint='', opcoes=None) -%}
-  {% set b = bloq.get(nome) %}
-  <div class="field {% if b %}is-block{% elif nome in editados %}is-edit{% endif %}" id="f-{{ nome }}">
-    <label for="{{ nome }}">{{ rotulo }}</label>
+  <div class="field {{ estado(nome) }}" id="f-{{ nome }}">
+    <label for="{{ nome }}">{{ rotulo }}{% if obrig.get(nome) %} <span class="req" title="a SciELO exige">*</span>{% endif %}</label>
     {% if opcoes %}
       <select id="{{ nome }}" name="{{ nome }}">
         <option value="">—</option>
@@ -13,40 +27,77 @@
     {% else %}
       <input id="{{ nome }}" name="{{ nome }}" type="{{ tipo }}" value="{{ v.get(nome, '') }}">
     {% endif %}
-    {% if b and b[0] %}<div class="msg block">{{ b[0]|regra }}</div>{% elif b %}<span class="prov crit-text">bloqueante: veja ao lado</span>{% elif nome in editados %}<span class="prov">editado à mão · o extraído era diferente</span>{% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
+    {{ aviso(nome, hint) }}
   </div>
 {%- endmacro %}
+{% macro area(nome, rotulo, linhas=4, hint='', mono=false) -%}
+  <div class="field {{ estado(nome) }}" id="f-{{ nome }}">
+    <label for="{{ nome }}">{{ rotulo }}{% if obrig.get(nome) %} <span class="req" title="a SciELO exige">*</span>{% endif %}</label>
+    <textarea id="{{ nome }}" name="{{ nome }}" rows="{{ linhas }}" {% if mono %}class="mono"{% endif %}>{{ v.get(nome, '') }}</textarea>
+    {{ aviso(nome, hint) }}
+  </div>
+{%- endmacro %}
+
 {% block conteudo %}
 <div class="result-head">
   <div class="stack" style="gap:6px">
     <p class="eyebrow">Revisar e editar</p>
     <h1>{{ r.titulo or r.arquivo_original }}</h1>
-    <div class="row" style="gap:8px"><span class="file"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg><span class="mono">{{ r.arquivo_original }}</span></span>
-      <span class="chip {{ 'ok' if not bloqueantes else 'crit' }}">{{ bloqueantes|length }} bloqueantes</span>
-      {% if editados %}<span class="chip info">{{ editados|length }} campos editados</span>{% endif %}</div>
-    <p class="small muted" style="max-width:80ch">Campos em <b class="crit-text">vermelho</b> resolvem um bloqueante; em <b class="warn-text">laranja</b> já foram editados. O que você digitar substitui o valor extraído só no XML; o PDF e a extração original ficam guardados.</p>
+    <div class="row" style="gap:8px">
+      <span class="file"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg><span class="mono">{{ r.arquivo_original }}</span></span>
+      <span class="chip {{ 'ok' if not obrig else 'crit' }}">{{ obrig|length }} obrigatórios em falta</span>
+      {% if editados %}<span class="chip info">{{ editados|length }} campos editados</span>{% endif %}
+    </div>
   </div>
   <div class="row"><a class="btn" href="/doc/{{ id }}">Voltar ao resultado</a></div>
 </div>
 
-<form method="post" action="/doc/{{ id }}/editar">
-<div class="review">
-  <div>
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+
+{% if obrig %}
+<div class="card pad stack pendencias" style="margin-bottom:var(--s-4);gap:10px">
+  <div class="row between">
+    <h2 style="margin:0">O que a SciELO exige e ainda falta</h2>
+    <span class="chip crit">{{ obrig|length }}</span>
+  </div>
+  <p class="small muted" style="margin:0">Estes campos não estão no PDF ou vieram vazios. Sem eles o pacote é devolvido, então o
+    documento só salva e valida depois de preenchidos. Cada aviso diz qual regra da SciELO Publishing Schema exige o campo.</p>
+  <ul class="pend-lista">
+    {% for g in obrig_grupos %}
+    <li><b>{{ g.grupo }}</b> <span class="chip neutral">{{ g.quantos }}</span>
+      <span class="faint">{{ g.campos[:6]|join(', ') }}{% if g.campos|length > 6 %} e mais {{ g.campos|length - 6 }}{% endif %}</span></li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<div class="revisar">
+<form method="post" action="/doc/{{ id }}/editar" id="form-revisar" class="revisar-form">
     <div class="fs">
       <header><h2>Revista e identificação</h2><span class="small muted">journal-meta · article-meta</span></header>
       <div class="in">
-        <div class="field {% if bloq.get('revista') %}is-block{% endif %}" id="f-revista">
-          <label for="revista">Revista (cadastro)</label>
+        <div class="field {{ estado('revista') }}" id="f-revista">
+          <label for="revista">Revista (cadastro){% if obrig.get('revista') %} <span class="req">*</span>{% endif %}</label>
           <select id="revista" name="revista">
-            <option value="">Detectar pelo ISSN / DOI</option>
+            <option value="">Detectar pelo ISSN</option>
             {% for rv in revistas %}<option value="{{ rv.acronimo }}" {% if revista_atual == rv.acronimo %}selected{% endif %}>{{ rv.titulo }} ({{ rv.acronimo }})</option>{% endfor %}
           </select>
-          {% if bloq.get('revista') %}<div class="msg block">{{ bloq['revista'][0]|regra }}</div>{% else %}<span class="hint">Fornece acrônimo, título abreviado, editora e licença padrão.</span>{% endif %}
+          {{ aviso('revista', 'Fornece acrônimo, título abreviado, editora e licença padrão.') }}
+        </div>
+        <div class="field issn-box" id="issn-box" hidden>
+          <label for="issn-numero">ISSN da revista</label>
+          <div class="row" style="gap:8px;align-items:stretch">
+            <input id="issn-numero" placeholder="0000-0000" inputmode="numeric" autocomplete="off" style="flex:0 1 190px">
+            <button class="btn" type="button" id="issn-buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Buscar nas bases</button>
+          </div>
+          <span class="hint">Portal do ISSN, SciELO, DOAJ, Crossref e OpenAlex. Se a revista não estiver no cadastro, ela é cadastrada com o que as bases responderem.</span>
+          <div id="issn-saida" class="issn-saida" hidden></div>
         </div>
         <div class="grid3">
           {{ campo('doi', 'DOI', hint='10.xxxx/...') }}
           {{ campo('tipo_artigo', 'Tipo de artigo', opcoes=tipos) }}
-          {{ campo('heading', 'Seção da revista (heading)', hint='Ex.: Artigos, Artigos inéditos, Dossiê') }}
+          {{ campo('heading', 'Seção da revista (heading)', hint='Ex.: Artigos, Dossiê, Resenhas') }}
         </div>
         <div class="grid5">
           {{ campo('idioma', 'Idioma', opcoes=idiomas) }}
@@ -73,94 +124,311 @@
 
     <div class="fs">
       <header><h2>Títulos</h2><span class="small muted">o primeiro é o article-title; os demais, traduções</span></header>
-      <div class="in">
+      <div class="in" data-grupo="titulo" data-inicio="{{ m.titulos|length }}">
         {% for t in m.titulos %}
         <div class="grid3" style="grid-template-columns:4fr 1fr">
           {{ campo('titulo_' ~ loop.index0 ~ '_texto', 'Título' if t.tipo == 'article-title' else 'Título traduzido') }}
           {{ campo('titulo_' ~ loop.index0 ~ '_idioma', 'Idioma', opcoes=idiomas) }}
         </div>
         {% endfor %}
+        {% if not m.titulos %}{{ campo('titulo_0_texto', 'Título') }}{% endif %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="titulo">+ Adicionar título traduzido</button>
       </div>
     </div>
 
     <div class="fs">
-      <header><h2>Autores</h2><span class="small muted">contrib · ORCID como URL ou número · o correspondente precisa de e-mail</span></header>
-      <div class="in">
+      <header><h2>Autores</h2><span class="small muted">contrib · ORCID · o correspondente precisa de e-mail</span></header>
+      <div class="in" data-grupo="autor" data-inicio="{{ m.autores|length }}">
         {% for a in m.autores %}{% set i = loop.index0 %}
         <div class="bloco">
-          <div class="row between"><b>{{ loop.index }} · {{ a.nome_completo }}</b>
-            <label class="check"><input type="radio" name="corresp" value="{{ i }}" {% if v.get('corresp') == i|string %}checked{% endif %}> autor correspondente</label></div>
+          <div class="row between"><b>{{ loop.index }} · {{ a.nome_completo or 'autor sem nome' }}</b>
+            <span class="row" style="gap:12px">
+              <label class="check"><input type="radio" name="corresp" value="{{ i }}" {% if v.get('corresp') == i|string %}checked{% endif %}> correspondente</label>
+              <label class="check remover"><input type="checkbox" name="autor_{{ i }}_remover" value="1"> remover</label>
+            </span>
+          </div>
           {% set bo = bloq.get('orcid:' ~ a.nome_completo) %}{% set ba = bloq.get('affs:' ~ a.nome_completo) %}
           <div class="grid4">
             {{ campo('autor_' ~ i ~ '_sobrenome', 'Sobrenome') }}
             {{ campo('autor_' ~ i ~ '_nomes', 'Nomes') }}
-            <div class="field {% if bo %}is-block{% elif ('autor_' ~ i ~ '_orcid') in editados %}is-edit{% endif %}" id="f-autor_{{ i }}_orcid">
-              <label for="autor_{{ i }}_orcid">ORCID</label>
-              <input id="autor_{{ i }}_orcid" name="autor_{{ i }}_orcid" value="{{ v.get('autor_' ~ i ~ '_orcid', '') }}" placeholder="0000-0000-0000-0000">
-              {% if bo %}<div class="msg block">{{ bo[0]|regra }}</div>{% elif a.orcid_valido is sameas false %}<div class="msg warn">Dígito verificador inválido.</div>{% endif %}
-            </div>
-            <div class="field {% if bloq.get('corresp') and loop.first %}is-block{% elif ('autor_' ~ i ~ '_email') in editados %}is-edit{% endif %}" id="f-autor_{{ i }}_email">
-              <label for="autor_{{ i }}_email">E-mail</label>
-              <input id="autor_{{ i }}_email" name="autor_{{ i }}_email" value="{{ v.get('autor_' ~ i ~ '_email', '') }}">
-              {% if bloq.get('corresp') and loop.first %}<div class="msg block">{{ bloq['corresp'][0]|regra }}</div>{% endif %}
-            </div>
+            {{ campo('autor_' ~ i ~ '_orcid', 'ORCID', hint='0000-0000-0000-0000') }}
+            {{ campo('autor_' ~ i ~ '_email', 'E-mail') }}
           </div>
-          <div class="field {% if ba %}is-block{% endif %}" id="f-autor_{{ i }}_affs">
-            <label for="autor_{{ i }}_affs">Afiliações (ids, separados por vírgula)</label>
-            <input id="autor_{{ i }}_affs" name="autor_{{ i }}_affs" value="{{ v.get('autor_' ~ i ~ '_affs', '') }}" style="max-width:260px">
-            {% if ba %}<div class="msg block">{{ ba[0]|regra }}</div>{% endif %}
-          </div>
+          {{ campo('autor_' ~ i ~ '_affs', 'Afiliações (ids separados por vírgula)', hint='ex.: aff1, aff2') }}
         </div>
         {% endfor %}
-        {% if not m.autores %}<div class="msg block">Nenhum autor foi extraído. Reprocesse o PDF ou corrija o DOCX; a criação manual de autores entra na próxima versão.</div>{% endif %}
+        {% if obrig.get('corresp') and m.autores %}<div class="msg block">{{ obrig['corresp'].motivo }}<span class="fonte-regra">{{ obrig['corresp'].fonte }}</span></div>{% endif %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="autor">+ Adicionar autor</button>
       </div>
     </div>
 
     <div class="fs">
       <header><h2>Afiliações</h2><span class="small muted">aff · instituição e país são obrigatórios</span></header>
-      <div class="in">
+      <div class="in" data-grupo="aff" data-inicio="{{ m.afiliacoes|length }}">
         {% for af in m.afiliacoes %}{% set j = loop.index0 %}
-        <div class="bloco {% if bloq.get('aff:' ~ af.id) %}is-block{% endif %}">
-          <div class="row between"><b class="mono">{{ af.id }}</b><span class="small faint">{{ af.origem }} · confiança {{ af.confianca }}</span></div>
-          {% if bloq.get('aff:' ~ af.id) %}<div class="msg block">{{ bloq['aff:' ~ af.id][0]|regra }}</div>{% endif %}
+        <div class="bloco">
+          <div class="row between"><b class="mono">{{ af.id or 'aff?' }}</b>
+            <span class="row" style="gap:12px"><span class="small faint">{{ af.origem }} · confiança {{ af.confianca }}</span>
+              <label class="check remover"><input type="checkbox" name="aff_{{ j }}_remover" value="1"> remover</label></span></div>
           <div class="grid5">
+            {{ campo('aff_' ~ j ~ '_id', 'Id', hint='aff1, aff2…') }}
             {{ campo('aff_' ~ j ~ '_instituicao', 'Instituição') }}
             {{ campo('aff_' ~ j ~ '_divisao', 'Divisão') }}
             {{ campo('aff_' ~ j ~ '_cidade', 'Cidade') }}
-            {{ campo('aff_' ~ j ~ '_estado', 'Estado/UF') }}
             {{ campo('aff_' ~ j ~ '_pais_iso', 'País (ISO)', hint='BR, AR, US…') }}
           </div>
-          <p class="small muted">Original: {{ af.texto_original }}</p>
+          {% if af.texto_original %}<p class="small muted">Original: {{ af.texto_original }}</p>{% endif %}
         </div>
         {% endfor %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="aff">+ Adicionar afiliação</button>
       </div>
     </div>
 
     <div class="fs">
-      <header><h2>Resumos e palavras-chave</h2><span class="small muted">um conjunto por idioma</span></header>
-      <div class="in">
+      <header><h2>Resumos e palavras-chave</h2><span class="small muted">um conjunto por idioma · abstract + kwd-group</span></header>
+      <div class="in" data-grupo="resumo" data-inicio="{{ m.resumos|length }}">
         {% for res in m.resumos %}{% set k = loop.index0 %}
-        <div class="grid3" style="grid-template-columns:1fr 4fr">
-          {{ campo('resumo_' ~ k ~ '_idioma', res.rotulo ~ ' · idioma', opcoes=idiomas) }}
-          {{ campo('resumo_' ~ k ~ '_kw', 'Palavras-chave (separadas por ;)') }}
+        <div class="bloco">
+          <div class="row between"><b>{{ res.rotulo or 'Resumo' }}</b>
+            <label class="check remover"><input type="checkbox" name="resumo_{{ k }}_remover" value="1"> remover</label></div>
+          <div class="grid3" style="grid-template-columns:1fr 3fr">
+            {{ campo('resumo_' ~ k ~ '_idioma', 'Idioma', opcoes=idiomas) }}
+            {{ campo('resumo_' ~ k ~ '_kw', 'Palavras-chave (separadas por ;)') }}
+          </div>
+          {{ area('resumo_' ~ k ~ '_texto', 'Texto do resumo', 5) }}
         </div>
         {% endfor %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="resumo">+ Adicionar resumo em outro idioma</button>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Seções do corpo</h2><span class="small muted">sec/title · toda seção precisa de título</span></header>
+      <div class="in" data-grupo="secao" data-inicio="{{ m.secoes|length }}">
+        {% for sec in m.secoes %}{% set k = loop.index0 %}
+        <div class="grid3" style="grid-template-columns:4fr 1fr;align-items:end">
+          {{ campo('secao_' ~ k ~ '_titulo', 'Seção ' ~ loop.index) }}
+          <div class="field"><label>Parágrafos</label><div class="chip neutral">{{ sec.paragrafos|length }}</div></div>
+        </div>
+        {% endfor %}
+        {% if not m.secoes %}{{ campo('secao_0_titulo', 'Seção 1') }}{% endif %}
+      </div>
+    </div>
+
+    {# ---------------- anexos: tabelas, figuras, equações, quadros e diálogos ---------------- #}
+    <div class="fs">
+      <header><h2>Tabelas</h2><span class="small muted">table-wrap · a SciELO exige a tabela codificada, não como imagem</span></header>
+      <div class="in" data-grupo="tabela" data-inicio="{{ m.tabelas|length }}">
+        {% for t in m.tabelas %}{% set k = loop.index0 %}
+        <div class="bloco anexo">
+          <div class="row between"><b>{{ t.rotulo or 'Tabela ' ~ loop.index }}</b>
+            <span class="row" style="gap:12px">
+              <span class="chip {{ 'ok' if t.qualidade == 'alta' else ('warn' if t.qualidade == 'media' else 'crit') }}">grade {{ t.qualidade }}</span>
+              <span class="small faint">página {{ t.pagina }}</span>
+              <label class="check remover"><input type="checkbox" name="tabela_{{ k }}_remover" value="1"> remover</label></span></div>
+          <div class="grid3" style="grid-template-columns:1fr 3fr 1fr">
+            {{ campo('tabela_' ~ k ~ '_rotulo', 'Rótulo', hint='Tabela 1') }}
+            {{ campo('tabela_' ~ k ~ '_legenda', 'Legenda') }}
+            {{ campo('tabela_' ~ k ~ '_cabecalho', 'Linhas de cabeçalho', tipo='number') }}
+          </div>
+          {{ area('tabela_' ~ k ~ '_celulas', 'Conteúdo', 6, 'Uma linha por linha da tabela, colunas separadas por |. Colar do Word ou do Excel também funciona.', true) }}
+          {{ campo('tabela_' ~ k ~ '_fonte', 'Fonte', hint='vai para table-wrap-foot') }}
+          <div class="previa" data-previa-de="tabela_{{ k }}_celulas"></div>
+        </div>
+        {% endfor %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="tabela">+ Inserir tabela</button>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Figuras e imagens</h2><span class="small muted">fig · graphic · a imagem entra no pacote como TIFF</span></header>
+      <div class="in" data-grupo="figura" data-inicio="{{ m.figuras|length }}">
+        {% for f in m.figuras %}{% set k = loop.index0 %}
+        <div class="bloco anexo">
+          <div class="row between"><b>{{ f.rotulo or 'Figura ' ~ loop.index }}</b>
+            <span class="row" style="gap:12px"><span class="small faint">página {{ f.pagina }}{% if f.largura %} · {{ f.largura }}x{{ f.altura }}{% endif %}</span>
+              <label class="check remover"><input type="checkbox" name="figura_{{ k }}_remover" value="1"> remover</label></span></div>
+          <div class="row" style="gap:var(--s-4);align-items:flex-start">
+            <div class="fig-previa">
+              {% if f.arquivo %}<img src="/doc/{{ id }}/img/{{ f.arquivo }}" alt="{{ f.rotulo }}" loading="lazy">
+              {% else %}<div class="sem-img">sem imagem</div>{% endif %}
+            </div>
+            <div class="stack" style="flex:1;gap:var(--s-3)">
+              <div class="grid2">
+                {{ campo('figura_' ~ k ~ '_rotulo', 'Rótulo', hint='Figura 1') }}
+                {{ campo('figura_' ~ k ~ '_fonte', 'Fonte') }}
+              </div>
+              {{ campo('figura_' ~ k ~ '_legenda', 'Legenda') }}
+              <div class="field {{ estado('figura_' ~ k ~ '_arquivo') }}">
+                <label>Imagem</label>
+                <div class="row" style="gap:8px"><span class="mono small">{{ f.arquivo or 'nenhuma' }}</span>
+                  <button class="btn small" type="button" data-envia-figura="{{ k }}">{{ 'Trocar imagem' if f.arquivo else 'Enviar imagem' }}</button></div>
+                {{ aviso('figura_' ~ k ~ '_arquivo') }}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="figura">+ Inserir imagem</button>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Equações</h2><span class="small muted">disp-formula · MathML gerado do LaTeX</span></header>
+      <div class="in" data-grupo="equacao" data-inicio="{{ m.equacoes|length }}">
+        <p class="small muted" style="margin:0 0 var(--s-3)">O guia de entrega da SciELO diz que fórmulas e equações devem ser
+          codificadas em <b>MathML ou LaTeX</b>. Imagem não é aceita. Escreva o LaTeX olhando o recorte ao lado; o MathML sai daí.</p>
+        {% for e in m.equacoes %}{% set k = loop.index0 %}
+        <div class="bloco anexo">
+          <div class="row between"><b>{{ e.rotulo or 'Equação ' ~ loop.index }}</b>
+            <span class="row" style="gap:12px">
+              {% if e.mathml %}<span class="chip ok">MathML pronto</span>{% else %}<span class="chip crit">falta o LaTeX</span>{% endif %}
+              <span class="small faint">página {{ e.pagina }}</span>
+              <label class="check remover"><input type="checkbox" name="equacao_{{ k }}_remover" value="1"> remover</label></span></div>
+          <div class="row" style="gap:var(--s-4);align-items:flex-start">
+            {% if e.arquivo %}<div class="fig-previa eq"><img src="/doc/{{ id }}/img/{{ e.arquivo }}" alt="{{ e.rotulo }}" loading="lazy"></div>{% endif %}
+            <div class="stack" style="flex:1;gap:var(--s-3)">
+              {{ campo('equacao_' ~ k ~ '_rotulo', 'Rótulo', hint='(1)') }}
+              {{ area('equacao_' ~ k ~ '_latex', 'LaTeX da fórmula', 3, 'Ex.: E = mc^2  ou  \\frac{a}{b} = \\sqrt{x^2+y^2}', true) }}
+              {% if e.erro_mathml %}<div class="msg block">{{ e.erro_mathml }}</div>{% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="equacao">+ Inserir equação</button>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Quadros</h2><span class="small muted">boxed-text · texto destacado do fluxo</span></header>
+      <div class="in" data-grupo="quadro" data-inicio="{{ m.quadros|length }}">
+        {% for q in m.quadros %}{% set k = loop.index0 %}
+        <div class="bloco anexo">
+          <div class="row between"><b>{{ q.rotulo or 'Quadro ' ~ loop.index }}</b>
+            <label class="check remover"><input type="checkbox" name="quadro_{{ k }}_remover" value="1"> remover</label></div>
+          <div class="grid2">
+            {{ campo('quadro_' ~ k ~ '_rotulo', 'Rótulo', hint='Quadro 1') }}
+            {{ campo('quadro_' ~ k ~ '_legenda', 'Legenda') }}
+          </div>
+          {{ area('quadro_' ~ k ~ '_texto', 'Conteúdo', 4, 'Um parágrafo por linha.') }}
+        </div>
+        {% endfor %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="quadro">+ Inserir quadro</button>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Diálogos, entrevistas e depoimentos</h2><span class="small muted">speech · speaker</span></header>
+      <div class="in" data-grupo="dialogo" data-inicio="{{ m.dialogos|length }}">
+        {% for dl in m.dialogos %}{% set k = loop.index0 %}
+        <div class="bloco anexo">
+          <div class="row between"><b>{{ dl.rotulo or 'Diálogo ' ~ loop.index }}</b>
+            <label class="check remover"><input type="checkbox" name="dialogo_{{ k }}_remover" value="1"> remover</label></div>
+          <div class="grid2">
+            {{ campo('dialogo_' ~ k ~ '_rotulo', 'Rótulo', hint='Diálogo 1') }}
+            {{ campo('dialogo_' ~ k ~ '_legenda', 'Legenda') }}
+          </div>
+          {{ area('dialogo_' ~ k ~ '_turnos', 'Falas', 5, 'Uma fala por linha, no formato "Falante: fala". Linha sem dois-pontos continua a fala anterior.') }}
+        </div>
+        {% endfor %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="dialogo">+ Inserir diálogo</button>
       </div>
     </div>
 
     <div class="actionbar">
-      <button class="btn primary" type="submit" name="acao" value="salvar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>Salvar e revalidar</button>
+      <button class="btn primary" type="submit" name="acao" value="salvar"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Salvar e validar</button>
+      <button class="btn" type="submit" name="acao" value="rascunho" formnovalidate><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>Guardar rascunho</button>
       <a class="btn" href="/doc/{{ id }}">Cancelar</a>
-      <span class="small muted">Salvar regenera o XML e roda o packtools de novo. Para reextrair do PDF do zero, use "Reprocessar" no resultado.</span>
+      <span class="small muted">Salvar exige os campos obrigatórios e regenera o XML. O rascunho guarda o que você digitou sem validar.</span>
     </div>
-  </div>
+</form>
 
-  <aside class="orig">
-    <div class="fs" style="margin:0">
-      <header><h2>Extração original</h2><span class="small muted">o que o motor leu do PDF</span></header>
+{# ---------------- visualizador do arquivo original ---------------- #}
+<aside class="visor" id="visor">
+  <div class="visor-abas" role="tablist">
+    <button class="aba ativa" type="button" data-aba="pdf">Original</button>
+    <button class="aba" type="button" data-aba="texto">Texto lido</button>
+    <button class="aba" type="button" data-aba="anexos">Anexos</button>
+  </div>
+  <div class="visor-barra">
+    <button class="btn small" type="button" id="pg-ant" aria-label="Página anterior">‹</button>
+    <span class="small mono" id="pg-conta">–</span>
+    <button class="btn small" type="button" id="pg-prox" aria-label="Próxima página">›</button>
+    <span class="sep"></span>
+    <button class="btn small" type="button" id="zoom-menos" aria-label="Diminuir">−</button>
+    <button class="btn small" type="button" id="zoom-mais" aria-label="Aumentar">+</button>
+    <span class="sep"></span>
+    <label class="check"><input type="checkbox" id="rolagem-continua" checked> todas as páginas</label>
+  </div>
+  <div class="visor-corpo">
+    <div class="painel ativo" data-painel="pdf">
+      <div id="pdf-paginas" class="pdf-paginas"><p class="small muted" style="padding:var(--s-4)">Carregando o arquivo original…</p></div>
+    </div>
+    <div class="painel" data-painel="texto">
       <div class="doc">{{ original_html|safe }}</div>
     </div>
-  </aside>
+    <div class="painel" data-painel="anexos">
+      <div class="stack" style="gap:var(--s-4);padding:var(--s-4)">
+        <div><h3>Tabelas ({{ m.tabelas|length }})</h3>
+          {% for t in m.tabelas %}
+          <div class="anexo-card">
+            <div class="row between"><b class="small">{{ t.rotulo or 'Tabela' }}</b><a class="small" href="#f-tabela_{{ loop.index0 }}_legenda">editar</a></div>
+            <p class="small muted">{{ t.legenda or 'sem legenda' }}</p>
+            {% if t.celulas %}<div class="tblwrap"><table class="tbl mini">
+              {% for linha in t.celulas[:6] %}<tr>{% for c in linha %}<td>{{ c }}</td>{% endfor %}</tr>{% endfor %}
+            </table></div>{% elif t.arquivo %}<img src="/doc/{{ id }}/img/{{ t.arquivo }}" alt="{{ t.rotulo }}" loading="lazy">{% endif %}
+          </div>
+          {% else %}<p class="small muted">Nenhuma tabela detectada.</p>{% endfor %}
+        </div>
+        <div><h3>Figuras ({{ m.figuras|length }})</h3>
+          {% for f in m.figuras %}
+          <div class="anexo-card">
+            <div class="row between"><b class="small">{{ f.rotulo or 'Figura' }}</b><a class="small" href="#f-figura_{{ loop.index0 }}_legenda">editar</a></div>
+            <p class="small muted">{{ f.legenda or 'sem legenda' }}</p>
+            {% if f.arquivo %}<img src="/doc/{{ id }}/img/{{ f.arquivo }}" alt="{{ f.rotulo }}" loading="lazy">{% endif %}
+          </div>
+          {% else %}<p class="small muted">Nenhuma figura detectada.</p>{% endfor %}
+        </div>
+        <div><h3>Equações ({{ m.equacoes|length }})</h3>
+          {% for e in m.equacoes %}
+          <div class="anexo-card">
+            <div class="row between"><b class="small">{{ e.rotulo or 'Equação' }}</b><a class="small" href="#f-equacao_{{ loop.index0 }}_latex">editar</a></div>
+            {% if e.arquivo %}<img src="/doc/{{ id }}/img/{{ e.arquivo }}" alt="{{ e.rotulo }}" loading="lazy">{% endif %}
+            {% if e.mathml %}<span class="chip ok">MathML</span>{% else %}<span class="chip crit">falta LaTeX</span>{% endif %}
+          </div>
+          {% else %}<p class="small muted">Nenhuma equação detectada.</p>{% endfor %}
+        </div>
+        <div><h3>Notas ({{ m.notas|length }})</h3>
+          {% for n in m.notas %}<p class="small"><b>{{ n.rotulo }}</b> {{ n.texto[:180] }}</p>{% else %}<p class="small muted">Nenhuma nota.</p>{% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="visor-selecao" id="visor-selecao" hidden>
+    <span class="small">Usar em:</span>
+    <select id="alvo-campo" class="small"></select>
+    <button class="btn small primary" type="button" id="aplicar-selecao">Aplicar</button>
+    <button class="btn small" type="button" id="fechar-selecao">×</button>
+  </div>
+</aside>
 </div>
+
+<form id="form-figura" method="post" enctype="multipart/form-data" style="display:none">
+  <input type="hidden" name="indice" id="figura-indice"><input type="file" name="imagem" id="figura-arquivo" accept="image/*">
 </form>
+<form id="form-importa-issn" method="post" action="/revistas/importar" style="display:none">
+  <input type="hidden" name="numero" id="issn-importa-numero"><input type="hidden" name="voltar" value="/doc/{{ id }}/editar">
+</form>
+
+<script>window.XMLJATS_DOC = {{ id|tojson }};</script>
+<script src="/static/revisar.js" defer></script>
 {% endblock %}

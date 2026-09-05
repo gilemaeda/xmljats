@@ -141,7 +141,41 @@ def roda_site():
     check("ajuda explica as etapas e separa o que é feito aqui do que é feito na SciELO",
           all(x in ajuda for x in ("As etapas do documento", "no xmljats", "na SciELO", "Como entregar o pacote para a SciELO")))
     check("ajuda diz o que ainda não é feito", "O que ainda não é feito aqui" in ajuda and "Perguntas rápidas" in ajuda)
-    check("cadastro de revista busca dados na SciELO pelo ISSN", "Buscar na SciELO" in c.get("/revistas/nova").text)
+    # ---- revista pelo ISSN (cascata: ISSN.org, SciELO, DOAJ, Crossref, OpenAlex)
+    check("cadastro de revista busca nas bases de ISSN", "Buscar nas bases" in c.get("/revistas/nova").text)
+    check("página Revistas explica de onde vêm os dados e como pedir ISSN novo",
+          all(x in c.get("/revistas").text for x in ("Cadastrar pelo ISSN", "Portal do ISSN", "cbissn.ibict.br")))
+    import issn as issn_api
+    check("dígito verificador do ISSN é conferido antes de ir à rede",
+          issn_api.valido("2179-8966") and not issn_api.valido("2179-8967"))
+    jr = c.get("/revistas/consulta?numero=2179-8966").json()
+    check("consulta de ISSN responde com as fontes ou com a revista já cadastrada", bool(jr.get("ok")))
+
+    # ---- revisar e editar: visualizador, obrigatórios e anexos
+    doc_id = doc.rsplit("/", 1)[-1] if doc else ""
+    ver = c.get(doc + "/editar").text if doc else ""
+    check("revisar mostra o arquivo original com abas", all(x in ver for x in ('id="visor"', 'data-aba="pdf"', 'data-aba="anexos"')))
+    check("revisar liga a seleção do PDF a um campo", 'id="visor-selecao"' in ver and 'id="alvo-campo"' in ver)
+    check("revisar oferece inserir tabela, imagem, equação, quadro e diálogo",
+          all(f'data-add="{g}"' in ver for g in ("tabela", "figura", "equacao", "quadro", "dialogo")))
+    check("revisar lista o que a SciELO exige e ainda falta", "O que a SciELO exige e ainda falta" in ver)
+    check("revisar tem salvar-e-validar e guardar-rascunho", "Salvar e validar" in ver and "Guardar rascunho" in ver)
+    if doc:
+        pg = c.get(doc + "/paginas.json").json()
+        check("páginas do original são renderizadas com camada de texto",
+              pg.get("total", 0) > 0 and len(pg["paginas"][0].get("palavras") or []) > 20)
+        primeira = pg["paginas"][0]["arquivo"] if pg.get("paginas") else "p001.png"
+        check("imagem da página é servida", c.get(doc + "/pagina/" + primeira).status_code == 200)
+        check("nome de página fora do padrão é recusado",
+              c.get(doc + "/pagina/qualquer.txt").status_code in (400, 404))
+        vazio = c.post(doc + "/editar", data={"acao": "salvar", "revista": "", "heading": "", "licenca": ""})
+        check("campo obrigatório vazio impede salvar e validar", vazio.status_code == 400 and "Faltam" in vazio.text)
+
+    # ---- MathML (exigência do guia de entrega da SciELO)
+    from app import main as app_main
+    mml, erro_mml = app_main.latex_para_mathml("E = mc^2")
+    check("LaTeX vira MathML", erro_mml is None and "<math" in (mml or ""))
+    check("LaTeX quebrado explica o erro em vez de gerar XML inválido", app_main.latex_para_mathml(chr(92) + "frac{a}{")[1] is not None)
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)
@@ -214,7 +248,13 @@ def main():
           "| Confirmação de conta por e-mail | pronto (Resend, ligável em Configurações) | verificações de correio e confirmação |",
           "| Correio do sistema (entrada, saída, enviados, rascunhos, lixeira) | pronto | verificação \"correio tem as cinco caixas\" |",
           "| Foto de perfil e menu lateral/topo | pronto | verificações de conta e de menu |",
-          "| Cadastro de revista preenchido pela SciELO (ISSN) | pronto | verificação \"cadastro de revista busca dados na SciELO pelo ISSN\" |",
+          "| Cadastro de revista pelo ISSN (ISSN.org, SciELO, DOAJ, Crossref, OpenAlex) | pronto | verificações de consulta por ISSN |",
+          "| Visualização do arquivo original no revisar, com seleção ligada aos campos | pronto | verificações do visualizador |",
+          "| Inserir tabela, imagem, equação, quadro e diálogo na revisão | pronto | verificação \"revisar oferece inserir...\" |",
+          "| Campos que a SciELO exige travando salvar e validar | pronto | verificação \"campo obrigatório vazio impede salvar\" |",
+          "| Fórmulas em MathML (exigência do guia de entrega) | pronto | verificações de LaTeX/MathML |",
+          "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
+          "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",
           "| Depósito automático na SciELO | não existe | a SciELO não publica API de depósito; o pacote sai pronto e o envio é pelo canal da coleção |",
           "| Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |",
           "| Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |",

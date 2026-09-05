@@ -55,6 +55,8 @@ import tempo  # noqa: E402  (app/tempo.py: tudo no horário de Brasília)
 from correio import CAIXAS, ROTULO_CAIXA, Correio, corpo_confirmacao, token_confirmacao  # noqa: E402
 import scielo  # noqa: E402  (app/scielo.py: consulta de periódico por ISSN na SciELO)
 import issn as issn_api  # noqa: E402  (app/issn.py: consulta em cascata — ISSN.org, SciELO, DOAJ, Crossref, OpenAlex)
+import visual  # noqa: E402  (app/visual.py: páginas do PDF renderizadas + camada de texto para o revisar)
+import obrigatorios  # noqa: E402  (app/obrigatorios.py: o que a SPS exige e o PDF não traz)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -141,7 +143,13 @@ TIPOS_ARTIGO = ["research-article", "review-article", "editorial", "book-review"
                 "article-commentary", "correction", "retraction", "addendum", "rapid-communication", "other"]
 IDIOMAS = ["pt", "en", "es", "fr", "it", "de"]
 CAMPOS_SIMPLES = ("heading", "tipo_artigo", "idioma", "volume", "numero", "ano", "elocation", "order", "doi", "licenca")
-RE_CAMPO_LISTA = re.compile(r"^(titulo|autor|aff|resumo)_(\d+)_(\w+)$")
+# grupos editaveis em lista: o indice pode passar do que foi extraido, e ai o item e criado a mao
+GRUPOS_LISTA = {"titulo": "titulos", "autor": "autores", "aff": "afiliacoes", "resumo": "resumos",
+                "secao": "secoes", "tabela": "tabelas", "figura": "figuras", "equacao": "equacoes",
+                "quadro": "quadros", "dialogo": "dialogos"}
+RE_CAMPO_LISTA = re.compile(r"^(" + "|".join(GRUPOS_LISTA) + r")_(\d+)_(\w+)$")
+# quantos itens em branco a tela oferece para criar a mao, por grupo
+VAGAS_NOVAS = 1
 
 
 # ---------------------------------------------------------------- utilidades
@@ -374,8 +382,70 @@ def valores_editaveis(modelo: dict) -> dict:
             v[f"aff_{j}_{campo}"] = af.get(campo) or ""
     for k, r in enumerate(modelo.get("resumos", [])):
         v[f"resumo_{k}_idioma"] = r.get("idioma") or ""
+        v[f"resumo_{k}_texto"] = r.get("texto") or ""
         v[f"resumo_{k}_kw"] = "; ".join(r.get("palavras_chave", []))
+    for k, sec in enumerate(modelo.get("secoes", [])):
+        v[f"secao_{k}_titulo"] = sec.get("titulo_completo") or sec.get("titulo") or ""
+    for k, t in enumerate(modelo.get("tabelas", [])):
+        v[f"tabela_{k}_rotulo"] = t.get("rotulo") or ""
+        v[f"tabela_{k}_legenda"] = t.get("legenda") or ""
+        v[f"tabela_{k}_fonte"] = t.get("fonte") or ""
+        v[f"tabela_{k}_cabecalho"] = str(t.get("linhas_cabecalho") or 0)
+        v[f"tabela_{k}_celulas"] = grade_para_texto(t.get("celulas") or [])
+    for k, f in enumerate(modelo.get("figuras", [])):
+        v[f"figura_{k}_rotulo"] = f.get("rotulo") or ""
+        v[f"figura_{k}_legenda"] = f.get("legenda") or ""
+        v[f"figura_{k}_fonte"] = f.get("fonte") or ""
+    for k, e in enumerate(modelo.get("equacoes", [])):
+        v[f"equacao_{k}_rotulo"] = e.get("rotulo") or ""
+        v[f"equacao_{k}_latex"] = e.get("latex") or ""
+    for k, q in enumerate(modelo.get("quadros", [])):
+        v[f"quadro_{k}_rotulo"] = q.get("rotulo") or ""
+        v[f"quadro_{k}_legenda"] = q.get("legenda") or ""
+        v[f"quadro_{k}_texto"] = q.get("texto") or ""
+    for k, dl in enumerate(modelo.get("dialogos", [])):
+        v[f"dialogo_{k}_rotulo"] = dl.get("rotulo") or ""
+        v[f"dialogo_{k}_legenda"] = dl.get("legenda") or ""
+        v[f"dialogo_{k}_turnos"] = turnos_para_texto(dl.get("turnos") or [])
     return v
+
+
+def grade_para_texto(celulas) -> str:
+    """Grade da tabela vira texto: uma linha por linha, celulas separadas por |. E o formato que a pessoa edita."""
+    return "\n".join(" | ".join((c or "").replace("|", "/").strip() for c in linha) for linha in celulas or [])
+
+
+def texto_para_grade(texto: str):
+    """Texto do formulario vira grade. Aceita | e tabulacao (colar do Word e do Excel funciona)."""
+    linhas = []
+    for bruta in (texto or "").splitlines():
+        if not bruta.strip():
+            continue
+        sep = "\t" if "\t" in bruta else "|"
+        linhas.append([c.strip() for c in bruta.split(sep)])
+    largura = max((len(l) for l in linhas), default=0)
+    return [l + [""] * (largura - len(l)) for l in linhas]
+
+
+def turnos_para_texto(turnos) -> str:
+    return "\n".join(f"{t.get('falante') or ''}: {t.get('fala') or ''}".strip(": ") for t in turnos or [])
+
+
+def texto_para_turnos(texto: str):
+    """Uma linha por fala, no formato 'Falante: fala'. Linha sem ':' vira continuacao do falante anterior."""
+    turnos = []
+    for bruta in (texto or "").splitlines():
+        linha = bruta.strip()
+        if not linha:
+            continue
+        if ":" in linha and len(linha.split(":", 1)[0]) <= 60:
+            falante, fala = linha.split(":", 1)
+            turnos.append({"falante": falante.strip(), "fala": fala.strip()})
+        elif turnos:
+            turnos[-1]["fala"] = (turnos[-1]["fala"] + " " + linha).strip()
+        else:
+            turnos.append({"falante": "", "fala": linha})
+    return [t for t in turnos if t.get("fala")]
 
 
 def aplica_edicoes(modelo: dict, campos: dict) -> dict:
@@ -402,10 +472,12 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
             if not mt:
                 continue
             grupo, idx, campo = mt.group(1), int(mt.group(2)), mt.group(3)
-            lista = {"titulo": "titulos", "autor": "autores", "aff": "afiliacoes", "resumo": "resumos"}[grupo]
-            if idx >= len(m.get(lista, [])):
-                continue
-            alvo = m[lista][idx]
+            lista = GRUPOS_LISTA[grupo]
+            itens = m.setdefault(lista, [])
+            # indice acima do que foi extraido: item criado a mao na tela (autor novo, tabela nova, dialogo novo)
+            while idx >= len(itens):
+                itens.append(NOVO_ITEM[grupo]())
+            alvo = itens[idx]
             if grupo == "autor" and campo == "affs":
                 alvo["aff_ids"] = [x.strip() for x in (val or "").split(",") if x.strip()]
             elif grupo == "autor" and campo == "orcid":
@@ -417,9 +489,81 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
                 alvo["nome_completo"] = " ".join(x for x in (alvo.get("nomes"), alvo.get("sobrenome")) if x)
             elif grupo == "resumo" and campo == "kw":
                 alvo["palavras_chave"] = [x.strip(" .") for x in re.split(r"[;\n]", val or "") if x.strip(" .")]
+            elif grupo == "secao" and campo == "titulo":
+                alvo["titulo"] = val
+                alvo["titulo_completo"] = val
+            elif grupo == "tabela" and campo == "celulas":
+                alvo["celulas"] = texto_para_grade(val or "")
+                alvo["colunas"] = max((len(x) for x in alvo["celulas"]), default=0)
+                # grade conferida por gente vira tabela de verdade no XML, nao imagem
+                alvo["qualidade"] = "alta" if alvo["celulas"] else alvo.get("qualidade", "baixa")
+            elif grupo == "tabela" and campo == "cabecalho":
+                alvo["linhas_cabecalho"] = int(val) if (val or "").isdigit() else 0
+            elif grupo == "dialogo" and campo == "turnos":
+                alvo["turnos"] = texto_para_turnos(val or "")
+            elif grupo == "equacao" and campo == "latex":
+                alvo["latex"] = val
+                alvo["mathml"], alvo["erro_mathml"] = latex_para_mathml(val) if val else (None, None)
             else:
                 alvo[campo] = val
+    # itens marcados para remover saem depois de tudo aplicado (o indice ainda valia durante a aplicacao)
+    for grupo, lista in GRUPOS_LISTA.items():
+        fora = sorted((int(mt.group(2)) for k in campos if (mt := RE_CAMPO_LISTA.match(k)) and mt.group(1) == grupo
+                       and mt.group(3) == "remover" and (campos[k] or "").strip()), reverse=True)
+        for i in fora:
+            if i < len(m.get(lista, [])):
+                m[lista].pop(i)
+    for lista in ("tabelas", "figuras", "quadros", "dialogos", "equacoes"):
+        m[lista] = [x for x in m.get(lista, []) if not _item_vazio(lista, x)]
     return m
+
+
+def _item_vazio(lista: str, item: dict) -> bool:
+    """Vaga de criacao que ficou em branco: some, em vez de virar um elemento vazio no XML."""
+    if lista == "tabelas":
+        return not (item.get("celulas") or item.get("legenda") or item.get("arquivo"))
+    if lista == "figuras":
+        return not (item.get("arquivo") or item.get("legenda"))
+    if lista == "quadros":
+        return not (item.get("texto") or "").strip()
+    if lista == "dialogos":
+        return not item.get("turnos")
+    if lista == "equacoes":
+        # LaTeX digitado que não compilou fica na lista: some seria esconder o erro de quem digitou
+        return not (item.get("arquivo") or item.get("mathml") or (item.get("latex") or "").strip())
+    return False
+
+
+# item novo criado pela tela, com o minimo para o gerador entender
+NOVO_ITEM = {
+    "titulo": lambda: {"texto": "", "idioma": None, "tipo": "trans-title", "pagina": 1},
+    "autor": lambda: {"nome_completo": "", "sobrenome": "", "nomes": "", "marcadores": [], "aff_ids": [], "papel": "author"},
+    "aff": lambda: {"id": "", "texto_original": "criada à mão na revisão", "origem": "digitada", "confianca": "alta"},
+    "resumo": lambda: {"idioma": None, "rotulo": "Resumo", "texto": "", "palavras_chave": []},
+    "secao": lambda: {"titulo": "", "nivel": 1, "pagina": 1, "paragrafos": []},
+    "tabela": lambda: {"rotulo": "", "legenda": "", "celulas": [], "linhas_cabecalho": 1, "colunas": 0,
+                       "qualidade": "alta", "pagina": 1, "origem": "digitada"},
+    "figura": lambda: {"tipo": "fig", "rotulo": "", "legenda": "", "pagina": 1, "origem": "digitada"},
+    "equacao": lambda: {"rotulo": "", "numero": None, "pagina": 1, "origem": "digitada"},
+    "quadro": lambda: {"rotulo": "", "legenda": "", "texto": "", "pagina": 1, "origem": "digitada"},
+    "dialogo": lambda: {"rotulo": "", "legenda": "", "turnos": [], "pagina": 1, "origem": "digitada"},
+}
+
+
+def latex_para_mathml(latex: str):
+    """Converte LaTeX em MathML. O guia de entrega da SciELO exige as formulas em MathML ou LaTeX, nao em imagem.
+    Devolve (mathml, erro): erro preenchido quando o LaTeX nao compila, para a tela dizer o que esta errado."""
+    texto = (latex or "").strip()
+    if not texto:
+        return None, None
+    texto = re.sub(r"^\$+|\$+$", "", texto).strip()
+    texto = re.sub(r"^\\\[|\\\]$", "", texto).strip()
+    try:
+        from latex2mathml.converter import convert
+        return convert(texto), None
+    except Exception as e:  # noqa: BLE001
+        detalhe = str(e).strip() or type(e).__name__
+        return None, f"LaTeX não reconhecido: {detalhe[:120]}. Confira chaves e barras invertidas."
 
 
 def modelo_efetivo(pasta: Path) -> dict:
@@ -726,25 +870,39 @@ async def muda_etapa(request: Request, doc_id: str, usuario: dict = Depends(aute
     return RedirectResponse(url=voltar, status_code=303)
 
 
-@app.get("/doc/{doc_id}/editar", response_class=HTMLResponse)
-def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id, usuario)
-    modelo = le_json(pasta / "model.json", {})
-    ed = le_json(pasta / "edicoes.json", {}) or {}
-    campos = ed.get("campos", {})
-    valores = valores_editaveis(modelo)
-    valores.update({k: (v or "") for k, v in campos.items()})
+def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valores: dict, editados: set,
+                     pendencias: Optional[dict] = None, mensagem: str = "", erro: str = ""):
+    """Tudo que a tela de revisar precisa. Usado na abertura e na volta com pendências, para nada digitado se perder."""
     cfg = le_json(pasta / "config.json", {}) or {}
     r = le_json(pasta / "validacao.json", {}) or {}
     try:
         original = (pasta / "resumo.md").read_text(encoding="utf-8")
     except OSError:
         original = ""
+    modelo = modelo_efetivo(pasta)
+    revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
+    pend = obrigatorios.pendencias(modelo, revista, cfg.get("versao_sps") or "1.9") if pendencias is None else pendencias
     return templates.TemplateResponse(request, "editar.html", {
-        "id": doc_id, "m": modelo_efetivo(pasta), "v": valores, "editados": set(campos), "bloq": r.get("campos_bloqueados", {}),
-        "bloqueantes": r.get("bloqueantes", []), "revistas": carrega_revistas(), "revista_atual": cfg.get("revista") or r.get("revista") or "",
+        "id": doc_id, "m": modelo, "v": valores, "editados": editados, "bloq": r.get("campos_bloqueados", {}),
+        "bloqueantes": r.get("bloqueantes", []), "revistas": carrega_revistas(),
+        "revista_atual": cfg.get("revista") or r.get("revista") or "",
         "tipos": TIPOS_ARTIGO, "idiomas": IDIOMAS, "original_html": markdown_html(original), "usuario": usuario, "r": r,
-    })
+        "obrig": pend, "obrig_grupos": obrigatorios.resumo_por_grupo(pend), "paginas": visual.resumo(pasta),
+        "mensagem": mensagem, "erro": erro, "vagas": VAGAS_NOVAS,
+    }, status_code=400 if erro else 200)
+
+
+@app.get("/doc/{doc_id}/editar", response_class=HTMLResponse)
+def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica), mensagem: str = ""):
+    pasta = _pasta(doc_id, usuario)
+    modelo = le_json(pasta / "model.json", {})
+    campos = (le_json(pasta / "edicoes.json", {}) or {}).get("campos", {})
+    valores = valores_editaveis(modelo)
+    valores.update({k: (v or "") for k, v in campos.items()})
+    # os campos dos itens criados a mão não existem no modelo extraído: vêm das próprias edições
+    valores.update(valores_editaveis(modelo_efetivo(pasta)))
+    valores.update({k: (v or "") for k, v in campos.items()})
+    return _contexto_editar(request, doc_id, pasta, usuario, valores, set(campos), mensagem=mensagem)
 
 
 @app.post("/doc/{doc_id}/editar")
@@ -773,17 +931,107 @@ async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(a
     ed["campos"] = campos
     ed["atualizado_em"] = tempo.agora_iso()
     ed["por"] = usuario["nome"]
+    acao = str(form.get("acao") or "salvar")
+    # rascunho: guarda o que foi digitado sem gerar XML, para ninguém perder trabalho no meio do preenchimento
+    if acao == "rascunho":
+        grava_json(pasta / "edicoes.json", ed)
+        return RedirectResponse(url=f"/doc/{doc_id}/editar?mensagem=" +
+                                urllib.parse.quote("Rascunho guardado. O XML não foi gerado."), status_code=303)
+    # salvar e validar: o que a SciELO exige e o PDF não trouxe tem de estar preenchido
+    cfg = le_json(pasta / "config.json", {}) or {}
+    revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
+    proposto = aplica_edicoes(modelo, campos)
+    pend = obrigatorios.pendencias(proposto, revista, cfg.get("versao_sps") or "1.9")
+    if pend:
+        valores = valores_editaveis(proposto)
+        valores.update({k: (v or "") for k, v in campos.items()})
+        quantos = len(pend)
+        return _contexto_editar(request, doc_id, pasta, usuario, valores, set(campos), pendencias=pend,
+                                erro=f"Faltam {quantos} campo(s) que a SciELO exige. Nada foi salvo ainda: preencha o que "
+                                     f"está marcado em vermelho e salve de novo, ou use \"Guardar rascunho\" para não "
+                                     f"perder o que já digitou.")
     grava_json(pasta / "edicoes.json", ed)
     gera_e_valida(pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
 
 
+@app.post("/doc/{doc_id}/figura")
+async def envia_figura(request: Request, doc_id: str, indice: int = Form(...), imagem: UploadFile = File(...),
+                       usuario: dict = Depends(autentica)):
+    """Imagem de uma figura, enviada à mão na revisão (a que o motor não achou no PDF, ou a que veio errada)."""
+    pasta = _pasta(doc_id, usuario)
+    dados = await imagem.read()
+    if len(dados) > 25 * 1024 * 1024:
+        raise HTTPException(413, "Imagem maior que 25 MB.")
+    try:
+        from PIL import Image
+        with Image.open(io.BytesIO(dados)) as im:
+            im.verify()
+        with Image.open(io.BytesIO(dados)) as im:
+            largura, altura = im.size
+            formato = (im.format or "PNG").lower()
+    except Exception:  # noqa: BLE001
+        return RedirectResponse(url=f"/doc/{doc_id}/editar?mensagem=" +
+                                urllib.parse.quote("O arquivo enviado não é uma imagem que eu consiga ler."), status_code=303)
+    ext = {"jpeg": "jpg", "tiff": "tif"}.get(formato, formato)
+    if ext not in ("png", "jpg", "tif", "gif", "bmp", "webp"):
+        ext = "png"
+    (pasta / "imagens").mkdir(parents=True, exist_ok=True)
+    nome = f"fig{indice + 1:02d}.{ext}"
+    with open(pasta / "imagens" / nome, "wb") as f:
+        f.write(dados)
+    ed = le_json(pasta / "edicoes.json", {}) or {"campos": {}}
+    campos = dict(ed.get("campos", {}))
+    campos[f"figura_{indice}_arquivo"] = nome
+    campos[f"figura_{indice}_ext"] = ext
+    campos[f"figura_{indice}_largura"] = str(largura)
+    campos[f"figura_{indice}_altura"] = str(altura)
+    campos.setdefault(f"figura_{indice}_tipo", "fig")
+    ed["campos"] = campos
+    ed["atualizado_em"] = tempo.agora_iso()
+    ed["por"] = usuario["nome"]
+    grava_json(pasta / "edicoes.json", ed)
+    return RedirectResponse(url=f"/doc/{doc_id}/editar?mensagem=" +
+                            urllib.parse.quote(f"Imagem {nome} guardada ({largura}x{altura}). Preencha a legenda e salve."),
+                            status_code=303)
+
+
 @app.post("/doc/{doc_id}/reprocessar")
 def reprocessar(doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id, usuario)
+    visual.limpa(pasta)  # o PDF vai ser lido de novo: as páginas renderizadas saem junto
     extrai_e_salva(pasta)
     gera_e_valida(pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
+
+
+
+
+# ---------------------------------------------------------------- visualização do arquivo original
+
+@app.get("/doc/{doc_id}/paginas.json")
+def paginas_do_documento(doc_id: str, usuario: dict = Depends(autentica)):
+    """Índice das páginas com a caixa de cada palavra. Renderiza na primeira chamada e guarda na pasta do documento."""
+    pasta = _pasta(doc_id, usuario)
+    try:
+        idx = visual.prepara(pasta)
+    except Exception as e:  # noqa: BLE001
+        raise HTTPException(500, f"Não consegui renderizar o PDF: {e}")
+    return idx
+
+
+@app.get("/doc/{doc_id}/pagina/{nome}")
+def pagina_do_documento(doc_id: str, nome: str, usuario: dict = Depends(autentica)):
+    """Imagem de uma página do PDF original."""
+    if not re.fullmatch(r"p\d{3}\.png", nome):
+        raise HTTPException(404)
+    pasta = _pasta(doc_id, usuario)
+    caminho = pasta / "paginas" / nome
+    if not caminho.exists():
+        visual.prepara(pasta)
+    if not caminho.exists():
+        raise HTTPException(404)
+    return FileResponse(str(caminho), media_type="image/png", headers={"Cache-Control": "private, max-age=86400"})
 
 
 @app.get("/doc/{doc_id}/xml")
@@ -817,7 +1065,7 @@ def baixar_pacote(doc_id: str, usuario: dict = Depends(autentica)):
 
 @app.get("/doc/{doc_id}/img/{nome}")
 def imagem(doc_id: str, nome: str, usuario: dict = Depends(autentica)):
-    if not re.fullmatch(r"(fig|eq|tab)\d{2}\.[a-z0-9]{2,5}", nome):
+    if not re.fullmatch(r"(fig|eq|tab)\d{2}\.[a-z0-9]{2,5}", nome):  # figuras extraídas e as enviadas na revisão
         raise HTTPException(404)
     caminho = _pasta(doc_id, usuario) / "imagens" / nome
     if not caminho.exists():

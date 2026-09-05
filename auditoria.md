@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.10.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.10.1). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 43 de 43 verificações passaram.
+- **Site:** 57 de 57 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -78,7 +78,21 @@ Gerada por `python ops/auditoria.py` (app 0.10.0). Cada número vem de uma medi�
 - ok — foto de perfil e confirmação de e-mail na conta
 - ok — ajuda explica as etapas e separa o que é feito aqui do que é feito na SciELO
 - ok — ajuda diz o que ainda não é feito
-- ok — cadastro de revista busca dados na SciELO pelo ISSN
+- ok — cadastro de revista busca nas bases de ISSN
+- ok — página Revistas explica de onde vêm os dados e como pedir ISSN novo
+- ok — dígito verificador do ISSN é conferido antes de ir à rede
+- ok — consulta de ISSN responde com as fontes ou com a revista já cadastrada
+- ok — revisar mostra o arquivo original com abas
+- ok — revisar liga a seleção do PDF a um campo
+- ok — revisar oferece inserir tabela, imagem, equação, quadro e diálogo
+- ok — revisar lista o que a SciELO exige e ainda falta
+- ok — revisar tem salvar-e-validar e guardar-rascunho
+- ok — páginas do original são renderizadas com camada de texto
+- ok — imagem da página é servida
+- ok — nome de página fora do padrão é recusado
+- ok — campo obrigatório vazio impede salvar e validar
+- ok — LaTeX vira MathML
+- ok — LaTeX quebrado explica o erro em vez de gerar XML inválido
 - ok — sair encerra a sessão
 
 ## 5. O que o validador oficial ainda aponta
@@ -114,7 +128,13 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Confirmação de conta por e-mail | pronto (Resend, ligável em Configurações) | verificações de correio e confirmação |
 | Correio do sistema (entrada, saída, enviados, rascunhos, lixeira) | pronto | verificação "correio tem as cinco caixas" |
 | Foto de perfil e menu lateral/topo | pronto | verificações de conta e de menu |
-| Cadastro de revista preenchido pela SciELO (ISSN) | pronto | verificação "cadastro de revista busca dados na SciELO pelo ISSN" |
+| Cadastro de revista pelo ISSN (ISSN.org, SciELO, DOAJ, Crossref, OpenAlex) | pronto | verificações de consulta por ISSN |
+| Visualização do arquivo original no revisar, com seleção ligada aos campos | pronto | verificações do visualizador |
+| Inserir tabela, imagem, equação, quadro e diálogo na revisão | pronto | verificação "revisar oferece inserir..." |
+| Campos que a SciELO exige travando salvar e validar | pronto | verificação "campo obrigatório vazio impede salvar" |
+| Fórmulas em MathML (exigência do guia de entrega) | pronto | verificações de LaTeX/MathML |
+| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
+| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |
 | Depósito automático na SciELO | não existe | a SciELO não publica API de depósito; o pacote sai pronto e o envio é pelo canal da coleção |
 | Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |
 | Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |
