@@ -13,17 +13,18 @@
     {% else %}
       <input id="{{ nome }}" name="{{ nome }}" type="{{ tipo }}" value="{{ v.get(nome, '') }}">
     {% endif %}
-    {% if b %}<div class="msg block">{{ b[0]|regra }}</div>{% elif nome in editados %}<span class="prov">editado à mão · o extraído era diferente</span>{% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
+    {% if b and b[0] %}<div class="msg block">{{ b[0]|regra }}</div>{% elif b %}<span class="prov crit-text">bloqueante: veja ao lado</span>{% elif nome in editados %}<span class="prov">editado à mão · o extraído era diferente</span>{% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
   </div>
 {%- endmacro %}
 {% block conteudo %}
 <div class="result-head">
   <div class="stack" style="gap:6px">
     <p class="eyebrow">Revisar e editar</p>
-    <div class="row"><h1 class="mono" style="font-size:19px">{{ r.arquivo_original }}</h1>
+    <h1>{{ r.titulo or r.arquivo_original }}</h1>
+    <div class="row" style="gap:8px"><span class="file"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg><span class="mono">{{ r.arquivo_original }}</span></span>
       <span class="chip {{ 'ok' if not bloqueantes else 'crit' }}">{{ bloqueantes|length }} bloqueantes</span>
       {% if editados %}<span class="chip info">{{ editados|length }} campos editados</span>{% endif %}</div>
-    <p class="small muted" style="max-width:80ch">Campos em <b style="color:var(--crit)">vermelho</b> resolvem um bloqueante; em <b style="color:var(--warn)">laranja</b> já foram editados. O que você digitar substitui o valor extraído só no XML; o PDF e a extração original ficam guardados.</p>
+    <p class="small muted" style="max-width:80ch">Campos em <b class="crit-text">vermelho</b> resolvem um bloqueante; em <b class="warn-text">laranja</b> já foram editados. O que você digitar substitui o valor extraído só no XML; o PDF e a extração original ficam guardados.</p>
   </div>
   <div class="row"><a class="btn" href="/doc/{{ id }}">Voltar ao resultado</a></div>
 </div>

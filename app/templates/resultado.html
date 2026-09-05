@@ -5,7 +5,8 @@
 <div class="result-head">
   <div class="stack" style="gap:6px">
     <p class="eyebrow">Resultado da validação</p>
-    <div class="row"><h1 class="mono" style="font-size:19px">{{ r.arquivo_original }}</h1><span class="muted">{{ r.revista_titulo or 'revista não cadastrada' }} · SPS {{ r.versao_sps }}</span></div>
+    <h1>{{ r.titulo or r.arquivo_original }}</h1>
+    <div class="row" style="gap:8px"><span class="file"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg><span class="mono">{{ r.arquivo_original }}</span></span><span class="muted">·</span><span class="muted small">{{ r.revista_titulo or 'revista não cadastrada' }} · SPS {{ r.versao_sps }} · <span class="mono">{{ r.nome_base }}</span></span></div>
   </div>
   <div class="row">
     <form method="post" action="/doc/{{ r.id }}/reprocessar" style="display:inline"><button class="btn" type="submit" title="Reextrai do PDF; mantém as edições"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 01-14.9 4M4 12a8 8 0 0114.9-4"/><path d="M20 4v4h-4M4 20v-4h4"/></svg>Reprocessar</button></form>
@@ -18,7 +19,7 @@
 </div>
 
 <div class="status {{ 'ok' if r.pronto else 'crit' }}">
-  <span class="dot"></span>
+  <span class="ico" aria-hidden="true">{% if r.pronto %}<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>{% else %}<svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5"/><path d="M10.3 3.9L2.5 18a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>{% endif %}</span>
   <div>
     <b>{{ 'Pronto para entrega' if r.pronto else 'Não pronto' }}</b>
     <div class="sub">{% if r.pronto %}Sem bloqueantes, DTD válido e Schematron SPS sem erros.{% else %}{{ r.bloqueantes|length }} bloqueante(s) e {{ r.packtools|length }} erro(s) do validador oficial. Corrija na revisão e salve para revalidar.{% endif %}</div>

@@ -30,12 +30,16 @@
       </div>
       <div class="field">
         <label for="arquivo">Arquivo PDF</label>
-        <div class="drop">
+        <div class="drop" id="drop">
           <div class="row" style="gap:12px">
-            <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></span>
-            <div><b>Escolha o PDF do artigo</b><div class="small muted">Até 50 MB. DOCX entra na próxima fase.</div></div>
+            <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></span>
+            <div><b>Arraste o PDF do artigo para aqui</b><div class="small muted">ou escolha no computador. Até 50 MB. DOCX entra na próxima fase.</div></div>
           </div>
-          <input id="arquivo" type="file" name="arquivo" accept="application/pdf" required>
+          <div class="row" style="gap:10px">
+            <label class="btn" for="arquivo" style="cursor:pointer"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>Escolher PDF</label>
+            <span id="nome-arquivo" class="small muted">Nenhum arquivo escolhido.</span>
+          </div>
+          <input id="arquivo" class="visualmente-oculto" type="file" name="arquivo" accept="application/pdf,.pdf" required>
         </div>
       </div>
       <div class="row between">
@@ -79,4 +83,26 @@
   <div class="empty"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento ainda. Envie o primeiro PDF acima.</div>
   {% endif %}
 </section>
+{% endblock %}
+{% block scripts %}
+<script>
+(function(){
+  var drop=document.getElementById('drop'), input=document.getElementById('arquivo'), nome=document.getElementById('nome-arquivo');
+  function mostra(){
+    var f=input.files&&input.files[0];
+    if(!f){nome.textContent='Nenhum arquivo escolhido.';nome.className='small muted';return;}
+    var mb=(f.size/1048576).toFixed(1);
+    if(!/\.pdf$/i.test(f.name)){nome.textContent=f.name+' não é PDF. Por enquanto só PDF.';nome.className='small crit-text';input.value='';return;}
+    nome.textContent=f.name+' · '+mb+' MB';nome.className='small';
+  }
+  input.addEventListener('change',mostra);
+  ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('is-over');});});
+  ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('is-over');});});
+  drop.addEventListener('drop',function(e){
+    if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length){input.files=e.dataTransfer.files;mostra();}
+  });
+  var form=input.form;
+  form.addEventListener('submit',function(){var b=form.querySelector('button[type=submit]');b.disabled=true;b.textContent='Processando… leva alguns segundos';});
+})();
+</script>
 {% endblock %}

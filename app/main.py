@@ -49,7 +49,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.3.0"
+VERSAO_APP = "0.4.0"
 
 app = FastAPI(title="xmljats", version=VERSAO_APP, docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=str(RAIZ / "app" / "static")), name="static")
@@ -78,7 +78,7 @@ seguranca = HTTPBasic(auto_error=False)
 
 # codigo da regra (nos bloqueantes) -> campos do formulario que resolvem
 CAMPOS_POR_REGRA = {
-    "A09": ["data_publicado", "ano"], "H01": ["data_recebido", "data_aceito"], "H02": ["data_recebido", "data_aceito"],
+    "A09": ["data_publicado"], "H01": ["data_recebido", "data_aceito"], "H02": ["data_recebido", "data_aceito"],
     "A04": ["heading"], "A01": ["doi"], "A02": ["order"], "A08": ["volume", "numero", "elocation"], "A05": ["titulo_0_texto"],
     "A03": ["tipo_artigo"], "L01": ["licenca"], "J01": ["revista"], "J03": ["revista"], "J05": ["revista"], "C07": ["corresp"],
 }
@@ -223,12 +223,14 @@ def modelo_efetivo(pasta: Path) -> dict:
 
 
 def campos_bloqueados(bloqueantes) -> dict:
-    """codigo da regra em cada bloqueante -> campos do formulario a destacar."""
+    """codigo da regra em cada bloqueante -> campos do formulario a destacar.
+    Quando uma regra aponta para varios campos (ex.: H01 -> recebido e aceito), todos ficam marcados, mas a mensagem
+    completa so aparece no primeiro; os demais recebem a marca "" (vazia) para nao repetir o texto."""
     out = {}
     for b in bloqueantes:
         for cod in re.findall(r"\(([A-Z]\d{2})\)", b):
-            for campo in CAMPOS_POR_REGRA.get(cod, []):
-                out.setdefault(campo, []).append(b)
+            for n, campo in enumerate(CAMPOS_POR_REGRA.get(cod, [])):
+                out.setdefault(campo, []).append(b if n == 0 else "")
         m = re.search(r"ORCID (?:ausente|inválido) para (.+?) \(C02\)", b)
         if m:
             out.setdefault("orcid:" + m.group(1), []).append(b)
