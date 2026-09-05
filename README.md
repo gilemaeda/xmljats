@@ -4,7 +4,7 @@ Plataforma para transformar artigos científicos (PDF hoje; DOCX na próxima fas
 
 | Pasta | O que é |
 |---|---|
-| `app/` | Site (FastAPI + Jinja2): validador, resultado, revistas. Chama o motor. |
+| `app/` | Site (FastAPI + Jinja2): validador, resultado, **revisar e editar** (corrige metadados e revalida), pacote .zip, revistas. Chama o motor. |
 | `poc/` | Motor: extrator de PDF (`poc/extrator/`), gerador de XML (`xml_jats.py`), CLIs (`extrair.py`, `gerar_xml.py`). Ver `poc/README.md`. |
 | `modelos/` | PDFs de teste, gabaritos manuais, XML oficial da SciELO, cadastro de revistas (`revistas.json`), análise dos modelos. |
 | `especificacao_sistema_v1.md` | Especificação do sistema (arquitetura, regras, telas, roadmap). |
@@ -45,4 +45,6 @@ Ordem: homologação primeiro, produção depois. Banco de dados ainda não é n
 
 - Extrator de PDF passa nos seis elementos obrigatórios da SciELO nos seis PDFs de teste (placar em `poc/saida/placar.md` após rodar `poc/extrair.py`).
 - XML gerado é válido no DTD JATS 1.1; o Schematron SPS reprova só onde o PDF não traz o dado (data de publicação com dia e mês; seção da revista), que o site mostra como bloqueante.
+- Tela "Revisar e editar": o operador preenche o que o PDF não traz (datas do OJS, seção, ORCID, e-mail de correspondência, revista) e o XML é regenerado e revalidado. As edições ficam em `edicoes.json` como sobreposições à extração; o PDF e o modelo original não mudam. Com isso, o artigo da Direito e Práxis chega a "Pronto" (zero bloqueantes, Schematron ok) preenchendo só a data de publicação.
+- Pacote `.zip` com XML e PDF no nome-base da SPS.
 - Falta: caminho DOCX, figuras/imagens no XML, chamadas de notas no texto, campos completos de referência, contas e cadastro editável de revistas, fila com IA.
