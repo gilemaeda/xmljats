@@ -53,6 +53,7 @@ sys.path.insert(0, str(RAIZ / "app"))
 from contas import COOKIE, PAPEIS, ROTULO_PAPEL, Contas  # noqa: E402  (app/contas.py)
 import tempo  # noqa: E402  (app/tempo.py: tudo no horário de Brasília)
 from correio import CAIXAS, ROTULO_CAIXA, Correio, corpo_confirmacao, token_confirmacao  # noqa: E402
+import scielo  # noqa: E402  (app/scielo.py: consulta de periódico por ISSN)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -63,7 +64,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.9.2"
+VERSAO_APP = "0.10.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -781,15 +782,22 @@ def revistas(request: Request, usuario: dict = Depends(autentica), mensagem: str
     return templates.TemplateResponse(request, "revistas.html", {"revistas": carrega_revistas(), "usuario": usuario, "mensagem": mensagem})
 
 
-def _form_revista(request: Request, usuario: dict, v: dict, erros: dict, nova: bool, docs_da_revista=None):
+def _form_revista(request: Request, usuario: dict, v: dict, erros: dict, nova: bool, docs_da_revista=None, busca=None):
     return templates.TemplateResponse(request, "revista_form.html", {"usuario": usuario, "v": v, "erros": erros, "nova": nova, "licencas": LICENCAS,
-                                                                     "areas": AREAS, "estilos": ESTILOS_REF,
+                                                                     "areas": AREAS, "estilos": ESTILOS_REF, "busca": busca,
                                                                      "docs_da_revista": docs_da_revista}, status_code=400 if erros else 200)
 
 
 @app.get("/revistas/nova", response_class=HTMLResponse)
-def revista_nova(request: Request, usuario: dict = Depends(exige_admin)):
-    return _form_revista(request, usuario, {"licenca_url": LICENCAS[0][0], "modo_publicacao": "continua"}, {}, True)
+def revista_nova(request: Request, usuario: dict = Depends(exige_admin), issn: str = ""):
+    """Formulário em branco ou pré-preenchido com o que a SciELO sabe sobre o ISSN (o admin confere antes de salvar)."""
+    v = {"licenca_url": LICENCAS[0][0], "modo_publicacao": "continua"}
+    busca = None
+    if issn.strip():
+        busca = scielo.busca_por_issn(issn)
+        v.update(busca.get("dados") or {})
+        v.setdefault("issn_epub", scielo.normaliza_issn(issn))
+    return _form_revista(request, usuario, v, {}, True, busca=busca)
 
 
 @app.post("/revistas/nova", response_class=HTMLResponse)

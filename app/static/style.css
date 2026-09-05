@@ -376,6 +376,51 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 .tabprev th{background:var(--surface-2);color:var(--text);font-weight:600;position:sticky;top:0}
 .eqprev{font-family:var(--mono);font-size:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r-1);padding:8px 10px;color:var(--text-2);overflow-x:auto;white-space:pre-wrap;margin-top:6px}
 
+/* ---------- ajuda ---------- */
+.sec-t{font-size:19px;margin:var(--s-6) 0 var(--s-4);letter-spacing:-.015em}
+.sec-t:first-of-type{margin-top:var(--s-5)}
+.ajuda-hero{display:grid;grid-template-columns:1.15fr 1fr;gap:var(--s-6);padding:var(--s-6);align-items:center;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--brand-soft) 70%,var(--surface)),var(--surface) 62%)}
+.ajuda-hero h1{font-size:30px;letter-spacing:-.025em;margin-top:6px}
+.ajuda-fluxo{display:flex;flex-direction:column;gap:2px}
+.ajuda-fluxo .passo{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:12px;background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--border)}
+.ajuda-fluxo .passo + .passo{margin-top:6px}
+.ajuda-fluxo .ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:none;background:var(--brand-soft);color:var(--brand-text)}
+.ajuda-fluxo .ic svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ajuda-fluxo b{display:block;font-size:13.5px}
+.ajuda-fluxo span:not(.ic){font-size:12.5px;color:var(--muted)}
+.cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-4)}
+.ficha{display:flex;flex-direction:column;gap:8px}
+.ficha .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand-text)}
+.ficha .ic.info{background:var(--info-bg);color:var(--info-ink)}.ficha .ic.ok{background:var(--ok-bg);color:var(--ok-ink)}
+.ficha .ic.warn{background:var(--warn-bg);color:var(--warn-ink)}
+.ficha .ic svg{width:17px;height:17px;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ficha h3{font-size:15px}
+.lista{margin:0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:5px}
+.lista li{position:relative;padding-left:18px;font-size:12.5px;color:var(--text-2);line-height:1.5}
+.lista li::before{content:"";position:absolute;left:3px;top:8px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.trilha-etapas{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.trilha-etapas .et{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--border);border-radius:var(--r-2);background:var(--surface)}
+.trilha-etapas .et.aqui{border-color:color-mix(in srgb,var(--ok) 40%,var(--border));background:color-mix(in srgb,var(--ok-bg) 30%,var(--surface))}
+.trilha-etapas .et .n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;font-family:var(--mono);font-size:12px;font-weight:600;background:var(--surface-3);color:var(--muted)}
+.trilha-etapas .et.aqui .n{background:var(--ok);color:var(--brand-ink)}
+.trilha-etapas .et b{margin-right:8px}
+.trilha-etapas .et p{margin-top:4px}
+.passos-num{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:13.5px;color:var(--text-2);line-height:1.6}
+.passos-num b{color:var(--text)}
+.faq{display:flex;flex-direction:column;gap:8px}
+.faq details{padding:0;overflow:hidden}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;cursor:pointer;font-weight:600;list-style:none;color:var(--text)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary svg{flex:none;color:var(--muted);transition:transform .18s}
+.faq details[open] summary{border-bottom:1px solid var(--border)}
+.faq details[open] summary svg{transform:rotate(180deg)}
+.faq details p{padding:14px 18px;color:var(--text-2);line-height:1.65}
+.ajuda-rodape{display:flex;align-items:center;justify-content:space-between;gap:var(--s-5);flex-wrap:wrap;margin-top:var(--s-6);
+  background:linear-gradient(135deg,var(--surface),color-mix(in srgb,var(--accent-soft) 60%,var(--surface)))}
+@media (max-width:1100px){.cards-3{grid-template-columns:1fr 1fr}}
+@media (max-width:960px){.ajuda-hero,.cards-3,.trilha-etapas{grid-template-columns:1fr}.ajuda-hero h1{font-size:24px}}
+
 /* ---------- correio ---------- */
 .correio{display:grid;grid-template-columns:200px minmax(0,1fr);gap:var(--s-4);align-items:start}
 .caixas{display:flex;flex-direction:column;gap:2px;padding:10px}

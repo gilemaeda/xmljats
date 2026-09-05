@@ -134,6 +134,11 @@ def roda_site():
           c.post("/admin/correio/nova", data={"para": "a@b.org", "assunto": "t", "texto": "t", "acao": "enviar"}).headers.get("location", "").find("saida") > 0)
     check("webhook do correio exige segredo", c.post("/webhook/resend", json={"type": "email.delivered"}).status_code == 403)
     check("foto de perfil e confirmação de e-mail na conta", all(x in c.get("/conta").text for x in ("Foto de perfil", "Trocar senha")))
+    ajuda = c.get("/ajuda").text
+    check("ajuda explica as etapas e separa o que é feito aqui do que é feito na SciELO",
+          all(x in ajuda for x in ("As etapas do documento", "no xmljats", "na SciELO", "Como entregar o pacote para a SciELO")))
+    check("ajuda diz o que ainda não é feito", "O que ainda não é feito aqui" in ajuda and "Perguntas rápidas" in ajuda)
+    check("cadastro de revista busca dados na SciELO pelo ISSN", "Buscar na SciELO" in c.get("/revistas/nova").text)
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)
@@ -206,6 +211,8 @@ def main():
           "| Confirmação de conta por e-mail | pronto (Resend, ligável em Configurações) | verificações de correio e confirmação |",
           "| Correio do sistema (entrada, saída, enviados, rascunhos, lixeira) | pronto | verificação \"correio tem as cinco caixas\" |",
           "| Foto de perfil e menu lateral/topo | pronto | verificações de conta e de menu |",
+          "| Cadastro de revista preenchido pela SciELO (ISSN) | pronto | verificação \"cadastro de revista busca dados na SciELO pelo ISSN\" |",
+          "| Depósito automático na SciELO | não existe | a SciELO não publica API de depósito; o pacote sai pronto e o envio é pelo canal da coleção |",
           "| Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |",
           "| Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |",
           "| Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |",

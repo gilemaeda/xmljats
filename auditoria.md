@@ -4,7 +4,7 @@ Gerada por `python ops/auditoria.py` (app 0.9.2). Cada número vem de uma mediç
 
 ## 1. Resumo
 
-- **Site:** 39 de 39 verificações passaram.
+- **Site:** 42 de 42 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -75,6 +75,9 @@ Gerada por `python ops/auditoria.py` (app 0.9.2). Cada número vem de uma mediç
 - ok — mensagem sem envio configurado fica na caixa de saída
 - ok — webhook do correio exige segredo
 - ok — foto de perfil e confirmação de e-mail na conta
+- ok — ajuda explica as etapas e separa o que é feito aqui do que é feito na SciELO
+- ok — ajuda diz o que ainda não é feito
+- ok — cadastro de revista busca dados na SciELO pelo ISSN
 - ok — sair encerra a sessão
 
 ## 5. O que o validador oficial ainda aponta
@@ -110,6 +113,8 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Confirmação de conta por e-mail | pronto (Resend, ligável em Configurações) | verificações de correio e confirmação |
 | Correio do sistema (entrada, saída, enviados, rascunhos, lixeira) | pronto | verificação "correio tem as cinco caixas" |
 | Foto de perfil e menu lateral/topo | pronto | verificações de conta e de menu |
+| Cadastro de revista preenchido pela SciELO (ISSN) | pronto | verificação "cadastro de revista busca dados na SciELO pelo ISSN" |
+| Depósito automático na SciELO | não existe | a SciELO não publica API de depósito; o pacote sai pronto e o envio é pelo canal da coleção |
 | Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |
 | Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |
 | Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |

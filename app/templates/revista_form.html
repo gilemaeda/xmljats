@@ -17,9 +17,20 @@
   </div>
   <a class="btn" href="/revistas">Voltar</a>
 </div>
+{% if nova %}
+<form class="card pad row" method="get" action="/revistas/nova" style="gap:var(--s-4);align-items:flex-end;margin-bottom:var(--s-4)">
+  <div class="field" style="flex:1;min-width:220px">
+    <label for="issn-busca">Já está na SciELO? Busque pelo ISSN</label>
+    <input id="issn-busca" name="issn" placeholder="0000-0000" value="{{ v.get('issn_epub') or '' }}">
+    <span class="hint">Preenche título, abreviado, acrônimo, editora e área com o que a SciELO tem cadastrado. Se a revista tem ISSN impresso e eletrônico, tente os dois.</span>
+  </div>
+  <button class="btn" type="submit"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Buscar na SciELO</button>
+</form>
+{% endif %}
 <form method="post" action="{{ '/revistas/nova' if nova else '/revistas/' ~ v.acronimo }}" class="review" style="grid-template-columns:3fr 2fr">
   <div>
     {% if erros.get('_') %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erros['_'] }}</div>{% endif %}
+    {% if busca %}<div class="msg {{ 'auto' if busca.achou else 'warn' }}" style="margin-bottom:var(--s-4)">{{ busca.mensagem }}{% if busca.achou %} Confira os campos antes de salvar.{% endif %}</div>{% endif %}
     <div class="fs">
       <header><h2>Identificação</h2><span class="small muted">journal-id · journal-title · issn</span></header>
       <div class="in">

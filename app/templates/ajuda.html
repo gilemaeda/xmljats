@@ -2,87 +2,174 @@
 {% set ativo = 'ajuda' %}
 {% block titulo %}Como funciona · xmljats{% endblock %}
 {% block conteudo %}
-<div class="page-head">
+<div class="ajuda-hero card">
   <div>
-    <p class="eyebrow">Ajuda</p>
-    <h1 style="margin-top:4px">Como funciona</h1>
-    <p class="lead">O caminho de um artigo aqui dentro, do envio ao pacote, e o que o sistema faz e não faz.</p>
+    <p class="eyebrow">Guia</p>
+    <h1>Do arquivo do artigo ao pacote que a SciELO aceita</h1>
+    <p class="lead">O que o sistema faz sozinho, o que ele pede a você e o que continua acontecendo fora daqui. Sem promessa de mágica: quando um dado não está no arquivo, ele vira bloqueante em vez de ser inventado.</p>
+    <div class="row" style="margin-top:18px">
+      <a class="btn primary" href="/"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>Validar um artigo</a>
+      <a class="btn" href="#etapas">Ver as etapas</a>
+    </div>
+  </div>
+  <div class="ajuda-fluxo">
+    {% for ic, t, d in [
+      ('envio', 'Você envia', 'PDF do artigo'),
+      ('motor', 'O motor lê', 'metadados, corpo, figuras, tabelas, equações, notas e referências'),
+      ('xml', 'Sai o XML', 'SciELO PS, validado no packtools'),
+      ('rev', 'Você revisa', 'o que falta aparece campo a campo'),
+      ('pac', 'Sai o pacote', 'XML, PDF e imagens no nome da SPS')] %}
+    <div class="passo">
+      <span class="ic">
+        {% if ic == 'envio' %}<svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>
+        {% elif ic == 'motor' %}<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>
+        {% elif ic == 'xml' %}<svg viewBox="0 0 24 24"><path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/></svg>
+        {% elif ic == 'rev' %}<svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg>
+        {% else %}<svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 12l9 5 9-5M3 16l9 5 9-5"/></svg>{% endif %}
+      </span>
+      <div><b>{{ t }}</b><span>{{ d }}</span></div>
+    </div>
+    {% endfor %}
   </div>
 </div>
 
-<div class="features" style="margin-top:0">
-  <div class="card feature">
-    <span class="step-ico"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></span>
-    <h3>1. Envio</h3>
-    <p class="small muted">Você manda o PDF do artigo. O motor lê texto, fontes e posições: metadados, autores, ORCID, afiliações, resumos, seções, notas, figuras, tabelas, equações e referências.</p>
-  </div>
-  <div class="card feature">
-    <span class="step-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></svg></span>
-    <h3>2. XML e validação</h3>
-    <p class="small muted">Sai o XML no padrão SciELO PS, com o nome de arquivo que a SciELO exige, validado no DTD JATS e no Schematron SPS pelo packtools, o validador oficial.</p>
-  </div>
-  <div class="card feature">
-    <span class="step-ico"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg></span>
-    <h3>3. Revisão</h3>
-    <p class="small muted">O que falta aparece como bloqueante, dizendo de onde vem o dado (OJS, cadastro da revista, arquivo original). Você corrige na tela e o XML é gerado e validado de novo.</p>
-  </div>
+<h2 class="sec-t">O que o motor tira do arquivo</h2>
+<div class="cards-3">
+  {% for titulo, texto, itens, cor, ic in [
+    ('Identificação', 'O cabeçalho do artigo e o que amarra ele à revista.', ['DOI, ISSN e fascículo', 'Seção da revista', 'Datas de recebimento, aceite e publicação', 'Licença de uso'], 'brand', 'id'),
+    ('Pessoas', 'Quem assina e de onde vem.', ['Nome dividido em sobrenome e nomes', 'ORCID com dígito verificador conferido', 'Afiliação com instituição, cidade e país', 'Autor correspondente e e-mail'], 'info', 'gente'),
+    ('Texto', 'A espinha do artigo.', ['Títulos em cada idioma', 'Resumos e palavras-chave', 'Seções e subseções', 'Notas de rodapé com a chamada ligada'], 'ok', 'texto'),
+    ('Figuras', 'Imagem e legenda juntas.', ['Imagem extraída do PDF', 'Legenda, fonte e chamada no texto', 'Nome -gfNN.tif no pacote'], 'warn', 'imagem'),
+    ('Tabelas e equações', 'O que costuma dar mais trabalho à mão.', ['Tabela com grade vira table de verdade', 'Grade incerta vai como imagem, com aviso', 'Equação recortada em alta resolução'], 'brand', 'tabela'),
+    ('Referências', 'Uma a uma, com grau de confiança.', ['ABNT, APA e numérico (Vancouver, IEEE)', 'Autores, título, fonte, volume, páginas', 'DOI, link e data de acesso'], 'info', 'livro')] %}
+  <article class="card pad ficha">
+    <span class="ic {{ cor }}">
+      {% if ic == 'id' %}<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h4M7 14h7M15 9h2"/></svg>
+      {% elif ic == 'gente' %}<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20a6 6 0 0112 0"/><path d="M16 5.5a3.2 3.2 0 010 5M18 20a6 6 0 00-2-4.5"/></svg>
+      {% elif ic == 'texto' %}<svg viewBox="0 0 24 24"><path d="M4 6h16M4 11h16M4 16h10"/></svg>
+      {% elif ic == 'imagem' %}<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M4 17l5-5 4 4 3-3 4 4"/></svg>
+      {% elif ic == 'tabela' %}<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 14.5h18M9 4v16M15 4v16"/></svg>
+      {% else %}<svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h12v18H6a2 2 0 01-2-2z"/><path d="M8 7h6M8 11h6"/></svg>{% endif %}
+    </span>
+    <h3>{{ titulo }}</h3>
+    <p class="small muted">{{ texto }}</p>
+    <ul class="lista">{% for i in itens %}<li>{{ i }}</li>{% endfor %}</ul>
+  </article>
+  {% endfor %}
 </div>
 
-<div class="review" style="grid-template-columns:3fr 2fr;margin-top:var(--s-5)">
-  <div class="stack">
-    <section class="card">
-      <header class="cardhead"><h2>Etapas do documento</h2><span class="muted small">anotadas à mão, seguem os nomes da SciELO</span></header>
-      <div class="pad">
-        <ol class="steps" style="margin-top:0">
-          {% for cod, rotulo in etapas %}
-          <li><div><h3>{{ rotulo }}</h3><p class="muted small">{{ {
-            'recebido': 'O arquivo chegou e foi processado pelo motor.',
-            'em_revisao': 'Alguém está corrigindo os campos que faltam.',
-            'pronto': 'Sem bloqueantes e sem erros do validador oficial: o pacote pode ser gerado.',
-            'entregue': 'Pacote enviado à SciELO.',
-            'pre_qa': 'A SciELO está na conferência inicial do pacote.',
-            'qa': 'Controle de qualidade da SciELO em andamento.',
-            'qa_finalizado': 'Controle de qualidade concluído.',
-            'publicado': 'Artigo publicado na coleção.'}.get(cod, '') }}</p></div></li>
-          {% endfor %}
-        </ol>
-      </div>
-    </section>
-
-    <section class="card">
-      <header class="cardhead"><h2>O que o sistema faz com cada parte do artigo</h2></header>
-      <div class="tblwrap"><table class="tbl">
-        <thead><tr><th>Parte</th><th>O que acontece</th></tr></thead>
-        <tbody>
-          <tr><td><b>Metadados</b></td><td>DOI, volume, número, elocation, datas e licença saem do PDF; o que não está lá vira bloqueante.</td></tr>
-          <tr><td><b>Autores</b></td><td>Nome, ORCID (com dígito verificador conferido), e-mail e afiliação, ligados por marcador.</td></tr>
-          <tr><td><b>Figuras</b></td><td>Imagem extraída do PDF, ligada à legenda, com chamada no texto e nome <span class="mono">-gfNN.tif</span> no pacote.</td></tr>
-          <tr><td><b>Tabelas</b></td><td>Quando a grade tem linhas, vira <span class="mono">&lt;table&gt;</span> de verdade. Quando as colunas não são reconstruíveis com segurança, vai como imagem, para não entregar dado trocado.</td></tr>
-          <tr><td><b>Equações</b></td><td>PDF não guarda MathML. A equação é recortada em alta resolução e vai em <span class="mono">&lt;disp-formula&gt;</span> como imagem. Para MathML é preciso o DOCX ou o LaTeX original.</td></tr>
-          <tr><td><b>Notas</b></td><td>As chamadas no texto viram <span class="mono">xref</span> ligado ao rodapé.</td></tr>
-          <tr><td><b>Referências</b></td><td>Texto integral em <span class="mono">mixed-citation</span> e campos separados em <span class="mono">element-citation</span>, com o grau de confiança de cada uma.</td></tr>
-        </tbody>
-      </table></div>
-    </section>
+<h2 class="sec-t" id="etapas">As etapas do documento</h2>
+<p class="lead" style="margin-bottom:var(--s-4)">As três primeiras acontecem aqui dentro. Da quarta em diante, quem trabalha é a SciELO: o sistema guarda a etapa que você anota, para todo mundo saber onde cada artigo está.</p>
+<div class="trilha-etapas">
+  {% set descricao = {
+    'recebido': ('O arquivo chegou e o motor já leu.', 'aqui'),
+    'em_revisao': ('Alguém está preenchendo o que faltou.', 'aqui'),
+    'pronto': ('Sem bloqueantes e sem erro do validador oficial: o pacote pode ser gerado.', 'aqui'),
+    'entregue': ('O pacote foi enviado à SciELO pelo canal combinado com a coleção.', 'fora'),
+    'pre_qa': ('A SciELO confere o pacote recebido.', 'fora'),
+    'qa': ('Controle de qualidade da SciELO em andamento.', 'fora'),
+    'qa_finalizado': ('Controle de qualidade concluído.', 'fora'),
+    'publicado': ('Artigo no ar na coleção.', 'fora')} %}
+  {% for cod, rotulo in etapas %}
+  {% set d = descricao.get(cod, ('', 'fora')) %}
+  <div class="et {{ d[1] }}">
+    <span class="n">{{ loop.index }}</span>
+    <div>
+      <b>{{ rotulo }}</b>
+      <span class="chip {{ 'ok' if d[1] == 'aqui' else 'neutral' }}">{{ 'no xmljats' if d[1] == 'aqui' else 'na SciELO' }}</span>
+      <p class="small muted">{{ d[0] }}</p>
+    </div>
   </div>
+  {% endfor %}
+</div>
 
+<h2 class="sec-t">Como entregar o pacote para a SciELO</h2>
+<div class="review" style="grid-template-columns:3fr 2fr">
+  <div class="card pad stack">
+    <p>O xmljats entrega o pacote pronto. O envio em si é combinado entre a revista e a SciELO, e não tem um botão público de depósito: é por isso que a etapa "Entregue à SciELO" é anotada à mão aqui.</p>
+    <ol class="passos-num">
+      <li><b>Chegue a "Pronto para entrega".</b> Zero bloqueantes e nenhum erro do validador oficial na tela do resultado.</li>
+      <li><b>Baixe o pacote .zip.</b> Ele já sai com o XML, o PDF e as imagens no padrão de nomes da SPS.</li>
+      <li><b>Fale com a equipe da coleção.</b> No primeiro envio, a SciELO orienta o canal e confere a produção do periódico. Os contatos publicados na documentação são <span class="mono">scielo@scielo.org</span>, <span class="mono">producao@scielo.org</span> e <span class="mono">conversao@scielo.org</span>.</li>
+      <li><b>Acompanhe.</b> A documentação da SciELO fala em 10 a 15 dias entre a confirmação de recebimento e a publicação. Vá anotando a etapa aqui a cada retorno.</li>
+    </ol>
+    <div class="msg note">Se a sua revista já tem um fluxo montado com a coleção (uma pasta, um sistema próprio ou o contato direto da produção), use esse mesmo caminho: o que muda é só que agora o pacote sai pronto e validado daqui.</div>
+  </div>
   <aside class="stack">
     <div class="card pad stack" style="gap:10px">
-      <h3>A regra da casa</h3>
-      <p class="small">Nada é inventado. Se o dado não está no arquivo, ele não aparece no XML: vira bloqueante, com o nome do campo e de onde buscar. É a diferença entre um XML que passa no controle de qualidade e um que volta.</p>
-    </div>
-    <div class="card pad stack" style="gap:10px">
-      <h3>Limites de hoje</h3>
-      <ul class="small muted" style="margin:0;padding-left:18px">
-        <li>Entrada por PDF. DOCX entra na próxima fase.</li>
-        <li>Equações saem como imagem (limitação do PDF, não do sistema).</li>
-        <li>A etapa do documento é anotada por quem acompanha, não vem automática da SciELO.</li>
+      <h3>O que a SciELO exige antes de aceitar</h3>
+      <ul class="lista">
+        <li>XML no SciELO PS, válido no DTD JATS e no Schematron</li>
+        <li>Arquivos nomeados no padrão da SPS</li>
+        <li>Imagens junto do XML, no mesmo pacote</li>
+        <li>Metadados completos, inclusive dia e mês da publicação</li>
       </ul>
+      <p class="small muted">O sistema confere os quatro pontos antes de deixar o documento chegar a "Pronto".</p>
     </div>
     <div class="card pad stack" style="gap:10px">
-      <h3>Padrões seguidos</h3>
-      <p class="small muted">SciELO PS 1.9 (JATS 1.1) e 1.10 (JATS 1.3), nomeação de arquivos da SPS e validação pelo packtools {{ '' }}— o mesmo que a SciELO roda.</p>
+      <h3>O mesmo validador</h3>
+      <p class="small muted">Rodamos o <b>packtools</b>, a ferramenta da própria SciELO, na versão 4.16. É o mesmo motor por trás do Package Maker que a SciELO pede que os fornecedores usem antes de enviar.</p>
     </div>
   </aside>
+</div>
+
+<h2 class="sec-t">Cadastro de revistas</h2>
+<div class="cards-3">
+  <article class="card pad ficha">
+    <span class="ic brand"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
+    <h3>Pelo ISSN</h3>
+    <p class="small muted">Em Revistas, o administrador clica em <b>Nova revista</b> e busca pelo ISSN. Se o periódico já está na SciELO, título, abreviado, acrônimo, editora e área vêm preenchidos para conferência.</p>
+  </article>
+  <article class="card pad ficha">
+    <span class="ic info"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg></span>
+    <h3>À mão</h3>
+    <p class="small muted">Revista fora da SciELO se cadastra igual, digitando os campos. O ISSN é conferido pelo dígito verificador e o acrônimo precisa ser o mesmo que a SciELO usa, porque ele entra no nome de todo arquivo.</p>
+  </article>
+  <article class="card pad ficha">
+    <span class="ic ok"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/></svg></span>
+    <h3>Para que serve</h3>
+    <p class="small muted">O cadastro alimenta o <span class="mono">journal-meta</span> de todo XML da revista, o nome dos arquivos do pacote e a licença padrão. Escrever "confirmar" nas observações faz o resultado avisar até alguém verificar.</p>
+  </article>
+</div>
+
+<h2 class="sec-t">O que ainda não é feito aqui</h2>
+<div class="cards-3">
+  {% for titulo, texto in [
+    ('Envio automático à SciELO', 'Não existe API pública de depósito. O pacote sai pronto; o envio é pelo canal da coleção, e a etapa é anotada aqui.'),
+    ('Entrada por DOCX', 'Hoje o sistema lê PDF. O caminho DOCX está previsto e depende dos arquivos reais da revista piloto.'),
+    ('Referências com IA e Crossref', 'A separação de campos é por regra, com grau de confiança visível. Cruzar com o Crossref para completar dados é passo seguinte.'),
+    ('Status vindo da SciELO', 'O sistema não consulta o andamento do QA: quem acompanha anota a etapa.'),
+    ('CRediT', 'Papéis de contribuição de cada autor ainda não são gerados.'),
+    ('Fila e custo por artigo', 'Processamento em lote e medição de custo entram com o volume.')] %}
+  <article class="card pad ficha">
+    <span class="ic warn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg></span>
+    <h3>{{ titulo }}</h3>
+    <p class="small muted">{{ texto }}</p>
+  </article>
+  {% endfor %}
+</div>
+
+<h2 class="sec-t">Perguntas rápidas</h2>
+<div class="faq">
+  {% for p, r in [
+    ('Por que meu artigo não fica "Pronto"?', 'Falta algum dado que o arquivo não traz. O mais comum é o dia e o mês da publicação, que só existem no sistema da revista. A tela de revisão mostra cada pendência com o nome do campo e de onde buscar o dado.'),
+    ('Por que a equação virou imagem?', 'PDF não guarda MathML, guarda o desenho da fórmula. Recortamos a equação em alta resolução e emitimos em disp-formula com graphic, que é o que a SPS aceita. Com o DOCX ou o LaTeX original dá para gerar MathML de verdade.'),
+    ('Por que essa tabela veio como imagem e a outra não?', 'Quando a tabela tem linhas de grade, a estrutura é reconstruída e vira uma tabela real no XML. Quando ela só tem filetes horizontais, a divisão das colunas fica incerta; nesse caso preferimos mandar a imagem a entregar número na coluna errada.'),
+    ('O sistema muda meu PDF?', 'Não. O arquivo enviado fica guardado como veio e entra no pacote apenas renomeado no padrão da SPS. As correções que você faz na revisão valem só para o XML.'),
+    ('A área da revista muda o XML?', 'Não. JATS é o mesmo para toda área. O que muda é o que esperar do artigo: estilo de citação, presença de tabelas e de equações. Por isso a área e o estilo de referências ficam no cadastro, e o sistema avisa quando o texto é lido num estilo diferente do esperado.'),
+    ('Quem vê o quê?', 'Cliente vê e abre apenas os próprios documentos. Operador vê todos. Administrador administra usuários, revistas, correio e configurações, e não usa o validador.')] %}
+  <details class="card">
+    <summary>{{ p }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+    <p class="small">{{ r }}</p>
+  </details>
+  {% endfor %}
+</div>
+
+<div class="card pad ajuda-rodape">
+  <div>
+    <h3>A regra da casa</h3>
+    <p class="small muted" style="margin-top:6px;max-width:70ch">Nada é inventado. Se o dado não está no arquivo, ele não aparece no XML: vira bloqueante, com o nome do campo e de onde buscar. É a diferença entre um XML que passa no controle de qualidade e um que volta.</p>
+  </div>
+  <a class="btn primary" href="/">Validar um artigo</a>
 </div>
 {% endblock %}

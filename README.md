@@ -32,6 +32,10 @@ Em **Configurações**, dentro da administração: chave da API do Resend, e-mai
 
 Com isso ligado, quem se cadastra recebe o link de confirmação e só pode enviar arquivos depois de confirmar. O **Correio** guarda tudo em cinco caixas (entrada, saída, enviados, rascunhos, lixeira): sem configuração, a mensagem espera na caixa de saída com o motivo, em vez de sumir. Para registrar entrega e abertura, e para receber mensagens, cadastre no Resend o webhook `<site>/webhook/resend?k=<segredo>`; o segredo está no mesmo arquivo de configuração.
 
+## Entrega à SciELO
+
+O sistema entrega o **pacote pronto e validado**; o depósito em si não tem API pública. O caminho é: chegar a "Pronto para entrega", baixar o `.zip` e enviá-lo pelo canal combinado com a coleção. No primeiro envio a SciELO orienta o processo e confere a produção do periódico (contatos publicados na documentação: `scielo@scielo.org`, `producao@scielo.org`, `conversao@scielo.org`); a documentação fala em 10 a 15 dias entre a confirmação de recebimento e a publicação. As etapas de "Entregue à SciELO" em diante são anotadas à mão no painel.
+
 ## Fuso horário
 
 Todo o sistema grava e mostra horários no **horário de Brasília (UTC-3)**, mesmo com o servidor em UTC (`app/tempo.py`). Datas gravadas antes dessa mudança são convertidas na exibição.
@@ -69,6 +73,8 @@ Ordem: homologação primeiro, produção depois. Banco de dados ainda não é n
 - Interface em modo claro e escuro (seletor no topo, ou o tema do sistema), com contraste medido par a par: `python ops/audita_contraste.py` regenera `app/static/contraste.md` e falha se algum par ficar abaixo do mínimo WCAG.
 - Contas: login por sessão (cookie assinado) e registro público, papéis admin, operador e cliente (o cliente só vê e abre os próprios documentos), tela Usuários (criar, trocar senha, papel, remover), tela Minha conta e área de administração separada com métricas. Com `APP_SENHA` definida e nenhum usuário, o primeiro acesso cria o admin `admin` com essa senha; `APP_SENHA` continua valendo como HTTP Basic para scripts. Usuários em `XMLJATS_DATA/usuarios.json` (senhas só como hash PBKDF2).
 - Cadastro de revistas editável na tela (admin): acrônimo, ISSN com dígito verificador conferido, título, abreviado, editora, prefixo DOI, licença, modo de publicação, seção padrão, site e observações. Vive em `XMLJATS_DATA/revistas.json`, semeado de `modelos/revistas.json`.
+- Cadastro de revista pelo ISSN: se o periódico já está na SciELO, título, abreviado, acrônimo, editora e área vêm preenchidos da própria SciELO (ArticleMeta) para conferência.
+- Página **Como funciona**: o caminho do artigo, o que o motor extrai, quais etapas acontecem aqui e quais acontecem na SciELO, como entregar o pacote e o que ainda não é feito.
 - Interface: menu na lateral ou no topo (a escolha fica no navegador), tema claro ou escuro e foto de perfil.
 - Painel administrativo: filtro por conta e por data, validações por dia, quem está online agora, último acesso com IP e navegador, quantas validações cada conta fez, e edição de nome, e-mail, papel e senha de qualquer usuário.
 - Cadastro de revistas tem área do conhecimento e estilo de referências esperado. A área não muda o XML (JATS é o mesmo para toda área), mas registra o que esperar do artigo; se o texto for lido num estilo diferente do cadastrado, o resultado avisa.
