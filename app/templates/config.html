@@ -78,6 +78,72 @@
       {% endif %}
     </div>
 
+
+    <form class="card pad stack" method="post" action="/admin/config/ftp" id="ftp">
+      <div class="row between">
+        <h2>FTP da SciELO</h2>
+        {% if ftp.pronto %}<span class="chip ok">configurado</span>{% else %}<span class="chip warn">falta configurar</span>{% endif %}
+      </div>
+      <p class="small muted" style="margin:-6px 0 0">É por aqui que o pacote .zip é depositado. As credenciais são pedidas a
+        <span class="mono">{{ email_scielo }}</span>. Elas ficam só no servidor, em
+        <span class="mono">XMLJATS_DATA/config.json</span>, e a senha nunca aparece inteira nesta tela.</p>
+      <div class="grid3">
+        <div class="field">
+          <label for="servidor">Servidor</label>
+          <input id="servidor" name="servidor" value="{{ ftp.servidor }}" placeholder="ftp.exemplo.org">
+          <span class="hint">Só o endereço, sem barra.</span>
+        </div>
+        <div class="field">
+          <label for="porta">Porta</label>
+          <input id="porta" name="porta" type="number" value="{{ ftp.porta }}" placeholder="21">
+        </div>
+        <div class="field">
+          <label for="ftp_usuario">Usuário</label>
+          <input id="ftp_usuario" name="usuario" value="{{ ftp.usuario }}" autocomplete="off">
+        </div>
+      </div>
+      <div class="grid3">
+        <div class="field">
+          <label for="ftp_senha">Senha</label>
+          <div class="senha-wrap">
+            <input id="ftp_senha" name="senha" type="password" autocomplete="new-password"
+                   placeholder="{{ ftp.senha_mascarada or 'senha do FTP' }}">
+            <button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button>
+          </div>
+          <span class="hint">{% if ftp.tem_senha %}Já existe uma senha salva. Deixe em branco para manter.{% else %}Pedida junto com o usuário à SciELO.{% endif %}</span>
+        </div>
+        <div class="field">
+          <label for="pasta_entrega">Pasta de entrega</label>
+          <input id="pasta_entrega" name="pasta_entrega" value="{{ ftp.pasta_entrega }}" placeholder="Entrega">
+        </div>
+        <div class="field">
+          <label for="pasta_correcao">Pasta de correção</label>
+          <input id="pasta_correcao" name="pasta_correcao" value="{{ ftp.pasta_correcao }}" placeholder="Correcao">
+        </div>
+      </div>
+      <label class="check"><input type="checkbox" name="tls" value="1" {% if ftp.tls %}checked{% endif %}> Usar TLS quando o servidor aceitar (recomendado)</label>
+      {% if ftp.tem_senha %}<label class="check"><input type="checkbox" name="remover_senha" value="1"> Remover a senha salva</label>{% endif %}
+      <div class="row" style="gap:8px">
+        <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Salvar FTP</button>
+        <button class="btn" type="submit" formaction="/admin/config/ftp/testar" formnovalidate {% if not ftp.pronto %}disabled{% endif %}>Testar conexão</button>
+      </div>
+    </form>
+
+    <form class="card pad stack" method="post" action="/admin/config/atestado" id="atestado">
+      <h2>Atestado de capacidade técnica</h2>
+      <p class="small muted" style="margin:-6px 0 0">O reconhecimento da SciELO para quem marca XML das coleções
+        {{ colecoes|join(', ') }}. Só pessoa jurídica. O pedido é um e-mail a <span class="mono">{{ email_scielo }}</span>
+        solicitando a amostra de avaliação: 15 dias para devolvê-la marcada, 15 para a SciELO avaliar, e pode haver uma
+        segunda rodada. Reprovada, nova amostra só depois de 6 meses.</p>
+      <div class="grid3">
+        <div class="field"><label for="empresa">Empresa</label><input id="empresa" name="empresa" placeholder="Razão social"></div>
+        <div class="field"><label for="cnpj">CNPJ</label><input id="cnpj" name="cnpj" placeholder="00.000.000/0001-00"></div>
+        <div class="field"><label for="contato">Contato</label><input id="contato" name="contato" value="{{ usuario.email if '@' in (usuario.email or '') else '' }}"></div>
+      </div>
+      <button class="btn" type="submit"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Montar o pedido no correio</button>
+      <span class="small muted">O texto fica como rascunho para você conferir antes de enviar.</span>
+    </form>
+
     <form class="card pad stack" method="post" action="/admin/config/testar">
       <h2>Testar envio</h2>
       <p class="small muted" style="margin-top:-6px">Manda uma mensagem curta pelo Resend e registra o resultado no correio.</p>

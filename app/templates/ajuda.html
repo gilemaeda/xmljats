@@ -86,29 +86,55 @@
 <h2 class="sec-t">Como entregar o pacote para a SciELO</h2>
 <div class="review" style="grid-template-columns:3fr 2fr">
   <div class="card pad stack">
-    <p>O xmljats entrega o pacote pronto. O envio em si é combinado entre a revista e a SciELO, e não tem um botão público de depósito: é por isso que a etapa "Entregue à SciELO" é anotada à mão aqui.</p>
+    <p>O caminho está descrito no <b>Guia de Entrega de Pacote XML para Publicação em SciELO</b>. Não existe API de
+      depósito: o que existe é um FTP e um e-mail — e o sistema faz os dois, na tela <b>Entrega à SciELO</b> de cada documento.</p>
     <ol class="passos-num">
-      <li><b>Chegue a "Pronto para entrega".</b> Zero bloqueantes e nenhum erro do validador oficial na tela do resultado.</li>
-      <li><b>Baixe o pacote .zip.</b> Ele já sai com o XML, o PDF e as imagens no padrão de nomes da SPS.</li>
-      <li><b>Fale com a equipe da coleção.</b> No primeiro envio, a SciELO orienta o canal e confere a produção do periódico. Os contatos publicados na documentação são <span class="mono">scielo@scielo.org</span>, <span class="mono">producao@scielo.org</span> e <span class="mono">conversao@scielo.org</span>.</li>
-      <li><b>Acompanhe.</b> A documentação da SciELO fala em 10 a 15 dias entre a confirmação de recebimento e a publicação. Vá anotando a etapa aqui a cada retorno.</li>
+      <li><b>Chegue a "Pronto para entrega".</b> Zero bloqueantes e nenhum erro do validador oficial.</li>
+      <li><b>Confira o pacote.</b> A tela de entrega checa o que o guia exige: é <span class="mono">.zip</span> (a SciELO não
+        aceita <span class="mono">.rar</span>), os nomes não têm ponto extra, underline nem acento, o XML é válido no DTD e no
+        Schematron, todos os arquivos citados pelo XML estão dentro, e o relatório de validação vai junto.</li>
+      <li><b>Deposite no FTP.</b> O <span class="mono">.zip</span> vai para a pasta <span class="mono">Entrega</span>;
+        correções vão para <span class="mono">Correcao</span>. As credenciais são pedidas a
+        <span class="mono">publicacao@scielo.org</span> e ficam em Configurações, só no servidor.</li>
+      <li><b>Avise por e-mail.</b> O guia é explícito: depositar sozinho <b>não garante publicação</b>. Ao depositar daqui,
+        o aviso para <span class="mono">publicacao@scielo.org</span> já fica pronto no correio, com periódico, ISSN, DOI e
+        nome do pacote preenchidos.</li>
+      <li><b>Acompanhe.</b> Vá anotando a etapa aqui a cada retorno da SciELO.</li>
     </ol>
-    <div class="msg note">Se a sua revista já tem um fluxo montado com a coleção (uma pasta, um sistema próprio ou o contato direto da produção), use esse mesmo caminho: o que muda é só que agora o pacote sai pronto e validado daqui.</div>
+    <div class="msg note">Em <b>publicação contínua</b>, o pacote exige um <span class="mono">article-id</span> do tipo
+      <span class="mono">other</span> com exatamente 5 dígitos, criado por quem marca o XML junto com a planilha de "Other" da
+      SciELO. E o título da seção precisa ser <b>idêntico</b> no PDF, na planilha e no XML: diferente, o pacote é devolvido.</div>
   </div>
   <aside class="stack">
     <div class="card pad stack" style="gap:10px">
-      <h3>O que a SciELO exige antes de aceitar</h3>
+      <h3>O que entra no pacote</h3>
       <ul class="lista">
-        <li>XML no SciELO PS, válido no DTD JATS e no Schematron</li>
-        <li>Arquivos nomeados no padrão da SPS</li>
-        <li>Imagens junto do XML, no mesmo pacote</li>
-        <li>Metadados completos, inclusive dia e mês da publicação</li>
+        <li>XML do artigo em SciELO PS (e sub-article por tradução)</li>
+        <li>PDF de cada idioma</li>
+        <li>Imagens em <span class="mono">.tiff</span>, <span class="mono">.jpg</span> ou <span class="mono">.png</span></li>
+        <li>Tabelas, fórmulas e equações <b>codificadas em MathML ou LaTeX</b>, nunca como imagem</li>
+        <li>Relatório do validador em <span class="mono">.html</span></li>
+        <li>Material suplementar (de preferência <span class="mono">.pdf</span>) e vídeos em <span class="mono">.mp4</span></li>
       </ul>
-      <p class="small muted">O sistema confere os quatro pontos antes de deixar o documento chegar a "Pronto".</p>
+      <p class="small muted">É por isso que a tela de revisar pede o LaTeX de cada equação: sem ele a fórmula sairia como
+        imagem, e o guia não aceita.</p>
+    </div>
+    <div class="card pad stack" style="gap:10px">
+      <h3>Atestado de capacidade técnica</h3>
+      <p class="small muted">É o reconhecimento da SciELO para quem marca XML das coleções SciELO Brasil, SciELO Saúde
+        Pública, RevEnf e Pepsic. Só pessoa jurídica, com CNPJ. O pedido é um e-mail a
+        <span class="mono">publicacao@scielo.org</span> solicitando a amostra de avaliação: a empresa tem 15 dias corridos
+        para devolvê-la marcada, com o relatório do validador, e a SciELO 15 para avaliar, podendo haver uma segunda rodada
+        de 15 + 15. No todo, de 30 a 60 dias. Aprovada, a empresa entra na lista de parceiras e segue sendo avaliada a cada
+        entrega; reprovada, nova amostra só depois de 6 meses.</p>
+      <p class="small muted">Qualquer programa de marcação serve, desde que a saída seja compatível com a SPS/JATS e venha
+        com o relatório do validador — que é o que este sistema produz. Em Configurações, o pedido é montado como rascunho no
+        correio, com empresa e CNPJ.</p>
     </div>
     <div class="card pad stack" style="gap:10px">
       <h3>O mesmo validador</h3>
-      <p class="small muted">Rodamos o <b>packtools</b>, a ferramenta da própria SciELO, na versão 4.16. É o mesmo motor por trás do Package Maker que a SciELO pede que os fornecedores usem antes de enviar.</p>
+      <p class="small muted">Rodamos o <b>packtools</b>, a ferramenta da própria SciELO, na versão 4.16. É o mesmo motor por
+        trás do Package Maker que a SciELO pede que os fornecedores usem antes de enviar.</p>
     </div>
   </aside>
 </div>
@@ -118,7 +144,11 @@
   <article class="card pad ficha">
     <span class="ic brand"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span>
     <h3>Pelo ISSN</h3>
-    <p class="small muted">Em Revistas, o administrador clica em <b>Nova revista</b> e busca pelo ISSN. Se o periódico já está na SciELO, título, abreviado, acrônimo, editora e área vêm preenchidos para conferência.</p>
+    <p class="small muted">Em Revistas, digite o ISSN e o sistema consulta cinco bases: o <b>Portal do ISSN</b> (issn.org),
+      a <b>SciELO</b>, o <b>DOAJ</b>, o <b>Crossref</b> e o <b>OpenAlex</b>. Cada campo mostra de qual delas veio. O acrônimo
+      vem da SciELO, porque é ele que entra no nome dos arquivos; o título abreviado vem do Portal do ISSN, que é a autoridade
+      do registro; a licença vem do DOAJ. Se a revista ainda não tem ISSN, o pedido é feito no
+      <a href="https://cbissn.ibict.br/" target="_blank" rel="noopener">CBISSN/IBICT</a>.</p>
   </article>
   <article class="card pad ficha">
     <span class="ic info"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg></span>

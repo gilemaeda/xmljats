@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% set ativo = 'validador' %}
+{% block titulo %}Entrega · {{ r.nome_base }}{% endblock %}
+{% block conteudo %}
+<div class="result-head">
+  <div class="stack" style="gap:6px">
+    <p class="eyebrow">Entrega à SciELO</p>
+    <h1>{{ r.titulo or r.arquivo_original }}</h1>
+    <div class="row" style="gap:8px">
+      <span class="file"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg><span class="mono">{{ r.nome_base }}.zip</span></span>
+      <span class="chip {{ 'ok' if r.pronto else 'crit' }}">{{ 'pronto para entrega' if r.pronto else 'ainda tem bloqueante' }}</span>
+      <span class="chip neutral">etapa: {{ ETAPA_ROTULO.get(etapa, etapa) }}</span>
+    </div>
+  </div>
+  <div class="row"><a class="btn" href="/doc/{{ id }}">Voltar ao resultado</a></div>
+</div>
+
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+
+<div class="review" style="grid-template-columns:3fr 2fr">
+  <div class="stack">
+    <div class="fs">
+      <header><h2>Conferência do pacote</h2><span class="small muted">Guia de Entrega de Pacote XML para Publicação em SciELO, dez/2024</span></header>
+      <div class="in">
+        {% if not conferencia %}
+        <div class="msg warn">O XML ainda não foi gerado, então não há pacote para conferir. Passe por Revisar e editar primeiro.</div>
+        {% else %}
+        <table class="tbl">
+          <thead><tr><th style="width:34%">Item</th><th style="width:12%">Resultado</th><th>Detalhe</th></tr></thead>
+          <tbody>
+            {% for i in conferencia.itens %}
+            <tr>
+              <td>{{ i.que }}</td>
+              <td><span class="chip {{ 'ok' if i.ok else 'crit' }}">{{ 'ok' if i.ok else 'falta' }}</span></td>
+              <td class="small {{ '' if i.ok else 'crit-text' }}">{{ i.detalhe }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="stack" style="gap:6px;margin-top:var(--s-4)">
+          <b class="small">Arquivos no pacote ({{ conferencia.arquivos|length }})</b>
+          <div class="row" style="gap:6px;flex-wrap:wrap">
+            {% for a in conferencia.arquivos %}<span class="chip neutral mono">{{ a }}</span>{% endfor %}
+          </div>
+        </div>
+        {% if conferencia.erros_xml %}
+        <div class="msg block" style="margin-top:var(--s-4)"><b>O validador aponta:</b>
+          <ul style="margin:6px 0 0;padding-left:18px">{% for e in conferencia.erros_xml[:12] %}<li class="small">{{ e }}</li>{% endfor %}</ul>
+        </div>
+        {% endif %}
+        {% endif %}
+        <div class="row" style="gap:8px;margin-top:var(--s-4)">
+          <a class="btn" href="/doc/{{ id }}/pacote.zip"><svg viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4"/><path d="M4 20h16"/></svg>Baixar o pacote</a>
+          <a class="btn" href="/doc/{{ id }}/editar">Revisar e editar</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Depositar no FTP da SciELO</h2><span class="small muted">pasta {{ ftp.pasta_entrega }} · correções em {{ ftp.pasta_correcao }}</span></header>
+      <div class="in stack">
+        {% if not ftp.pronto %}
+        <div class="msg warn">O FTP ainda não está configurado. As credenciais são pedidas a
+          <span class="mono">{{ email_scielo }}</span> e depois vão em
+          {% if usuario.papel == 'admin' %}<a href="/admin/config">Configurações</a>{% else %}Configurações (acesso do administrador){% endif %}.
+          Enquanto isso, baixe o pacote e deposite pelo cliente de FTP.</div>
+        {% else %}
+        <p class="small muted" style="margin:0">Servidor <span class="mono">{{ ftp.servidor }}:{{ ftp.porta }}</span>,
+          usuário <span class="mono">{{ ftp.usuario }}</span>{% if ftp.tls %}, com TLS{% endif %}.</p>
+        {% endif %}
+        <div class="msg note">Depositar não basta. O guia diz que é <b>obrigatório avisar {{ email_scielo }} por e-mail a cada
+          depósito</b>; sem o aviso, a publicação não é garantida. Ao depositar daqui, o aviso já fica como rascunho no correio,
+          com periódico, ISSN, pacote e DOI preenchidos.</div>
+        {% if usuario.papel == 'admin' %}
+        <form method="post" action="/doc/{{ id }}/entrega" class="row" style="gap:8px;align-items:center">
+          <button class="btn primary" type="submit" {% if not (ftp.pronto and r.pronto and conferencia and conferencia.ok) %}disabled{% endif %}>
+            <svg viewBox="0 0 24 24"><path d="M12 20V8m0 0l-4 4m4-4l4 4"/><path d="M4 4h16"/></svg>Depositar em {{ ftp.pasta_entrega }}</button>
+          <button class="btn" type="submit" name="correcao" value="1" {% if not (ftp.pronto and r.pronto and conferencia and conferencia.ok) %}disabled{% endif %}>Depositar como correção</button>
+        </form>
+        {% if not r.pronto %}<span class="small crit-text">O documento ainda tem bloqueante: resolva em Revisar e editar.</span>
+        {% elif conferencia and not conferencia.ok %}<span class="small crit-text">A conferência acima ainda tem item em falta.</span>{% endif %}
+        {% else %}
+        <p class="small muted" style="margin:0">O depósito é feito pelo administrador.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <aside class="stack">
+    <div class="card pad stack" style="gap:10px">
+      <h3>Como a entrega funciona</h3>
+      <ol class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+        <li>O pacote é um <b>.zip</b>. A SciELO não aceita .rar.</li>
+        <li>Nome de arquivo sem ponto final, underline ou acento.</li>
+        <li>Tabelas, fórmulas e equações <b>codificadas em MathML ou LaTeX</b>, nunca como imagem.</li>
+        <li>O .zip vai para o FTP da coleção, na pasta <span class="mono">{{ ftp.pasta_entrega }}</span>; correção vai em <span class="mono">{{ ftp.pasta_correcao }}</span>.</li>
+        <li>E um e-mail para <span class="mono">{{ email_scielo }}</span> avisando do depósito. Isso é obrigatório.</li>
+      </ol>
+      <p class="small faint" style="margin:0">Fonte: Guia de Entrega de Pacote XML para Publicação em SciELO, versão dez/2024.</p>
+    </div>
+    <div class="card pad stack" style="gap:10px">
+      <h3>Publicação contínua</h3>
+      <p class="small muted" style="margin:0">Exige <span class="mono">article-id pub-id-type="other"</span> com exatamente
+        5 dígitos, criado pelo provedor do XML junto com a planilha de "Other" da SciELO. O título da seção precisa ser
+        <b>idêntico</b> no PDF, na planilha e no XML; diferente, o pacote volta.</p>
+    </div>
+    <div class="card pad stack" style="gap:10px">
+      <h3>Atestado de capacidade técnica</h3>
+      <p class="small muted" style="margin:0">É o reconhecimento que habilita a empresa a marcar XML para as coleções
+        {{ colecoes|join(', ') }}. Só pessoa jurídica, com CNPJ. O pedido é um e-mail para
+        <span class="mono">{{ email_scielo }}</span> solicitando a amostra; a empresa tem 15 dias para devolvê-la marcada e a
+        SciELO 15 para avaliar, podendo haver uma segunda rodada. Reprovada, nova amostra só depois de 6 meses.</p>
+      {% if usuario.papel == 'admin' %}<a class="btn small" href="/admin/config#atestado">Montar o pedido</a>{% endif %}
+    </div>
+  </aside>
+</div>
+{% endblock %}

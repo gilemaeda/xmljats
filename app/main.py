@@ -57,6 +57,7 @@ import scielo  # noqa: E402  (app/scielo.py: consulta de periódico por ISSN na 
 import issn as issn_api  # noqa: E402  (app/issn.py: consulta em cascata — ISSN.org, SciELO, DOAJ, Crossref, OpenAlex)
 import visual  # noqa: E402  (app/visual.py: páginas do PDF renderizadas + camada de texto para o revisar)
 import obrigatorios  # noqa: E402  (app/obrigatorios.py: o que a SPS exige e o PDF não traz)
+import entrega  # noqa: E402  (app/entrega.py: conferência do pacote, FTP da SciELO e e-mails obrigatórios)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -1050,17 +1051,130 @@ def baixar_pacote(doc_id: str, usuario: dict = Depends(autentica)):
     xml = next(pasta.glob("*.xml"), None)
     if not xml:
         raise HTTPException(404)
+    return Response(monta_pacote(pasta), media_type="application/zip",
+                    headers={"Content-Disposition": f'attachment; filename="{next(pasta.glob("*.xml")).stem}.zip"'})
+
+
+def monta_pacote(pasta: Path) -> bytes:
+    """Pacote SPS: XML, PDF, imagens e o relatório de validação, todos na raiz do .zip, como o guia pede."""
+    xml = next(pasta.glob("*.xml"), None)
+    if not xml:
+        raise HTTPException(404)
     base = xml.stem
+    val = le_json(pasta / "validacao.json", {}) or {}
     buf = io.BytesIO()
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        z.write(str(xml), f"{base}/{base}.xml")
+        z.write(str(xml), f"{base}.xml")
         pdf = pasta / "original.pdf"
         if pdf.exists():
-            z.write(str(pdf), f"{base}/{base}.pdf")
+            z.write(str(pdf), f"{base}.pdf")
         for img in sorted((pasta / "pacote").glob("*")) if (pasta / "pacote").exists() else []:
-            z.write(str(img), f"{base}/{img.name}")
-    buf.seek(0)
-    return Response(buf.read(), media_type="application/zip", headers={"Content-Disposition": f'attachment; filename="{base}.zip"'})
+            z.write(str(img), img.name)
+        z.writestr(f"{base}-relatorio.html", entrega.relatorio_html(base, val, {"itens": []}))
+    return buf.getvalue()
+
+
+def caminho_pacote(pasta: Path) -> Path:
+    """Grava o .zip na pasta do documento (o FTP precisa de um arquivo, não de bytes na memória)."""
+    xml = next(pasta.glob("*.xml"), None)
+    if not xml:
+        raise HTTPException(400, "Gere o XML antes de montar o pacote.")
+    destino = pasta / f"{xml.stem}.zip"
+    destino.write_bytes(monta_pacote(pasta))
+    return destino
+
+
+@app.get("/doc/{doc_id}/entrega", response_class=HTMLResponse)
+def entrega_form(request: Request, doc_id: str, usuario: dict = Depends(autentica), mensagem: str = "", erro: str = ""):
+    """Conferência do pacote contra o guia de entrega da SciELO e o depósito no FTP da coleção."""
+    pasta = _pasta(doc_id, usuario)
+    val = le_json(pasta / "validacao.json", {}) or {}
+    cfg = le_json(pasta / "config.json", {}) or {}
+    revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
+    conferencia = None
+    try:
+        zipe = caminho_pacote(pasta)
+        conferencia = entrega.confere_pacote(str(zipe))
+        # o relatório entra no pacote com a conferência dentro, então o zip é remontado uma vez
+        base = zipe.stem
+        with zipfile.ZipFile(zipe, "a", zipfile.ZIP_DEFLATED) as z:
+            if f"{base}-relatorio.html" not in z.namelist():
+                z.writestr(f"{base}-relatorio.html", entrega.relatorio_html(base, val, conferencia))
+    except HTTPException:
+        pass
+    return templates.TemplateResponse(request, "entrega.html", {
+        "id": doc_id, "r": val, "usuario": usuario, "revista": revista, "conferencia": conferencia,
+        "ftp": entrega.config_ftp(CORREIO.config()), "email_scielo": entrega.EMAIL_SCIELO,
+        "mensagem": mensagem, "erro": erro, "etapa": cfg.get("etapa") or "recebido",
+        "colecoes": entrega.COLECOES_ATESTADO,
+    })
+
+
+@app.post("/doc/{doc_id}/entrega")
+async def entrega_deposita(request: Request, doc_id: str, usuario: dict = Depends(exige_admin)):
+    """Deposita o .zip no FTP da SciELO e deixa o aviso obrigatório pronto no correio."""
+    pasta = _pasta(doc_id, usuario)
+    form = await request.form()
+    correcao = str(form.get("correcao") or "") == "1"
+    val = le_json(pasta / "validacao.json", {}) or {}
+    cfg = le_json(pasta / "config.json", {}) or {}
+    revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None) or {}
+    if not val.get("pronto"):
+        return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(
+            "Este documento ainda não está pronto: resolva os bloqueantes em Revisar e editar antes de depositar."), status_code=303)
+    zipe = caminho_pacote(pasta)
+    conf = entrega.confere_pacote(str(zipe))
+    if not conf["ok"]:
+        falhas = "; ".join(i["que"] for i in conf["itens"] if not i["ok"])
+        return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(
+            f"O pacote não passa na conferência do guia ({falhas}). Corrija antes de depositar."), status_code=303)
+    r = entrega.deposita(CORREIO.config(), str(zipe), correcao=correcao)
+    if not r["ok"]:
+        return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(r["mensagem"]), status_code=303)
+    assunto, corpo = entrega.email_deposito(zipe.stem, revista, val, correcao=correcao)
+    CORREIO.cria(entrega.EMAIL_SCIELO, assunto, corpo, caixa="rascunhos", tipo="scielo", por=usuario["nome"])
+    cfg["etapa"] = "entregue"
+    cfg.setdefault("historico_etapas", []).append({"etapa": "entregue", "por": usuario["nome"], "em": tempo.agora_iso(),
+                                                   "nota": f"depositado no FTP da SciELO ({zipe.name})"})
+    cfg["entrega"] = {"em": tempo.agora_iso(), "por": usuario["nome"], "arquivo": zipe.name, "correcao": correcao,
+                      "passos": r["passos"]}
+    grava_json(pasta / "config.json", cfg)
+    return RedirectResponse(url=f"/doc/{doc_id}/entrega?mensagem=" + urllib.parse.quote(
+        r["mensagem"] + " O aviso já está como rascunho no correio, pronto para revisar e enviar."), status_code=303)
+
+
+@app.post("/admin/config/ftp")
+async def salva_ftp(request: Request, usuario: dict = Depends(exige_admin)):
+    form = dict((await request.form()).items())
+    try:
+        CORREIO.salva_ftp({**form, "tls": bool(form.get("tls"))})
+    except ValueError as e:
+        return RedirectResponse(url="/admin/config?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/admin/config?mensagem=" + urllib.parse.quote("Credenciais do FTP da SciELO salvas."), status_code=303)
+
+
+@app.post("/admin/config/ftp/testar")
+def testa_ftp(usuario: dict = Depends(exige_admin)):
+    r = entrega.testa_conexao(CORREIO.config())
+    extra = (" Pastas no servidor: " + ", ".join(r["pastas"])) if r.get("pastas") else ""
+    chave = "mensagem" if r["ok"] else "erro"
+    return RedirectResponse(url=f"/admin/config?{chave}=" + urllib.parse.quote(r["mensagem"] + extra), status_code=303)
+
+
+@app.post("/admin/config/atestado")
+async def pede_atestado(request: Request, usuario: dict = Depends(exige_admin)):
+    """Monta o pedido do atestado de capacidade técnica (o 'selo') como rascunho no correio."""
+    form = await request.form()
+    empresa = str(form.get("empresa") or "").strip()
+    cnpj = str(form.get("cnpj") or "").strip()
+    contato = str(form.get("contato") or "").strip()
+    if not (empresa and cnpj):
+        return RedirectResponse(url="/admin/config?erro=" + urllib.parse.quote(
+            "O pedido do atestado exige o nome da empresa e o CNPJ: a SciELO só avalia pessoa jurídica."), status_code=303)
+    assunto, corpo = entrega.email_atestado(empresa, cnpj, contato or usuario.get("email") or "")
+    CORREIO.cria(entrega.EMAIL_SCIELO, assunto, corpo, caixa="rascunhos", tipo="scielo", por=usuario["nome"])
+    return RedirectResponse(url="/admin/correio?caixa=rascunhos&mensagem=" + urllib.parse.quote(
+        "Pedido do atestado montado como rascunho. Confira e envie."), status_code=303)
 
 
 @app.get("/doc/{doc_id}/img/{nome}")
@@ -1438,6 +1552,7 @@ def config_sistema(request: Request, usuario: dict = Depends(exige_admin), mensa
     base = (c.get("url_base") or "").rstrip("/") or str(request.base_url).rstrip("/")
     return templates.TemplateResponse(request, "config.html", {
         "usuario": usuario, "cfg": CORREIO.config_publica(), "mensagem": mensagem, "erro": erro,
+        "ftp": entrega.config_ftp(c), "email_scielo": entrega.EMAIL_SCIELO, "colecoes": entrega.COLECOES_ATESTADO,
         "webhook": f"{base}/webhook/resend?k={c.get('webhook_segredo')}"})
 
 

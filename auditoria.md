@@ -4,7 +4,7 @@ Gerada por `python ops/auditoria.py` (app 0.10.1). Cada número vem de uma medi�
 
 ## 1. Resumo
 
-- **Site:** 57 de 57 verificações passaram.
+- **Site:** 65 de 65 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -91,6 +91,14 @@ Gerada por `python ops/auditoria.py` (app 0.10.1). Cada número vem de uma medi�
 - ok — imagem da página é servida
 - ok — nome de página fora do padrão é recusado
 - ok — campo obrigatório vazio impede salvar e validar
+- ok — tela de entrega confere o pacote contra o guia
+- ok — entrega lembra o aviso obrigatório e o formato do pacote
+- ok — entrega explica o atestado de capacidade técnica
+- ok — pacote com arquivos na raiz e relatório de validação dentro
+- ok — regras de nome do guia (sem acento, underline ou ponto extra)
+- ok — depósito sem FTP configurado é recusado com explicação
+- ok — configurações têm FTP da SciELO e pedido do atestado
+- ok — pedido de atestado exige empresa e CNPJ
 - ok — LaTeX vira MathML
 - ok — LaTeX quebrado explica o erro em vez de gerar XML inválido
 - ok — sair encerra a sessão
@@ -135,7 +143,10 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Fórmulas em MathML (exigência do guia de entrega) | pronto | verificações de LaTeX/MathML |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |
-| Depósito automático na SciELO | não existe | a SciELO não publica API de depósito; o pacote sai pronto e o envio é pelo canal da coleção |
+| Depósito do pacote no FTP da SciELO, com o aviso obrigatório por e-mail | pronto | ops/test_entrega.py deposita num FTP de verdade |
+| Conferência do pacote contra o guia de entrega (formato, nomes, arquivos citados) | pronto | verificações de entrega |
+| Pedido do atestado de capacidade técnica (o "selo") montado no correio | pronto | verificação "pedido de atestado exige empresa e CNPJ" |
+| API de depósito da SciELO | não existe | a SciELO entrega por FTP e e-mail; é o que o sistema faz |
 | Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |
 | Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |
 | Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |

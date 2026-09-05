@@ -171,6 +171,32 @@ def roda_site():
         vazio = c.post(doc + "/editar", data={"acao": "salvar", "revista": "", "heading": "", "licenca": ""})
         check("campo obrigatório vazio impede salvar e validar", vazio.status_code == 400 and "Faltam" in vazio.text)
 
+    # ---- entrega à SciELO (guia de entrega + atestado de capacidade técnica)
+    if doc:
+        ent = c.get(doc + "/entrega").text
+        check("tela de entrega confere o pacote contra o guia",
+              "Conferência do pacote" in ent and "Depositar no FTP" in ent)
+        check("entrega lembra o aviso obrigatório e o formato do pacote",
+              "publicacao@scielo.org" in ent and ".rar" in ent and "MathML ou LaTeX" in ent)
+        check("entrega explica o atestado de capacidade técnica", "Atestado de capacidade técnica" in ent and "6 meses" in ent)
+        import zipfile as _zip
+        with _zip.ZipFile(io.BytesIO(c.get(doc + "/pacote.zip").content)) as z:
+            nomes = z.namelist()
+        check("pacote com arquivos na raiz e relatório de validação dentro",
+              all("/" not in n for n in nomes) and any(n.endswith("-relatorio.html") for n in nomes))
+        import entrega as ent_mod
+        check("regras de nome do guia (sem acento, underline ou ponto extra)",
+              ent_mod.confere_nome("2179-8966-rdp-17-03-e92016.xml") is None and
+              ent_mod.confere_nome("artigo_1.xml") and ent_mod.confere_nome("artigo.v2.xml") and
+              ent_mod.confere_nome("pacote.rar"))
+        check("depósito sem FTP configurado é recusado com explicação",
+              "erro" in c.post(doc + "/entrega").headers.get("location", ""))
+    cfgp = c.get("/admin/config").text
+    check("configurações têm FTP da SciELO e pedido do atestado",
+          "FTP da SciELO" in cfgp and "Atestado de capacidade técnica" in cfgp)
+    check("pedido de atestado exige empresa e CNPJ",
+          "erro" in c.post("/admin/config/atestado", data={"empresa": "", "cnpj": ""}).headers.get("location", ""))
+
     # ---- MathML (exigência do guia de entrega da SciELO)
     from app import main as app_main
     mml, erro_mml = app_main.latex_para_mathml("E = mc^2")
@@ -255,7 +281,10 @@ def main():
           "| Fórmulas em MathML (exigência do guia de entrega) | pronto | verificações de LaTeX/MathML |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",
-          "| Depósito automático na SciELO | não existe | a SciELO não publica API de depósito; o pacote sai pronto e o envio é pelo canal da coleção |",
+          "| Depósito do pacote no FTP da SciELO, com o aviso obrigatório por e-mail | pronto | ops/test_entrega.py deposita num FTP de verdade |",
+          "| Conferência do pacote contra o guia de entrega (formato, nomes, arquivos citados) | pronto | verificações de entrega |",
+          "| Pedido do atestado de capacidade técnica (o \"selo\") montado no correio | pronto | verificação \"pedido de atestado exige empresa e CNPJ\" |",
+          "| API de depósito da SciELO | não existe | a SciELO entrega por FTP e e-mail; é o que o sistema faz |",
           "| Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |",
           "| Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |",
           "| Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |",

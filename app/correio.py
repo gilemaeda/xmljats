@@ -128,6 +128,7 @@ class Correio:
         dominio = c["remetente_email"].split("@")[-1].lower() if c["remetente_email"] else ""
         c["remetente_dominio_pessoal"] = dominio in DOMINIOS_PUBLICOS
         c["falta_para_confirmar"] = self._falta_para_confirmar(self.config())
+        c.pop("scielo_ftp", None)  # a senha do FTP nunca vai para a tela; quem mostra é entrega.config_ftp()
         return c
 
     def salva_config(self, dados: dict):
@@ -157,6 +158,29 @@ class Correio:
             c["webhook_segredo"] = secrets.token_urlsafe(24)
         _grava(self.arq_config, c)
         return self.config_publica()
+
+    def salva_ftp(self, dados: dict):
+        """Credenciais do FTP da SciELO. Ficam só aqui, em XMLJATS_DATA/config.json, nunca no repositório."""
+        c = self.config()
+        f = dict(c.get("scielo_ftp") or {})
+        for k in ("servidor", "usuario", "pasta_entrega", "pasta_correcao"):
+            if k in dados:
+                f[k] = (dados.get(k) or "").strip()
+        if dados.get("senha"):  # em branco = manter a senha atual
+            f["senha"] = str(dados["senha"]).strip()
+        if dados.get("remover_senha"):
+            f["senha"] = ""
+        if dados.get("porta"):
+            try:
+                f["porta"] = int(str(dados["porta"]).strip())
+            except ValueError:
+                raise ValueError("A porta do FTP precisa ser um número (21 é o padrão).")
+        f["tls"] = bool(dados.get("tls"))
+        if f.get("servidor") and re.search(r"[/\s]", f["servidor"]):
+            raise ValueError("Informe só o endereço do servidor, sem barra nem caminho (ex.: ftp.scielo.br).")
+        c["scielo_ftp"] = f
+        _grava(self.arq_config, c)
+        return f
 
     @staticmethod
     def _falta_para_confirmar(c: dict) -> str:
