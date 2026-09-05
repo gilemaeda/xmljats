@@ -3,23 +3,31 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
 <title>{% block titulo %}xmljats{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="/static/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231B3A66'/%3E%3Ctext x='16' y='21' font-family='monospace' font-size='13' fill='white' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
 </head>
 <body>
 <header class="topbar">
   <div class="in">
     <a class="brand" href="/"><span class="mark">&lt;/&gt;</span><span class="name">xml<b>jats</b></span></a>
-    <nav class="nav">
+    <nav class="nav" aria-label="Principal">
       <a href="/" class="{% if ativo == 'validador' %}active{% endif %}">Validador</a>
       <a href="/revistas" class="{% if ativo == 'revistas' %}active{% endif %}">Revistas</a>
     </nav>
-    <div class="who">{{ usuario }} · MVP {{ '0.1' }}</div>
+    <div class="who"><span class="avatar">{{ (usuario or 'x')[:1]|upper }}</span><span>{{ usuario }}</span><span class="ver">{{ versao }}</span></div>
   </div>
 </header>
 <main>
 {% block conteudo %}{% endblock %}
 </main>
-<footer class="rodape">Motor: extrator de PDF + gerador SciELO PS + packtools. Nada é inventado: o que falta no PDF vira bloqueante.</footer>
+<footer class="rodape">
+  <span>Motor: extrator de PDF, gerador SciELO PS e packtools (validador oficial da SciELO).</span>
+  <span>Nada é inventado: o que não está no PDF vira bloqueante e se corrige na revisão.</span>
+</footer>
 </body>
 </html>

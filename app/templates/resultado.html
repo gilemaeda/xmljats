@@ -5,24 +5,30 @@
 <div class="result-head">
   <div class="stack" style="gap:6px">
     <p class="eyebrow">Resultado da validação</p>
-    <div class="row"><h1 class="mono" style="font-size:18px">{{ r.arquivo_original }}</h1><span class="muted">{{ r.revista_titulo or 'revista não cadastrada' }} · SPS {{ r.versao_sps }}</span></div>
-    <div class="row" style="gap:8px">
-      {% if r.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">Não pronto</span>{% endif %}
-      <span class="chip {{ 'ok' if not r.bloqueantes else 'crit' }}">{{ r.bloqueantes|length }} bloqueantes</span>
-      <span class="chip warn">{{ (r.avisos_gerador|length) + (r.avisos_extrator|length) }} avisos</span>
-      <span class="chip {{ 'ok' if r.dtd_ok else 'crit' }}">DTD {{ 'válido' if r.dtd_ok else 'inválido' }}</span>
-      <span class="chip {{ 'ok' if r.sps_ok else 'crit' }}">Schematron SPS {{ 'ok' if r.sps_ok else (r.packtools|length ~ ' erros') }}</span>
-      {% if r.editados %}<span class="chip warn">{{ r.editados }} campos editados</span>{% endif %}
-      <span class="small faint">{{ (r.atualizado_em or r.criado_em)[:16].replace('T',' ') }}</span>
-    </div>
+    <div class="row"><h1 class="mono" style="font-size:19px">{{ r.arquivo_original }}</h1><span class="muted">{{ r.revista_titulo or 'revista não cadastrada' }} · SPS {{ r.versao_sps }}</span></div>
   </div>
   <div class="row">
-    <form method="post" action="/doc/{{ r.id }}/reprocessar" style="display:inline"><button class="btn" type="submit" title="Reextrai do PDF; mantém as edições">Reprocessar</button></form>
-    <a class="btn" href="/doc/{{ r.id }}/resumo.md">Resumo da extração</a>
-    <a class="btn" href="/doc/{{ r.id }}/modelo.json">Modelo (JSON)</a>
-    <a class="btn" href="/doc/{{ r.id }}/xml">XML</a>
+    <form method="post" action="/doc/{{ r.id }}/reprocessar" style="display:inline"><button class="btn" type="submit" title="Reextrai do PDF; mantém as edições"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 01-14.9 4M4 12a8 8 0 0114.9-4"/><path d="M20 4v4h-4M4 20v-4h4"/></svg>Reprocessar</button></form>
+    <a class="btn" href="/doc/{{ r.id }}/resumo.md">Extração</a>
+    <a class="btn" href="/doc/{{ r.id }}/modelo.json">JSON</a>
+    <a class="btn" href="/doc/{{ r.id }}/xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>XML</a>
     <a class="btn" href="/doc/{{ r.id }}/pacote.zip">Pacote .zip</a>
-    <a class="btn primary" href="/doc/{{ r.id }}/editar">Revisar e editar</a>
+    <a class="btn primary" href="/doc/{{ r.id }}/editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg>Revisar e editar</a>
+  </div>
+</div>
+
+<div class="status {{ 'ok' if r.pronto else 'crit' }}">
+  <span class="dot"></span>
+  <div>
+    <b>{{ 'Pronto para entrega' if r.pronto else 'Não pronto' }}</b>
+    <div class="sub">{% if r.pronto %}Sem bloqueantes, DTD válido e Schematron SPS sem erros.{% else %}{{ r.bloqueantes|length }} bloqueante(s) e {{ r.packtools|length }} erro(s) do validador oficial. Corrija na revisão e salve para revalidar.{% endif %}</div>
+  </div>
+  <div class="tail">
+    <span class="chip {{ 'ok' if not r.bloqueantes else 'crit' }}">{{ r.bloqueantes|length }} bloqueantes</span>
+    <span class="chip warn">{{ (r.avisos_gerador|length) + (r.avisos_extrator|length) }} avisos</span>
+    <span class="chip {{ 'ok' if r.dtd_ok else 'crit' }}">DTD {{ 'válido' if r.dtd_ok else 'inválido' }}</span>
+    <span class="chip {{ 'ok' if r.sps_ok else 'crit' }}">Schematron {{ 'ok' if r.sps_ok else (r.packtools|length ~ ' erros') }}</span>
+    {% if r.editados %}<span class="chip info">{{ r.editados }} campos editados</span>{% endif %}
   </div>
 </div>
 
@@ -32,46 +38,50 @@
   <div><div class="v">{{ r.contagens.resumos }}</div><div class="k">resumos</div></div>
   <div><div class="v">{{ r.contagens.secoes }}</div><div class="k">seções</div></div>
   <div><div class="v">{{ r.contagens.notas }}</div><div class="k">notas</div></div>
-  <div><div class="v">{{ r.contagens.referencias }}</div><div class="k">referências ({{ r.extracao.estilo_referencias or '?' }})</div></div>
+  <div><div class="v">{{ r.contagens.referencias }}</div><div class="k">referências · {{ r.extracao.estilo_referencias or '?' }}</div></div>
   <div><div class="v">{{ r.contagens.citacoes }}</div><div class="k">citações únicas</div></div>
 </div>
 
 <div class="findings">
-  <div class="stack" style="gap:16px">
+  <div class="stack" style="gap:var(--s-4)">
     <div class="group">
       <header><span class="chip crit">Bloqueantes</span><span class="n">{{ r.bloqueantes|length }}</span><span class="small muted">impedem a entrega do XML</span></header>
-      {% for b in r.bloqueantes %}<div class="finding crit"><span class="stripe"></span><div class="body">{{ b }} <a class="small" href="/doc/{{ r.id }}/editar">corrigir</a></div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">Nenhum bloqueante.</div></div>{% endfor %}
+      {% for b in r.bloqueantes %}<div class="finding crit"><span class="stripe"></span><div class="body">{{ b|regra }}<a href="/doc/{{ r.id }}/editar">corrigir</a></div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">Nenhum bloqueante.</div></div>{% endfor %}
     </div>
     <div class="group">
-      <header><span class="chip warn">Erros do packtools</span><span class="n">{{ r.packtools|length }}</span><span class="small muted">validador oficial da SciELO · {{ r.packtools_detalhe }}</span></header>
+      <header><span class="chip warn">Validador oficial</span><span class="n">{{ r.packtools|length }}</span><span class="small muted" title="{{ r.packtools_detalhe }}">packtools · DTD JATS + Schematron SPS</span></header>
       {% for e in r.packtools %}<div class="finding warn"><span class="stripe"></span><div class="body mono small">{{ e }}</div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">DTD e Schematron sem erros.</div></div>{% endfor %}
     </div>
     <div class="group">
       <header><span class="chip warn">Avisos</span><span class="n">{{ (r.avisos_gerador|length) + (r.avisos_extrator|length) }}</span><span class="small muted">confira antes de entregar</span></header>
-      {% for a in r.avisos_extrator %}<div class="finding warn"><span class="stripe"></span><div class="body">{{ a }}</div></div>{% endfor %}
-      {% for a in r.avisos_gerador %}<div class="finding auto"><span class="stripe"></span><div class="body">{{ a }}</div></div>{% endfor %}
+      {% for a in r.avisos_extrator %}<div class="finding warn"><span class="stripe"></span><div class="body">{{ a|regra }}</div></div>{% endfor %}
+      {% for a in r.avisos_gerador %}<div class="finding auto"><span class="stripe"></span><div class="body">{{ a|regra }}</div></div>{% endfor %}
     </div>
   </div>
 
   <aside class="stack">
-    <div class="card pad stack" style="gap:8px">
+    <div class="card pad stack" style="gap:10px">
       <h3>O que vai para o XML</h3>
-      <p class="small"><b>DOI</b> <span class="mono">{{ r.extracao.doi or '—' }}</span></p>
-      <p class="small"><b>Idioma</b> {{ r.extracao.idioma or '—' }} · <b>Seção</b> {{ r.extracao.heading or '—' }} · <b>v.</b> {{ r.extracao.volume or '—' }} <b>n.</b> {{ r.extracao.numero or '—' }} · {{ r.extracao.elocation or '' }}</p>
-      <p class="small"><b>Datas</b> recebido {{ r.extracao.datas.recebido or '—' }} · aceito {{ r.extracao.datas.aceito or '—' }} · publicado {{ r.extracao.datas.publicado or '—' }}</p>
-      <p class="small"><b>Licença</b> {{ r.extracao.licenca or '—' }}</p>
+      <dl class="kv">
+        <dt>DOI</dt><dd class="mono">{{ r.extracao.doi or '—' }}</dd>
+        <dt>Idioma</dt><dd>{{ r.extracao.idioma or '—' }}</dd>
+        <dt>Seção</dt><dd>{{ r.extracao.heading or '—' }}</dd>
+        <dt>Fascículo</dt><dd>v. {{ r.extracao.volume or '—' }} · n. {{ r.extracao.numero or '—' }} · {{ r.extracao.elocation or '—' }}</dd>
+        <dt>Datas</dt><dd>recebido {{ r.extracao.datas.recebido or '—' }} · aceito {{ r.extracao.datas.aceito or '—' }} · publicado {{ r.extracao.datas.publicado or '—' }}</dd>
+        <dt>Licença</dt><dd>{{ r.extracao.licenca or '—' }}</dd>
+      </dl>
       <hr class="sep">
-      {% for t in r.extracao.titulos %}<p class="small"><b>{{ t.tipo }}</b> [{{ t.idioma or '?' }}] {{ t.texto }}</p>{% endfor %}
+      {% for t in r.extracao.titulos %}<p class="small"><span class="chip neutral" style="margin-right:6px">{{ t.idioma or '?' }}</span>{{ t.texto }}</p>{% endfor %}
       <hr class="sep">
       {% for a in r.extracao.autores %}
-        <p class="small"><b>{{ a.nome }}</b> · ORCID <span class="mono">{{ a.orcid or 'ausente' }}</span> · {{ a.email or 'sem e-mail' }}</p>
-        {% for af in a.afiliacoes %}<p class="small muted">{{ af.id }}: {{ af.instituicao or '?' }}{% if af.divisao %} · {{ af.divisao }}{% endif %} · {{ af.cidade or '?' }}/{{ af.estado or '?' }}/{{ af.pais_iso or '?' }} <span class="faint">({{ af.origem }}, confiança {{ af.confianca }})</span></p>{% endfor %}
+        <p class="small"><b>{{ a.nome }}</b><br><span class="mono">{{ a.orcid or 'ORCID ausente' }}</span> · {{ a.email or 'sem e-mail' }}</p>
+        {% for af in a.afiliacoes %}<p class="small muted">{{ af.id }} · {{ af.instituicao or '?' }}{% if af.divisao %} · {{ af.divisao }}{% endif %} · {{ af.cidade or '?' }}/{{ af.estado or '?' }}/{{ af.pais_iso or '?' }} <span class="faint">({{ af.origem }}, confiança {{ af.confianca }})</span></p>{% endfor %}
       {% endfor %}
       <hr class="sep">
-      {% for res in r.extracao.resumos %}<p class="small"><b>{{ res.rotulo }}</b> [{{ res.idioma or '?' }}] {{ res.palavras }} palavras · {{ res.palavras_chave|join('; ') }}</p>{% endfor %}
+      {% for res in r.extracao.resumos %}<p class="small"><span class="chip neutral" style="margin-right:6px">{{ res.idioma or '?' }}</span>{{ res.rotulo }} · {{ res.palavras }} palavras · {{ res.palavras_chave|join('; ') }}</p>{% endfor %}
     </div>
     <div class="card pad stack" style="gap:6px">
-      <h3>Seções ({{ r.extracao.secoes|length }})</h3>
+      <h3>Seções <span class="muted" style="font-weight:400">({{ r.extracao.secoes|length }})</span></h3>
       {% for s in r.extracao.secoes %}<p class="small" style="padding-left:{{ (s.nivel - 1) * 14 }}px">{{ s.titulo }} <span class="faint">· {{ s.paragrafos }} §</span></p>{% endfor %}
     </div>
   </aside>

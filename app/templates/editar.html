@@ -13,17 +13,17 @@
     {% else %}
       <input id="{{ nome }}" name="{{ nome }}" type="{{ tipo }}" value="{{ v.get(nome, '') }}">
     {% endif %}
-    {% if b %}<div class="msg block">{{ b[0] }}</div>{% elif nome in editados %}<span class="prov">editado à mão (o extraído era diferente)</span>{% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
+    {% if b %}<div class="msg block">{{ b[0]|regra }}</div>{% elif nome in editados %}<span class="prov">editado à mão · o extraído era diferente</span>{% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
   </div>
 {%- endmacro %}
 {% block conteudo %}
 <div class="result-head">
   <div class="stack" style="gap:6px">
     <p class="eyebrow">Revisar e editar</p>
-    <div class="row"><h1 class="mono" style="font-size:18px">{{ r.arquivo_original }}</h1>
+    <div class="row"><h1 class="mono" style="font-size:19px">{{ r.arquivo_original }}</h1>
       <span class="chip {{ 'ok' if not bloqueantes else 'crit' }}">{{ bloqueantes|length }} bloqueantes</span>
-      {% if editados %}<span class="chip warn">{{ editados|length }} campos editados</span>{% endif %}</div>
-    <p class="small muted">Campos com borda vermelha resolvem um bloqueante. Campos em laranja já foram editados. O que você digitar substitui o valor extraído só no XML; o PDF e a extração original ficam guardados.</p>
+      {% if editados %}<span class="chip info">{{ editados|length }} campos editados</span>{% endif %}</div>
+    <p class="small muted" style="max-width:80ch">Campos em <b style="color:var(--crit)">vermelho</b> resolvem um bloqueante; em <b style="color:var(--warn)">laranja</b> já foram editados. O que você digitar substitui o valor extraído só no XML; o PDF e a extração original ficam guardados.</p>
   </div>
   <div class="row"><a class="btn" href="/doc/{{ id }}">Voltar ao resultado</a></div>
 </div>
@@ -40,7 +40,7 @@
             <option value="">Detectar pelo ISSN / DOI</option>
             {% for rv in revistas %}<option value="{{ rv.acronimo }}" {% if revista_atual == rv.acronimo %}selected{% endif %}>{{ rv.titulo }} ({{ rv.acronimo }})</option>{% endfor %}
           </select>
-          {% if bloq.get('revista') %}<div class="msg block">{{ bloq['revista'][0] }}</div>{% else %}<span class="hint">Fornece acrônimo, título abreviado, editora e licença padrão.</span>{% endif %}
+          {% if bloq.get('revista') %}<div class="msg block">{{ bloq['revista'][0]|regra }}</div>{% else %}<span class="hint">Fornece acrônimo, título abreviado, editora e licença padrão.</span>{% endif %}
         </div>
         <div class="grid3">
           {{ campo('doi', 'DOI', hint='10.xxxx/...') }}
@@ -88,7 +88,7 @@
         {% for a in m.autores %}{% set i = loop.index0 %}
         <div class="bloco">
           <div class="row between"><b>{{ loop.index }} · {{ a.nome_completo }}</b>
-            <label class="small"><input type="radio" name="corresp" value="{{ i }}" {% if v.get('corresp') == i|string %}checked{% endif %}> autor correspondente</label></div>
+            <label class="check"><input type="radio" name="corresp" value="{{ i }}" {% if v.get('corresp') == i|string %}checked{% endif %}> autor correspondente</label></div>
           {% set bo = bloq.get('orcid:' ~ a.nome_completo) %}{% set ba = bloq.get('affs:' ~ a.nome_completo) %}
           <div class="grid4">
             {{ campo('autor_' ~ i ~ '_sobrenome', 'Sobrenome') }}
@@ -96,18 +96,18 @@
             <div class="field {% if bo %}is-block{% elif ('autor_' ~ i ~ '_orcid') in editados %}is-edit{% endif %}" id="f-autor_{{ i }}_orcid">
               <label for="autor_{{ i }}_orcid">ORCID</label>
               <input id="autor_{{ i }}_orcid" name="autor_{{ i }}_orcid" value="{{ v.get('autor_' ~ i ~ '_orcid', '') }}" placeholder="0000-0000-0000-0000">
-              {% if bo %}<div class="msg block">{{ bo[0] }}</div>{% elif a.orcid_valido is sameas false %}<div class="msg warn">Dígito verificador inválido.</div>{% endif %}
+              {% if bo %}<div class="msg block">{{ bo[0]|regra }}</div>{% elif a.orcid_valido is sameas false %}<div class="msg warn">Dígito verificador inválido.</div>{% endif %}
             </div>
             <div class="field {% if bloq.get('corresp') and loop.first %}is-block{% elif ('autor_' ~ i ~ '_email') in editados %}is-edit{% endif %}" id="f-autor_{{ i }}_email">
               <label for="autor_{{ i }}_email">E-mail</label>
               <input id="autor_{{ i }}_email" name="autor_{{ i }}_email" value="{{ v.get('autor_' ~ i ~ '_email', '') }}">
-              {% if bloq.get('corresp') and loop.first %}<div class="msg block">{{ bloq['corresp'][0] }}</div>{% endif %}
+              {% if bloq.get('corresp') and loop.first %}<div class="msg block">{{ bloq['corresp'][0]|regra }}</div>{% endif %}
             </div>
           </div>
           <div class="field {% if ba %}is-block{% endif %}" id="f-autor_{{ i }}_affs">
             <label for="autor_{{ i }}_affs">Afiliações (ids, separados por vírgula)</label>
             <input id="autor_{{ i }}_affs" name="autor_{{ i }}_affs" value="{{ v.get('autor_' ~ i ~ '_affs', '') }}" style="max-width:260px">
-            {% if ba %}<div class="msg block">{{ ba[0] }}</div>{% endif %}
+            {% if ba %}<div class="msg block">{{ ba[0]|regra }}</div>{% endif %}
           </div>
         </div>
         {% endfor %}
@@ -121,7 +121,7 @@
         {% for af in m.afiliacoes %}{% set j = loop.index0 %}
         <div class="bloco {% if bloq.get('aff:' ~ af.id) %}is-block{% endif %}">
           <div class="row between"><b class="mono">{{ af.id }}</b><span class="small faint">{{ af.origem }} · confiança {{ af.confianca }}</span></div>
-          {% if bloq.get('aff:' ~ af.id) %}<div class="msg block">{{ bloq['aff:' ~ af.id][0] }}</div>{% endif %}
+          {% if bloq.get('aff:' ~ af.id) %}<div class="msg block">{{ bloq['aff:' ~ af.id][0]|regra }}</div>{% endif %}
           <div class="grid5">
             {{ campo('aff_' ~ j ~ '_instituicao', 'Instituição') }}
             {{ campo('aff_' ~ j ~ '_divisao', 'Divisão') }}
@@ -148,16 +148,16 @@
     </div>
 
     <div class="actionbar">
-      <button class="btn primary" type="submit" name="acao" value="salvar">Salvar e revalidar</button>
+      <button class="btn primary" type="submit" name="acao" value="salvar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>Salvar e revalidar</button>
       <a class="btn" href="/doc/{{ id }}">Cancelar</a>
-      <span class="small muted">Salvar regenera o XML e roda o packtools de novo. Para reextrair do PDF do zero, use "Reprocessar" na tela de resultado.</span>
+      <span class="small muted">Salvar regenera o XML e roda o packtools de novo. Para reextrair do PDF do zero, use "Reprocessar" no resultado.</span>
     </div>
   </div>
 
   <aside class="orig">
-    <div class="fs">
-      <header><h2>Extração original</h2><span class="small muted">resumo do que o motor leu do PDF</span></header>
-      <pre>{{ original }}</pre>
+    <div class="fs" style="margin:0">
+      <header><h2>Extração original</h2><span class="small muted">o que o motor leu do PDF</span></header>
+      <div class="doc">{{ original_html|safe }}</div>
     </div>
   </aside>
 </div>

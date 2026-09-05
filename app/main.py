@@ -49,11 +49,31 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.2.0"
+VERSAO_APP = "0.3.0"
 
 app = FastAPI(title="xmljats", version=VERSAO_APP, docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=str(RAIZ / "app" / "static")), name="static")
 templates = Jinja2Templates(directory=str(RAIZ / "app" / "templates"))
+templates.env.globals["versao"] = VERSAO_APP
+
+
+def _filtro_regra(texto):
+    """Destaca códigos de regra como (A09) numa etiqueta monoespaçada."""
+    from markupsafe import Markup, escape
+    t = escape(str(texto))
+    return Markup(re.sub(r"\(([A-Z]\d{2})\)", r'<code class="rule">\1</code>', str(t)))
+
+
+templates.env.filters["regra"] = _filtro_regra
+
+
+def markdown_html(texto: str) -> str:
+    try:
+        import markdown
+        return markdown.markdown(texto, extensions=["nl2br"])
+    except Exception:  # noqa: BLE001
+        from markupsafe import escape
+        return "<pre>" + str(escape(texto)) + "</pre>"
 seguranca = HTTPBasic(auto_error=False)
 
 # codigo da regra (nos bloqueantes) -> campos do formulario que resolvem
@@ -379,7 +399,7 @@ def editar_form(request: Request, doc_id: str, usuario: str = Depends(autentica)
     return templates.TemplateResponse(request, "editar.html", {
         "id": doc_id, "m": modelo_efetivo(pasta), "v": valores, "editados": set(campos), "bloq": r.get("campos_bloqueados", {}),
         "bloqueantes": r.get("bloqueantes", []), "revistas": carrega_revistas(), "revista_atual": cfg.get("revista") or r.get("revista") or "",
-        "tipos": TIPOS_ARTIGO, "idiomas": IDIOMAS, "original": original, "usuario": usuario, "r": r,
+        "tipos": TIPOS_ARTIGO, "idiomas": IDIOMAS, "original_html": markdown_html(original), "usuario": usuario, "r": r,
     })
 
 
