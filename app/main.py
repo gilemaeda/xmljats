@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.14.0"
+VERSAO_APP = "0.14.1"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -1070,8 +1070,13 @@ def previa_do_artigo(doc_id: str, usuario: dict = Depends(autentica)):
         return HTMLResponse("<p style='font:14px system-ui;padding:24px'>O XML ainda não foi gerado. "
                             "Passe por Revisar e editar.</p>", status_code=404)
     try:
+        from lxml import etree as _et
         from packtools import HTMLGenerator
-        hg = HTMLGenerator.parse(str(xml), valid_only=False)
+        # o packtools abre o XML resolvendo o DTD pela URL do DOCTYPE; o servidor não alcança
+        # jats.nlm.nih.gov e a prévia quebrava só em produção. Aqui o XML é lido sem rede — a
+        # validação continua sendo feita, à parte, contra o DTD empacotado.
+        arvore = _et.parse(str(xml), _et.XMLParser(load_dtd=False, resolve_entities=False, no_network=True))
+        hg = HTMLGenerator.parse(arvore, valid_only=False)
         idioma = hg.languages[0] if hg.languages else "pt"
         html = str(hg.generate(idioma))
     except Exception as e:  # noqa: BLE001
