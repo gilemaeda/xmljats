@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.12.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.13.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 82 de 82 verificações passaram.
+- **Site:** 83 de 83 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -102,6 +102,7 @@ Gerada por `python ops/auditoria.py` (app 0.12.0). Cada número vem de uma medi�
 - ok — visualizador tem busca no documento
 - ok — revisar completa pelo DOI e confere o ORCID
 - ok — item removido pode voltar (campo escondido antes da caixa)
+- ok — pré-visualização do artigo (htmlgenerator do packtools)
 - ok — DOI inválido é recusado sem ir à rede
 - ok — ORCID fora do formato é recusado sem ir à rede
 - ok — site aceita DOCX
@@ -166,6 +167,7 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | CRediT: contribuição de cada autor em <role content-type> | pronto | ops/test_credit.py |
 | Financiamento em funding-group, com a nota cruzada que a SciELO exige | pronto | ops/test_credit.py |
 | Pedir à revista, por e-mail, tudo que falta de uma vez | pronto | ops/test_credit.py |
+| Pré-visualização do artigo como a SciELO publica (htmlgenerator) | pronto | verificação "pré-visualização do artigo" |
 | Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |

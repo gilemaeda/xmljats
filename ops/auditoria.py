@@ -206,6 +206,10 @@ def roda_site():
               'id="doi-buscar"' in ver2 and "data-confere-orcid" in ver2)
         check("item removido pode voltar (campo escondido antes da caixa)",
               'type="hidden" name="autor_0_remover" value=""' in ver2)
+    if doc:
+        prev = c.get(doc + "/previa")
+        check("pré-visualização do artigo (htmlgenerator do packtools)",
+              prev.status_code == 200 and len(prev.text) > 20000 and "-gf01.tif" not in prev.text)
     import enriquece as enr
     check("DOI inválido é recusado sem ir à rede", enr.por_doi("abc")["ok"] is False)
     check("ORCID fora do formato é recusado sem ir à rede", enr.confere_orcid("abc")["ok"] is False)
@@ -339,6 +343,7 @@ def main():
           "| CRediT: contribuição de cada autor em <role content-type> | pronto | ops/test_credit.py |",
           "| Financiamento em funding-group, com a nota cruzada que a SciELO exige | pronto | ops/test_credit.py |",
           "| Pedir à revista, por e-mail, tudo que falta de uma vez | pronto | ops/test_credit.py |",
+          "| Pré-visualização do artigo como a SciELO publica (htmlgenerator) | pronto | verificação \"pré-visualização do artigo\" |",
           "| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",

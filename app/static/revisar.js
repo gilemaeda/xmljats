@@ -20,8 +20,15 @@
     b.addEventListener('click', function () {
       $$('.visor-abas .aba').forEach(function (x) { x.classList.toggle('ativa', x === b); });
       $$('.visor-corpo .painel').forEach(function (p) { p.classList.toggle('ativo', p.dataset.painel === b.dataset.aba); });
-      var barra = $('.visor-barra');
-      if (barra) barra.style.visibility = b.dataset.aba === 'pdf' ? 'visible' : 'hidden';
+      var barra = $('.visor-barra'), busca = $('.visor-busca');
+      var noPdf = b.dataset.aba === 'pdf';
+      if (barra) barra.style.display = noPdf ? '' : 'none';
+      if (busca) busca.style.display = noPdf ? '' : 'none';
+      // a prévia só é gerada quando alguém abre a aba: é o validador oficial rodando por trás
+      if (b.dataset.aba === 'previa') {
+        var q = $('#quadro-previa');
+        if (q && !q.src) q.src = '/doc/' + DOC + '/previa';
+      }
     });
   });
 

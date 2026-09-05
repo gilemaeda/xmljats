@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.13.0"
+VERSAO_APP = "0.14.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -777,6 +777,8 @@ def gera_e_valida(pasta: Path) -> dict:
         f.write(res.xml)
     dtd_ok, sps_ok, erros, detalhe = gx.valida_packtools(str(xml_path))
     figuras_pacote = prepara_imagens_pacote(pasta, res.imagens)
+    # <base>-gf01.tif -> fig01.jpeg: a prévia precisa apontar para o arquivo que o navegador abre
+    mapa_imagens = {sps: origem for origem, sps in res.imagens}
     pronto = not res.bloqueantes and bool(dtd_ok) and bool(sps_ok)
     codigos_bloq = {c for b in res.bloqueantes for c in re.findall(r"\(([A-Z]\d{2})\)", b)}
     avisos_extrator = [a for a in modelo.get("avisos", []) if not (set(re.findall(r"\(([A-Z]\d{2})", a)) & codigos_bloq)]
@@ -798,6 +800,7 @@ def gera_e_valida(pasta: Path) -> dict:
         "revista_titulo": rev["titulo"] if rev else None,
         "versao_sps": versao_sps,
         "nome_base": base,
+        "mapa_imagens": mapa_imagens,
         "xml": xml_path.name,
         "pronto": pronto,
         "dtd_ok": dtd_ok,
@@ -1036,6 +1039,48 @@ async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(a
     grava_json(pasta / "edicoes.json", ed)
     gera_e_valida(pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
+
+
+def mapa_de_imagens(pasta) -> dict:
+    """Documentos gerados antes de o mapa ser gravado: reconstroi <base>-gfNN.tif -> figNN.ext pela ordem,
+    que e a mesma que o gerador usa."""
+    modelo = modelo_para_xml(modelo_efetivo(pasta))
+    base = (le_json(pasta / "validacao.json", {}) or {}).get("nome_base") or ""
+    mapa = {}
+    for n, f in enumerate([x for x in modelo.get("figuras", []) if x.get("tipo") == "fig" and x.get("arquivo")], start=1):
+        mapa[f"{base}-gf{n:02d}.tif"] = f["arquivo"]
+    for n, t in enumerate([x for x in modelo.get("tabelas", []) if x.get("arquivo")], start=1):
+        mapa[f"{base}-gt{n:02d}.tif"] = t["arquivo"]
+    for n, e in enumerate([x for x in modelo.get("equacoes", []) if x.get("arquivo") and not x.get("mathml")], start=1):
+        mapa[f"{base}-e{n:02d}.tif"] = e["arquivo"]
+    return mapa
+
+
+@app.get("/doc/{doc_id}/previa", response_class=HTMLResponse)
+def previa_do_artigo(doc_id: str, usuario: dict = Depends(autentica)):
+    """O artigo como a SciELO vai publicar, gerado do nosso XML pelo htmlgenerator do packtools.
+
+    Serve para ver de uma vez se figura, tabela e fórmula caíram no lugar certo — coisa que a leitura
+    do XML cru não mostra. As imagens são reapontadas para os arquivos deste documento, porque no XML
+    elas têm o nome do pacote (<base>-gf01.tif), que o navegador não abre.
+    """
+    pasta = _pasta(doc_id, usuario)
+    xml = next(pasta.glob("*.xml"), None)
+    if not xml:
+        return HTMLResponse("<p style='font:14px system-ui;padding:24px'>O XML ainda não foi gerado. "
+                            "Passe por Revisar e editar.</p>", status_code=404)
+    try:
+        from packtools import HTMLGenerator
+        hg = HTMLGenerator.parse(str(xml), valid_only=False)
+        idioma = hg.languages[0] if hg.languages else "pt"
+        html = str(hg.generate(idioma))
+    except Exception as e:  # noqa: BLE001
+        return HTMLResponse(f"<p style='font:14px system-ui;padding:24px;color:#b3261e'>Não consegui gerar a "
+                            f"pré-visualização: {str(e)[:200]}</p>", status_code=500)
+    mapa = (le_json(pasta / "validacao.json", {}) or {}).get("mapa_imagens") or mapa_de_imagens(pasta)
+    for nome_sps, arquivo in mapa.items():
+        html = html.replace(nome_sps, f"/doc/{doc_id}/img/{arquivo}")
+    return HTMLResponse(html)
 
 
 @app.get("/doc/{doc_id}/doi")

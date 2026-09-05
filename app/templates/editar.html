@@ -415,6 +415,7 @@
     <button class="aba ativa" type="button" data-aba="pdf">Original</button>
     <button class="aba" type="button" data-aba="texto">Texto lido</button>
     <button class="aba" type="button" data-aba="anexos">Anexos</button>
+    <button class="aba" type="button" data-aba="previa">Como fica</button>
   </div>
   <div class="visor-barra">
     <button class="btn small" type="button" id="pg-ant" aria-label="Página anterior">‹</button>
@@ -475,6 +476,13 @@
           {% for n in m.notas %}<p class="small"><b>{{ n.rotulo }}</b> {{ n.texto[:180] }}</p>{% else %}<p class="small muted">Nenhuma nota.</p>{% endfor %}
         </div>
       </div>
+    </div>
+    <div class="painel" data-painel="previa">
+      <div class="previa-barra">
+        <span class="small muted">O artigo como a SciELO publica, gerado do nosso XML pelo validador oficial.</span>
+        <a class="btn small" href="/doc/{{ id }}/previa" target="_blank" rel="noopener">Abrir em outra aba</a>
+      </div>
+      <iframe id="quadro-previa" title="Pré-visualização do artigo" loading="lazy"></iframe>
     </div>
   </div>
   <div class="visor-selecao" id="visor-selecao" hidden>

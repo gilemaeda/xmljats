@@ -83,11 +83,23 @@ js = open(os.path.join(RAIZ, "app", "static", "revisar.js"), encoding="utf-8").r
 ok("semAcento" in js and "buscaTexto" in js, "busca compara sem acento")
 ok("pintaBusca" in js and "andaBusca" in js, "busca destaca e navega entre as ocorrencias")
 
+# ---------------------------------------------------------------- pre-visualizacao (htmlgenerator do packtools)
+prev = c.get(f"/doc/{doc}/previa")
+ok(prev.status_code == 200 and len(prev.text) > 20000, f"previa gerada ({prev.status_code}, {len(prev.text)} bytes)")
+ok("<body" in prev.text and "<html" in prev.text.lower(), "previa e uma pagina completa")
+import re as _re
+proprias = [x for x in _re.findall(r'<img[^>]*src="([^"]*)"', prev.text) if not x.startswith("http")]
+ok(all(x.startswith(f"/doc/{doc}/img/") for x in proprias),
+   f"toda imagem propria da previa aponta para este documento: {proprias[:3]}")
+ok("-gf01.tif" not in prev.text, "nenhum nome de arquivo do pacote sobra quebrado na previa")
+ok('data-aba="previa"' in pag and 'id="quadro-previa"' in pag, "aba 'Como fica' com o quadro da previa")
+
 # a consulta de outro documento nao vaza para quem nao e dono
 c2 = TestClient(app, follow_redirects=False)
 r2 = c2.post("/registrar", data={"nome": "Outro", "email": "outro@exemplo.org", "senha": "senha-forte-1", "senha2": "senha-forte-1"})
 c2.cookies.set("xmljats_sessao", r2.cookies["xmljats_sessao"])
 ok(c2.get(f"/doc/{doc}/doi").status_code == 403, "conta que nao e dona do documento nao consulta por ele")
+ok(c2.get(f"/doc/{doc}/previa").status_code == 403, "previa de documento de outra conta nao vaza")
 
 print("\nFALHAS:", len(falhas))
 for f in falhas:
