@@ -98,9 +98,10 @@ def processa(pasta: Path, versao_sps: str, acronimo: Optional[str]) -> dict:
     dtd_ok, sps_ok, erros, detalhe = gx.valida_packtools(str(xml_path))
     pronto = not res.bloqueantes and bool(dtd_ok) and bool(sps_ok)
     titulo = model.titulo_principal or ""
+    nome_original = (pasta / "nome_original.txt").read_text(encoding="utf-8").strip() if (pasta / "nome_original.txt").exists() else modelo.get("arquivo")
     resultado = {
         "criado_em": dt.datetime.now().isoformat(timespec="seconds"),
-        "arquivo_original": modelo.get("arquivo"),
+        "arquivo_original": nome_original,
         "titulo": titulo,
         "revista": rev["acronimo"] if rev else None,
         "revista_titulo": rev["titulo"] if rev else None,

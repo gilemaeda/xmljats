@@ -44,33 +44,52 @@ def _dtd_local(caminho_xml):
 
 
 def valida_packtools(caminho):
-    """Devolve (dtd_ok, sps_ok, erros[str], detalhe)."""
+    """Devolve (dtd_ok, sps_ok, erros[str], detalhe).
+
+    DTD: sempre pelo DTD JATS empacotado no packtools, carregado direto do arquivo (independe de catalogo XML,
+    que falha no Windows por falta da variavel de ambiente e no Linux por entidades nao resolvidas).
+    Schematron SPS: packtools; se o parse com DOCTYPE falhar, usa uma copia do XML sem a linha DOCTYPE.
+    """
     _prepara_catalogo()
+    erros = []
+    dtd_ok = sps_ok = None
+    detalhe = []
+    try:
+        dtd_ok, dtd_err = _dtd_local(caminho)
+        erros += dtd_err
+        detalhe.append("DTD local")
+    except Exception as e:  # noqa: BLE001
+        erros.append(f"DTD local falhou: {e}")
     try:
         from packtools import XMLValidator
     except Exception as e:  # noqa: BLE001
-        return None, None, [], f"packtools indisponível: {e}"
+        return dtd_ok, None, erros + [f"packtools indisponível: {e}"], "; ".join(detalhe)
+    xv = None
     try:
         xv = XMLValidator.parse(caminho)
-    except Exception as e:  # noqa: BLE001
-        return None, None, [], f"XMLValidator.parse falhou: {e}"
-    erros = []
-    dtd_ok = sps_ok = None
-    try:
-        dtd_ok, dtd_err = xv.validate()
-        erros += [f"DTD: {getattr(e, 'message', e)} (linha {getattr(e, 'line', '?')})" for e in dtd_err]
-    except Exception as e:  # noqa: BLE001
+        detalhe.append("packtools com DOCTYPE")
+    except Exception as e1:  # noqa: BLE001
         try:
-            dtd_ok, dtd_err = _dtd_local(caminho)
-            erros += dtd_err
+            with io.open(caminho, encoding="utf-8") as f:
+                linhas = [l for l in f.read().splitlines(True) if not l.lstrip().startswith("<!DOCTYPE")]
+            tmp = caminho + ".semdoctype.xml"
+            with io.open(tmp, "w", encoding="utf-8") as f:
+                f.write("".join(linhas))
+            xv = XMLValidator.parse(tmp, no_doctype=True)
+            detalhe.append(f"packtools sem DOCTYPE (parse com DOCTYPE falhou: {str(e1)[:80]})")
+            try:
+                os.remove(tmp)
+            except OSError:
+                pass
         except Exception as e2:  # noqa: BLE001
-            erros.append(f"validate() falhou: {e}; DTD local também falhou: {e2}")
+            return dtd_ok, None, erros + [f"XMLValidator.parse falhou: {e1}; sem DOCTYPE: {e2}"], "; ".join(detalhe)
     try:
         sps_ok, sps_err = xv.validate_style()
         erros += [f"SPS [{getattr(e, 'label', '')}]: {getattr(e, 'message', e)} (linha {getattr(e, 'line', '?')})" for e in sps_err]
+        detalhe.append(f"sps_version={getattr(xv, 'sps_version', '?')}")
     except Exception as e:  # noqa: BLE001
         erros.append(f"validate_style() falhou: {e}")
-    return dtd_ok, sps_ok, erros, f"packtools sps_version={getattr(xv, 'sps_version', '?')}"
+    return dtd_ok, sps_ok, erros, "; ".join(detalhe)
 
 
 def _txt(el):
