@@ -37,6 +37,8 @@ Abra http://127.0.0.1:8000. Sem `APP_SENHA` definida, o site não pede senha (us
 5. *Domains*: adicionar o domínio (ex.: `homol.xmljats.com` → porta 8000, HTTPS pelo Let's Encrypt do Dokploy).
 6. *Deploy*. O healthcheck do container consulta `/saude`.
 
+Os mesmos passos podem ser feitos pela API do Dokploy com `ops/dokploy.py` (lê URLs e tokens de `.env.deploy`, que fica fora do git). Foi assim que a homologação foi criada em 05/09/2026.
+
 Ordem: homologação primeiro, produção depois. Banco de dados ainda não é necessário (o MVP grava em disco); quando entrar (contas, revistas, fila), criar um serviço Postgres **próprio** dentro do projeto XML, separado do Gestão Foco, para ter backup e isolamento independentes.
 
 ## Estado (setembro de 2026)
