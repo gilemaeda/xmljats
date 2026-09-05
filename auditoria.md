@@ -1,13 +1,13 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.7.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.7.1). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
 - **Site:** 27 de 27 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
-- **Schematron SPS:** 0 de 10 sem erros (os demais só reclamam de dados que não existem no PDF e que o sistema já marca como bloqueante).
+- **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
 
 ## 2. Placar dos seis elementos obrigatórios (PDFs com gabarito conferido à mão)
 
@@ -32,8 +32,8 @@ Gerada por `python ops/auditoria.py` (app 0.7.0). Cada número vem de uma mediç
 | document | 14 | 2 | 2 | 2 | 3 | 15 | 11 | 0 | 0 (0) | 0 | 48 (ABNT) | ok | 2 | — |
 | rbef-equacoes | 13 | 1 | 0 | 1 | 0 | 6 | 1 | 4 | 0 (0) | 38 | 30 (numérico (Vancouver)) | ok | 4 | 12/24 |
 | rbef-tabelas-equacoes | 14 | 0 | 0 | 0 | 0 | 11 | 1 | 18 | 5 (4) | 31 | 28 (numérico (Vancouver)) | ok | 5 | 11/24 |
-| rsp-tabelas | 12 | 1 | 0 | 1 | 1 | 4 | 4 | 0 | 5 (5) | 0 | 40 (numérico (Vancouver)) | ok | 2 | 12/24 |
-| rsp-tabelas2 | 10 | 1 | 0 | 1 | 1 | 9 | 4 | 0 | 4 (4) | 0 | 30 (numérico (Vancouver)) | ok | 2 | 10/24 |
+| rsp-tabelas | 12 | 3 | 0 | 1 | 1 | 4 | 4 | 0 | 5 (5) | 0 | 40 (numérico (Vancouver)) | ok | 2 | 12/24 |
+| rsp-tabelas2 | 10 | 2 | 0 | 1 | 1 | 9 | 4 | 0 | 4 (4) | 0 | 30 (numérico (Vancouver)) | ok | 2 | 10/24 |
 
 ## 4. Verificações do site
 

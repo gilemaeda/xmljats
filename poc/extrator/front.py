@@ -230,7 +230,25 @@ def _divide_por_idioma(linhas):
 
 def _divide_autores(texto):
     limpo = _strip_marcadores_nome(texto)
-    return [p.strip() for p in re.split(r"\s*(?:;|\|| e | and | y )\s*", limpo) if p.strip()]
+    partes = [p.strip() for p in re.split(r"\s*(?:;|\|| e | and | y )\s*", limpo) if p.strip()]
+    # "Fulano de Tal , Beltrano da Silva , Sicrano Souza": virgula entre nomes completos separa autores
+    # (so quando TODAS as partes parecem nome completo, para nao quebrar "Silva, Joao" invertido)
+    saida = []
+    for p in partes:
+        pedacos = [x.strip() for x in p.split(",") if x.strip()]
+        if len(pedacos) >= 2 and all(_parece_nome_completo(x) for x in pedacos):
+            saida.extend(pedacos)
+        else:
+            saida.append(p)
+    return saida
+
+
+def _parece_nome_completo(t):
+    """Dois ou mais tokens com cara de nome, sem palavra proibida: 'João Luiz Bastos' sim, 'Silva' ou 'v. 11' não."""
+    tokens = t.split()
+    if len(tokens) < 2 or len(tokens) > 6 or KW_NAO_NOME.search(t):
+        return False
+    return all(RE_NOME_TOKEN.match(tok) or tok.lower() in PARTICULAS for tok in tokens)
 
 
 # ---------------------------------------------------------------- identificadores e revista
