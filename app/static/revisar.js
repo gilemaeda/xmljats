@@ -381,6 +381,10 @@
       return bloco(n, 'Quadro novo', [txt('quadro_' + n + '_rotulo', 'Rótulo (Quadro 1)'), txt('quadro_' + n + '_legenda', 'Legenda'),
         ta('quadro_' + n + '_texto', 'Conteúdo (um parágrafo por linha)', 4)], 'quadro');
     },
+    fomento: function (n) {
+      return bloco(n, 'Fonte de fomento', [txt('fomento_' + n + '_fonte', 'Agencia ou fonte'),
+        txt('fomento_' + n + '_processo', 'Numero do processo')], 'fomento');
+    },
     dialogo: function (n) {
       return bloco(n, 'Diálogo novo', [txt('dialogo_' + n + '_rotulo', 'Rótulo (Diálogo 1)'), txt('dialogo_' + n + '_legenda', 'Legenda'),
         ta('dialogo_' + n + '_turnos', 'Falas, uma por linha: "Falante: fala"', 5)], 'dialogo');
@@ -423,6 +427,18 @@
       if (primeiro) primeiro.focus();
       criado.scrollIntoView({ block: 'center', behavior: 'smooth' });
     });
+  });
+
+  /* ------------------------------------------------------------------ CRediT: caixas viram um campo só
+   * O XML guarda os termos numa lista; a tela mostra caixas. Este trecho mantém as duas coisas iguais.
+   */
+  function sincronizaCredit(i) {
+    var marcadas = $$('input[name="autor_' + i + '_credit_item"]:checked').map(function (c) { return c.value; });
+    var alvo = document.getElementById('credit-' + i);
+    if (alvo) alvo.value = marcadas.join(', ');
+  }
+  $$('input[data-autor]').forEach(function (c) {
+    c.addEventListener('change', function () { sincronizaCredit(c.dataset.autor); });
   });
 
   /* ------------------------------------------------------------------ prévia da grade da tabela */

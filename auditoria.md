@@ -4,7 +4,7 @@ Gerada por `python ops/auditoria.py` (app 0.12.0). Cada número vem de uma medi�
 
 ## 1. Resumo
 
-- **Site:** 77 de 77 verificações passaram.
+- **Site:** 82 de 82 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -109,6 +109,11 @@ Gerada por `python ops/auditoria.py` (app 0.12.0). Cada número vem de uma medi�
 - ok — DOCX original fica guardado
 - ok — formato fora da lista é recusado com o motivo
 - ok — fórmula do Word (OMML) vira MathML
+- ok — CRediT por autor na tela (13 termos da taxonomia)
+- ok — bloco de financiamento (funding-group) na tela
+- ok — pedido das pendências por e-mail na tela
+- ok — pedido sem destinatário é recusado
+- ok — os 13 termos CRediT são os que o Schematron da SciELO aceita
 - ok — licença CC BY-NC-ND não vira CC BY-NC
 - ok — licença CC BY-SA não vira CC BY-NC-SA
 - ok — LaTeX vira MathML
@@ -158,6 +163,10 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Busca dentro do documento no visualizador | pronto | verificação "visualizador tem busca no documento" |
 | Completar pelo DOI no Crossref (volume, licença, ORCID, resumo) | pronto | ops/test_ferramentas.py |
 | Conferir o ORCID no registro público orcid.org | pronto | ops/test_ferramentas.py |
+| CRediT: contribuição de cada autor em <role content-type> | pronto | ops/test_credit.py |
+| Financiamento em funding-group, com a nota cruzada que a SciELO exige | pronto | ops/test_credit.py |
+| Pedir à revista, por e-mail, tudo que falta de uma vez | pronto | ops/test_credit.py |
+| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |
 | Depósito do pacote no FTP da SciELO, com o aviso obrigatório por e-mail | pronto | ops/test_entrega.py deposita num FTP de verdade |

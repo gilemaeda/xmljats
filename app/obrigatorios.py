@@ -208,31 +208,42 @@ def pendencias(modelo: dict, revista: Optional[dict], versao_sps: str = "1.9") -
     return p
 
 
+def grupo_de(campo: str) -> str:
+    """Bloco da tela a que o campo pertence."""
+    if campo.startswith(("autor_", "corresp")):
+        return "Autores"
+    if campo.startswith("aff_"):
+        return "Afiliações"
+    if campo.startswith("resumo_"):
+        return "Resumos e palavras-chave"
+    if campo.startswith("secao_"):
+        return "Seções do corpo"
+    if campo.startswith("tabela_"):
+        return "Tabelas"
+    if campo.startswith("figura_"):
+        return "Figuras"
+    if campo.startswith("equacao_"):
+        return "Equações"
+    if campo.startswith(("quadro_", "dialogo_")):
+        return "Quadros e diálogos"
+    if campo.startswith("data_"):
+        return "Datas"
+    if campo.startswith("titulo_"):
+        return "Títulos"
+    return "Revista e identificação"
+
+
+def por_grupo(pend: dict) -> list:
+    """[(grupo, [(campo, motivo, fonte), ...])], na ordem em que aparecem na tela."""
+    out = {}
+    for campo, info in pend.items():
+        out.setdefault(grupo_de(campo), []).append((campo, info["motivo"], info["fonte"]))
+    return [(g, itens) for g, itens in out.items()]
+
+
 def resumo_por_grupo(pend: dict) -> list:
     """Agrupa as pendências pelo bloco da tela, para o aviso do topo do formulário."""
     grupos = {}
-    for campo, info in pend.items():
-        if campo.startswith(("autor_", "corresp")):
-            g = "Autores"
-        elif campo.startswith("aff_"):
-            g = "Afiliações"
-        elif campo.startswith("resumo_"):
-            g = "Resumos e palavras-chave"
-        elif campo.startswith("secao_"):
-            g = "Seções do corpo"
-        elif campo.startswith("tabela_"):
-            g = "Tabelas"
-        elif campo.startswith("figura_"):
-            g = "Figuras"
-        elif campo.startswith("equacao_"):
-            g = "Equações"
-        elif campo.startswith(("quadro_", "dialogo_")):
-            g = "Quadros e diálogos"
-        elif campo.startswith("data_"):
-            g = "Datas"
-        elif campo.startswith("titulo_"):
-            g = "Títulos"
-        else:
-            g = "Revista e identificação"
-        grupos.setdefault(g, []).append(ROTULOS.get(campo, campo))
+    for campo in pend:
+        grupos.setdefault(grupo_de(campo), []).append(ROTULOS.get(campo, campo))
     return [{"grupo": g, "campos": v, "quantos": len(v)} for g, v in grupos.items()]

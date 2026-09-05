@@ -507,6 +507,8 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 .doi-tabela{margin-top:var(--s-3)}
 .doi-tabela td{vertical-align:top}
 .orcid-saida{margin-top:4px;line-height:1.5;min-height:0}
+.credit-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:2px 12px;border:1px solid var(--border);border-radius:var(--r-1);padding:8px 10px;background:var(--surface-2)}
+.credit-lista .check{font-size:12.5px}
 .campo-orcid{grid-column:span 2}
 .campo-orcid input{min-width:158px}
 @media (max-width:900px){.campo-orcid{grid-column:auto}}

@@ -15,6 +15,7 @@ import re
 import subprocess
 import sys
 import tempfile
+import urllib.parse
 import shutil
 import datetime as dt
 
@@ -229,6 +230,18 @@ def roda_site():
                            '<m:f><m:num><m:r><m:t>a</m:t></m:r></m:num><m:den><m:r><m:t>b</m:t></m:r></m:den></m:f></m:oMath>')
     check("fórmula do Word (OMML) vira MathML", "<mfrac" in (omml_para_mathml(_omml) or ""))
 
+    # ---- CRediT, financiamento e pedido das pendencias
+    if doc:
+        ver3 = c.get(doc + "/editar").text
+        check("CRediT por autor na tela (13 termos da taxonomia)",
+              "autor_0_credit_item" in ver3 and "Conceituação" in ver3 and "Escrita: revisão e edição" in ver3)
+        check("bloco de financiamento (funding-group) na tela", 'data-grupo="fomento"' in ver3)
+        check("pedido das pendências por e-mail na tela", "/pendencias" in ver3)
+        check("pedido sem destinatário é recusado",
+              "Informe" in urllib.parse.unquote(c.post(doc + "/pendencias", data={"destino": ""}).headers.get("location", "")))
+    from extrator import xml_jats as _xj
+    check("os 13 termos CRediT são os que o Schematron da SciELO aceita", len(_xj.CREDIT) == 13)
+
     # ---- licença: a URL tem de bater com o texto escolhido
     from app.main import licenca_url
     check("licença CC BY-NC-ND não vira CC BY-NC",
@@ -323,6 +336,10 @@ def main():
           "| Busca dentro do documento no visualizador | pronto | verificação \"visualizador tem busca no documento\" |",
           "| Completar pelo DOI no Crossref (volume, licença, ORCID, resumo) | pronto | ops/test_ferramentas.py |",
           "| Conferir o ORCID no registro público orcid.org | pronto | ops/test_ferramentas.py |",
+          "| CRediT: contribuição de cada autor em <role content-type> | pronto | ops/test_credit.py |",
+          "| Financiamento em funding-group, com a nota cruzada que a SciELO exige | pronto | ops/test_credit.py |",
+          "| Pedir à revista, por e-mail, tudo que falta de uma vez | pronto | ops/test_credit.py |",
+          "| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",
           "| Depósito do pacote no FTP da SciELO, com o aviso obrigatório por e-mail | pronto | ops/test_entrega.py deposita num FTP de verdade |",

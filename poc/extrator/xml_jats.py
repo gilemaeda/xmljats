@@ -39,6 +39,19 @@ LICENCA_P = {
                  "en": "This is an open-access article distributed under the terms of the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.",
                  "es": "Este es un artículo publicado en acceso abierto bajo una licencia Creative Commons Atribución-NoComercial-CompartirIgual 4.0 Internacional."},
 }
+# CRediT: a taxonomia de contribuicao que a SPS 1.10 valida em <role content-type>. Os 13 termos sao
+# exatamente os que o Schematron da SciELO aceita (pattern role_content-type-values).
+CREDIT_BASE = "https://casrai.org/term/contributor-roles-"
+CREDIT = [
+    ("conceptualization", "Conceituação"), ("data-curation", "Curadoria dos dados"),
+    ("formal-analysis", "Análise formal"), ("funding-acquisition", "Obtenção de financiamento"),
+    ("investigation", "Investigação"), ("methodology", "Metodologia"),
+    ("project-administration", "Administração do projeto"), ("resources", "Recursos"),
+    ("software", "Software"), ("supervision", "Supervisão"), ("validation", "Validação"),
+    ("writing-original-draft", "Escrita: rascunho original"),
+    ("writing-review-editing", "Escrita: revisão e edição"),
+]
+ROTULO_CREDIT = dict(CREDIT)
 PAIS_NOME = {"BR": "Brasil", "AR": "Argentina", "PT": "Portugal", "US": "United States of America", "ES": "España", "MX": "México", "CO": "Colombia", "CL": "Chile", "UY": "Uruguay", "PE": "Perú", "IT": "Italia", "FR": "France", "DE": "Deutschland", "GB": "United Kingdom", "CA": "Canada"}
 
 
@@ -335,6 +348,11 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         _sub(nome, "surname", a["sobrenome"])
         if a.get("nomes"):
             _sub(nome, "given-names", a["nomes"])
+        # CRediT: o que cada autor fez, na taxonomia que a SPS 1.10 valida. O DTD exige <role> depois do
+        # contrib-id e do name, no mesmo grupo de aff/email/xref.
+        for termo in a.get("credit") or []:
+            if termo in ROTULO_CREDIT:
+                _sub(c, "role", ROTULO_CREDIT[termo], content_type=CREDIT_BASE + termo)
         for k, aid in enumerate(a.get("aff_ids", [])):
             x = _sub(c, "xref", ref_type="aff", rid=aid)
             _sub(x, "sup", str(list(affs).index(aid) + 1) if aid in affs else str(k + 1))
@@ -500,6 +518,22 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
 
     # ---- counts
     figs = [f for f in model.get("figuras", []) if f["tipo"] == "fig"]
+    # financiamento: <funding-group> com <award-group>, que e o que o Schematron da SciELO exige
+    fomentos = [f for f in (model.get("financiamentos") or []) if (f.get("fonte") or "").strip()]
+    if fomentos:
+        fg = _sub(am, "funding-group")
+        for f in fomentos:
+            ag = _sub(fg, "award-group")
+            _sub(ag, "funding-source", f["fonte"].strip())
+            if (f.get("processo") or "").strip():
+                _sub(ag, "award-id", f["processo"].strip())
+        texto = (model.get("financiamento_texto") or "").strip()
+        if texto:
+            _sub(fg, "funding-statement", texto)
+    elif (model.get("financiamento_texto") or "").strip():
+        res.aviso("Há texto de financiamento, mas nenhuma fonte de fomento: a SPS exige award-group "
+                  "dentro de funding-group, então o texto sozinho não entra no XML (A14).")
+
     counts = _sub(am, "counts")
     # os contadores refletem o que EXISTE no XML
     _sub(counts, "fig-count", count=str(len(figs_xml)))
@@ -699,8 +733,17 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
 
     # ---- back
     back = _sub(art, "back")
-    if fns:
+    # A SciELO cruza o financiamento: todo award-id do funding-group tem de aparecer, literalmente, no texto
+    # de uma nota fn-type="financial-disclosure" (ou do ack). Sem isso o validador oficial reprova. E o
+    # contrário também vale: nota de financiamento sem award-id nenhum é erro, então a nota só sai quando há.
+    processos = [f["processo"].strip() for f in fomentos if (f.get("processo") or "").strip()]
+    if fns or processos:
         fg = _sub(back, "fn-group")
+        if processos:
+            partes = [(model.get("financiamento_texto") or "").strip()] if (model.get("financiamento_texto") or "").strip() else []
+            partes += [f"{f['fonte'].strip()}: {f['processo'].strip()}" for f in fomentos if (f.get("processo") or "").strip()]
+            fn = _sub(fg, "fn", fn_type="financial-disclosure", id="fn-financiamento")
+            _sub(fn, "p", " ".join(partes))
         for n in fns:
             fn = _sub(fg, "fn", fn_type=n.get("tipo") or "other", id=n["id"])
             _sub(fn, "label", n["rotulo"])

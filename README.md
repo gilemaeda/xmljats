@@ -101,4 +101,8 @@ Ordem: homologação primeiro, produção depois. Banco de dados ainda não é n
 - **Busca dentro do documento** no visualizador, sem acento e sem caixa, com navegação entre as ocorrências.
 - **Completar pelo DOI** (`app/enriquece.py`): consulta o Crossref e traz volume, número, licença, resumo e o ORCID de cada autor, campo a campo, mostrando a origem. Nada é gravado sem confirmação. A data de publicação só é aproveitada quando vem com dia e mês.
 - **Conferir o ORCID** no registro público do orcid.org: diz de quem é o número e avisa quando o nome não bate com o do autor.
-- Falta: fila com IA, integração com OJS, referências cruzadas com o Crossref, CRediT, status vindo da SciELO.
+- **CRediT**: a contribuição de cada autor sai em `<role content-type>` com os 13 termos que o Schematron da SciELO aceita.
+- **Financiamento**: `funding-group` com `award-group` (fonte e número do processo) e `funding-statement`. A SciELO cruza os dados: todo número de processo precisa aparecer também numa nota `fn-type="financial-disclosure"`, e o sistema emite as duas coisas juntas ou nenhuma.
+- **Pedir o que falta**: um botão monta no correio, para a revista ou para o autor, a lista das pendências com o motivo de cada uma. É o que mais custa tempo no dia a dia: ORCID, datas do OJS e seção do sumário nunca estão no arquivo.
+- **Referências cruzadas com o Crossref: medido e descartado.** O casamento por texto devolve nota semelhante para uma referência real e para texto sem sentido, e o editor da revista piloto depositou as 13 referências do artigo sem nenhum DOI. Injetar um DOI errado no XML é pior do que não ter DOI, então isso não foi implementado.
+- Falta: fila com IA, integração com OJS, status vindo da SciELO, custo por artigo.

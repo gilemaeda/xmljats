@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.12.0"
+VERSAO_APP = "0.13.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -147,11 +147,12 @@ CAMPOS_POR_REGRA = {
 TIPOS_ARTIGO = ["research-article", "review-article", "editorial", "book-review", "letter", "brief-report", "case-report",
                 "article-commentary", "correction", "retraction", "addendum", "rapid-communication", "other"]
 IDIOMAS = ["pt", "en", "es", "fr", "it", "de"]
-CAMPOS_SIMPLES = ("heading", "tipo_artigo", "idioma", "volume", "numero", "ano", "elocation", "order", "doi", "licenca")
+CAMPOS_SIMPLES = ("heading", "tipo_artigo", "idioma", "volume", "numero", "ano", "elocation", "order", "doi",
+                  "licenca", "financiamento_texto")
 # grupos editaveis em lista: o indice pode passar do que foi extraido, e ai o item e criado a mao
 GRUPOS_LISTA = {"titulo": "titulos", "autor": "autores", "aff": "afiliacoes", "resumo": "resumos",
                 "secao": "secoes", "tabela": "tabelas", "figura": "figuras", "equacao": "equacoes",
-                "quadro": "quadros", "dialogo": "dialogos"}
+                "quadro": "quadros", "dialogo": "dialogos", "fomento": "financiamentos"}
 RE_CAMPO_LISTA = re.compile(r"^(" + "|".join(GRUPOS_LISTA) + r")_(\d+)_(\w+)$")
 # quantos itens em branco a tela oferece para criar a mao, por grupo
 VAGAS_NOVAS = 1
@@ -408,6 +409,7 @@ def valores_editaveis(modelo: dict) -> dict:
         v[f"autor_{i}_orcid"] = a.get("orcid") or ""
         v[f"autor_{i}_email"] = a.get("email") or ""
         v[f"autor_{i}_affs"] = ", ".join(a.get("aff_ids", []))
+        v[f"autor_{i}_credit"] = ", ".join(a.get("credit", []))
     for j, af in enumerate(modelo.get("afiliacoes", [])):
         for campo in ("instituicao", "divisao", "cidade", "estado", "pais_iso"):
             v[f"aff_{j}_{campo}"] = af.get(campo) or ""
@@ -415,6 +417,10 @@ def valores_editaveis(modelo: dict) -> dict:
         v[f"resumo_{k}_idioma"] = r.get("idioma") or ""
         v[f"resumo_{k}_texto"] = r.get("texto") or ""
         v[f"resumo_{k}_kw"] = "; ".join(r.get("palavras_chave", []))
+    v["financiamento_texto"] = modelo.get("financiamento_texto") or ""
+    for k, f in enumerate(modelo.get("financiamentos", [])):
+        v[f"fomento_{k}_fonte"] = f.get("fonte") or ""
+        v[f"fomento_{k}_processo"] = f.get("processo") or ""
     for k, sec in enumerate(modelo.get("secoes", [])):
         v[f"secao_{k}_titulo"] = sec.get("titulo_completo") or sec.get("titulo") or ""
     for k, t in enumerate(modelo.get("tabelas", [])):
@@ -509,6 +515,9 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
             alvo = itens[idx]
             if grupo == "autor" and campo == "affs":
                 alvo["aff_ids"] = [x.strip() for x in (val or "").split(",") if x.strip()]
+            elif grupo == "autor" and campo == "credit":
+                validos = {c for c, _ in xml_jats.CREDIT}
+                alvo["credit"] = [x.strip() for x in (val or "").split(",") if x.strip() in validos]
             elif grupo == "autor" and campo == "orcid":
                 mo = RE_ORCID.search(val or "")
                 alvo["orcid"] = mo.group(1).upper() if mo else None
@@ -544,6 +553,7 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
         for x in m.get(lista, []):
             if _item_vazio(lista, x):
                 x["_removido"] = True
+    m["financiamentos"] = [f for f in m.get("financiamentos", []) if (f.get("fonte") or "").strip()]
     return m
 
 
@@ -594,6 +604,7 @@ NOVO_ITEM = {
     "tabela": lambda: {"rotulo": "", "legenda": "", "celulas": [], "linhas_cabecalho": 1, "colunas": 0,
                        "qualidade": "alta", "pagina": 1, "origem": "digitada"},
     "figura": lambda: {"tipo": "fig", "rotulo": "", "legenda": "", "pagina": 1, "origem": "digitada"},
+    "fomento": lambda: {"fonte": "", "processo": ""},
     "equacao": lambda: {"rotulo": "", "numero": None, "pagina": 1, "origem": "digitada"},
     "quadro": lambda: {"rotulo": "", "legenda": "", "texto": "", "pagina": 1, "origem": "digitada"},
     "dialogo": lambda: {"rotulo": "", "legenda": "", "turnos": [], "pagina": 1, "origem": "digitada"},
@@ -952,6 +963,7 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
         "revista_atual": cfg.get("revista") or r.get("revista") or "",
         "tipos": TIPOS_ARTIGO, "idiomas": IDIOMAS, "original_html": markdown_html(original), "usuario": usuario, "r": r,
         "obrig": pend, "obrig_grupos": obrigatorios.resumo_por_grupo(pend), "paginas": visual.resumo(pasta),
+        "credit": xml_jats.CREDIT,
         "mensagem": mensagem, "erro": erro, "vagas": VAGAS_NOVAS,
     }, status_code=400 if erro else 200)
 
@@ -1034,6 +1046,44 @@ def busca_por_doi(doc_id: str, numero: str = "", usuario: dict = Depends(autenti
         modelo = modelo_efetivo(pasta)
         numero = modelo.get("doi") or ""
     return enriquece.por_doi(numero)
+
+
+@app.post("/doc/{doc_id}/pendencias")
+async def manda_pendencias(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
+    """Monta no correio a lista do que falta, para pedir de uma vez à revista ou ao autor.
+    Na prática é o que mais custa tempo: ORCID, datas do OJS e seção do sumário nunca estão no arquivo."""
+    pasta = _pasta(doc_id, usuario)
+    form = await request.form()
+    destino = str(form.get("destino") or "").strip()
+    cfg = le_json(pasta / "config.json", {}) or {}
+    r = le_json(pasta / "validacao.json", {}) or {}
+    revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None) or {}
+    modelo = modelo_efetivo(pasta)
+    pend = obrigatorios.pendencias(modelo, revista or None, cfg.get("versao_sps") or "1.9")
+    if not pend:
+        return RedirectResponse(url=f"/doc/{doc_id}/editar?mensagem=" + urllib.parse.quote(
+            "Não há pendências para pedir: está tudo preenchido."), status_code=303)
+    if not destino:
+        return RedirectResponse(url=f"/doc/{doc_id}/editar?mensagem=" + urllib.parse.quote(
+            "Informe o e-mail da revista ou do autor para montar o pedido."), status_code=303)
+    titulo = r.get("titulo") or modelo.get("titulos", [{}])[0].get("texto") or r.get("arquivo_original") or doc_id
+    linhas = [f"Prezados,", "",
+              f"Para fechar o XML SciELO do artigo abaixo, faltam {len(pend)} informação(ões) que não estão no "
+              f"arquivo enviado e que a SciELO exige.", "",
+              f"Artigo: {titulo}",
+              f"Periódico: {revista.get('titulo') or '—'}",
+              f"DOI: {modelo.get('doi') or '—'}", "", "O que falta:", ""]
+    for grupo, itens in obrigatorios.por_grupo(pend):
+        linhas.append(f"- {grupo}:")
+        for campo, motivo, _fonte in itens:
+            linhas.append(f"    . {obrigatorios.ROTULOS.get(campo, campo)}: {motivo}")
+    linhas += ["", "Cada item acima corresponde a uma regra da SciELO Publishing Schema ou do guia de entrega de "
+                   "pacotes; sem eles o pacote é devolvido.", "", "Atenciosamente,"]
+    assunto = f"Faltam {len(pend)} dado(s) para o XML SciELO — {titulo[:70]}"
+    CORREIO.cria(destino or (revista.get("site") and "") or "", assunto, "\n".join(linhas),
+                 caixa="rascunhos", tipo="pendencias", por=usuario["nome"])
+    return RedirectResponse(url="/admin/correio?caixa=rascunhos&mensagem=" + urllib.parse.quote(
+        "Pedido montado como rascunho com o que falta. Confira o destinatário e envie."), status_code=303)
 
 
 @app.get("/orcid")

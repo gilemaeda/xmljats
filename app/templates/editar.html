@@ -63,6 +63,14 @@
   </div>
   <p class="small muted" style="margin:0">Estes campos não estão no PDF ou vieram vazios. Sem eles o pacote é devolvido, então o
     documento só salva e valida depois de preenchidos. Cada aviso diz qual regra da SciELO Publishing Schema exige o campo.</p>
+  <form method="post" action="/doc/{{ id }}/pendencias" class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
+    <div class="field" style="flex:0 1 260px;margin:0">
+      <label for="destino">Pedir à revista ou ao autor</label>
+      <input id="destino" name="destino" type="email" placeholder="editor@revista.org">
+    </div>
+    <button class="btn small" type="submit"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Montar o pedido no correio</button>
+    <span class="small faint">Gera a lista do que falta, com o motivo de cada item, como rascunho no correio.</span>
+  </form>
   <ul class="pend-lista">
     {% for g in obrig_grupos %}
     <li><b>{{ g.grupo }}</b> <span class="chip neutral">{{ g.quantos }}</span>
@@ -172,6 +180,18 @@
             {{ campo('autor_' ~ i ~ '_email', 'E-mail') }}
           </div>
           {{ campo('autor_' ~ i ~ '_affs', 'Afiliações (ids separados por vírgula)', hint='ex.: aff1, aff2') }}
+          {% set marcados = (v.get('autor_' ~ i ~ '_credit', '') or '').split(', ') %}
+          <div class="field">
+            <label>Contribuição (CRediT) <span class="opt">(opcional)</span></label>
+            <div class="credit-lista">
+              {% for termo, rotulo in credit %}
+              <label class="check"><input type="checkbox" name="autor_{{ i }}_credit_item" value="{{ termo }}"
+                     data-autor="{{ i }}" {% if termo in marcados %}checked{% endif %}> {{ rotulo }}</label>
+              {% endfor %}
+            </div>
+            <input type="hidden" name="autor_{{ i }}_credit" id="credit-{{ i }}" value="{{ v.get('autor_' ~ i ~ '_credit', '') }}">
+            <span class="hint">Taxonomia CRediT, validada pela SciELO na SPS 1.10. Marque o que este autor fez.</span>
+          </div>
         </div>
         {% endfor %}
         {% if obrig.get('corresp') and m.autores %}<div class="msg block">{{ obrig['corresp'].motivo }}<span class="fonte-regra">{{ obrig['corresp'].fonte }}</span></div>{% endif %}
@@ -219,6 +239,27 @@
         {% endfor %}
         <div class="novos"></div>
         <button class="btn small" type="button" data-add="resumo">+ Adicionar resumo em outro idioma</button>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Financiamento</h2><span class="small muted">funding-group · a SPS exige a fonte, não só o texto</span></header>
+      <div class="in" data-grupo="fomento" data-inicio="{{ m.financiamentos|length if m.financiamentos else 0 }}">
+        {% for f in (m.financiamentos or []) %}{% set k = loop.index0 %}
+        <div class="grid2">
+          {{ campo('fomento_' ~ k ~ '_fonte', 'Agência ou fonte', hint='ex.: CNPq, CAPES, FAPESP') }}
+          {{ campo('fomento_' ~ k ~ '_processo', 'Número do processo') }}
+        </div>
+        {% endfor %}
+        {% if not m.financiamentos %}
+        <div class="grid2">
+          {{ campo('fomento_0_fonte', 'Agência ou fonte', hint='ex.: CNPq, CAPES, FAPESP; deixe vazio se não houve') }}
+          {{ campo('fomento_0_processo', 'Número do processo') }}
+        </div>
+        {% endif %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="fomento">+ Adicionar fonte de fomento</button>
+        {{ area('financiamento_texto', 'Texto de agradecimento ao financiamento', 2, 'Vai em funding-statement, junto das fontes acima.') }}
       </div>
     </div>
 
