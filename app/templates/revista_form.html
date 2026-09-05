@@ -20,17 +20,31 @@
 {% if nova %}
 <form class="card pad row" method="get" action="/revistas/nova" style="gap:var(--s-4);align-items:flex-end;margin-bottom:var(--s-4)">
   <div class="field" style="flex:1;min-width:220px">
-    <label for="issn-busca">Já está na SciELO? Busque pelo ISSN</label>
+    <label for="issn-busca">Buscar pelo ISSN</label>
     <input id="issn-busca" name="issn" placeholder="0000-0000" value="{{ v.get('issn_epub') or '' }}">
-    <span class="hint">Preenche título, abreviado, acrônimo, editora e área com o que a SciELO tem cadastrado. Se a revista tem ISSN impresso e eletrônico, tente os dois.</span>
+    <span class="hint">Consulta cinco bases: Portal do ISSN (issn.org), SciELO, DOAJ, Crossref e OpenAlex. Se a revista tem ISSN impresso e eletrônico, qualquer um dos dois serve.</span>
   </div>
-  <button class="btn" type="submit"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Buscar na SciELO</button>
+  <button class="btn" type="submit"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Buscar nas bases</button>
 </form>
 {% endif %}
 <form method="post" action="{{ '/revistas/nova' if nova else '/revistas/' ~ v.acronimo }}" class="review" style="grid-template-columns:3fr 2fr">
   <div>
     {% if erros.get('_') %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erros['_'] }}</div>{% endif %}
-    {% if busca %}<div class="msg {{ 'auto' if busca.achou else 'warn' }}" style="margin-bottom:var(--s-4)">{{ busca.mensagem }}{% if busca.achou %} Confira os campos antes de salvar.{% endif %}</div>{% endif %}
+    {% if busca %}
+    <div class="card pad stack" style="margin-bottom:var(--s-4);gap:10px">
+      <div class="msg {{ 'auto' if busca.ok else 'warn' }}" style="margin:0">{{ busca.mensagem }}</div>
+      {% if busca.fontes %}
+      <ul class="issn-fontes">
+        {% for f in busca.fontes %}
+        <li><span class="chip {{ 'ok' if f.ok else 'neutral' }}">{{ 'ok' if f.ok else 'sem' }}</span>
+          <b><a href="{{ f.site }}" target="_blank" rel="noopener">{{ f.fonte }}</a></b>
+          <span class="faint">{{ f.mensagem }}</span></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% if busca.origem %}<p class="small muted" style="margin:0">Cada campo abaixo veio da base indicada nas observações. Confira antes de salvar: o que estiver errado aqui vai para o <span class="mono">journal-meta</span> de todos os XML da revista.</p>{% endif %}
+    </div>
+    {% endif %}
     <div class="fs">
       <header><h2>Identificação</h2><span class="small muted">journal-id · journal-title · issn</span></header>
       <div class="in">

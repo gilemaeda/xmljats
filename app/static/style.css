@@ -448,6 +448,17 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 .bars .b .g i{display:block;height:100%;background:linear-gradient(90deg,var(--brand-2),var(--accent));border-radius:999px}
 .bars .b .n{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
 
+/* ---------- consulta por ISSN (validador, revistas) ---------- */
+.issn-box{border:1px dashed var(--border-strong);border-radius:var(--r-3);padding:var(--s-4);background:var(--surface-2)}
+.issn-saida{margin-top:var(--s-3);border-top:1px solid var(--border);padding-top:var(--s-3)}
+.issn-fontes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.issn-fontes li{display:flex;align-items:baseline;gap:8px;font-size:12.5px;line-height:1.5}
+.issn-fontes li b{color:var(--text-2);white-space:nowrap}
+.issn-fontes li a{color:inherit}
+.issn-campos{display:grid;grid-template-columns:auto 1fr;gap:4px var(--s-4);margin:var(--s-3) 0 0;font-size:13px}
+.issn-campos dt{color:var(--muted);font-weight:600}
+.issn-campos dd{margin:0;color:var(--text)}
+
 /* ---------- responsivo ---------- */
 @media (max-width:1100px){.kpis{grid-template-columns:1fr 1fr}.features{grid-template-columns:1fr}.extract{grid-template-columns:repeat(4,1fr)}}
 @media (max-width:1100px){.correio{grid-template-columns:1fr}}

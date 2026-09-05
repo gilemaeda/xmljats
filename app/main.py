@@ -53,7 +53,8 @@ sys.path.insert(0, str(RAIZ / "app"))
 from contas import COOKIE, PAPEIS, ROTULO_PAPEL, Contas  # noqa: E402  (app/contas.py)
 import tempo  # noqa: E402  (app/tempo.py: tudo no horário de Brasília)
 from correio import CAIXAS, ROTULO_CAIXA, Correio, corpo_confirmacao, token_confirmacao  # noqa: E402
-import scielo  # noqa: E402  (app/scielo.py: consulta de periódico por ISSN)
+import scielo  # noqa: E402  (app/scielo.py: consulta de periódico por ISSN na SciELO)
+import issn as issn_api  # noqa: E402  (app/issn.py: consulta em cascata — ISSN.org, SciELO, DOAJ, Crossref, OpenAlex)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -448,6 +449,60 @@ def campos_bloqueados(bloqueantes) -> dict:
     return out
 
 
+
+# ---------------------------------------------------------------- revistas pelo ISSN
+
+def sugestao_de_issn(consulta: dict) -> dict:
+    """Converte o que as bases devolveram nos campos do formulário de revista. Só copia o que veio; não completa nada."""
+    d = consulta.get("dados") or {}
+    origem = consulta.get("origem") or {}
+    v = {k: d[k] for k in ("acronimo", "titulo", "abrev", "editora", "issn_epub", "issn_ppub", "area", "site") if d.get(k)}
+    # valida_revista lê valores de formulário: "sim"/"não", não booleano
+    v["na_scielo"] = "sim" if d.get("na_scielo") else "nao"
+    if d.get("licenca") in {u for u, _ in LICENCAS}:
+        v["licenca_url"] = d["licenca"]
+    else:
+        v["licenca_url"] = LICENCAS[0][0]
+    v.setdefault("modo_publicacao", "continua")
+    if d.get("area") and d["area"] not in AREAS:
+        v.pop("area", None)
+    # sem acrônimo da SciELO, sugere um a partir do título, para a pessoa conferir (o acrônimo entra no nome dos arquivos)
+    if not v.get("acronimo") and v.get("titulo"):
+        from extrator.util import sem_acentos
+        letras = re.sub(r"[^a-z ]", "", sem_acentos(v["titulo"]).lower()).split()
+        ignora = {"revista", "de", "da", "do", "das", "dos", "e", "em", "a", "o", "journal", "of", "the", "brazilian", "brasileira"}
+        siglas = "".join(p[0] for p in letras if p not in ignora)[:6]
+        v["acronimo"] = siglas if len(siglas) >= 2 else None
+        if not v["acronimo"]:
+            v.pop("acronimo")
+    procedencia = "; ".join(f"{c}: {origem[c]}" for c in sorted(origem) if c in v or c in ("licenca", "abrev"))
+    v["_fonte"] = f"Importado pelo ISSN {consulta.get('issn')} em {tempo.formata(tempo.agora_iso())}. Origem por campo — {procedencia}."
+    return v
+
+
+def revista_por_issn(numero: str, usuario: dict) -> tuple:
+    """Acha a revista cadastrada pelo ISSN ou cadastra uma nova com o que as bases souberem.
+    Devolve (acronimo | None, mensagem, consulta). Nunca cadastra pela metade: faltando campo obrigatório, devolve o motivo."""
+    numero = issn_api.normaliza(numero)
+    lista = carrega_revistas()
+    ja = next((r for r in lista if numero in {(r.get("issn_epub") or "").upper(), (r.get("issn_ppub") or "").upper()}), None)
+    if ja:
+        return ja["acronimo"], f"Revista {ja['titulo']} ({ja['acronimo']}) já estava cadastrada com o ISSN {numero}.", None
+    consulta = issn_api.consulta(numero)
+    if not consulta.get("ok"):
+        return None, consulta.get("mensagem") or "ISSN não encontrado.", consulta
+    v = sugestao_de_issn(consulta)
+    dados, erros = valida_revista(v, lista)
+    if erros:
+        falta = ", ".join(sorted(erros))
+        return None, (f"As bases responderam, mas faltam campos obrigatórios para cadastrar sozinho ({falta}). "
+                      f"Abra Revistas > Nova revista com esse ISSN e complete à mão."), consulta
+    lista.append(dados)
+    grava_revistas(lista)
+    return dados["acronimo"], (f"Revista {dados['titulo']} cadastrada pelo ISSN {numero} "
+                               f"({consulta['mensagem'].split('.')[0].lower()})."), consulta
+
+
 # ---------------------------------------------------------------- pipeline
 
 def prepara_imagens_pacote(pasta: Path, imagens) -> dict:
@@ -594,15 +649,17 @@ def saude():
 
 
 @app.get("/", response_class=HTMLResponse)
-def index(request: Request, usuario: dict = Depends(autentica)):
+def index(request: Request, usuario: dict = Depends(autentica), mensagem: str = "", revista: str = ""):
     if usuario.get("papel") == "admin":
         return RedirectResponse(url="/admin", status_code=303)  # o admin é ambiente de administração, não de envio
     meus = lista_docs(0, usuario)
-    return templates.TemplateResponse(request, "index.html", {"revistas": carrega_revistas(), "docs": meus[:8], "total_docs": len(meus), "usuario": usuario})
+    return templates.TemplateResponse(request, "index.html", {"revistas": carrega_revistas(), "docs": meus[:8], "total_docs": len(meus),
+                                                              "usuario": usuario, "mensagem": mensagem, "revista_atual": revista})
 
 
 @app.post("/validar")
-async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.9"), usuario: dict = Depends(autentica)):
+async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.9"),
+                  issn: str = Form(""), usuario: dict = Depends(autentica)):
     nome = arquivo.filename or "arquivo"
     if not nome.lower().endswith(".pdf"):
         raise HTTPException(400, "Por enquanto só PDF. O caminho DOCX vem na próxima fase.")
@@ -613,6 +670,11 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
         raise HTTPException(413, f"Arquivo maior que {MAX_MB} MB.")
     if sps not in ("1.9", "1.10"):
         sps = "1.9"
+    # "Detectar pelo ISSN": sem revista na lista, o número resolve o cadastro (e o cria, se as bases responderem)
+    aviso_revista = None
+    if not revista and issn.strip():
+        revista, aviso_revista, _ = revista_por_issn(issn, usuario)
+        revista = revista or ""
     doc_id = tempo.agora().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]
     pasta = DOCS / doc_id
     pasta.mkdir(parents=True, exist_ok=True)
@@ -621,7 +683,8 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
     (pasta / "nome_original.txt").write_text(nome, encoding="utf-8")
     agora = tempo.agora_iso()
     grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None, "criado_por": usuario["nome"],
-                                       "criado_por_id": usuario["id"], "etapa": "recebido",
+                                       "criado_por_id": usuario["id"], "etapa": "recebido", "issn_informado": issn.strip() or None,
+                                       "aviso_revista": aviso_revista,
                                        "historico_etapas": [{"etapa": "recebido", "por": usuario["nome"], "em": agora}]})
     try:
         extrai_e_salva(pasta)
@@ -790,14 +853,42 @@ def _form_revista(request: Request, usuario: dict, v: dict, erros: dict, nova: b
 
 @app.get("/revistas/nova", response_class=HTMLResponse)
 def revista_nova(request: Request, usuario: dict = Depends(exige_admin), issn: str = ""):
-    """Formulário em branco ou pré-preenchido com o que a SciELO sabe sobre o ISSN (o admin confere antes de salvar)."""
+    """Formulário em branco ou preenchido com o que as bases de ISSN sabem (quem cadastra confere antes de salvar)."""
     v = {"licenca_url": LICENCAS[0][0], "modo_publicacao": "continua"}
     busca = None
     if issn.strip():
-        busca = scielo.busca_por_issn(issn)
-        v.update(busca.get("dados") or {})
-        v.setdefault("issn_epub", scielo.normaliza_issn(issn))
+        busca = issn_api.consulta(issn)
+        v.update(sugestao_de_issn(busca) if busca.get("ok") else {"issn_epub": issn_api.normaliza(issn)})
     return _form_revista(request, usuario, v, {}, True, busca=busca)
+
+
+@app.get("/revistas/consulta")
+def revista_consulta(numero: str = "", usuario: dict = Depends(autentica)):
+    """Consulta um ISSN nas bases e devolve JSON. Usada pelo campo 'Detectar pelo ISSN' do validador e do revisar."""
+    lista = carrega_revistas()
+    alvo = issn_api.normaliza(numero)
+    ja = next((r for r in lista if alvo in {(r.get("issn_epub") or "").upper(), (r.get("issn_ppub") or "").upper()}), None)
+    if ja:
+        return {"ok": True, "cadastrada": True, "acronimo": ja["acronimo"], "issn": alvo,
+                "mensagem": f"Já cadastrada: {ja['titulo']} ({ja['acronimo']}).",
+                "dados": {k: ja.get(k) for k in ("titulo", "abrev", "editora", "issn_epub", "acronimo")}, "fontes": []}
+    r = issn_api.consulta(numero)
+    return {"ok": bool(r.get("ok")), "cadastrada": False, "issn": r.get("issn"), "mensagem": r.get("mensagem"),
+            "dados": r.get("dados") or {}, "origem": r.get("origem") or {}, "fontes": r.get("fontes") or []}
+
+
+@app.post("/revistas/importar")
+async def revista_importar(request: Request, usuario: dict = Depends(autentica)):
+    """Cadastra a revista a partir do ISSN, com o que as bases responderam. Quem valida precisa da revista no cadastro;
+    editar e remover continuam sendo do administrador."""
+    form = await request.form()
+    acr, msg, _ = revista_por_issn(str(form.get("numero") or ""), usuario)
+    voltar = str(form.get("voltar") or "/revistas")
+    if not voltar.startswith("/"):
+        voltar = "/revistas"
+    sep = "&" if "?" in voltar else "?"
+    extra = ("&revista=" + urllib.parse.quote(acr)) if acr else ""
+    return RedirectResponse(url=f"{voltar}{sep}mensagem=" + urllib.parse.quote(msg) + extra, status_code=303)
 
 
 @app.post("/revistas/nova", response_class=HTMLResponse)

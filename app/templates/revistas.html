@@ -6,11 +6,32 @@
   <div>
     <p class="eyebrow">Cadastro</p>
     <h1 style="margin-top:4px">Revistas</h1>
-    <p class="lead">Tudo daqui entra no <span class="mono">journal-meta</span> de todo XML da revista e no nome dos arquivos do pacote. Campos marcados "confirmar" nas observações geram aviso no resultado até serem verificados na fonte oficial.</p>
+    <p class="lead">O cadastro das revistas que você publica. Cada linha aqui vira o <span class="mono">journal-meta</span> de todo XML
+      dessa revista e o nome dos arquivos do pacote (<span class="mono">e-ISSN-acrônimo-vol-num-elocation</span>). Sem a revista
+      cadastrada, o artigo não passa: acrônimo, título abreviado e editora não estão no PDF e não podem ser inventados.</p>
   </div>
   {% if usuario.papel == 'admin' %}<a class="btn primary" href="/revistas/nova"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nova revista</a>{% endif %}
 </div>
 {% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+<form class="card pad row" method="post" action="/revistas/importar" style="gap:var(--s-4);align-items:flex-end;margin-bottom:var(--s-4)">
+  <input type="hidden" name="voltar" value="/revistas">
+  <div class="field" style="flex:0 1 240px">
+    <label for="numero">Cadastrar pelo ISSN</label>
+    <input id="numero" name="numero" placeholder="0000-0000" inputmode="numeric" autocomplete="off">
+    <span class="hint">Puxa título, abreviado, acrônimo, editora, licença e área do Portal do ISSN, da SciELO, do DOAJ, do Crossref e do OpenAlex.</span>
+  </div>
+  <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Buscar e cadastrar</button>
+  {% if usuario.papel == 'admin' %}<a class="btn" href="/revistas/nova">Conferir antes de salvar</a>{% endif %}
+</form>
+<div class="card pad stack" style="gap:8px;margin-bottom:var(--s-4)">
+  <h3>De onde vêm os dados</h3>
+  <p class="small muted" style="margin:0">A busca por ISSN consulta, nesta ordem: <b>SciELO (ArticleMeta)</b>, que manda no acrônimo
+    porque é o que entra no nome dos arquivos; <b>Portal do ISSN (issn.org)</b>, que é a autoridade do registro e a única fonte do
+    <i>abbreviated key title</i> exigido pela SPS; <b>DOAJ</b>, de onde vem a licença Creative Commons; <b>Crossref</b> e <b>OpenAlex</b>,
+    que completam título e editora. A API oficial do ISSN (<span class="mono">api.issn.org</span>) é paga e responde 403 sem token,
+    por isso lemos a ficha pública do portal. O <b>CBISSN/IBICT</b> não publica base consultável nem API: o site dele serve para
+    <a href="https://cbissn.ibict.br/" target="_blank" rel="noopener">pedir um ISSN novo</a> quando a revista ainda não tem.</p>
+</div>
 <div class="card"><div class="tblwrap"><table class="tbl">
   <thead><tr><th>Acrônimo</th><th>Título</th><th>Abreviado</th><th>e-ISSN</th><th>Editora</th><th>Prefixo DOI</th><th>Área</th><th>Refs.</th><th>SciELO</th><th>Licença</th><th>Observações</th><th></th></tr></thead>
   <tbody>

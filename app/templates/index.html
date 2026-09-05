@@ -9,13 +9,14 @@
       <h1 style="margin-top:4px">Validar artigo para XML SciELO</h1>
       <p class="lead">Envie o PDF do artigo. O motor extrai os metadados, gera o XML SciELO PS e valida no packtools, o validador oficial da SciELO. O que não estiver no PDF vira bloqueante e se corrige na revisão; nunca é inventado.</p>
     </div>
+    {% if mensagem %}<div class="msg auto">{{ mensagem }}</div>{% endif %}
     <form class="card pad stack" method="post" action="/validar" enctype="multipart/form-data" style="gap:var(--s-5)">
       <div class="grid2">
         <div class="field">
           <label for="revista">Revista</label>
           <select id="revista" name="revista">
-            <option value="">Detectar pelo ISSN / DOI do PDF</option>
-            {% for r in revistas %}<option value="{{ r.acronimo }}">{{ r.titulo }} ({{ r.acronimo }})</option>{% endfor %}
+            <option value="">Detectar pelo ISSN</option>
+            {% for r in revistas %}<option value="{{ r.acronimo }}" {% if revista_atual == r.acronimo %}selected{% endif %}>{{ r.titulo }} ({{ r.acronimo }})</option>{% endfor %}
           </select>
           <span class="hint">O cadastro fornece acrônimo, título abreviado, editora e licença padrão.</span>
         </div>
@@ -27,6 +28,15 @@
           </select>
           <span class="hint">O XML oficial de 2026 da SciELO ainda usa 1.9.</span>
         </div>
+      </div>
+      <div class="field issn-box" id="issn-box" hidden>
+        <label for="issn-numero">ISSN da revista</label>
+        <div class="row" style="gap:8px;align-items:stretch">
+          <input id="issn-numero" name="issn" placeholder="0000-0000" inputmode="numeric" autocomplete="off" style="flex:0 1 190px">
+          <button class="btn" type="button" id="issn-buscar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Buscar nas bases</button>
+        </div>
+        <span class="hint">Consulta o Portal do ISSN, a SciELO, o DOAJ, o Crossref e o OpenAlex. Se a revista ainda nao estiver no cadastro, ela e cadastrada com o que as bases responderem.</span>
+        <div id="issn-saida" class="issn-saida" hidden></div>
       </div>
       <div class="field">
         <label for="arquivo">Arquivo PDF</label>
@@ -103,6 +113,63 @@
   });
   var form=input.form;
   form.addEventListener('submit',function(){var b=form.querySelector('button[type=submit]');b.disabled=true;b.textContent='Processando… leva alguns segundos';});
+})();
+</script>
+<form id="form-importa-issn" method="post" action="/revistas/importar" style="display:none">
+  <input type="hidden" name="numero" id="issn-importa-numero"><input type="hidden" name="voltar" value="/">
+</form>
+<script>
+// Campo "Detectar pelo ISSN": aparece quando a revista nao e escolhida na lista, consulta as bases e,
+// achando, cadastra a revista e volta com ela selecionada. Sem resposta, mostra o que cada base disse.
+(function () {
+  var sel = document.getElementById('revista'), caixa = document.getElementById('issn-box');
+  if (!sel || !caixa) return;
+  var campo = document.getElementById('issn-numero'), botao = document.getElementById('issn-buscar'),
+      saida = document.getElementById('issn-saida');
+  function alterna() { caixa.hidden = sel.value !== ''; if (caixa.hidden) { saida.hidden = true; saida.innerHTML = ''; } }
+  sel.addEventListener('change', alterna); alterna();
+  function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+  function busca() {
+    var n = (campo.value || '').trim();
+    if (!n) { campo.focus(); return; }
+    botao.disabled = true; botao.textContent = 'Consultando...';
+    saida.hidden = false; saida.innerHTML = '<p class="small muted">Consultando as bases de ISSN. Pode levar alguns segundos.</p>';
+    fetch('/revistas/consulta?numero=' + encodeURIComponent(n), { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        botao.disabled = false; botao.textContent = 'Buscar nas bases';
+        var h = '<p class="small ' + (j.ok ? '' : 'crit-text') + '">' + esc(j.mensagem) + '</p>';
+        if (j.fontes && j.fontes.length) {
+          h += '<ul class="issn-fontes">';
+          j.fontes.forEach(function (f) {
+            h += '<li><span class="chip ' + (f.ok ? 'ok' : 'neutral') + '">' + (f.ok ? 'ok' : 'sem') + '</span> <b>' + esc(f.fonte) + '</b> <span class="faint">' + esc(f.mensagem) + '</span></li>';
+          });
+          h += '</ul>';
+        }
+        if (j.ok) {
+          var d = j.dados || {}, o = j.origem || {};
+          h += '<dl class="issn-campos">';
+          [['titulo', 'Titulo'], ['abrev', 'Abreviado'], ['acronimo', 'Acronimo'], ['editora', 'Editora'], ['issn_epub', 'e-ISSN'], ['licenca', 'Licenca']].forEach(function (p) {
+            if (d[p[0]]) h += '<dt>' + p[1] + '</dt><dd>' + esc(d[p[0]]) + (o[p[0]] ? ' <span class="faint">de ' + esc(o[p[0]]) + '</span>' : '') + '</dd>';
+          });
+          h += '</dl>';
+          h += j.cadastrada
+            ? '<p class="small"><button class="btn small" type="button" id="issn-usar">Usar esta revista</button></p>'
+            : '<p class="small"><button class="btn small primary" type="submit" form="form-importa-issn">Cadastrar e usar</button> <span class="faint">Confira os campos acima antes.</span></p>';
+        }
+        saida.innerHTML = h;
+        var usar = document.getElementById('issn-usar');
+        if (usar) usar.addEventListener('click', function () { sel.value = j.acronimo; alterna(); });
+        var oculto = document.getElementById('issn-importa-numero');
+        if (oculto) oculto.value = j.issn || n;
+      })
+      .catch(function () {
+        botao.disabled = false; botao.textContent = 'Buscar nas bases';
+        saida.innerHTML = '<p class="small crit-text">Nao consegui falar com as bases agora. Tente de novo ou cadastre a revista a mao em Revistas.</p>';
+      });
+  }
+  botao.addEventListener('click', busca);
+  campo.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); busca(); } });
 })();
 </script>
 {% endblock %}
