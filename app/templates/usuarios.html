@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% set ativo = 'usuarios' %}
+{% block titulo %}Usuários · xmljats{% endblock %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Administração</p>
+    <h1 style="margin-top:4px">Usuários</h1>
+    <p class="lead">Quem pode entrar no xmljats. Administradores gerenciam usuários e o cadastro de revistas; operadores validam, revisam e acompanham as etapas.</p>
+  </div>
+</div>
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+<div class="review" style="grid-template-columns:3fr 2fr">
+  <section class="card">
+    <header class="cardhead"><h2>Contas</h2><span class="muted small">{{ usuarios|length }} usuário(s)</span></header>
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Nome</th><th>E-mail / login</th><th>Papel</th><th>Desde</th><th></th></tr></thead>
+      <tbody>
+      {% for u in usuarios %}
+        <tr>
+          <td><b>{{ u.nome }}</b>{% if u.id == usuario.id %} <span class="chip info">você</span>{% endif %}</td>
+          <td class="mono">{{ u.email }}</td>
+          <td>
+            <form method="post" action="/usuarios/{{ u.id }}/papel" class="row" style="gap:6px;flex-wrap:nowrap">
+              <select name="papel" aria-label="Papel" {% if u.id == usuario.id %}disabled{% endif %}>
+                <option value="operador" {% if u.papel == 'operador' %}selected{% endif %}>operador</option>
+                <option value="admin" {% if u.papel == 'admin' %}selected{% endif %}>admin</option>
+              </select>
+              {% if u.id != usuario.id %}<button class="btn small" type="submit">Salvar</button>{% endif %}
+            </form>
+          </td>
+          <td class="small muted tnum">{{ (u.criado_em or '')[:10] }}</td>
+          <td style="text-align:right">
+            <details class="acoes">
+              <summary class="btn small">Ações</summary>
+              <div class="card pad stack" style="gap:10px;position:absolute;right:0;z-index:5;min-width:280px;text-align:left">
+                <form method="post" action="/usuarios/{{ u.id }}/senha" class="stack" style="gap:8px">
+                  <div class="field"><label for="s-{{ u.id }}">Nova senha</label><input id="s-{{ u.id }}" name="senha" type="password" minlength="8" required autocomplete="new-password"></div>
+                  <button class="btn small" type="submit">Trocar senha</button>
+                </form>
+                {% if u.id != usuario.id %}
+                <form method="post" action="/usuarios/{{ u.id }}/remover" onsubmit="return confirm('Remover {{ u.nome }}?')"><button class="btn small danger" type="submit">Remover usuário</button></form>
+                {% endif %}
+              </div>
+            </details>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </section>
+  <aside>
+    <form method="post" action="/usuarios" class="card pad stack" style="gap:var(--s-4)">
+      <div><h3>Novo usuário</h3><p class="small muted" style="margin-top:4px">Passe a senha inicial por um canal seguro; a pessoa pode trocá-la depois.</p></div>
+      <div class="field"><label for="n-nome">Nome</label><input id="n-nome" name="nome" required value="{{ form.nome if form else '' }}"></div>
+      <div class="field"><label for="n-email">E-mail</label><input id="n-email" name="email" type="text" required autocomplete="off" value="{{ form.email if form else '' }}"></div>
+      <div class="field"><label for="n-senha">Senha inicial</label><input id="n-senha" name="senha" type="password" minlength="8" required autocomplete="new-password"><span class="hint">Mínimo de 8 caracteres.</span></div>
+      <div class="field"><label for="n-papel">Papel</label>
+        <select id="n-papel" name="papel"><option value="operador">operador</option><option value="admin">admin</option></select></div>
+      <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Criar usuário</button>
+    </form>
+  </aside>
+</div>
+{% endblock %}

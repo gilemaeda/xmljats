@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% set ativo = 'painel' %}
+{% block titulo %}Painel · xmljats{% endblock %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Painel</p>
+    <h1 style="margin-top:4px">Documentos</h1>
+    <p class="lead">Tudo que passou pelo validador, com a etapa de cada artigo no fluxo da SciELO. A etapa é anotada à mão por quem acompanha a entrega; a situação (pronto ou não) vem do validador.</p>
+  </div>
+  <a class="btn primary" href="/"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Validar novo PDF</a>
+</div>
+
+<div class="kpis" style="margin-bottom:var(--s-5)">
+  <div><div class="v">{{ docs|length }}</div><div class="k">documentos{% if filtro_ativo %} no filtro{% endif %}</div></div>
+  <div><div class="v">{{ docs|selectattr('pronto')|list|length }}</div><div class="k">prontos para entrega</div></div>
+  <div><div class="v">{{ docs|rejectattr('pronto')|list|length }}</div><div class="k">com bloqueantes</div></div>
+  <div><div class="v">{{ docs|selectattr('etapa', 'in', ['entregue', 'pre_qa', 'qa'])|list|length }}</div><div class="k">na SciELO (entregue, pré-QA, QA)</div></div>
+</div>
+
+<form class="card pad row" method="get" action="/painel" style="gap:var(--s-4);align-items:flex-end;margin-bottom:var(--s-4)">
+  <div class="field" style="min-width:220px">
+    <label for="f-revista">Revista</label>
+    <select id="f-revista" name="revista">
+      <option value="">Todas</option>
+      {% for r in revistas %}<option value="{{ r.acronimo }}" {% if filtros.revista == r.acronimo %}selected{% endif %}>{{ r.titulo }} ({{ r.acronimo }})</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field" style="min-width:200px">
+    <label for="f-etapa">Etapa</label>
+    <select id="f-etapa" name="etapa">
+      <option value="">Todas</option>
+      {% for cod, rotulo in etapas %}<option value="{{ cod }}" {% if filtros.etapa == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field" style="min-width:160px">
+    <label for="f-situacao">Situação</label>
+    <select id="f-situacao" name="situacao">
+      <option value="">Todas</option>
+      <option value="pronto" {% if filtros.situacao == 'pronto' %}selected{% endif %}>Pronto</option>
+      <option value="bloqueado" {% if filtros.situacao == 'bloqueado' %}selected{% endif %}>Com bloqueantes</option>
+    </select>
+  </div>
+  <button class="btn" type="submit">Filtrar</button>
+  {% if filtro_ativo %}<a class="btn quiet" href="/painel">Limpar</a>{% endif %}
+</form>
+
+<section class="card">
+  <header class="cardhead"><h2>Lista</h2><span class="muted small">{{ docs|length }} documento(s)</span></header>
+  {% if docs %}
+  <div class="tblwrap"><table class="tbl">
+    <thead><tr><th>Atualizado</th><th>Artigo</th><th>Revista</th><th>Situação</th><th>Etapa</th><th>Quem</th><th></th></tr></thead>
+    <tbody>
+    {% for d in docs %}
+      <tr>
+        <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
+        <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:90] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }} · {{ d.nome_base }}</div></td>
+        <td>{{ d.revista or '—' }}</td>
+        <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
+        <td>
+          <form method="post" action="/doc/{{ d.id }}/etapa" class="row" style="gap:6px;flex-wrap:nowrap">
+            <input type="hidden" name="voltar" value="/painel{{ query }}">
+            <select name="etapa" class="etapa-select" aria-label="Etapa">
+              {% for cod, rotulo in etapas %}<option value="{{ cod }}" {% if d.etapa == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+            </select>
+            <button class="btn small" type="submit">Salvar</button>
+          </form>
+        </td>
+        <td class="small muted">{{ d.criado_por or '—' }}{% if d.etapa_por and d.etapa_por != d.criado_por %}<br>etapa: {{ d.etapa_por }}{% endif %}</td>
+        <td style="text-align:right"><a class="btn small" href="/doc/{{ d.id }}">Abrir</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <div class="empty"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento{% if filtro_ativo %} neste filtro{% endif %}.</div>
+  {% endif %}
+</section>
+{% endblock %}

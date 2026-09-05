@@ -18,6 +18,19 @@
   </div>
 </div>
 
+<div class="etapa-bar card">
+  <div class="row" style="gap:10px"><span class="eyebrow">Etapa</span>
+    {% for cod, rotulo in etapas %}<span class="step {{ 'atual' if cod == etapa else '' }} {{ 'feita' if loop.index0 < (etapas|map(attribute=0)|list).index(etapa) else '' }}">{{ rotulo }}</span>{% endfor %}
+  </div>
+  <form method="post" action="/doc/{{ r.id }}/etapa" class="row" style="gap:8px;margin-left:auto;flex-wrap:nowrap">
+    <select name="etapa" aria-label="Nova etapa">{% for cod, rotulo in etapas %}<option value="{{ cod }}" {% if cod == etapa %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}</select>
+    <input name="nota" placeholder="observação (opcional)" aria-label="Observação" style="min-width:180px">
+    <button class="btn small" type="submit">Mudar etapa</button>
+  </form>
+  {% if historico %}<details class="small muted" style="flex-basis:100%"><summary>Histórico ({{ historico|length }}){% if criado_por %} · enviado por {{ criado_por }}{% endif %}</summary>
+    {% for h in historico|reverse %}<div>{{ h.em[:16].replace('T',' ') }} · {{ ETAPA_ROTULO.get(h.etapa, h.etapa) }} · {{ h.por }}{% if h.nota %} · {{ h.nota }}{% endif %}</div>{% endfor %}</details>{% endif %}
+</div>
+
 <div class="status {{ 'ok' if r.pronto else 'crit' }}">
   <span class="ico" aria-hidden="true">{% if r.pronto %}<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>{% else %}<svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5"/><path d="M10.3 3.9L2.5 18a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>{% endif %}</span>
   <div>

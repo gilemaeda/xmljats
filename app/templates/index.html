@@ -60,10 +60,10 @@
 </div>
 
 <section class="card" style="margin-top:var(--s-6)">
-  <header class="cardhead"><h2>Documentos recentes</h2><span class="muted small">{{ docs|length }} exibidos</span></header>
+  <header class="cardhead"><h2>Documentos recentes</h2><span class="row" style="gap:10px"><span class="muted small">{{ docs|length }} de {{ total_docs }}</span><a class="btn small" href="/painel">Painel completo</a></span></header>
   {% if docs %}
   <div class="tblwrap"><table class="tbl">
-    <thead><tr><th>Quando</th><th>Arquivo</th><th>Revista</th><th>Situação</th><th>Bloq.</th><th>Avisos</th><th>packtools</th><th></th></tr></thead>
+    <thead><tr><th>Quando</th><th>Arquivo</th><th>Revista</th><th>Situação</th><th>Etapa</th><th>Bloq.</th><th>Avisos</th><th></th></tr></thead>
     <tbody>
     {% for d in docs %}
       <tr>
@@ -71,9 +71,9 @@
         <td><span class="mono">{{ d.arquivo_original }}</span><div class="small muted" style="margin-top:2px">{{ d.titulo[:90] }}</div></td>
         <td>{{ d.revista or '—' }}</td>
         <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">Não pronto</span>{% endif %}</td>
+        <td><span class="chip neutral">{{ ETAPA_ROTULO.get(d.etapa, d.etapa) }}</span></td>
         <td class="tnum">{{ d.bloqueantes|length }}</td>
         <td class="tnum">{{ (d.avisos_gerador|length) + (d.avisos_extrator|length) }}</td>
-        <td class="small">DTD {{ 'ok' if d.dtd_ok else 'erro' }} · SPS {{ 'ok' if d.sps_ok else 'erro' }}</td>
         <td style="text-align:right"><a class="btn small" href="/doc/{{ d.id }}">Abrir</a></td>
       </tr>
     {% endfor %}

@@ -20,6 +20,10 @@ uvicorn app.main:app --reload --port 8000
 
 Abra http://127.0.0.1:8000. Sem `APP_SENHA` definida, o site não pede senha (uso local).
 
+## Acesso
+
+No primeiro acesso com `APP_SENHA` definida, entre com login `admin` e essa senha; depois crie as contas dos operadores em Usuários. Sem `APP_SENHA` e sem usuários cadastrados (desenvolvimento local), o app abre sem login como `local`.
+
 ## Variáveis de ambiente
 
 | Variável | Uso | Padrão |
@@ -51,4 +55,7 @@ Ordem: homologação primeiro, produção depois. Banco de dados ainda não é n
 - Notas de rodapé: as chamadas no corpo do texto viram `<xref ref-type="fn">` ligadas ao `fn-group`; o resultado lista cada nota com tipo, chamada e vínculo (autor, título).
 - Referências: `element-citation` completo por heurística ABNT/APA (autores com iniciais, organizadores, autor institucional em `collab`, título e fonte, capítulo, edição, local e editora, volume, número, páginas, ano, DOI, link e data de acesso), com grau de confiança por referência mostrado no resultado. Contra o XML oficial da SciELO da Direito e Práxis, 69 de 76 campos iguais (`modelos/gabarito/rdp-referencias.json`).
 - Interface em modo claro e escuro (seletor no topo, ou o tema do sistema), com contraste medido par a par: `python ops/audita_contraste.py` regenera `app/static/contraste.md` e falha se algum par ficar abaixo do mínimo WCAG.
-- Falta: caminho DOCX, tabelas e equações, contas e cadastro editável de revistas, fila com IA.
+- Contas: login por sessão (cookie assinado), papéis admin e operador, tela Usuários (criar, trocar senha, papel, remover). Com `APP_SENHA` definida e nenhum usuário, o primeiro acesso cria o admin `admin` com essa senha; `APP_SENHA` continua valendo como HTTP Basic para scripts. Usuários em `XMLJATS_DATA/usuarios.json` (senhas só como hash PBKDF2).
+- Cadastro de revistas editável na tela (admin): acrônimo, ISSN com dígito verificador conferido, título, abreviado, editora, prefixo DOI, licença, modo de publicação, seção padrão, site e observações. Vive em `XMLJATS_DATA/revistas.json`, semeado de `modelos/revistas.json`.
+- Painel: todos os documentos com filtros por revista, etapa e situação; a etapa do artigo no fluxo SciELO (Recebido → Em revisão → Pronto para entrega → Entregue à SciELO → Pré-QA → QA → QA finalizado → Publicado) é anotada à mão, com histórico de quem mudou e quando.
+- Falta: caminho DOCX, tabelas e equações, fila com IA.

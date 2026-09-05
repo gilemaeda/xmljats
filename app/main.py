@@ -11,15 +11,22 @@ Rotas:
   GET  /doc/{id}/xml            download do XML (nome-base SPS)
   GET  /doc/{id}/pacote.zip     XML + PDF renomeado no padrao SPS
   GET  /doc/{id}/modelo.json, /doc/{id}/resumo.md, /doc/{id}/validacao.json
-  GET  /revistas                cadastro de revistas (modelos/revistas.json)
+  POST /doc/{id}/etapa          muda a etapa do artigo no fluxo SciELO (recebido ... publicado)
+  GET  /painel                  todos os documentos, com filtros por revista, etapa e situacao
+  GET  /revistas, /revistas/nova, /revistas/{acr}, POST idem, POST /revistas/{acr}/remover   cadastro editavel (admin)
+  GET/POST /entrar, POST /sair  login por sessao (cookie assinado); GET/POST /usuarios... (admin)
   GET  /saude                   healthcheck
 
-Protecao: se APP_SENHA estiver definida, todas as rotas (menos /saude) pedem HTTP Basic com essa senha.
+Protecao: login por sessao (app/contas.py; usuarios em XMLJATS_DATA/usuarios.json). Com APP_SENHA definida e nenhum
+usuario cadastrado, o admin "admin" e criado com essa senha no primeiro acesso; APP_SENHA tambem vale como HTTP Basic
+para scripts. Sem APP_SENHA e sem usuarios (desenvolvimento), o app roda sem login.
+Cadastro de revistas editavel em XMLJATS_DATA/revistas.json (semeado de modelos/revistas.json).
 Pasta do documento (XMLJATS_DATA/docs/<id>): original.pdf, nome_original.txt, model.json (extracao), edicoes.json
 (overrides do usuario), config.json (revista, versao SPS), resumo.md, <base>.xml, validacao.json.
 """
 import copy
 import datetime as dt
+import urllib.parse
 import io
 import json
 import os
@@ -39,6 +46,9 @@ from fastapi.templating import Jinja2Templates
 
 RAIZ = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RAIZ / "poc"))
+sys.path.insert(0, str(RAIZ / "app"))
+
+from contas import COOKIE, Contas  # noqa: E402  (app/contas.py)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -49,12 +59,22 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.5.0"
+VERSAO_APP = "0.6.0"
+CONTAS = Contas(DATA)
+
+# etapas do artigo no fluxo de entrega a SciELO (anotadas a mao no painel)
+ETAPAS = [("recebido", "Recebido"), ("em_revisao", "Em revisão"), ("pronto", "Pronto para entrega"),
+          ("entregue", "Entregue à SciELO"), ("pre_qa", "Pré-QA"), ("qa", "QA"), ("qa_finalizado", "QA finalizado"), ("publicado", "Publicado")]
+ETAPA_ROTULO = dict(ETAPAS)
+LICENCAS = [("https://creativecommons.org/licenses/by/4.0/", "CC BY 4.0"), ("https://creativecommons.org/licenses/by-nc/4.0/", "CC BY-NC 4.0"),
+            ("https://creativecommons.org/licenses/by-nc-sa/4.0/", "CC BY-NC-SA 4.0"), ("https://creativecommons.org/licenses/by-nc-nd/4.0/", "CC BY-NC-ND 4.0"),
+            ("https://creativecommons.org/licenses/by-sa/4.0/", "CC BY-SA 4.0"), ("https://creativecommons.org/licenses/by-nd/4.0/", "CC BY-ND 4.0")]
 
 app = FastAPI(title="xmljats", version=VERSAO_APP, docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=str(RAIZ / "app" / "static")), name="static")
 templates = Jinja2Templates(directory=str(RAIZ / "app" / "templates"))
 templates.env.globals["versao"] = VERSAO_APP
+templates.env.globals["ETAPA_ROTULO"] = ETAPA_ROTULO
 
 
 def _filtro_regra(texto):
@@ -91,13 +111,29 @@ RE_CAMPO_LISTA = re.compile(r"^(titulo|autor|aff|resumo)_(\d+)_(\w+)$")
 
 # ---------------------------------------------------------------- utilidades
 
-def autentica(cred: Optional[HTTPBasicCredentials] = Depends(seguranca)) -> str:
+LOCAL = {"id": "local", "nome": "local", "email": "local", "papel": "admin"}
+
+
+def autentica(request: Request, cred: Optional[HTTPBasicCredentials] = Depends(seguranca)) -> dict:
+    """Usuario da requisicao: sessao (cookie assinado) > HTTP Basic com APP_SENHA (scripts) > modo local sem senha.
+    Sem sessao valida numa pagina HTML, redireciona para /entrar."""
     senha = os.environ.get("APP_SENHA")
-    if not senha:
-        return "local"
-    if cred and secrets.compare_digest(cred.password.encode(), senha.encode()):
-        return cred.username or "usuario"
-    raise HTTPException(status_code=401, detail="Senha necessária", headers={"WWW-Authenticate": "Basic realm=xmljats"})
+    CONTAS.garante_admin(senha)
+    u = CONTAS.le_sessao(request.cookies.get(COOKIE))
+    if u:
+        return u
+    if cred and senha and secrets.compare_digest(cred.password.encode(), senha.encode()):
+        return {"id": "api", "nome": cred.username or "api", "email": "api", "papel": "admin"}
+    if not senha and not CONTAS.lista():
+        return LOCAL
+    destino = request.url.path + (("?" + request.url.query) if request.url.query else "")
+    raise HTTPException(status_code=303, headers={"Location": "/entrar?proximo=" + urllib.parse.quote(destino, safe="")})
+
+
+def exige_admin(usuario: dict = Depends(autentica)) -> dict:
+    if usuario.get("papel") != "admin":
+        raise HTTPException(403, "Só administradores podem fazer isso.")
+    return usuario
 
 
 def le_json(caminho: Path, padrao=None):
@@ -112,8 +148,60 @@ def grava_json(caminho: Path, obj):
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
 
+def _arquivo_revistas() -> Path:
+    """Cadastro editavel em XMLJATS_DATA/revistas.json; na primeira vez copia a semente modelos/revistas.json."""
+    arq = DATA / "revistas.json"
+    if not arq.exists():
+        semente = le_json(RAIZ / "modelos" / "revistas.json", {"revistas": []})
+        grava_json(arq, {"revistas": semente.get("revistas", [])})
+    return arq
+
+
 def carrega_revistas():
-    return le_json(RAIZ / "modelos" / "revistas.json")["revistas"]
+    return le_json(_arquivo_revistas(), {"revistas": []})["revistas"]
+
+
+def grava_revistas(lista):
+    grava_json(_arquivo_revistas(), {"revistas": lista})
+
+
+RE_ACRONIMO = re.compile(r"^[a-z][a-z0-9]{1,24}$")
+RE_DOI_PREFIXO = re.compile(r"^10\.\d{4,9}(/\S*)?$")
+
+
+def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] = None):
+    """Devolve (dados, erros). Nada e inventado: campos vazios ficam vazios; ISSN e DOI sao checados de verdade."""
+    from extrator.util import issn_valido  # noqa: WPS433
+    d = {k: (form.get(k) or "").strip() for k in ("acronimo", "titulo", "abrev", "issn_epub", "issn_ppub", "editora", "doi_prefixo",
+                                                   "licenca_url", "modo_publicacao", "secao_padrao", "site", "_fonte")}
+    d["acronimo"] = d["acronimo"].lower()
+    d["na_scielo"] = (form.get("na_scielo") or "").strip() == "sim"
+    erros = {}
+    if not RE_ACRONIMO.match(d["acronimo"]):
+        erros["acronimo"] = "Acrônimo em minúsculas, letras e números, de 2 a 25 caracteres (ex.: rdp, anamps)."
+    elif d["acronimo"] != acronimo_atual and any(r["acronimo"] == d["acronimo"] for r in existentes):
+        erros["acronimo"] = f"Já existe a revista '{d['acronimo']}'."
+    for campo, rotulo in (("titulo", "o título"), ("abrev", "o título abreviado"), ("editora", "a editora")):
+        if not d[campo]:
+            erros[campo] = f"Informe {rotulo}."
+    if not d["issn_epub"]:
+        erros["issn_epub"] = "Informe o e-ISSN (entra no nome de todos os arquivos)."
+    for campo in ("issn_epub", "issn_ppub"):
+        v = d[campo].upper()
+        if v and not (re.fullmatch(r"\d{4}-\d{3}[\dX]", v) and issn_valido(v)):
+            erros[campo] = "ISSN inválido: formato 0000-0000 com dígito verificador correto."
+        d[campo] = v or None
+    if d["doi_prefixo"] and not RE_DOI_PREFIXO.match(d["doi_prefixo"]):
+        erros["doi_prefixo"] = "Prefixo DOI começa com 10. seguido de 4 a 9 dígitos (ex.: 10.21119/anamps)."
+    if d["licenca_url"] not in {u for u, _ in LICENCAS}:
+        erros["licenca_url"] = "Escolha uma licença Creative Commons da lista."
+    if d["modo_publicacao"] not in ("continua", "regular"):
+        d["modo_publicacao"] = "continua"
+    if d["site"] and not re.match(r"^https?://", d["site"]):
+        erros["site"] = "O site precisa começar com http:// ou https://."
+    for k in ("doi_prefixo", "secao_padrao", "site", "_fonte"):
+        d[k] = d[k] or None
+    return d, erros
 
 
 def _pasta(doc_id: str) -> Path:
@@ -135,9 +223,14 @@ def lista_docs(limite=30):
         nome = pasta / "nome_original.txt"
         if d.get("arquivo_original") in (None, "original.pdf") and nome.exists():
             d["arquivo_original"] = nome.read_text(encoding="utf-8").strip()
+        cfg = le_json(pasta / "config.json", {}) or {}
+        d["etapa"] = cfg.get("etapa") or "recebido"
+        d["criado_por"] = cfg.get("criado_por")
+        hist = cfg.get("historico_etapas") or []
+        d["etapa_por"] = hist[-1].get("por") if hist else None
         itens.append(d)
-    itens.sort(key=lambda d: d.get("criado_em", ""), reverse=True)
-    return itens[:limite]
+    itens.sort(key=lambda d: d.get("atualizado_em") or d.get("criado_em", ""), reverse=True)
+    return itens[:limite] if limite else itens
 
 
 # ---------------------------------------------------------------- edicoes (overrides sobre a extracao)
@@ -376,12 +469,12 @@ def saude():
 
 
 @app.get("/", response_class=HTMLResponse)
-def index(request: Request, usuario: str = Depends(autentica)):
-    return templates.TemplateResponse(request, "index.html", {"revistas": carrega_revistas(), "docs": lista_docs(), "usuario": usuario})
+def index(request: Request, usuario: dict = Depends(autentica)):
+    return templates.TemplateResponse(request, "index.html", {"revistas": carrega_revistas(), "docs": lista_docs(8), "total_docs": len(lista_docs(0)), "usuario": usuario})
 
 
 @app.post("/validar")
-async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.9"), usuario: str = Depends(autentica)):
+async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.9"), usuario: dict = Depends(autentica)):
     nome = arquivo.filename or "arquivo"
     if not nome.lower().endswith(".pdf"):
         raise HTTPException(400, "Por enquanto só PDF. O caminho DOCX vem na próxima fase.")
@@ -396,7 +489,9 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
     with open(pasta / "original.pdf", "wb") as f:
         f.write(conteudo)
     (pasta / "nome_original.txt").write_text(nome, encoding="utf-8")
-    grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None})
+    agora = dt.datetime.now().isoformat(timespec="seconds")
+    grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None, "criado_por": usuario["nome"], "etapa": "recebido",
+                                       "historico_etapas": [{"etapa": "recebido", "por": usuario["nome"], "em": agora}]})
     try:
         extrai_e_salva(pasta)
         gera_e_valida(pasta)
@@ -407,17 +502,38 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
 
 
 @app.get("/doc/{doc_id}", response_class=HTMLResponse)
-def ver_doc(request: Request, doc_id: str, usuario: str = Depends(autentica)):
+def ver_doc(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id)
     r = le_json(pasta / "validacao.json")
     if not r:
         raise HTTPException(404, "Documento sem resultado")
     r["id"] = doc_id
-    return templates.TemplateResponse(request, "resultado.html", {"r": r, "usuario": usuario})
+    cfg = le_json(pasta / "config.json", {}) or {}
+    return templates.TemplateResponse(request, "resultado.html", {"r": r, "usuario": usuario, "etapas": ETAPAS, "etapa": cfg.get("etapa") or "recebido",
+                                                                  "historico": cfg.get("historico_etapas") or [], "criado_por": cfg.get("criado_por")})
+
+
+@app.post("/doc/{doc_id}/etapa")
+async def muda_etapa(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
+    pasta = _pasta(doc_id)
+    form = await request.form()
+    etapa = str(form.get("etapa") or "")
+    if etapa not in ETAPA_ROTULO:
+        raise HTTPException(400, "Etapa inválida.")
+    cfg = le_json(pasta / "config.json", {}) or {}
+    if cfg.get("etapa") != etapa:
+        cfg["etapa"] = etapa
+        cfg.setdefault("historico_etapas", []).append({"etapa": etapa, "por": usuario["nome"], "em": dt.datetime.now().isoformat(timespec="seconds"),
+                                                       "nota": (str(form.get("nota") or "").strip() or None)})
+        grava_json(pasta / "config.json", cfg)
+    voltar = str(form.get("voltar") or f"/doc/{doc_id}")
+    if not voltar.startswith("/"):
+        voltar = f"/doc/{doc_id}"
+    return RedirectResponse(url=voltar, status_code=303)
 
 
 @app.get("/doc/{doc_id}/editar", response_class=HTMLResponse)
-def editar_form(request: Request, doc_id: str, usuario: str = Depends(autentica)):
+def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id)
     modelo = le_json(pasta / "model.json", {})
     ed = le_json(pasta / "edicoes.json", {}) or {}
@@ -438,7 +554,7 @@ def editar_form(request: Request, doc_id: str, usuario: str = Depends(autentica)
 
 
 @app.post("/doc/{doc_id}/editar")
-async def editar_salvar(request: Request, doc_id: str, usuario: str = Depends(autentica)):
+async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id)
     form = await request.form()
     modelo = le_json(pasta / "model.json", {})
@@ -462,14 +578,14 @@ async def editar_salvar(request: Request, doc_id: str, usuario: str = Depends(au
             campos[k] = val
     ed["campos"] = campos
     ed["atualizado_em"] = dt.datetime.now().isoformat(timespec="seconds")
-    ed["por"] = usuario
+    ed["por"] = usuario["nome"]
     grava_json(pasta / "edicoes.json", ed)
     gera_e_valida(pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
 
 
 @app.post("/doc/{doc_id}/reprocessar")
-def reprocessar(doc_id: str, usuario: str = Depends(autentica)):
+def reprocessar(doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id)
     extrai_e_salva(pasta)
     gera_e_valida(pasta)
@@ -477,7 +593,7 @@ def reprocessar(doc_id: str, usuario: str = Depends(autentica)):
 
 
 @app.get("/doc/{doc_id}/xml")
-def baixar_xml(doc_id: str, usuario: str = Depends(autentica)):
+def baixar_xml(doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id)
     xml = next(pasta.glob("*.xml"), None)
     if not xml:
@@ -486,7 +602,7 @@ def baixar_xml(doc_id: str, usuario: str = Depends(autentica)):
 
 
 @app.get("/doc/{doc_id}/pacote.zip")
-def baixar_pacote(doc_id: str, usuario: str = Depends(autentica)):
+def baixar_pacote(doc_id: str, usuario: dict = Depends(autentica)):
     """Pacote SPS minimo: <base>.xml + <base>.pdf (o PDF original renomeado). Imagens entram quando o extrator as gerar."""
     pasta = _pasta(doc_id)
     xml = next(pasta.glob("*.xml"), None)
@@ -506,7 +622,7 @@ def baixar_pacote(doc_id: str, usuario: str = Depends(autentica)):
 
 
 @app.get("/doc/{doc_id}/img/{nome}")
-def imagem(doc_id: str, nome: str, usuario: str = Depends(autentica)):
+def imagem(doc_id: str, nome: str, usuario: dict = Depends(autentica)):
     if not re.fullmatch(r"fig\d{2}\.[a-z0-9]{2,5}", nome):
         raise HTTPException(404)
     caminho = _pasta(doc_id) / "imagens" / nome
@@ -516,20 +632,175 @@ def imagem(doc_id: str, nome: str, usuario: str = Depends(autentica)):
 
 
 @app.get("/doc/{doc_id}/modelo.json")
-def baixar_modelo(doc_id: str, usuario: str = Depends(autentica)):
+def baixar_modelo(doc_id: str, usuario: dict = Depends(autentica)):
     return FileResponse(str(_pasta(doc_id) / "model.json"), media_type="application/json", filename=f"{doc_id}-modelo.json")
 
 
 @app.get("/doc/{doc_id}/validacao.json")
-def baixar_validacao(doc_id: str, usuario: str = Depends(autentica)):
+def baixar_validacao(doc_id: str, usuario: dict = Depends(autentica)):
     return FileResponse(str(_pasta(doc_id) / "validacao.json"), media_type="application/json")
 
 
 @app.get("/doc/{doc_id}/resumo.md", response_class=PlainTextResponse)
-def ver_resumo(doc_id: str, usuario: str = Depends(autentica)):
+def ver_resumo(doc_id: str, usuario: dict = Depends(autentica)):
     return (_pasta(doc_id) / "resumo.md").read_text(encoding="utf-8")
 
 
 @app.get("/revistas", response_class=HTMLResponse)
-def revistas(request: Request, usuario: str = Depends(autentica)):
-    return templates.TemplateResponse(request, "revistas.html", {"revistas": carrega_revistas(), "usuario": usuario})
+def revistas(request: Request, usuario: dict = Depends(autentica), mensagem: str = ""):
+    return templates.TemplateResponse(request, "revistas.html", {"revistas": carrega_revistas(), "usuario": usuario, "mensagem": mensagem})
+
+
+def _form_revista(request: Request, usuario: dict, v: dict, erros: dict, nova: bool, docs_da_revista=None):
+    return templates.TemplateResponse(request, "revista_form.html", {"usuario": usuario, "v": v, "erros": erros, "nova": nova, "licencas": LICENCAS,
+                                                                     "docs_da_revista": docs_da_revista}, status_code=400 if erros else 200)
+
+
+@app.get("/revistas/nova", response_class=HTMLResponse)
+def revista_nova(request: Request, usuario: dict = Depends(exige_admin)):
+    return _form_revista(request, usuario, {"licenca_url": LICENCAS[0][0], "modo_publicacao": "continua"}, {}, True)
+
+
+@app.post("/revistas/nova", response_class=HTMLResponse)
+async def revista_criar(request: Request, usuario: dict = Depends(exige_admin)):
+    form = dict((await request.form()).items())
+    lista = carrega_revistas()
+    dados, erros = valida_revista(form, lista)
+    if erros:
+        return _form_revista(request, usuario, {**form, "na_scielo": dados["na_scielo"]}, erros, True)
+    lista.append(dados)
+    grava_revistas(lista)
+    return RedirectResponse(url="/revistas?mensagem=" + urllib.parse.quote(f"Revista {dados['acronimo']} cadastrada."), status_code=303)
+
+
+def _revista_ou_404(acronimo: str):
+    lista = carrega_revistas()
+    rev = next((r for r in lista if r["acronimo"] == acronimo), None)
+    if not rev:
+        raise HTTPException(404, "Revista não encontrada")
+    return lista, rev
+
+
+@app.get("/revistas/{acronimo}", response_class=HTMLResponse)
+def revista_editar(request: Request, acronimo: str, usuario: dict = Depends(exige_admin)):
+    _, rev = _revista_ou_404(acronimo)
+    n_docs = sum(1 for d in lista_docs(0) if d.get("revista") == acronimo)
+    return _form_revista(request, usuario, rev, {}, False, n_docs)
+
+
+@app.post("/revistas/{acronimo}", response_class=HTMLResponse)
+async def revista_salvar(request: Request, acronimo: str, usuario: dict = Depends(exige_admin)):
+    lista, rev = _revista_ou_404(acronimo)
+    form = dict((await request.form()).items())
+    dados, erros = valida_revista(form, lista, acronimo_atual=acronimo)
+    if erros:
+        return _form_revista(request, usuario, {**form, "na_scielo": dados["na_scielo"], "acronimo": form.get("acronimo") or acronimo}, erros, False)
+    lista[lista.index(rev)] = dados
+    grava_revistas(lista)
+    return RedirectResponse(url="/revistas?mensagem=" + urllib.parse.quote(f"Revista {dados['acronimo']} atualizada."), status_code=303)
+
+
+@app.post("/revistas/{acronimo}/remover")
+def revista_remover(acronimo: str, usuario: dict = Depends(exige_admin)):
+    lista, rev = _revista_ou_404(acronimo)
+    lista.remove(rev)
+    grava_revistas(lista)
+    return RedirectResponse(url="/revistas?mensagem=" + urllib.parse.quote(f"Revista {acronimo} removida do cadastro."), status_code=303)
+
+
+# ---------------------------------------------------------------- painel
+
+@app.get("/painel", response_class=HTMLResponse)
+def painel(request: Request, usuario: dict = Depends(autentica), revista: str = "", etapa: str = "", situacao: str = ""):
+    docs = lista_docs(0)
+    if revista:
+        docs = [d for d in docs if d.get("revista") == revista]
+    if etapa:
+        docs = [d for d in docs if d.get("etapa") == etapa]
+    if situacao == "pronto":
+        docs = [d for d in docs if d.get("pronto")]
+    elif situacao == "bloqueado":
+        docs = [d for d in docs if not d.get("pronto")]
+    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao}
+    query = "?" + urllib.parse.urlencode({k: v for k, v in filtros.items() if v}) if any(filtros.values()) else ""
+    return templates.TemplateResponse(request, "painel.html", {"docs": docs, "revistas": carrega_revistas(), "etapas": ETAPAS, "filtros": filtros,
+                                                               "filtro_ativo": any(filtros.values()), "query": query, "usuario": usuario})
+
+
+# ---------------------------------------------------------------- contas
+
+@app.get("/entrar", response_class=HTMLResponse)
+def entrar_form(request: Request, proximo: str = "/"):
+    CONTAS.garante_admin(os.environ.get("APP_SENHA"))
+    if CONTAS.le_sessao(request.cookies.get(COOKIE)):
+        return RedirectResponse(url=proximo if proximo.startswith("/") else "/", status_code=303)
+    aviso = None if CONTAS.lista() else "Nenhuma conta cadastrada e APP_SENHA não definida: o app está em modo local, sem login."
+    return templates.TemplateResponse(request, "entrar.html", {"proximo": proximo, "usuario": None, "aviso": aviso})
+
+
+@app.post("/entrar", response_class=HTMLResponse)
+async def entrar(request: Request):
+    form = await request.form()
+    email, senha, proximo = str(form.get("email") or ""), str(form.get("senha") or ""), str(form.get("proximo") or "/")
+    CONTAS.garante_admin(os.environ.get("APP_SENHA"))
+    u = CONTAS.autentica(email, senha)
+    if not u:
+        return templates.TemplateResponse(request, "entrar.html", {"proximo": proximo, "usuario": None, "email": email, "erro": "E-mail ou senha não conferem."}, status_code=401)
+    resp = RedirectResponse(url=proximo if proximo.startswith("/") else "/", status_code=303)
+    resp.set_cookie(COOKIE, CONTAS.assina_sessao(u["id"]), httponly=True, samesite="lax", secure=request.url.scheme == "https", max_age=12 * 3600, path="/")
+    return resp
+
+
+@app.post("/sair")
+def sair():
+    resp = RedirectResponse(url="/entrar", status_code=303)
+    resp.delete_cookie(COOKIE, path="/")
+    return resp
+
+
+@app.get("/usuarios", response_class=HTMLResponse)
+def usuarios(request: Request, usuario: dict = Depends(exige_admin), mensagem: str = "", erro: str = ""):
+    return templates.TemplateResponse(request, "usuarios.html", {"usuarios": CONTAS.lista(), "usuario": usuario, "mensagem": mensagem, "erro": erro, "form": None})
+
+
+@app.post("/usuarios", response_class=HTMLResponse)
+async def usuario_criar(request: Request, usuario: dict = Depends(exige_admin)):
+    form = dict((await request.form()).items())
+    try:
+        u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), form.get("papel", "operador"))
+    except ValueError as e:
+        return templates.TemplateResponse(request, "usuarios.html", {"usuarios": CONTAS.lista(), "usuario": usuario, "erro": str(e), "form": form}, status_code=400)
+    return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote(f"Usuário {u['nome']} criado."), status_code=303)
+
+
+@app.post("/usuarios/{uid}/senha")
+async def usuario_senha(request: Request, uid: str, usuario: dict = Depends(exige_admin)):
+    form = await request.form()
+    try:
+        CONTAS.define_senha(uid, str(form.get("senha") or ""))
+    except ValueError as e:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote("Senha trocada."), status_code=303)
+
+
+@app.post("/usuarios/{uid}/papel")
+async def usuario_papel(request: Request, uid: str, usuario: dict = Depends(exige_admin)):
+    form = await request.form()
+    if uid == usuario["id"]:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote("Você não pode mudar o próprio papel."), status_code=303)
+    try:
+        CONTAS.define_papel(uid, str(form.get("papel") or ""))
+    except ValueError as e:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote("Papel atualizado."), status_code=303)
+
+
+@app.post("/usuarios/{uid}/remover")
+def usuario_remover(uid: str, usuario: dict = Depends(exige_admin)):
+    if uid == usuario["id"]:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote("Você não pode remover a própria conta."), status_code=303)
+    try:
+        CONTAS.remove(uid)
+    except ValueError as e:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote("Usuário removido."), status_code=303)

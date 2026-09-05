@@ -6,11 +6,13 @@
   <div>
     <p class="eyebrow">Cadastro</p>
     <h1 style="margin-top:4px">Revistas</h1>
-    <p class="lead">Tudo daqui entra no journal-meta de todo XML da revista. Por enquanto o cadastro vive em <span class="mono">modelos/revistas.json</span>; na próxima fase vira tela editável com conta.</p>
+    <p class="lead">Tudo daqui entra no <span class="mono">journal-meta</span> de todo XML da revista e no nome dos arquivos do pacote. Campos marcados "confirmar" nas observações geram aviso no resultado até serem verificados na fonte oficial.</p>
   </div>
+  {% if usuario.papel == 'admin' %}<a class="btn primary" href="/revistas/nova"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nova revista</a>{% endif %}
 </div>
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
 <div class="card"><div class="tblwrap"><table class="tbl">
-  <thead><tr><th>Acrônimo</th><th>Título</th><th>Abreviado</th><th>e-ISSN</th><th>Editora</th><th>Prefixo DOI</th><th>SciELO</th><th>Licença</th><th>Fonte</th></tr></thead>
+  <thead><tr><th>Acrônimo</th><th>Título</th><th>Abreviado</th><th>e-ISSN</th><th>Editora</th><th>Prefixo DOI</th><th>SciELO</th><th>Licença</th><th>Observações</th><th></th></tr></thead>
   <tbody>
   {% for r in revistas %}
     <tr>
@@ -19,10 +21,11 @@
       <td>{{ r.abrev }}</td>
       <td class="mono">{{ r.issn_epub or '—' }}</td>
       <td>{{ r.editora }}</td>
-      <td class="mono">{{ r.doi_prefixo }}</td>
+      <td class="mono">{{ r.doi_prefixo or '—' }}</td>
       <td>{% if r.na_scielo %}<span class="chip ok">sim</span>{% else %}<span class="chip neutral">não</span>{% endif %}</td>
-      <td class="small">{{ r.licenca_url.replace('https://creativecommons.org/licenses/','CC ').rstrip('/') }}</td>
-      <td class="small faint">{{ r._fonte }}</td>
+      <td class="small">{{ (r.licenca_url or '').replace('https://creativecommons.org/licenses/','CC ').rstrip('/') or '—' }}</td>
+      <td class="small faint">{{ r._fonte or '' }}</td>
+      <td style="text-align:right">{% if usuario.papel == 'admin' %}<a class="btn small" href="/revistas/{{ r.acronimo }}">Editar</a>{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>

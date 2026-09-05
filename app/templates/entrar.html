@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% set ativo = 'entrar' %}
+{% block titulo %}Entrar · xmljats{% endblock %}
+{% block conteudo %}
+<div class="auth">
+  <form class="card pad stack" method="post" action="/entrar" style="gap:var(--s-4)">
+    <div>
+      <p class="eyebrow">Acesso</p>
+      <h1 style="font-size:22px;margin-top:4px">Entrar no xmljats</h1>
+      <p class="muted small" style="margin-top:6px">Conta de operador ou administrador. Quem não tem conta pede a um administrador em Usuários.</p>
+    </div>
+    {% if erro %}<div class="msg block">{{ erro }}</div>{% endif %}
+    {% if aviso %}<div class="msg note">{{ aviso }}</div>{% endif %}
+    <div class="field">
+      <label for="email">E-mail ou login</label>
+      <input id="email" name="email" type="text" autocomplete="username" required autofocus value="{{ email or '' }}">
+    </div>
+    <div class="field">
+      <label for="senha">Senha</label>
+      <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+    </div>
+    <input type="hidden" name="proximo" value="{{ proximo or '/' }}">
+    <button class="btn primary" type="submit" style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><path d="M10 17l5-5-5-5M15 12H3"/></svg>Entrar</button>
+  </form>
+</div>
+{% endblock %}

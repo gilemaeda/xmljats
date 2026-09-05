@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% set ativo = 'revistas' %}
+{% block titulo %}{{ 'Nova revista' if nova else 'Revista ' ~ v.acronimo }} · xmljats{% endblock %}
+{% macro campo(nome, rotulo, hint='', tipo='text', placeholder='') -%}
+  <div class="field {% if erros.get(nome) %}is-block{% endif %}">
+    <label for="{{ nome }}">{{ rotulo }}</label>
+    <input id="{{ nome }}" name="{{ nome }}" type="{{ tipo }}" value="{{ v.get(nome, '') or '' }}" placeholder="{{ placeholder }}">
+    {% if erros.get(nome) %}<div class="msg block">{{ erros[nome] }}</div>{% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
+  </div>
+{%- endmacro %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Cadastro</p>
+    <h1 style="margin-top:4px">{{ 'Nova revista' if nova else v.titulo }}</h1>
+    <p class="lead">{{ 'Preencha com os dados oficiais da revista (site, SciELO, Latindex). O acrônimo e o e-ISSN entram no nome de todos os arquivos do pacote.' if nova else 'Alterar aqui muda o journal-meta dos próximos XML gerados. Os documentos já validados só mudam ao serem revalidados.' }}</p>
+  </div>
+  <a class="btn" href="/revistas">Voltar</a>
+</div>
+<form method="post" action="{{ '/revistas/nova' if nova else '/revistas/' ~ v.acronimo }}" class="review" style="grid-template-columns:3fr 2fr">
+  <div>
+    {% if erros.get('_') %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erros['_'] }}</div>{% endif %}
+    <div class="fs">
+      <header><h2>Identificação</h2><span class="small muted">journal-id · journal-title · issn</span></header>
+      <div class="in">
+        <div class="grid3">
+          {{ campo('acronimo', 'Acrônimo SciELO', 'minúsculas, sem espaços; ex.: rdp, anamps', placeholder='anamps') }}
+          {{ campo('issn_epub', 'e-ISSN', 'com dígito verificador; ex.: 2446-8088', placeholder='0000-0000') }}
+          {{ campo('issn_ppub', 'ISSN impresso', 'se houver') }}
+        </div>
+        {{ campo('titulo', 'Título completo', 'como consta no site e no ISSN') }}
+        <div class="grid2">
+          {{ campo('abrev', 'Título abreviado', 'abbrev-journal-title; ex.: Rev. Direito Práx.') }}
+          {{ campo('editora', 'Editora / instituição publicadora', 'publisher-name') }}
+        </div>
+      </div>
+    </div>
+    <div class="fs">
+      <header><h2>Publicação</h2><span class="small muted">DOI · licença · seção padrão</span></header>
+      <div class="in">
+        <div class="grid2">
+          {{ campo('doi_prefixo', 'Prefixo DOI', 'usado para reconhecer a revista pelo DOI do artigo; ex.: 10.21119/anamps') }}
+          <div class="field {% if erros.get('licenca_url') %}is-block{% endif %}">
+            <label for="licenca_url">Licença padrão</label>
+            <select id="licenca_url" name="licenca_url">
+              {% for url, rotulo in licencas %}<option value="{{ url }}" {% if v.get('licenca_url') == url %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+            </select>
+            {% if erros.get('licenca_url') %}<div class="msg block">{{ erros['licenca_url'] }}</div>{% else %}<span class="hint">Usada quando o PDF não traz a licença.</span>{% endif %}
+          </div>
+        </div>
+        <div class="grid3">
+          <div class="field">
+            <label for="modo_publicacao">Modo de publicação</label>
+            <select id="modo_publicacao" name="modo_publicacao">
+              <option value="continua" {% if v.get('modo_publicacao', 'continua') == 'continua' %}selected{% endif %}>Contínua (elocation-id)</option>
+              <option value="regular" {% if v.get('modo_publicacao') == 'regular' %}selected{% endif %}>Regular (fascículos com páginas)</option>
+            </select>
+          </div>
+          {{ campo('secao_padrao', 'Seção padrão (heading)', 'ex.: Artigos; usada quando o PDF não indica a seção') }}
+          <div class="field">
+            <label for="na_scielo">Na coleção SciELO</label>
+            <select id="na_scielo" name="na_scielo">
+              <option value="nao" {% if not v.get('na_scielo') %}selected{% endif %}>Não (ainda)</option>
+              <option value="sim" {% if v.get('na_scielo') %}selected{% endif %}>Sim</option>
+            </select>
+          </div>
+        </div>
+        {{ campo('site', 'Site da revista (OJS)', 'para conferir datas e sumários', tipo='url', placeholder='https://') }}
+        <div class="field">
+          <label for="_fonte">Observações e origem dos dados</label>
+          <textarea id="_fonte" name="_fonte" rows="3">{{ v.get('_fonte', '') or '' }}</textarea>
+          <span class="hint">Escreva "confirmar" no que ainda não foi verificado na fonte oficial: o resultado avisa até isso sair daqui.</span>
+        </div>
+      </div>
+    </div>
+    <div class="actionbar">
+      <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>{{ 'Cadastrar revista' if nova else 'Salvar alterações' }}</button>
+      <a class="btn" href="/revistas">Cancelar</a>
+      {% if not nova %}<button class="btn danger" type="submit" formaction="/revistas/{{ v.acronimo }}/remover" formnovalidate onclick="return confirm('Remover a revista {{ v.acronimo }} do cadastro? Os documentos já validados não são apagados.')">Remover</button>{% endif %}
+    </div>
+  </div>
+  <aside class="stack">
+    <div class="card pad stack" style="gap:10px">
+      <h3>Como isso aparece no XML</h3>
+      <pre class="xmlprev">&lt;journal-meta&gt;
+  &lt;journal-id journal-id-type="publisher-id"&gt;{{ v.get('acronimo') or 'acronimo' }}&lt;/journal-id&gt;
+  &lt;journal-title-group&gt;
+    &lt;journal-title&gt;{{ v.get('titulo') or 'Título completo' }}&lt;/journal-title&gt;
+    &lt;abbrev-journal-title abbrev-type="publisher"&gt;{{ v.get('abrev') or 'Abrev.' }}&lt;/abbrev-journal-title&gt;
+  &lt;/journal-title-group&gt;
+  &lt;issn pub-type="epub"&gt;{{ v.get('issn_epub') or '0000-0000' }}&lt;/issn&gt;
+  &lt;publisher&gt;&lt;publisher-name&gt;{{ v.get('editora') or 'Editora' }}&lt;/publisher-name&gt;&lt;/publisher&gt;
+&lt;/journal-meta&gt;</pre>
+      <p class="small muted">Nome dos arquivos: <span class="mono">{{ v.get('issn_epub') or '0000-0000' }}-{{ v.get('acronimo') or 'acronimo' }}-&lt;vol&gt;-&lt;num&gt;-&lt;elocation&gt;.xml</span></p>
+    </div>
+    {% if not nova and docs_da_revista is not none %}
+    <div class="card pad"><h3>Documentos desta revista</h3><p class="muted small" style="margin-top:6px">{{ docs_da_revista }} documento(s) validados com este cadastro. <a href="/painel?revista={{ v.acronimo }}">Ver no painel</a>.</p></div>
+    {% endif %}
+  </aside>
+</form>
+{% endblock %}
