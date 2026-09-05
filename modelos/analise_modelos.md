@@ -230,7 +230,9 @@ Pendências conhecidas: extração de imagens; equações; CRediT; separação d
 
 ### 6.2 O que o XML gerado ainda não tem
 
-tabelas e equações (figuras já saem com `fig`/`graphic`, imagens em TIFF no pacote e `xref` no texto, desde 05/09), chamadas `xref` para notas de rodapé dentro do texto, CRediT em `role`, e os campos completos de `element-citation` (hoje: autores, ano, fonte, volume/número/páginas por heurística, DOI e URL). Tudo isso é trabalho de código, não de IA, menos a normalização de afiliações em prosa.
+tabelas e equações, e CRediT em `role`. Tudo isso é trabalho de código, não de IA, menos a normalização de afiliações em prosa.
+
+Já resolvidos em 05/09: figuras (`fig`/`graphic`, TIFF no pacote, `xref` no texto); chamadas de notas de rodapé no corpo (`<xref ref-type="fn"><sup>n</sup></xref>`, a partir dos sobrescritos do PDF; nos seis PDFs todas as notas do corpo têm chamada ligada, inclusive as que antes se perdiam porque o rótulo no pé da página era tomado por número de página, e a citação em bloco da Opinião Jurídica deixou de virar nota falsa); e o `element-citation` completo (`poc/extrator/citacao.py`), medido contra o XML oficial da Direito e Práxis: 69 de 76 campos iguais, e os 7 que diferem são do próprio oficial ("LYRA FILHO" cortado para "LYRA", edição "6ª" contra "6") ou de referências mal formatadas no PDF. O gabarito de referências está em `modelos/gabarito/rdp-referencias.json`.
 
 ### 6.3 Ambiente
 
