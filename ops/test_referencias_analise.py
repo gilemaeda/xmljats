@@ -96,9 +96,12 @@ import glob  # noqa: E402
 oficiais = glob.glob(os.path.join(RAIZ, "modelos", "gabarito", "*.xml"))
 com_page = [os.path.basename(f) for f in oficiais
             if "<page-count" in io.open(f, encoding="utf-8", errors="replace").read()]
-ok(not com_page, f"nenhum dos {len(oficiais)} XML publicados pela SciELO traz page-count (achados: {com_page})")
-ok("<page-count" not in xml and "<elocation-id>" in xml,
-   "artigo de publicacao continua sai sem page-count, como a SciELO faz")
+# Contradicao registrada: a documentacao (whatsnew-1.1) diz que page-count e obrigatorio desde a SPS 1.1,
+# mas o XML que a propria SciELO publica nao o traz. Seguimos a documentacao, que e o que ela cobra.
+print(f"     XML publicados pela SciELO com page-count: {len(com_page)} de {len(oficiais)}")
+ok("<page-count" in xml, "nosso XML leva page-count, como a documentacao da SPS exige desde a 1.1")
+ok(re.search(r'<page-count count="(\d+)"', xml).group(1) == "23",
+   f"o total vem contado do PDF enviado: {re.search(chr(39) + chr(60) + 'page-count count=' + chr(34) + '(.d+)' + chr(34) + chr(39), xml)}")
 # artigo com paginas reais continua levando page-count
 from extrator import xml_jats  # noqa: E402
 m = {"idioma": "pt", "tipo_artigo": "research-article", "heading": "Artigos", "doi": "10.1590/x/2026/1",

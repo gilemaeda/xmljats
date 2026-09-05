@@ -230,6 +230,8 @@ def roda_site():
                                          "editor_lattes": "https://exemplo.org/x"}).status_code == 400)
     # pontos levantados na analise externa do XML (PDF "Analise XML SciELO", 05/09/2026)
     from extrator.citacao import campos_referencia as _cr
+    from extrator.util import parse_data as _parse_data
+    from app.main import declaracoes_do_artigo as app_main_dec
     _eds = _cr("GEWIRTZ, Paul; BROOKS, P. (eds.). Law stories. Yale University Press, 1996.", "book",
                ["GEWIRTZ, Paul", "BROOKS, P."])
     check("(eds.) na abertura da referência vira person-group editor",
@@ -241,9 +243,25 @@ def roda_site():
           bool(_rf.RE_RODAPE_ARTIGO.search("Contraponto, 2013. Recebido: 23/12/24 Aceito: 05/01/25")) and
           not _rf.RE_RODAPE_ARTIGO.search("SILVA, A. Como citar Hegel. Sao Paulo, 2020."))
     import glob as _g
-    check("nenhum XML publicado pela SciELO usa page-count (o nosso também não, em publicação contínua)",
-          not [f for f in _g.glob(os.path.join(RAIZ, "modelos", "gabarito", "*.xml"))
-               if "<page-count" in io.open(f, encoding="utf-8", errors="replace").read()])
+    from extrator import xml_jats as _xj2
+    _m = {"paginas": 12, "arquivo": "a.pdf"}
+    check("page-count sai do total de páginas do arquivo (SPS 1.1 em diante o exige)",
+          _xj2._total_paginas(_m) == 12 and _xj2._total_paginas({"fpage": "10", "lpage": "25"}) == 16
+          and _xj2._total_paginas({"paginas": 30, "arquivo": "a.docx"}) is None)
+    if doc:
+        ver6 = c.get(doc + "/editar").text
+        check("total de páginas e 'como citar' editáveis no revisar",
+              'name="paginas_total"' in ver6 and 'name="dec_como_citar"' in ver6)
+    check("declaração reconhecida em português, inglês e espanhol",
+          all(campo in app_main_dec({"back_matter": [{"titulo": t, "texto": "x"}]})
+              for t, campo in (("Acknowledgement", "dec_agradecimentos"), ("IA Statement", "dec_ia"),
+                               ("Financiación", "dec_financiamento"), ("Data availability", "dec_dados"))))
+    check("data com ano de dois dígitos é lida", _parse_data("23/12/24") == "2024-12-23")
+    # a home do admin redireciona para a administracao: a tela de envio e a do cliente
+    _envio = c2.get("/").text
+    check("tela de envio aceita DOCX", ".docx" in _envio and "só PDF" not in _envio)
+    check("botão de voltar ao topo em todas as telas",
+          'id="ao-topo"' in _envio and 'id="ao-topo"' in c.get("/revistas").text)
     from app import main as _am
     campos_rev_ok = _am.campos_da_revista({}, {"licenca_url": "https://creativecommons.org/licenses/by/4.0/", "titulo": "T"}).get("licenca") is not None
     if doc:
@@ -398,6 +416,10 @@ def main():
           "| Data de acesso sem endereço não entra no XML (R04) | pronto | ops/test_referencias_analise.py |",
           "| (eds.)/(org.) na abertura da referência viram editor, não autor | pronto | ops/test_referencias_analise.py |",
           "| Rodapé da revista não gruda na última referência | pronto | ops/test_referencias_analise.py |",
+          "| page-count do total de páginas do arquivo, e counts sem contador zerado | pronto | ops/test_counts_idiomas.py |",
+          "| Declarações reconhecidas em português, inglês e espanhol | pronto | ops/test_counts_idiomas.py |",
+          "| Datas de recebido/aceite lidas da caixa editorial (ano de 2 dígitos) | pronto | ops/test_counts_idiomas.py |",
+          "| Imagens aparecem na pré-visualização | pronto | ops/test_counts_idiomas.py |",
           "| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",

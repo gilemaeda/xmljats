@@ -104,6 +104,8 @@
   </header>
   <div class="main">
     <main>{% block conteudo %}{% endblock %}</main>
+    <button class="ao-topo" type="button" id="ao-topo" aria-label="Voltar ao topo" title="Voltar ao topo" hidden>
+      <svg viewBox="0 0 24 24"><path d="M12 19V5m0 0l-7 7m7-7l7 7"/></svg></button>
     <footer class="rodape">
       <span>Motor: extrator de PDF, gerador SciELO PS e packtools (validador oficial da SciELO).</span>
       <span>Nada é inventado: o que não está no arquivo vira bloqueante e se corrige na revisão.</span>
@@ -172,5 +174,12 @@
 })();
 </script>
 {% block scripts %}{% endblock %}
+<script>
+// Botao de voltar ao topo: aparece depois de rolar uma tela, some no topo. As telas de revisar sao longas.
+(function(){var b=document.getElementById('ao-topo');if(!b)return;
+ function ver(){b.hidden=window.scrollY<400;}
+ window.addEventListener('scroll',ver,{passive:true});ver();
+ b.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});})();
+</script>
 </body>
 </html>

@@ -39,7 +39,7 @@
         <div id="issn-saida" class="issn-saida" hidden></div>
       </div>
       <div class="field">
-        <label for="arquivo">Arquivo PDF</label>
+        <label for="arquivo">Arquivo do artigo (PDF ou DOCX)</label>
         <div class="drop" id="drop">
           <div class="row" style="gap:12px">
             <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></span>
@@ -102,7 +102,7 @@
     var f=input.files&&input.files[0];
     if(!f){nome.textContent='Nenhum arquivo escolhido.';nome.className='small muted';return;}
     var mb=(f.size/1048576).toFixed(1);
-    if(!/\.pdf$/i.test(f.name)){nome.textContent=f.name+' não é PDF. Por enquanto só PDF.';nome.className='small crit-text';input.value='';return;}
+    if(!/\.(pdf|docx)$/i.test(f.name)){nome.textContent=f.name+' não é PDF nem DOCX. O sistema lê os dois formatos.';nome.className='small crit-text';input.value='';return;}
     nome.textContent=f.name+' · '+mb+' MB';nome.className='small';
   }
   input.addEventListener('change',mostra);

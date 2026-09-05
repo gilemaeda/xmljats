@@ -125,6 +125,9 @@ _MESES = {
 _RE_D1 = re.compile(r"\b(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{4})\b")
 _RE_D2 = re.compile(r"\b(\d{1,2})\s*(?:de\s+)?([A-Za-zçÇ]{3,10})\.?\s*(?:de\s+)?(\d{4})\b")
 _RE_D3 = re.compile(r"\b([A-Za-z]{3,10})\.?\s+(\d{1,2}),\s*(\d{4})\b")
+# "Recebido: 23/12/24" — ano de dois digitos, comum na caixa editorial no fim do artigo.
+# Fica por ultimo: as formas com ano de quatro digitos tem prioridade.
+_RE_D5 = re.compile(r"\b(\d{1,2})[/.\-](\d{1,2})[/.\-](\d{2})\b(?!\d)")
 _RE_D4 = re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")
 
 
@@ -150,6 +153,16 @@ def parse_data(s):
         mo = _MESES.get(m.group(1).lower())
         if mo:
             return f"{m.group(3)}-{mo:02d}-{int(m.group(2)):02d}"
+    m = _RE_D5.search(s)
+    if m:
+        d, mo, yy = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if mo > 12 and d <= 12:      # veio no formato mes/dia
+            d, mo = mo, d
+        if 1 <= mo <= 12 and 1 <= d <= 31:
+            import datetime as _dt
+            limite = (_dt.date.today().year % 100) + 5
+            ano = 2000 + yy if yy <= limite else 1900 + yy
+            return f"{ano}-{mo:02d}-{d:02d}"
     return None
 
 

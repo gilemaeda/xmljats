@@ -63,6 +63,7 @@ DECLARACOES = [
     ("conflito", "Declaração sobre conflito de interesses", "author-notes:conflict"),
     ("ia", "Declaração sobre o uso de inteligência artificial", "fn-group:other"),
     ("editor", "Editor responsável pela avaliação", "author-notes:edited-by"),
+    ("como_citar", "Como citar este documento", "fn-group:other"),
 ]
 ROTULO_DECLARACAO = {k: r for k, r, _ in DECLARACOES}
 DESTINO_DECLARACAO = {k: d for k, _, d in DECLARACOES}
@@ -255,6 +256,29 @@ def _numeros_citados(rotulo: str, n_refs: int):
         else:
             return []
     return nums
+
+
+def _total_paginas(model: dict) -> Optional[int]:
+    """Total de paginas do artigo. Vem da faixa fpage-lpage quando existe (e o que o Schematron confere),
+    senao do numero de paginas do arquivo enviado, que o extrator conta."""
+    if model.get("fpage") and model.get("lpage"):
+        try:
+            return int(model["lpage"]) - int(model["fpage"]) + 1
+        except (TypeError, ValueError):
+            pass
+    chaves = ["paginas_total"]
+    # num DOCX o "numero de paginas" e uma estimativa do nosso layout, nao a paginacao final:
+    # contar dali daria um page-count errado, entao so o campo preenchido a mao vale
+    if not (model.get("arquivo") or "").lower().endswith(".docx"):
+        chaves.append("paginas")
+    for chave in chaves:
+        v = model.get(chave)
+        try:
+            if v and int(v) > 0:
+                return int(v)
+        except (TypeError, ValueError):
+            continue
+    return None
 
 
 def _tipo_declaracao(titulo: str) -> Optional[str]:
@@ -556,13 +580,19 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
                   "dentro de funding-group, então o texto sozinho não entra no XML (A14).")
 
     counts = _sub(am, "counts")
-    # os contadores refletem o que EXISTE no XML
-    _sub(counts, "fig-count", count=str(len(figs_xml)))
-    _sub(counts, "table-count", count=str(len(tabs_xml)))
-    _sub(counts, "equation-count", count=str(len(eqs_xml)))
-    _sub(counts, "ref-count", count=str(len(model.get("referencias", []))))
-    if model.get("fpage") and model.get("lpage"):
-        _sub(counts, "page-count", count=str(int(model["lpage"]) - int(model["fpage"]) + 1))
+    # Documentacao da SPS (whatsnew-1.1 e tagset/elemento-counts): os cinco contadores sao obrigatorios,
+    # mas "caso o documento nao apresente algum dos elementos contabilizados, deve-se retirar o elemento
+    # de <counts>". Por isso contador zerado nao sai, e page-count sai sempre que der para saber o total.
+    for tag, quantos in (("fig-count", len(figs_xml)), ("table-count", len(tabs_xml)),
+                         ("equation-count", len(eqs_xml)), ("ref-count", len(model.get("referencias", [])))):
+        if quantos:
+            _sub(counts, tag, count=str(quantos))
+    paginas = _total_paginas(model)
+    if paginas:
+        _sub(counts, "page-count", count=str(paginas))
+    else:
+        res.aviso("Total de páginas desconhecido: o <page-count> ficou de fora, e a SPS 1.1 em diante o exige. "
+                  "Informe o total em Revisar e editar (A15).")
 
     # ---- body
     body = _sub(art, "body")
@@ -766,8 +796,9 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     # contrário também vale: nota de financiamento sem award-id nenhum é erro, então a nota só sai quando há.
     processos = [f["processo"].strip() for f in fomentos if (f.get("processo") or "").strip()]
     dec_ia = (model.get("dec_ia") or "").strip()
+    dec_citar = (model.get("dec_como_citar") or "").strip()
     dec_fin = (model.get("dec_financiamento") or "").strip()
-    if fns or processos or dec_ia or (dec_fin and not processos):
+    if fns or processos or dec_ia or dec_citar or (dec_fin and not processos):
         fg = _sub(back, "fn-group")
         if dec_fin and not processos:
             # Sem numero de processo nao ha award-id, e o validador da SciELO (catalogs/checks.py) recusa
@@ -780,6 +811,10 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             fn = _sub(fg, "fn", fn_type="other", id="fn-ia")
             _sub(fn, "label", ROTULO_DECLARACAO["ia"])
             _sub(fn, "p", dec_ia)
+        if dec_citar:
+            fn = _sub(fg, "fn", fn_type="other", id="fn-como-citar")
+            _sub(fn, "label", ROTULO_DECLARACAO["como_citar"])
+            _sub(fn, "p", dec_citar)
         if processos:
             declarado = dec_fin or (model.get("financiamento_texto") or "").strip()
             partes = [declarado] if declarado else []

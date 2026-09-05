@@ -515,6 +515,9 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 .field.is-auto>label{color:var(--brand-2)}
 .prov.auto{color:var(--brand-2)}
 .como-citar{white-space:pre-wrap;line-height:1.65}
+.ao-topo{position:fixed;right:18px;bottom:96px;z-index:45;width:42px;height:42px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-2)}
+.ao-topo:hover{background:var(--surface-2)}
+.ao-topo svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .campo-orcid{grid-column:span 2}
 .campo-orcid input{min-width:158px}
 @media (max-width:900px){.campo-orcid{grid-column:auto}}

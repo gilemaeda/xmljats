@@ -118,6 +118,7 @@
         <div class="grid3">
           {{ campo('order', 'Order (5 dígitos)', hint='Ordem do artigo no sumário do número') }}
           {{ campo('licenca', 'Licença', hint='CC BY 4.0, CC BY-NC 4.0, CC BY-NC-SA 4.0') }}
+          {{ campo('paginas_total', 'Total de páginas', tipo='number', hint='Vai no page-count, que a SPS 1.1 em diante exige. Vem contado do arquivo enviado.') }}
         </div>
         <div class="field caixa-doi">
           <label>Completar pelo DOI</label>
@@ -518,11 +519,14 @@
     </div>
 
     <div class="fs">
-      <header><h2>Como citar este documento</h2><span class="small muted">montado dos metadados · a SciELO gera assim no site</span></header>
+      <header><h2>Como citar este documento</h2><span class="small muted">fn-group · montado dos metadados, e editável</span></header>
       <div class="in stack">
-        <p class="small muted" style="margin:0">Não é um campo do XML: a SciELO monta esta citação a partir dos metadados.
-          Serve de prova real — se a citação abaixo sai errada, é porque algum metadado está errado.</p>
-        <pre class="xmlprev como-citar">{{ como_citar }}</pre>
+        <p class="small muted" style="margin:0">Vem montado a partir dos metadados deste documento e pode ser corrigido.
+          Serve de prova real: se a citação sai errada, é porque algum metadado está errado. Preenchido, sai como nota no
+          fim do artigo, do jeito que muitas revistas imprimem.</p>
+        {{ area('dec_como_citar', 'Como citar', 3, 'Deixe em branco para não publicar a citação no XML.') }}
+        <details class="small"><summary class="muted">Ver a citação que os metadados atuais geram</summary>
+          <pre class="xmlprev como-citar">{{ como_citar }}</pre></details>
       </div>
     </div>
 

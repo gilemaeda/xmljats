@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.16.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.17.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 96 de 96 verificações passaram.
+- **Site:** 101 de 101 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -31,7 +31,7 @@ Gerada por `python ops/auditoria.py` (app 0.16.0). Cada número vem de uma medi�
 | article.segmented | 28 | 3 | 3 | 3 | 3 | 6 | 9 | 0 | 0 (0) | 0 | 27 (ABNT) | ok | 3 | — |
 | document | 14 | 2 | 2 | 2 | 3 | 15 | 11 | 0 | 0 (0) | 0 | 48 (ABNT) | ok | 2 | — |
 | rbef-equacoes | 13 | 1 | 0 | 1 | 0 | 6 | 1 | 4 | 0 (0) | 38 | 30 (numérico (Vancouver)) | ok | 4 | 12/24 |
-| rbef-tabelas-equacoes | 14 | 0 | 0 | 0 | 0 | 11 | 1 | 18 | 5 (4) | 31 | 28 (numérico (Vancouver)) | ok | 5 | 11/24 |
+| rbef-tabelas-equacoes | 14 | 0 | 0 | 0 | 0 | 11 | 1 | 18 | 5 (4) | 31 | 28 (numérico (Vancouver)) | ok | 6 | 11/24 |
 | rsp-tabelas | 12 | 3 | 0 | 1 | 1 | 4 | 4 | 0 | 5 (5) | 0 | 40 (numérico (Vancouver)) | ok | 2 | 12/24 |
 | rsp-tabelas2 | 10 | 2 | 0 | 1 | 1 | 9 | 4 | 0 | 4 (4) | 0 | 30 (numérico (Vancouver)) | ok | 2 | 10/24 |
 
@@ -112,7 +112,12 @@ Gerada por `python ops/auditoria.py` (app 0.16.0). Cada número vem de uma medi�
 - ok — (eds.) na abertura da referência vira person-group editor
 - ok — data de acesso sem endereço não entra no element-citation
 - ok — rodapé da revista não gruda na última referência
-- ok — nenhum XML publicado pela SciELO usa page-count (o nosso também não, em publicação contínua)
+- ok — page-count sai do total de páginas do arquivo (SPS 1.1 em diante o exige)
+- ok — total de páginas e 'como citar' editáveis no revisar
+- ok — declaração reconhecida em português, inglês e espanhol
+- ok — data com ano de dois dígitos é lida
+- ok — tela de envio aceita DOCX
+- ok — botão de voltar ao topo em todas as telas
 - ok — texto de cada seção do corpo é editável
 - ok — inserir tabela/imagem/equação/quadro/diálogo dentro da seção
 - ok — vincular a revista preenche o que é dado dela
@@ -145,6 +150,7 @@ Agrupado por mensagem, somando os arquivos desta rodada. Todos são dados que o 
 | SPS [@sps-1.9]: Element 'article-meta': Missing element article-categories. | 3 |
 | SPS [@sps-1.9]: Element 'article-meta': Missing element abstract. | 2 |
 | SPS [@sps-1.9]: Element 'article-meta': Missing elements fpage or elocation-id. | 1 |
+| SPS [@sps-1.9]: Element 'page-count': Wrong value in page-count. | 1 |
 
 ## 6. Etapas do documento
 
@@ -192,6 +198,10 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Data de acesso sem endereço não entra no XML (R04) | pronto | ops/test_referencias_analise.py |
 | (eds.)/(org.) na abertura da referência viram editor, não autor | pronto | ops/test_referencias_analise.py |
 | Rodapé da revista não gruda na última referência | pronto | ops/test_referencias_analise.py |
+| page-count do total de páginas do arquivo, e counts sem contador zerado | pronto | ops/test_counts_idiomas.py |
+| Declarações reconhecidas em português, inglês e espanhol | pronto | ops/test_counts_idiomas.py |
+| Datas de recebido/aceite lidas da caixa editorial (ano de 2 dígitos) | pronto | ops/test_counts_idiomas.py |
+| Imagens aparecem na pré-visualização | pronto | ops/test_counts_idiomas.py |
 | Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |

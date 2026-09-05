@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.17.0"
+VERSAO_APP = "0.18.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -157,7 +157,7 @@ TIPOS_ARTIGO = ["research-article", "review-article", "editorial", "book-review"
                 "article-commentary", "correction", "retraction", "addendum", "rapid-communication", "other"]
 IDIOMAS = ["pt", "en", "es", "fr", "it", "de"]
 CAMPOS_SIMPLES = ("heading", "tipo_artigo", "idioma", "volume", "numero", "ano", "elocation", "order", "doi",
-                  "licenca", "financiamento_texto") + tuple("dec_" + k for k, _, _ in xml_jats.DECLARACOES) + ("dec_dados_situacao",)
+                  "licenca", "financiamento_texto", "paginas_total") + tuple("dec_" + k for k, _, _ in xml_jats.DECLARACOES) + ("dec_dados_situacao",)
 # grupos editaveis em lista: o indice pode passar do que foi extraido, e ai o item e criado a mao
 GRUPOS_LISTA = {"titulo": "titulos", "autor": "autores", "aff": "afiliacoes", "resumo": "resumos",
                 "secao": "secoes", "tabela": "tabelas", "figura": "figuras", "equacao": "equacoes",
@@ -440,6 +440,7 @@ def valores_editaveis(modelo: dict) -> dict:
         v[f"resumo_{k}_texto"] = r.get("texto") or ""
         v[f"resumo_{k}_kw"] = "; ".join(r.get("palavras_chave", []))
     v["financiamento_texto"] = modelo.get("financiamento_texto") or ""
+    v["paginas_total"] = str(modelo.get("paginas_total") or modelo.get("paginas") or "")
     for chave, _rot, _dest in xml_jats.DECLARACOES:
         v["dec_" + chave] = modelo.get("dec_" + chave) or ""
     v["dec_dados_situacao"] = modelo.get("dec_dados_situacao") or ""
@@ -648,13 +649,22 @@ def campos_da_revista(modelo: dict, revista: Optional[dict]) -> dict:
 
 # titulo da declaracao no artigo -> campo do formulario. O extrator ja separa esses blocos do texto
 # (corpo._back_matter); aqui eles deixam de ficar escondidos e viram campo editavel.
+# As revistas declaram isso em portugues, ingles ou espanhol, e as vezes so com a sigla ("IA Statement").
+# A ordem importa: a primeira pista que casar com o titulo leva o bloco.
 PISTAS_DECLARACAO = [
-    ("agradecimentos", re.compile(r"(?i)agradecimento|acknowledg|agradecemos")),
-    ("financiamento", re.compile(r"(?i)financiamento|financiad|funding|fomento|apoio financeiro")),
-    ("contribuicao", re.compile(r"(?i)contribui[çc]|contribution|autoria|authorship|credit")),
-    ("dados", re.compile(r"(?i)disponibilidade de dados|data availability|dados de pesquisa|dados abertos")),
-    ("conflito", re.compile(r"(?i)conflito|conflict|interesse")),
-    ("ia", re.compile(r"(?i)intelig[êe]ncia artificial|artificial intelligence|uso de ia\b|\bIA\b")),
+    ("ia", re.compile(r"(?i)intelig[êe]ncia artificial|artificial intelligence|inteligencia artificial|"
+                      r"\b(?:IA|AI)\b[ -]*(?:statement|declaration|declara|uso|use)|"
+                      r"(?:statement|declara[çc][ãa]o|declaraci[óo]n|uso|use)[ -]*(?:sobre |of |de |do )?\b(?:IA|AI)\b|"
+                      r"generative (?:ai|artificial)")),
+    ("agradecimentos", re.compile(r"(?i)agradecimento|agradecemos|acknowledg|reconocimiento|remerciement|ringraziament")),
+    ("financiamento", re.compile(r"(?i)financiamento|financiad|financia[çc]|funding|fomento|apoio financeiro|"
+                                 r"grant|financial support|financiaci[óo]n|apoyo financiero")),
+    ("contribuicao", re.compile(r"(?i)contribui[çc]|contribution|contribuci[óo]n|autoria|authorship|"
+                                r"author.{0,12}(?:statement|declaration)|credit")),
+    ("dados", re.compile(r"(?i)disponibilidade de dados|data availability|dados de pesquisa|dados abertos|"
+                         r"disponibilidad de (?:los )?datos|research data|open data")),
+    ("conflito", re.compile(r"(?i)conflito|conflict|interesse|inter[ée]s|competing interest")),
+    ("como_citar", re.compile(r"(?i)como citar|how to cite|c[óo]mo citar|citation|forma de cita")),
     ("editor", re.compile(r"(?i)editor")),
 ]
 # titulos que contem a palavra da pista mas nao sao a declaracao: "Editorial process dates" traz datas
@@ -662,6 +672,7 @@ PISTAS_DECLARACAO = [
 NAO_E_DECLARACAO = {
     "editor": re.compile(r"(?i)process|dates|datas|prazo|pol[íi]tica|guidelines|norma"),
     "dados": re.compile(r"(?i)banco de dados do artigo|coleta de dados"),
+    "contribuicao": re.compile(r"(?i)originalidade|originality|plagiarism|pl[áa]gio"),
 }
 
 
@@ -1107,6 +1118,10 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
     # vincular o artigo a uma revista já preenche o que é dado da revista, e não do artigo
     da_revista = dict(declaracoes_do_artigo(modelo))
     da_revista.update(campos_da_revista(modelo, revista))
+    if not (valores.get("dec_como_citar") or "").strip() and "dec_como_citar" not in da_revista:
+        citacao = como_citar(modelo, revista)
+        if citacao:
+            da_revista["dec_como_citar"] = (citacao, "montado a partir dos metadados deste documento")
     for campo, (valor, de_onde) in da_revista.items():
         if not (valores.get(campo) or "").strip():
             valores[campo] = valor
@@ -1241,8 +1256,12 @@ def previa_do_artigo(doc_id: str, usuario: dict = Depends(autentica)):
         return HTMLResponse(f"<p style='font:14px system-ui;padding:24px;color:#b3261e'>Não consegui gerar a "
                             f"pré-visualização: {str(e)[:200]}</p>", status_code=500)
     mapa = (le_json(pasta / "validacao.json", {}) or {}).get("mapa_imagens") or mapa_de_imagens(pasta)
-    for nome_sps, arquivo in mapa.items():
-        html = html.replace(nome_sps, f"/doc/{doc_id}/img/{arquivo}")
+    # o htmlgenerator troca a extensao do arquivo (o XML diz .tif, ele escreve .jpg, porque a SciELO
+    # serve o derivado JPG). Por isso o casamento e pelo nome SEM extensao, senao a imagem sai quebrada.
+    por_raiz = {os.path.splitext(nome)[0]: arquivo for nome, arquivo in mapa.items()}
+    if por_raiz:
+        alvo = re.compile(r"([\w-]+-(?:gf|gt|e)\d{2})\.[A-Za-z0-9]+")
+        html = alvo.sub(lambda m: (f"/doc/{doc_id}/img/{por_raiz[m.group(1)]}" if m.group(1) in por_raiz else m.group(0)), html)
     return HTMLResponse(html)
 
 
