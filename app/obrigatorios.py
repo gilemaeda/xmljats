@@ -50,6 +50,11 @@ ROTULOS = {
 }
 
 
+def _vivos(lista) -> list:
+    """Itens que ainda contam: os marcados para remover na tela não são cobrados nem vão para o XML."""
+    return [(i, x) for i, x in enumerate(lista or []) if not (isinstance(x, dict) and x.get("_removido"))]
+
+
 def _vazio(v) -> bool:
     return v is None or (isinstance(v, str) and not v.strip()) or (isinstance(v, (list, dict)) and not v)
 
@@ -117,11 +122,11 @@ def pendencias(modelo: dict, revista: Optional[dict], versao_sps: str = "1.9") -
         _reg(p, "titulo_0_texto", "Título do artigo.", "SPS: article-title")
 
     # ---- autoria
-    autores = m.get("autores") or []
+    autores = [x for _, x in _vivos(m.get("autores"))]
     if not autores:
         _reg(p, "autor_0_sobrenome", "Pelo menos um autor. Se o motor não leu a autoria do PDF, digite aqui.",
              "SPS: contrib-group / aff_contenttypes_contribgroup")
-    for i, a in enumerate(autores):
+    for i, a in _vivos(m.get("autores")):
         if _vazio(a.get("sobrenome")):
             _reg(p, f"autor_{i}_sobrenome", f"Sobrenome do autor {i + 1}.", "SPS: contrib-group")
         if _vazio(a.get("orcid")) or a.get("orcid_valido") is False:
@@ -136,7 +141,7 @@ def pendencias(modelo: dict, revista: Optional[dict], versao_sps: str = "1.9") -
              "SPS: author-notes/corresp · fn_attributes")
 
     # ---- afiliações
-    for j, af in enumerate(m.get("afiliacoes") or []):
+    for j, af in _vivos(m.get("afiliacoes")):
         if _vazio(af.get("instituicao")):
             _reg(p, f"aff_{j}_instituicao", f"Instituição da afiliação {af.get('id') or j + 1}.",
                  "SPS: aff_contenttypes (institution content-type='original' e 'orgname')")
@@ -145,12 +150,12 @@ def pendencias(modelo: dict, revista: Optional[dict], versao_sps: str = "1.9") -
                  "SPS: aff_country, aff_country-attrs")
 
     # ---- resumo e palavras-chave
-    resumos = m.get("resumos") or []
+    resumos = [x for _, x in _vivos(m.get("resumos"))]
     if tipo in TIPOS_COM_RESUMO:
         if not resumos:
             _reg(p, "resumo_0_texto", "Resumo no idioma do artigo. Artigo original e de revisão não passam sem resumo.",
                  "SPS: abstract")
-        for k, r in enumerate(resumos):
+        for k, r in _vivos(m.get("resumos")):
             if _vazio(r.get("texto")):
                 _reg(p, f"resumo_{k}_texto", f"Texto do resumo em {r.get('idioma') or 'idioma não definido'}.", "SPS: abstract")
             if _vazio(r.get("idioma")):
@@ -160,22 +165,22 @@ def pendencias(modelo: dict, revista: Optional[dict], versao_sps: str = "1.9") -
                                           f"kwd-group por idioma de resumo.", "SPS: kwdgroup_lang")
 
     # ---- corpo
-    secoes = m.get("secoes") or []
+    secoes = [x for _, x in _vivos(m.get("secoes"))]
     if not secoes:
         _reg(p, "secao_0_titulo", "O corpo do texto precisa de pelo menos uma seção com título.", "SPS: sectitle")
-    for k, sec in enumerate(secoes):
+    for k, sec in _vivos(m.get("secoes")):
         if _vazio(sec.get("titulo_completo") or sec.get("titulo")):
             _reg(p, f"secao_{k}_titulo", f"Título da seção {k + 1}.", "SPS: sectitle")
 
     # ---- tabelas, figuras, quadros e diálogos
-    for k, t in enumerate(m.get("tabelas") or []):
+    for k, t in _vivos(m.get("tabelas")):
         if _vazio(t.get("legenda")):
             _reg(p, f"tabela_{k}_legenda", f"Legenda de {t.get('rotulo') or f'tabela {k + 1}'}.", "SPS: caption_title")
         if not t.get("celulas") and not t.get("arquivo"):
             _reg(p, f"tabela_{k}_celulas", f"Conteúdo de {t.get('rotulo') or f'tabela {k + 1}'}: uma linha por linha, "
                                            f"colunas separadas por | (colar do Word ou do Excel também funciona).",
                  "Guia de entrega: tabelas codificadas, não como imagem")
-    for k, f in enumerate(m.get("figuras") or []):
+    for k, f in _vivos(m.get("figuras")):
         if (f.get("tipo") or "fig") != "fig":
             continue
         if _vazio(f.get("legenda")):
@@ -183,15 +188,15 @@ def pendencias(modelo: dict, revista: Optional[dict], versao_sps: str = "1.9") -
         if _vazio(f.get("arquivo")):
             _reg(p, f"figura_{k}_arquivo", f"Imagem de {f.get('rotulo') or f'figura {k + 1}'}: envie o arquivo, "
                                            f"senão a figura fica de fora do pacote.", "SPS: fig/graphic")
-    for k, e in enumerate(m.get("equacoes") or []):
+    for k, e in _vivos(m.get("equacoes")):
         if _vazio(e.get("mathml")):
             _reg(p, f"equacao_{k}_latex", f"LaTeX de {e.get('rotulo') or f'equação {k + 1}'}. O guia de entrega exige "
                                           f"fórmula codificada em MathML ou LaTeX; imagem não é aceita.",
                  "Guia de entrega, item Formato dos arquivos")
-    for k, q in enumerate(m.get("quadros") or []):
+    for k, q in _vivos(m.get("quadros")):
         if _vazio(q.get("texto")):
             _reg(p, f"quadro_{k}_texto", f"Conteúdo de {q.get('rotulo') or f'quadro {k + 1}'}.", "JATS: boxed-text")
-    for k, dl in enumerate(m.get("dialogos") or []):
+    for k, dl in _vivos(m.get("dialogos")):
         if not dl.get("turnos"):
             _reg(p, f"dialogo_{k}_turnos", f"Falas de {dl.get('rotulo') or f'diálogo {k + 1}'}, uma por linha, "
                                            f"no formato 'Falante: fala'.", "JATS: speech/speaker")

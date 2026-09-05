@@ -84,6 +84,7 @@
           return;
         }
         redesenha();
+        if (busca.termo) buscaTexto(busca.termo);
       })
       .catch(function () {
         caixa.innerHTML = '<p class="small crit-text" style="padding:16px">Não consegui abrir o arquivo original. ' +
@@ -94,9 +95,9 @@
 
   $('#pg-ant').addEventListener('click', function () { if (atual > 1) { atual--; $('#rolagem-continua').checked = false; redesenha(); } });
   $('#pg-prox').addEventListener('click', function () { if (indice && atual < indice.paginas.length) { atual++; $('#rolagem-continua').checked = false; redesenha(); } });
-  $('#zoom-mais').addEventListener('click', function () { escala = Math.min(2.4, escala + 0.15); redesenha(); });
-  $('#zoom-menos').addEventListener('click', function () { escala = Math.max(0.5, escala - 0.15); redesenha(); });
-  $('#rolagem-continua').addEventListener('change', redesenha);
+  $('#zoom-mais').addEventListener('click', function () { escala = Math.min(2.4, escala + 0.15); redesenha(); pintaBusca(false); });
+  $('#zoom-menos').addEventListener('click', function () { escala = Math.max(0.5, escala - 0.15); redesenha(); pintaBusca(false); });
+  $('#rolagem-continua').addEventListener('change', function () { redesenha(); pintaBusca(false); });
 
   /* ------------------------------------------------------------------ seleção ligada ao campo */
   var ultimoCampo = null, barraSel = $('#visor-selecao'), seletor = $('#alvo-campo');
@@ -151,6 +152,197 @@
     campo.scrollIntoView({ block: 'center', behavior: 'smooth' });
     barraSel.hidden = true;
     window.getSelection().removeAllRanges();
+  });
+
+
+  /* ------------------------------------------------------------------ busca no documento
+   * Percorre as palavras que vieram do PDF, junta o texto de cada página e procura ali. Comparação
+   * sem acento e sem caixa, porque ninguém digita "jurisdição" com til numa busca rápida.
+   */
+  var busca = { termo: '', hits: [], atual: -1 };
+
+  function semAcento(t) {
+    return (t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  function indexaPagina(p) {
+    if (p._indice) return p._indice;
+    var texto = '', mapa = [];
+    p.palavras.forEach(function (w, k) {
+      var t = semAcento(w[4]);
+      mapa.push({ ini: texto.length, fim: texto.length + t.length, palavra: k });
+      texto += t + ' ';
+    });
+    p._indice = { texto: texto, mapa: mapa };
+    return p._indice;
+  }
+
+  function buscaTexto(termo) {
+    busca.termo = termo;
+    busca.hits = [];
+    busca.atual = -1;
+    var alvo = semAcento(termo).trim();
+    if (!indice || alvo.length < 2) { pintaBusca(); return; }
+    indice.paginas.forEach(function (p) {
+      var ix = indexaPagina(p), de = 0, achou;
+      while ((achou = ix.texto.indexOf(alvo, de)) !== -1) {
+        var primeira = null, ultima = null;
+        ix.mapa.forEach(function (m) {
+          if (m.fim > achou && m.ini < achou + alvo.length) {
+            if (primeira === null) primeira = m.palavra;
+            ultima = m.palavra;
+          }
+        });
+        if (primeira !== null) busca.hits.push({ pagina: p.n, de: primeira, ate: ultima });
+        de = achou + Math.max(1, alvo.length);
+      }
+    });
+    if (busca.hits.length) busca.atual = 0;
+    pintaBusca(true);
+  }
+
+  function pintaBusca(vaiParaOAtual) {
+    $$('.camada-texto span.achado').forEach(function (e) { e.classList.remove('achado', 'atual'); });
+    var conta = $('#busca-conta');
+    if (conta) conta.textContent = busca.termo.trim().length < 2 ? '' :
+      (busca.hits.length ? (busca.atual + 1) + ' de ' + busca.hits.length : 'nada encontrado');
+    if (!busca.hits.length) return;
+    busca.hits.forEach(function (h, n) {
+      var pag = document.querySelector('.pdf-pagina[data-n="' + h.pagina + '"]');
+      if (!pag) return;
+      var spans = pag.querySelectorAll('.camada-texto span');
+      for (var k = h.de; k <= h.ate && k < spans.length; k++) {
+        spans[k].classList.add('achado');
+        if (n === busca.atual) spans[k].classList.add('atual');
+      }
+    });
+    if (vaiParaOAtual !== false) irParaHit();
+  }
+
+  function irParaHit() {
+    var h = busca.hits[busca.atual];
+    if (!h) return;
+    if (!$('#rolagem-continua').checked && atual !== h.pagina) {
+      atual = h.pagina;
+      redesenha();
+      pintaBusca(false);
+    }
+    var alvo = document.querySelector('.camada-texto span.atual');
+    if (alvo) alvo.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+
+  function andaBusca(passo) {
+    if (!busca.hits.length) return;
+    busca.atual = (busca.atual + passo + busca.hits.length) % busca.hits.length;
+    pintaBusca();
+  }
+
+  var campoBusca = $('#busca-texto');
+  if (campoBusca) {
+    var atraso = null;
+    campoBusca.addEventListener('input', function () {
+      clearTimeout(atraso);
+      atraso = setTimeout(function () { buscaTexto(campoBusca.value); }, 250);
+    });
+    campoBusca.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); andaBusca(e.shiftKey ? -1 : 1); }
+      if (e.key === 'Escape') { campoBusca.value = ''; buscaTexto(''); }
+    });
+    $('#busca-prox').addEventListener('click', function () { andaBusca(1); });
+    $('#busca-ant').addEventListener('click', function () { andaBusca(-1); });
+  }
+
+  /* ------------------------------------------------------------------ completar pelo DOI (Crossref) */
+  var ROTULO_CAMPO = {
+    titulo_0_texto: 'Título', volume: 'Volume', numero: 'Número', doi: 'DOI', ano: 'Ano',
+    licenca: 'Licença', data_publicado: 'Data de publicação', resumo_0_texto: 'Resumo', paginas: 'Páginas'
+  };
+
+  function escapa(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+
+  function aplicaCampo(nome, valor) {
+    var el = document.querySelector('#form-revisar [name="' + CSS.escape(nome) + '"]');
+    if (!el) return false;
+    el.value = valor;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    var caixa = el.closest('.field');
+    if (caixa) { caixa.classList.add('is-edit'); caixa.classList.remove('is-block'); }
+    return true;
+  }
+
+  var botaoDoi = $('#doi-buscar'), saidaDoi = $('#doi-saida');
+  if (botaoDoi) {
+    botaoDoi.addEventListener('click', function () {
+      var doi = (document.getElementById('doi') || {}).value || '';
+      botaoDoi.disabled = true; botaoDoi.textContent = 'Consultando…';
+      saidaDoi.hidden = false;
+      saidaDoi.innerHTML = '<p class="small muted">Consultando o Crossref…</p>';
+      fetch('/doc/' + DOC + '/doi?numero=' + encodeURIComponent(doi), { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          botaoDoi.disabled = false; botaoDoi.textContent = 'Buscar no Crossref';
+          var h = '<p class="small ' + (j.ok ? '' : 'crit-text') + '">' + escapa(j.mensagem) + '</p>';
+          if (j.ok) {
+            h += '<table class="tbl mini doi-tabela"><thead><tr><th>Campo</th><th>O que o Crossref tem</th><th></th></tr></thead><tbody>';
+            Object.keys(j.campos || {}).forEach(function (k) {
+              if (!document.querySelector('#form-revisar [name="' + CSS.escape(k) + '"]')) return;
+              var atual = (document.querySelector('#form-revisar [name="' + CSS.escape(k) + '"]') || {}).value || '';
+              var igual = semAcento(atual).trim() === semAcento(j.campos[k]).trim();
+              h += '<tr><td>' + escapa(ROTULO_CAMPO[k] || k) + '</td><td class="small">' + escapa(String(j.campos[k]).slice(0, 160)) +
+                '</td><td>' + (igual ? '<span class="chip ok">já igual</span>' :
+                  '<button class="btn small" type="button" data-aplica="' + escapa(k) + '">aplicar</button>') + '</td></tr>';
+            });
+            (j.autores || []).forEach(function (a, n) {
+              var alvo = document.querySelector('#form-revisar [name="autor_' + n + '_orcid"]');
+              if (!alvo || !a.orcid) return;
+              var igual = (alvo.value || '').indexOf(a.orcid) >= 0;
+              h += '<tr><td>ORCID de ' + escapa((a.nomes || '') + ' ' + (a.sobrenome || '')) + '</td><td class="mono small">' + escapa(a.orcid) +
+                '</td><td>' + (igual ? '<span class="chip ok">já igual</span>' :
+                  '<button class="btn small" type="button" data-aplica="autor_' + n + '_orcid" data-valor="' + escapa(a.orcid) + '">aplicar</button>') + '</td></tr>';
+            });
+            h += '</tbody></table><p class="small"><button class="btn small primary" type="button" id="doi-aplica-tudo">Aplicar tudo que falta</button> ' +
+              '<span class="faint">Nada é gravado até você salvar.</span></p>';
+          }
+          saidaDoi.innerHTML = h;
+          saidaDoi.dataset.campos = JSON.stringify(j.campos || {});
+          $$('[data-aplica]', saidaDoi).forEach(function (b) {
+            b.addEventListener('click', function () {
+              var nome = b.dataset.aplica;
+              var valor = b.dataset.valor !== undefined ? b.dataset.valor : (j.campos || {})[nome];
+              if (aplicaCampo(nome, valor)) { b.outerHTML = '<span class="chip ok">aplicado</span>'; }
+            });
+          });
+          var tudo = $('#doi-aplica-tudo');
+          if (tudo) tudo.addEventListener('click', function () {
+            $$('[data-aplica]', saidaDoi).forEach(function (b) { b.click(); });
+          });
+        })
+        .catch(function () {
+          botaoDoi.disabled = false; botaoDoi.textContent = 'Buscar no Crossref';
+          saidaDoi.innerHTML = '<p class="small crit-text">Não consegui falar com o Crossref agora.</p>';
+        });
+    });
+  }
+
+  /* ------------------------------------------------------------------ conferir ORCID no orcid.org */
+  $$('[data-confere-orcid]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var i = b.dataset.confereOrcid;
+      var campo = document.getElementById('autor_' + i + '_orcid');
+      var saida = document.getElementById('orcid-saida-' + i);
+      if (!campo || !saida) return;
+      if (!(campo.value || '').trim()) { saida.innerHTML = '<span class="crit-text">Preencha o ORCID primeiro.</span>'; return; }
+      b.disabled = true; saida.innerHTML = '<span class="muted">consultando o orcid.org…</span>';
+      fetch('/orcid?numero=' + encodeURIComponent(campo.value) + '&nome=' + encodeURIComponent(b.dataset.nome || ''),
+        { headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          b.disabled = false;
+          var classe = (j.existe && j.confere !== false) ? 'ok-text' : 'crit-text';
+          saida.innerHTML = '<span class="' + classe + '">' + escapa(j.mensagem) + '</span>';
+        })
+        .catch(function () { b.disabled = false; saida.innerHTML = '<span class="crit-text">Não consegui consultar agora.</span>'; });
+    });
   });
 
   /* ------------------------------------------------------------------ inserir itens novos */

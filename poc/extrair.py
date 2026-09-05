@@ -15,11 +15,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from extrator import corpo, front, placar, referencias  # noqa: E402
 from extrator.leitura import ler_pdf  # noqa: E402
-from extrator.modelo import ArticleModel  # noqa: E402
+from extrator.modelo import ArticleModel, Figura, Secao, Tabela  # noqa: E402
 
 
 def extrai(caminho: str, pasta_imagens: str = None):
-    doc = ler_pdf(caminho)
+    """PDF ou DOCX -> (Documento, ArticleModel). O DOCX passa pelo mesmo caminho e, no fim, tem o corpo,
+    as tabelas e as equações substituídos pelo que o próprio arquivo declara, em vez de heurística."""
+    e_docx = caminho.lower().endswith(".docx")
+    if e_docx:
+        from extrator.docx import le_docx  # noqa: WPS433
+        doc = le_docx(caminho)
+    else:
+        doc = ler_pdf(caminho)
     model = ArticleModel(
         arquivo=os.path.basename(caminho), paginas=doc.paginas,
         gerado_por=doc.metadata.get("creator") or doc.metadata.get("producer"),
@@ -83,7 +90,151 @@ def extrai(caminho: str, pasta_imagens: str = None):
     if soltas:
         model.aviso(f"{soltas} imagem(ns) no PDF sem legenda 'Figura N' associada; não entram no XML (F01).")
     model.proveniencia["_indices"] = {"primeira_secao": i_sec, "referencias": i_ref, "paragrafos": len(doc.paragrafos), "notas": len(doc.notas), "laterais": len(doc.laterais), "margens": len(doc.margens)}
+    if e_docx:
+        _aplica_estrutura_docx(doc, model, pasta_imagens)
     return doc, model
+
+
+RE_LEGENDA_FIG = re.compile(r"^\s*(figura|fig\.?|gr[áa]fico|imagem|foto|quadro)\s*(\d{1,3})\b[\s.:\-–]*(.*)$", re.I)
+RE_LEGENDA_TAB = re.compile(r"^\s*(tabela|table|tabla)\s*(\d{1,3})\b[\s.:\-–]*(.*)$", re.I)
+RE_FONTE = re.compile(r"^\s*(fonte|source|fuente)\s*[:.]\s*(.+)$", re.I)
+RE_HEAD_REF_SIMPLES = re.compile(r"^(refer[êe]ncias?|references|bibliografia|bibliography)\b", re.I)
+
+
+def _aplica_estrutura_docx(doc, model, pasta_imagens=None):
+    """Troca o que foi adivinhado pelo que o DOCX declara: seções pelos estilos de título, tabelas com
+    células de verdade e equações já em MathML. O front matter (autores, resumos, datas) continua vindo
+    das mesmas heurísticas, porque nem o DOCX marca isso."""
+    linhas = doc.linhas
+    secoes = [s for s in getattr(doc, "secoes_docx", []) if s["nivel"] >= 1]
+    # o que vem antes do primeiro título de nível 1 é front matter; o que vem do "Referências" em diante é back
+    i_ref = next((s["indice_linha"] for s in secoes if RE_HEAD_REF_SIMPLES.match(s["titulo"])), None)
+    corpo_secoes = [s for s in secoes if not RE_HEAD_REF_SIMPLES.match(s["titulo"])
+                    and (i_ref is None or s["indice_linha"] < i_ref)]
+    # resumo e abstract são front matter, não seções do corpo
+    corpo_secoes = [s for s in corpo_secoes
+                    if not re.match(r"^(resumo|abstract|resumen|palavras[- ]chave|keywords)\b", s["titulo"], re.I)]
+    # titulo com estilo de cabecalho: num DOCX ninguem poe secao do corpo antes do resumo, entao um
+    # Heading que apareca antes dele e o titulo do artigo, nao secao.
+    # o resumo tanto pode ser um titulo com estilo quanto uma linha comum comecando por "Resumo:"
+    i_resumo = next((x["indice_linha"] for x in secoes
+                     if re.match(r"^(resumo|abstract|resumen)", x["titulo"], re.I)), None)
+    if i_resumo is None:
+        i_resumo = next((i for i, l in enumerate(linhas)
+                         if l.zona == "corpo" and re.match(r"^(resumo|abstract|resumen|palavras[- ]chave|keywords)\b\s*[:.]",
+                                                           l.texto or "", re.I)), None)
+    if i_resumo is not None:
+        antes = [x for x in corpo_secoes if x["indice_linha"] < i_resumo]
+        if antes:
+            candidato = antes[-1]["titulo"].strip()
+            atual = (model.titulo_principal or "").strip()
+            if candidato and candidato.lower() != atual.lower() and len(candidato) > 15:
+                for t in model.titulos:
+                    if t.tipo == "article-title":
+                        t.texto = candidato
+                        break
+                else:
+                    from extrator.modelo import Titulo
+                    model.titulos.insert(0, Titulo(texto=candidato, idioma=model.idioma, tipo="article-title"))
+                model.marca("titulos", "titulo pelo estilo de cabecalho que vem antes do resumo, no DOCX")
+            corpo_secoes = [x for x in corpo_secoes if x["indice_linha"] >= i_resumo]
+    if not corpo_secoes:
+        return
+    fim_corpo = i_ref if i_ref is not None else len(linhas)
+    novas = []
+    for k, s in enumerate(corpo_secoes):
+        ate = corpo_secoes[k + 1]["indice_linha"] if k + 1 < len(corpo_secoes) else fim_corpo
+        pars = [linhas[i].texto for i in range(s["indice_linha"] + 1, min(ate, len(linhas)))
+                if linhas[i].zona == "corpo" and linhas[i].texto.strip()]
+        pars = [p for p in pars if not RE_LEGENDA_FIG.match(p) and not RE_LEGENDA_TAB.match(p) and not RE_FONTE.match(p)]
+        titulo = s["titulo"].strip()
+        numero = None
+        mn = re.match(r"^(\d+(?:\.\d+)*)[.)\s]+(.+)$", titulo)
+        if mn:
+            numero, titulo_limpo = mn.group(1), mn.group(2).strip()
+        else:
+            titulo_limpo = titulo
+        novas.append(Secao(titulo=titulo_limpo, nivel=s["nivel"], numero=numero, titulo_completo=s["titulo"].strip(),
+                           pagina=linhas[s["indice_linha"]].pagina if s["indice_linha"] < len(linhas) else 1,
+                           paragrafos=pars))
+    model.secoes = novas
+    model.marca("secoes", f"{len(novas)} seção(ões) pelos estilos de título do DOCX (Heading), não por heurística")
+
+    def _secao_de(indice_linha):
+        """Em que seção do corpo cai um elemento que estava nesta posição do arquivo."""
+        anterior = [(n, s) for n, s in enumerate(corpo_secoes) if s["indice_linha"] <= indice_linha]
+        if not anterior:
+            return None, 0
+        n, s = anterior[-1]
+        pos = sum(1 for i in range(s["indice_linha"] + 1, min(indice_linha, len(linhas)))
+                  if linhas[i].zona == "corpo" and linhas[i].texto.strip())
+        return n, pos
+
+    def _legenda_perto(indice_linha, regex):
+        """Legenda e fonte na vizinhança do elemento (o Word põe logo acima ou logo abaixo)."""
+        for i in list(range(indice_linha, min(indice_linha + 4, len(linhas)))) + \
+                 list(range(max(0, indice_linha - 3), indice_linha)):
+            m = regex.match(linhas[i].texto or "")
+            if m:
+                fonte = None
+                for j in range(i + 1, min(i + 4, len(linhas))):
+                    mf = RE_FONTE.match(linhas[j].texto or "")
+                    if mf:
+                        fonte = mf.group(2).strip()
+                        break
+                return m.group(1).strip().capitalize() + " " + m.group(2), m.group(2), (m.group(3) or "").strip(), fonte
+        return None, None, "", None
+
+    # ---- tabelas: o DOCX já entrega as células separadas, então nada vai como imagem
+    if doc.tabelas:
+        model.tabelas = []
+        for t in doc.tabelas:
+            rotulo, numero, legenda, fonte = _legenda_perto(t["indice_linha"], RE_LEGENDA_TAB)
+            si, pos = _secao_de(t["indice_linha"])
+            model.tabelas.append(Tabela(
+                numero=numero, rotulo=rotulo or "", legenda=legenda, fonte=fonte, pagina=t.get("pagina", 1),
+                celulas=t["celulas"], linhas_cabecalho=t["linhas_cabecalho"], colunas=t["colunas"],
+                secao_indice=si, pos_paragrafo=pos, qualidade="alta",
+                chamada_no_texto=bool(numero and any(re.search(rf"tabela\s*{numero}\b", p, re.I)
+                                                     for s in novas for p in s.paragrafos))))
+        model.marca("tabelas", f"{len(model.tabelas)} tabela(s) com células vindas do DOCX (nenhuma vai como imagem)")
+
+    # ---- equações: OMML do Word convertido em MathML, que é o que a SciELO exige
+    if doc.equacoes:
+        from extrator.modelo import Equacao  # noqa: WPS433
+        model.equacoes = []
+        for k, e in enumerate(doc.equacoes, start=1):
+            si, pos = _secao_de(e["indice_linha"])
+            eq = Equacao(numero=str(k), rotulo=f"({k})", pagina=e.get("pagina", 1), secao_indice=si, pos_paragrafo=pos)
+            eq.mathml = e["mathml"]
+            eq.latex = ""
+            model.equacoes.append(eq)
+        model.marca("equacoes", f"{len(model.equacoes)} equação(ões) em MathML, convertidas do OMML do Word")
+
+    # ---- figuras: as imagens do DOCX, casadas com a legenda "Figura N" mais próxima
+    if doc.imagens:
+        model.figuras = []
+        n = 0
+        for idx, im in enumerate(doc.imagens):
+            rotulo, numero, legenda, fonte = _legenda_perto(im["indice_linha"], RE_LEGENDA_FIG)
+            if not rotulo:
+                continue
+            si, pos = _secao_de(im["indice_linha"])
+            n += 1
+            arquivo = f"fig{n:02d}.{im.get('ext') or 'png'}"
+            model.figuras.append(Figura(tipo="fig", rotulo=rotulo, legenda=legenda, fonte=fonte,
+                                        pagina=im.get("pagina", 1), numero=numero, secao_indice=si,
+                                        pos_paragrafo=pos, imagem_indice=idx, arquivo=arquivo,
+                                        ext=im.get("ext"),
+                                        chamada_no_texto=bool(numero and any(re.search(rf"figura\s*{numero}\b", p, re.I)
+                                                                             for s in novas for p in s.paragrafos))))
+            if pasta_imagens and im.get("dados"):
+                os.makedirs(pasta_imagens, exist_ok=True)
+                with open(os.path.join(pasta_imagens, arquivo), "wb") as fh:
+                    fh.write(im["dados"])
+        sem_legenda = len(doc.imagens) - n
+        if sem_legenda:
+            model.aviso(f"{sem_legenda} imagem(ns) no DOCX sem legenda 'Figura N' por perto; não entram no XML (F01).")
 
 
 def resumo_md(m: ArticleModel) -> str:

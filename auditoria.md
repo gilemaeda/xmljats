@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.10.1). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.11.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 65 de 65 verificações passaram.
+- **Site:** 77 de 77 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -99,6 +99,18 @@ Gerada por `python ops/auditoria.py` (app 0.10.1). Cada número vem de uma medi�
 - ok — depósito sem FTP configurado é recusado com explicação
 - ok — configurações têm FTP da SciELO e pedido do atestado
 - ok — pedido de atestado exige empresa e CNPJ
+- ok — visualizador tem busca no documento
+- ok — revisar completa pelo DOI e confere o ORCID
+- ok — item removido pode voltar (campo escondido antes da caixa)
+- ok — DOI inválido é recusado sem ir à rede
+- ok — ORCID fora do formato é recusado sem ir à rede
+- ok — site aceita DOCX
+- ok — XML vindo de DOCX é válido no DTD JATS
+- ok — DOCX original fica guardado
+- ok — formato fora da lista é recusado com o motivo
+- ok — fórmula do Word (OMML) vira MathML
+- ok — licença CC BY-NC-ND não vira CC BY-NC
+- ok — licença CC BY-SA não vira CC BY-NC-SA
 - ok — LaTeX vira MathML
 - ok — LaTeX quebrado explica o erro em vez de gerar XML inválido
 - ok — sair encerra a sessão
@@ -141,6 +153,11 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Inserir tabela, imagem, equação, quadro e diálogo na revisão | pronto | verificação "revisar oferece inserir..." |
 | Campos que a SciELO exige travando salvar e validar | pronto | verificação "campo obrigatório vazio impede salvar" |
 | Fórmulas em MathML (exigência do guia de entrega) | pronto | verificações de LaTeX/MathML |
+| Entrada por DOCX (seções, tabelas e fórmulas vindas do arquivo) | pronto | ops/test_docx.py, 40 verificações |
+| Fórmula do Word (OMML) convertida em MathML sem digitar | pronto | verificação "fórmula do Word (OMML) vira MathML" |
+| Busca dentro do documento no visualizador | pronto | verificação "visualizador tem busca no documento" |
+| Completar pelo DOI no Crossref (volume, licença, ORCID, resumo) | pronto | ops/test_ferramentas.py |
+| Conferir o ORCID no registro público orcid.org | pronto | ops/test_ferramentas.py |
 | API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |
 | Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |
 | Depósito do pacote no FTP da SciELO, com o aviso obrigatório por e-mail | pronto | ops/test_entrega.py deposita num FTP de verdade |

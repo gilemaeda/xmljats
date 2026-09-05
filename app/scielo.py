@@ -53,13 +53,18 @@ def normaliza_issn(issn: str) -> str:
     return f"{s[:4]}-{s[4:]}" if len(s) == 8 else (issn or "").strip()
 
 
-def busca_por_issn(issn: str, timeout: int = 25) -> dict:
+def busca_por_issn(issn: str, timeout: int = 25, prazo_total: int = 120) -> dict:
     """Devolve {'achou': bool, 'mensagem': str, 'dados': {...}, 'colecao': str}. Nunca levanta exceção de rede."""
     issn = normaliza_issn(issn)
     if not RE_ISSN.match(issn.replace("-", "")[:4] + "-" + issn.replace("-", "")[4:]) and not RE_ISSN.match(issn):
         return {"achou": False, "mensagem": "ISSN inválido: use o formato 0000-0000.", "dados": {}}
     erro_rede = None
+    import time
+    fim = time.monotonic() + prazo_total
     for colecao in COLECOES:
+        if time.monotonic() >= fim:
+            erro_rede = erro_rede or f"as coleções restantes não couberam no limite de {prazo_total}s"
+            break
         url = API + "?" + urllib.parse.urlencode({"issn": issn, "collection": colecao})
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:

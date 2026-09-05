@@ -97,4 +97,8 @@ Ordem: homologação primeiro, produção depois. Banco de dados ainda não é n
 - Referências em três estilos: ABNT, APA e numérico (Vancouver `1.` e IEEE `[1]`). Nas quatro amostras da SciELO o número de referências bate exatamente com o XML oficial.
 - Auditoria: `python ops/auditoria.py` reprocessa tudo, exercita o site inteiro e escreve `auditoria.md` com os números medidos.
 - Entrega: conferência do pacote contra o guia, depósito no FTP da SciELO (`app/entrega.py`), aviso obrigatório montado no correio e pedido do atestado de capacidade técnica. `ops/test_entrega.py` sobe um servidor FTP local e deposita de verdade.
-- Falta: caminho DOCX (aguardando arquivos de exemplo), fila com IA, integração com OJS.
+- **Entrada por DOCX** (`poc/extrator/docx.py`): o Word diz o que o PDF obriga a adivinhar. O título vem do estilo `Title` (ou do cabeçalho que precede o resumo), as seções vêm dos estilos `Heading1/2/3`, a tabela vem com as células separadas e nunca vira imagem, e a fórmula vem em **OMML**, que é convertido em **MathML** sem ninguém digitar LaTeX. O resto do front matter (autores, ORCID, afiliações, resumos, datas, licença, referências) usa as mesmas heurísticas do caminho PDF. Nos quatro DOCX de exemplo: 5, 7, 5 e 15 seções lidas pelos estilos, contra a heurística de posição do PDF.
+- **Busca dentro do documento** no visualizador, sem acento e sem caixa, com navegação entre as ocorrências.
+- **Completar pelo DOI** (`app/enriquece.py`): consulta o Crossref e traz volume, número, licença, resumo e o ORCID de cada autor, campo a campo, mostrando a origem. Nada é gravado sem confirmação. A data de publicação só é aproveitada quando vem com dia e mês.
+- **Conferir o ORCID** no registro público do orcid.org: diz de quem é o número e avisa quando o nome não bate com o do autor.
+- Falta: fila com IA, integração com OJS, referências cruzadas com o Crossref, CRediT, status vindo da SciELO.

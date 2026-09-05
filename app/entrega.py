@@ -220,19 +220,18 @@ def _conecta(f: dict, timeout: int = 30):
     """Conexão FTP, com TLS quando o servidor aceitar. Devolve (conexao, como)."""
     servidor, porta, usuario, senha = f["servidor"], int(f.get("porta") or 21), f["usuario"], f["senha"]
     if f.get("tls", True):
-        try:
-            ctx = ssl.create_default_context()
-            con = ftplib.FTP_TLS(context=ctx, timeout=timeout)
-            con.connect(servidor, porta)
-            con.login(usuario, senha)
-            con.prot_p()
-            return con, "FTPS (canal de dados cifrado)"
-        except Exception:  # noqa: BLE001
-            pass  # servidor sem TLS: cai para FTP simples, e o relatório diz isso
+        # com TLS pedido, não caímos para texto claro por conta própria: seria mandar a senha do FTP da
+        # SciELO em claro sem ninguém autorizar. Quem quiser FTP simples desmarca a opção em Configurações.
+        ctx = ssl.create_default_context()
+        con = ftplib.FTP_TLS(context=ctx, timeout=timeout)
+        con.connect(servidor, porta)
+        con.login(usuario, senha)
+        con.prot_p()
+        return con, "FTPS (canal de dados cifrado)"
     con = ftplib.FTP(timeout=timeout)
     con.connect(servidor, porta)
     con.login(usuario, senha)
-    return con, "FTP simples (sem TLS)"
+    return con, "FTP simples, sem TLS: a senha trafega em texto claro"
 
 
 def deposita(cfg: dict, caminho_zip: str, correcao: bool = False, timeout: int = 60) -> dict:
@@ -258,9 +257,17 @@ def deposita(cfg: dict, caminho_zip: str, correcao: bool = False, timeout: int =
             return {"ok": False, "passos": passos,
                     "mensagem": f"A pasta '{pasta}' não existe ou a conta não tem acesso a ela ({e}). "
                                 f"Confirme o nome da pasta com {EMAIL_SCIELO}."}
+        # sobe com outro nome e só depois renomeia: uma queda no meio do envio deixaria um .zip truncado
+        # na pasta Entrega da SciELO, que é pior do que não ter enviado nada
+        parcial = nome + ".parcial"
         with open(caminho_zip, "rb") as arq:
-            con.storbinary(f"STOR {nome}", arq)
-        passos.append(f"Enviei {nome} ({os.path.getsize(caminho_zip)} bytes).")
+            con.storbinary(f"STOR {parcial}", arq)
+        try:
+            con.delete(nome)  # reenvio do mesmo pacote: o rename não sobrescreve em todo servidor
+        except ftplib.all_errors:
+            pass
+        con.rename(parcial, nome)
+        passos.append(f"Enviei {nome} ({os.path.getsize(caminho_zip)} bytes), com nome provisório até terminar.")
         try:
             tamanho = con.size(nome)
             confere = tamanho == os.path.getsize(caminho_zip)
@@ -271,6 +278,10 @@ def deposita(cfg: dict, caminho_zip: str, correcao: bool = False, timeout: int =
         return {"ok": True, "passos": passos,
                 "mensagem": f"{nome} depositado em {pasta}. Falta o aviso por e-mail: depositar sozinho não garante "
                             f"publicação, o guia exige avisar {EMAIL_SCIELO} a cada depósito."}
+    except ssl.SSLError as e:
+        return {"ok": False, "passos": passos,
+                "mensagem": f"O servidor não aceitou TLS ({str(e)[:120]}). Se a SciELO usar FTP simples, desmarque "
+                            f"\"Usar TLS\" em Configurações — ciente de que a senha passa a trafegar em texto claro."}
     except ftplib.all_errors as e:
         return {"ok": False, "passos": passos, "mensagem": f"O FTP recusou: {str(e)[:200]}"}
     except Exception as e:  # noqa: BLE001

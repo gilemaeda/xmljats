@@ -496,6 +496,24 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 @media (max-width:1200px){.revisar{grid-template-columns:1fr}.visor{position:static;max-height:none}
   .visor-corpo{max-height:70vh}}
 
+/* ---------- busca no documento, DOI e ORCID ---------- */
+.visor-busca{display:flex;align-items:center;gap:6px;padding:6px 10px;border-bottom:1px solid var(--border);background:var(--surface-2)}
+.visor-busca .lupa{width:15px;height:15px;flex:0 0 auto;color:var(--muted);fill:none;stroke:currentColor;stroke-width:2}
+.visor-busca input{flex:1;min-width:0;height:30px;padding:0 8px;font-size:12.5px}
+.visor-busca #busca-conta{min-width:76px;text-align:right;color:var(--muted);font-size:11.5px}
+.camada-texto span.achado{background:rgba(255,206,84,.45);border-radius:2px}
+.camada-texto span.atual{background:rgba(255,145,0,.62);box-shadow:0 0 0 1px rgba(180,90,0,.5)}
+.caixa-doi{border:1px dashed var(--border-strong);border-radius:var(--r-3);padding:var(--s-4);background:var(--surface-2)}
+.doi-tabela{margin-top:var(--s-3)}
+.doi-tabela td{vertical-align:top}
+.orcid-saida{margin-top:4px;line-height:1.5;min-height:0}
+.campo-orcid{grid-column:span 2}
+.campo-orcid input{min-width:158px}
+@media (max-width:900px){.campo-orcid{grid-column:auto}}
+.ok-text{color:var(--ok-ink)}
+.bloco.removido{opacity:.55;border-left-color:var(--crit)}
+.bloco.removido input,.bloco.removido textarea,.bloco.removido select{text-decoration:line-through}
+
 /* ---------- consulta por ISSN (validador, revistas) ---------- */
 .issn-box{border:1px dashed var(--border-strong);border-radius:var(--r-3);padding:var(--s-4);background:var(--surface-2)}
 .issn-saida{margin-top:var(--s-3);border-top:1px solid var(--border);padding-top:var(--s-3)}

@@ -30,7 +30,8 @@ import urllib.request
 import scielo
 
 UA = {"User-Agent": "xmljats/1.0 (+https://github.com/gilemaeda/xmljats)", "Accept": "application/json, text/html;q=0.8"}
-TIMEOUT = 20
+TIMEOUT = 12          # por requisição
+PRAZO_TOTAL = 45      # teto da consulta inteira: quem clica em "Buscar" não pode ficar minutos esperando
 RE_ISSN = re.compile(r"^[0-9]{4}-[0-9]{3}[0-9X]$")
 PORTAL_FICHA = "https://portal.issn.org/resource/ISSN/{issn}"
 CBISSN = "https://cbissn.ibict.br/"
@@ -84,12 +85,12 @@ def valido(issn: str) -> bool:
     return ("X" if resto == 10 else str(resto)) == d[7]
 
 
-def _pega(url: str, aceita_html: bool = False):
+def _pega(url: str, aceita_html: bool = False, timeout: int = TIMEOUT):
     cab = dict(UA)
     if aceita_html:
         cab["Accept"] = "text/html,application/xhtml+xml"
     req = urllib.request.Request(url, headers=cab)
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as r:
+    with urllib.request.urlopen(req, timeout=timeout) as r:
         bruto = r.read().decode("utf-8", "replace")
     return bruto if aceita_html else json.loads(bruto or "null")
 
@@ -118,9 +119,9 @@ def _licenca_cc(texto: str) -> str:
 
 # ---------------------------------------------------------------- fontes
 
-def le_portal(issn: str) -> dict:
+def le_portal(issn: str, sobra: int = TIMEOUT) -> dict:
     """Ficha pública do portal.issn.org. Lê os pares rótulo/valor da parte 'Displaying basic data'."""
-    html = _pega(PORTAL_FICHA.format(issn=issn), aceita_html=True)
+    html = _pega(PORTAL_FICHA.format(issn=issn), aceita_html=True, timeout=min(sobra, TIMEOUT))
     limpo = re.sub(r"(?s)<(script|style)\b.*?</\1>", " ", html)
     linhas = [re.sub(r"\s+", " ", x).strip() for x in re.sub(r"<[^>]+>", "\n", limpo).split("\n")]
     linhas = [x for x in linhas if x]
@@ -166,8 +167,8 @@ def le_portal(issn: str) -> dict:
     return fora
 
 
-def le_crossref(issn: str) -> dict:
-    j = (_pega(f"https://api.crossref.org/journals/{issn}") or {}).get("message") or {}
+def le_crossref(issn: str, sobra: int = TIMEOUT) -> dict:
+    j = (_pega(f"https://api.crossref.org/journals/{issn}", timeout=min(sobra, TIMEOUT)) or {}).get("message") or {}
     if not j.get("title"):
         raise ValueError("sem registro")
     fora = {"titulo": j["title"]}
@@ -181,8 +182,8 @@ def le_crossref(issn: str) -> dict:
     return fora
 
 
-def le_openalex(issn: str) -> dict:
-    j = _pega(f"https://api.openalex.org/sources/issn:{issn}") or {}
+def le_openalex(issn: str, sobra: int = TIMEOUT) -> dict:
+    j = _pega(f"https://api.openalex.org/sources/issn:{issn}", timeout=min(sobra, TIMEOUT)) or {}
     if not j.get("display_name"):
         raise ValueError("sem registro")
     fora = {"titulo": j["display_name"]}
@@ -201,8 +202,9 @@ def le_openalex(issn: str) -> dict:
     return fora
 
 
-def le_doaj(issn: str) -> dict:
-    j = _pega("https://doaj.org/api/search/journals/" + urllib.parse.quote(f"issn:{issn}")) or {}
+def le_doaj(issn: str, sobra: int = TIMEOUT) -> dict:
+    j = _pega("https://doaj.org/api/search/journals/" + urllib.parse.quote(f"issn:{issn}"),
+              timeout=min(sobra, TIMEOUT)) or {}
     res = j.get("results") or []
     if not res:
         raise ValueError("não está no DOAJ")
@@ -237,8 +239,9 @@ def le_doaj(issn: str) -> dict:
     return fora
 
 
-def le_scielo(issn: str) -> dict:
-    r = scielo.busca_por_issn(issn, timeout=TIMEOUT)
+def le_scielo(issn: str, sobra: int = TIMEOUT) -> dict:
+    # a SciELO é consultada coleção por coleção; sem teto, 16 coleções lentas seguravam a tela por minutos
+    r = scielo.busca_por_issn(issn, timeout=min(6, max(2, sobra)), prazo_total=max(4, min(sobra, 20)))
     if not r.get("achou"):
         raise ValueError(r.get("mensagem") or "não está nas coleções SciELO")
     d = dict(r["dados"])
@@ -267,7 +270,7 @@ PREFERENCIA = {
 }
 
 
-def consulta(issn_bruto: str) -> dict:
+def consulta(issn_bruto: str, prazo_total: int = PRAZO_TOTAL) -> dict:
     """Consulta as fontes e devolve {'issn', 'ok', 'mensagem', 'dados', 'origem', 'fontes'}.
 
     'dados' é o cadastro sugerido; 'origem' diz de onde veio cada campo; 'fontes' lista o que cada
@@ -283,9 +286,16 @@ def consulta(issn_bruto: str) -> dict:
     origem: dict = {}
     relatorio = []
     respostas = {}
+    import time
+    fim = time.monotonic() + prazo_total
     for nome, site, ler in FONTES:
+        if time.monotonic() >= fim:
+            respostas[nome] = {}
+            relatorio.append({"fonte": nome, "site": site, "ok": False,
+                              "mensagem": f"não consultada: a busca passou do limite de {prazo_total}s"})
+            continue
         try:
-            r = ler(issn) or {}
+            r = ler(issn, sobra=max(2, int(fim - time.monotonic()))) or {}
             respostas[nome] = r
             relatorio.append({"fonte": nome, "site": site, "ok": True,
                               "mensagem": f"{len(r)} campo(s): " + ", ".join(sorted(r)) if r else "respondeu sem dados"})
@@ -298,8 +308,10 @@ def consulta(issn_bruto: str) -> dict:
         irmaos = {normaliza(v) for r in respostas.values() for k, v in (r or {}).items()
                   if k in ("issn_l", "issn_ppub", "issn_epub") and v}
         for outro in sorted(irmaos - {issn}):
+            if time.monotonic() >= fim:
+                break
             try:
-                r = le_scielo(outro)
+                r = le_scielo(outro, sobra=max(2, int(fim - time.monotonic())))
             except Exception:  # noqa: BLE001
                 continue
             respostas["SciELO (ArticleMeta)"] = r

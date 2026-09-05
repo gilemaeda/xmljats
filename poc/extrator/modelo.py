@@ -121,7 +121,8 @@ class Tabela:
 
 @dataclass
 class Equacao:
-    """Equacao destacada: sai do PDF como imagem recortada (PDF nao tem MathML)."""
+    """Equacao destacada. No PDF sai como imagem recortada e o MathML e escrito na revisao (em LaTeX);
+    no DOCX o Word ja guarda a formula em OMML, que vira MathML sem ninguem digitar."""
     numero: Optional[str] = None            # "12" em "(12)"
     rotulo: Optional[str] = None            # "(12)"
     texto: str = ""                         # texto bruto, para conferencia
@@ -134,6 +135,9 @@ class Equacao:
     largura: Optional[int] = None
     altura: Optional[int] = None
     bbox: List[float] = field(default_factory=list)
+    latex: str = ""                         # escrito na revisao; a SciELO exige MathML ou LaTeX
+    mathml: Optional[str] = None            # gerado do LaTeX, ou convertido do OMML do Word
+    erro_mathml: Optional[str] = None
 
 
 @dataclass

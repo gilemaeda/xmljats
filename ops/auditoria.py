@@ -197,6 +197,45 @@ def roda_site():
     check("pedido de atestado exige empresa e CNPJ",
           "erro" in c.post("/admin/config/atestado", data={"empresa": "", "cnpj": ""}).headers.get("location", ""))
 
+    # ---- ferramentas que completam o que o arquivo não traz
+    if doc:
+        ver2 = c.get(doc + "/editar").text
+        check("visualizador tem busca no documento", 'id="busca-texto"' in ver2)
+        check("revisar completa pelo DOI e confere o ORCID",
+              'id="doi-buscar"' in ver2 and "data-confere-orcid" in ver2)
+        check("item removido pode voltar (campo escondido antes da caixa)",
+              'type="hidden" name="autor_0_remover" value=""' in ver2)
+    import enriquece as enr
+    check("DOI inválido é recusado sem ir à rede", enr.por_doi("abc")["ok"] is False)
+    check("ORCID fora do formato é recusado sem ir à rede", enr.confere_orcid("abc")["ok"] is False)
+
+    # ---- entrada DOCX
+    with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.docx"), "rb") as f:
+        up2 = c.post("/validar", files={"arquivo": ("artigo.docx", f, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+                     data={"revista": "rdp", "sps": "1.9"})
+    check("site aceita DOCX", up2.status_code == 303)
+    docx_doc = up2.headers.get("location", "")
+    if docx_doc:
+        v2 = json.load(io.open(os.path.join(tmp, "docs", docx_doc.rsplit("/", 1)[-1], "validacao.json"), encoding="utf-8"))
+        check("XML vindo de DOCX é válido no DTD JATS", v2.get("dtd_ok") is True)
+        check("DOCX original fica guardado",
+              os.path.exists(os.path.join(tmp, "docs", docx_doc.rsplit("/", 1)[-1], "original.docx")))
+    check("formato fora da lista é recusado com o motivo",
+          c.post("/validar", files={"arquivo": ("x.txt", b"nao", "text/plain")},
+                 data={"revista": "", "sps": "1.9"}).status_code == 400)
+    from extrator.docx import omml_para_mathml
+    from lxml import etree as _et
+    _omml = _et.fromstring('<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">'
+                           '<m:f><m:num><m:r><m:t>a</m:t></m:r></m:num><m:den><m:r><m:t>b</m:t></m:r></m:den></m:f></m:oMath>')
+    check("fórmula do Word (OMML) vira MathML", "<mfrac" in (omml_para_mathml(_omml) or ""))
+
+    # ---- licença: a URL tem de bater com o texto escolhido
+    from app.main import licenca_url
+    check("licença CC BY-NC-ND não vira CC BY-NC",
+          licenca_url("CC BY-NC-ND 4.0") == "https://creativecommons.org/licenses/by-nc-nd/4.0/")
+    check("licença CC BY-SA não vira CC BY-NC-SA",
+          licenca_url("CC BY-SA 4.0") == "https://creativecommons.org/licenses/by-sa/4.0/")
+
     # ---- MathML (exigência do guia de entrega da SciELO)
     from app import main as app_main
     mml, erro_mml = app_main.latex_para_mathml("E = mc^2")
@@ -279,6 +318,11 @@ def main():
           "| Inserir tabela, imagem, equação, quadro e diálogo na revisão | pronto | verificação \"revisar oferece inserir...\" |",
           "| Campos que a SciELO exige travando salvar e validar | pronto | verificação \"campo obrigatório vazio impede salvar\" |",
           "| Fórmulas em MathML (exigência do guia de entrega) | pronto | verificações de LaTeX/MathML |",
+          "| Entrada por DOCX (seções, tabelas e fórmulas vindas do arquivo) | pronto | ops/test_docx.py, 40 verificações |",
+          "| Fórmula do Word (OMML) convertida em MathML sem digitar | pronto | verificação \"fórmula do Word (OMML) vira MathML\" |",
+          "| Busca dentro do documento no visualizador | pronto | verificação \"visualizador tem busca no documento\" |",
+          "| Completar pelo DOI no Crossref (volume, licença, ORCID, resumo) | pronto | ops/test_ferramentas.py |",
+          "| Conferir o ORCID no registro público orcid.org | pronto | ops/test_ferramentas.py |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",
           "| Depósito do pacote no FTP da SciELO, com o aviso obrigatório por e-mail | pronto | ops/test_entrega.py deposita num FTP de verdade |",

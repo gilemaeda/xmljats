@@ -57,6 +57,11 @@ def prepara(pasta: Path, forca: bool = False) -> dict:
             return pronto
     pdf = pasta / "original.pdf"
     if not pdf.exists():
+        outro = next((p for p in pasta.glob("original.*") if p.suffix.lower() != ".pdf"), None)
+        if outro:
+            return {"paginas": [], "erro": f"O arquivo original é {outro.suffix.upper().lstrip('.')}, "
+                                           "que não é renderizado página a página. Use a aba \"Texto lido\" "
+                                           "para conferir o que o motor entendeu."}
         return {"paginas": [], "erro": "O arquivo original não está guardado neste documento."}
     import fitz  # PyMuPDF
 

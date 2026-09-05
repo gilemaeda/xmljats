@@ -44,6 +44,7 @@ from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Upload
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
 from fastapi.templating import Jinja2Templates
 
 RAIZ = Path(__file__).resolve().parent.parent
@@ -58,6 +59,7 @@ import issn as issn_api  # noqa: E402  (app/issn.py: consulta em cascata — ISS
 import visual  # noqa: E402  (app/visual.py: páginas do PDF renderizadas + camada de texto para o revisar)
 import obrigatorios  # noqa: E402  (app/obrigatorios.py: o que a SPS exige e o PDF não traz)
 import entrega  # noqa: E402  (app/entrega.py: conferência do pacote, FTP da SciELO e e-mails obrigatórios)
+import enriquece  # noqa: E402  (app/enriquece.py: completa o que falta pelo DOI no Crossref e confere o ORCID)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -68,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.11.0"
+VERSAO_APP = "0.12.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -76,6 +78,8 @@ AVATARES.mkdir(parents=True, exist_ok=True)
 
 # etapas do artigo no fluxo de entrega a SciELO (anotadas a mao no painel)
 # papel "cliente" vê só os próprios documentos; "operador" vê todos; "admin" também administra
+# formatos de entrada aceitos: o DOCX diz o que o PDF obriga a adivinhar (seções, tabelas, fórmulas)
+FORMATOS = {".pdf", ".docx"}
 ETAPAS = [("recebido", "Recebido"), ("em_revisao", "Em revisão"), ("pronto", "Pronto para entrega"),
           ("entregue", "Entregue à SciELO"), ("pre_qa", "Pré-QA"), ("qa", "QA"), ("qa_finalizado", "QA finalizado"), ("publicado", "Publicado")]
 ETAPA_ROTULO = dict(ETAPAS)
@@ -357,6 +361,32 @@ def lista_docs(limite=30, usuario: Optional[dict] = None):
 
 # ---------------------------------------------------------------- edicoes (overrides sobre a extracao)
 
+RE_LICENCA_CC = re.compile(r"(?i)\bCC[\s-]*BY(?P<resto>(?:[\s-]*(?:NC|SA|ND))*)")
+
+
+def licenca_url(texto: str) -> Optional[str]:
+    """'CC BY-NC-ND 4.0' -> a URL certa. Antes um 'sa' solto em 'by-sa' virava 'by-nc-sa', e o 'nd' sumia."""
+    if not texto:
+        return None
+    t = (texto or "").strip()
+    if t.startswith("http"):
+        return t if RE_CC_URL.match(t) else None
+    m = RE_LICENCA_CC.search(t)
+    if not m:
+        return None
+    partes = re.findall(r"(?i)NC|SA|ND", m.group("resto") or "")
+    # a ordem canônica da Creative Commons é by-nc-nd / by-nc-sa / by-sa / by-nd
+    ordem = [p for p in ("NC", "SA", "ND") if p.upper() in {x.upper() for x in partes}]
+    if "SA" in ordem and "ND" in ordem:  # combinação que não existe: ND vence, é a mais restritiva
+        ordem.remove("SA")
+    chave = "-".join(["by"] + [p.lower() for p in ordem])
+    url = f"https://creativecommons.org/licenses/{chave}/4.0/"
+    return url if url in {u for u, _ in LICENCAS} else None
+
+
+RE_CC_URL = re.compile(r"^https?://creativecommons\.org/licenses/")
+
+
 def valores_editaveis(modelo: dict) -> dict:
     """Achata o modelo nos campos do formulario (valores extraidos, antes de qualquer edicao)."""
     d = modelo.get("datas") or {}
@@ -460,9 +490,7 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
         if k in CAMPOS_SIMPLES:
             m[k] = val
             if k == "licenca" and val:
-                low = val.lower()
-                chave = "by-nc-sa" if "sa" in low else ("by-nc" if "nc" in low else "by")
-                m["licenca_url"] = f"https://creativecommons.org/licenses/{chave}/4.0/"
+                m["licenca_url"] = licenca_url(val) or m.get("licenca_url")
         elif k.startswith("data_"):
             m["datas"][k[5:]] = val
         elif k == "corresp":
@@ -490,6 +518,8 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
                 alvo["nome_completo"] = " ".join(x for x in (alvo.get("nomes"), alvo.get("sobrenome")) if x)
             elif grupo == "resumo" and campo == "kw":
                 alvo["palavras_chave"] = [x.strip(" .") for x in re.split(r"[;\n]", val or "") if x.strip(" .")]
+            elif campo == "remover":
+                alvo["_removido"] = bool(val)
             elif grupo == "secao" and campo == "titulo":
                 alvo["titulo"] = val
                 alvo["titulo_completo"] = val
@@ -507,15 +537,34 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
                 alvo["mathml"], alvo["erro_mathml"] = latex_para_mathml(val) if val else (None, None)
             else:
                 alvo[campo] = val
-    # itens marcados para remover saem depois de tudo aplicado (o indice ainda valia durante a aplicacao)
-    for grupo, lista in GRUPOS_LISTA.items():
-        fora = sorted((int(mt.group(2)) for k in campos if (mt := RE_CAMPO_LISTA.match(k)) and mt.group(1) == grupo
-                       and mt.group(3) == "remover" and (campos[k] or "").strip()), reverse=True)
-        for i in fora:
-            if i < len(m.get(lista, [])):
-                m[lista].pop(i)
+    # item removido fica na lista com a marca _removido, e nao sai dela: tirar do meio renumeraria os que vem
+    # depois, e os overrides gravados (autor_2_sobrenome) passariam a valer para outra pessoa. Quem some do XML
+    # é decidido em modelo_para_xml(); a tela continua mostrando o item, com a caixa marcada, para dar meia-volta.
     for lista in ("tabelas", "figuras", "quadros", "dialogos", "equacoes"):
-        m[lista] = [x for x in m.get(lista, []) if not _item_vazio(lista, x)]
+        for x in m.get(lista, []):
+            if _item_vazio(lista, x):
+                x["_removido"] = True
+    return m
+
+
+def sem_vagas_vazias(modelo: dict) -> dict:
+    """Tira do fim de cada lista as vagas que a tela criou e ninguém preencheu. Só do fim: mexer no meio
+    renumeraria os itens e os overrides gravados passariam a valer para outro."""
+    m = copy.deepcopy(modelo)
+    for lista in ("tabelas", "figuras", "quadros", "dialogos", "equacoes"):
+        itens = m.get(lista) or []
+        while itens and _item_vazio(lista, itens[-1]):
+            itens.pop()
+        m[lista] = itens
+    return m
+
+
+def modelo_para_xml(modelo: dict) -> dict:
+    """Copia do modelo sem o que foi marcado para remover. É o que vai para o gerador."""
+    m = copy.deepcopy(modelo)
+    for lista in GRUPOS_LISTA.values():
+        if isinstance(m.get(lista), list):
+            m[lista] = [x for x in m[lista] if not (isinstance(x, dict) and x.get("_removido"))]
     return m
 
 
@@ -561,7 +610,8 @@ def latex_para_mathml(latex: str):
     texto = re.sub(r"^\\\[|\\\]$", "", texto).strip()
     try:
         from latex2mathml.converter import convert
-        return convert(texto), None
+        # display="block": a fórmula vai dentro de <disp-formula>, que é fórmula destacada, não em linha
+        return convert(texto, display="block"), None
     except Exception as e:  # noqa: BLE001
         detalhe = str(e).strip() or type(e).__name__
         return None, f"LaTeX não reconhecido: {detalhe[:120]}. Confira chaves e barras invertidas."
@@ -673,17 +723,26 @@ def prepara_imagens_pacote(pasta: Path, imagens) -> dict:
     return mapa
 
 def extrai_e_salva(pasta: Path):
-    doc, model = cli.extrai(str(pasta / "original.pdf"), pasta_imagens=str(pasta / "imagens"))
+    doc, model = cli.extrai(str(arquivo_original(pasta)), pasta_imagens=str(pasta / "imagens"))
     grava_json(pasta / "model.json", model.to_dict())
     with io.open(pasta / "resumo.md", "w", encoding="utf-8") as f:
         f.write(cli.resumo_md(model))
+
+
+def arquivo_original(pasta: Path) -> Path:
+    """O arquivo enviado, seja qual for o formato. Documentos antigos só têm original.pdf."""
+    for ext in sorted(FORMATOS):
+        alvo = pasta / ("original" + ext)
+        if alvo.exists():
+            return alvo
+    return pasta / "original.pdf"
 
 
 def gera_e_valida(pasta: Path) -> dict:
     """Aplica edicoes, gera o XML, valida no packtools e grava validacao.json."""
     cfg = le_json(pasta / "config.json", {}) or {}
     versao_sps = cfg.get("versao_sps", "1.9")
-    modelo = modelo_efetivo(pasta)
+    modelo = modelo_para_xml(modelo_efetivo(pasta))
     revistas = carrega_revistas()
     acr = cfg.get("revista")
     rev = next((r for r in revistas if r["acronimo"] == acr), None) if acr else None
@@ -806,8 +865,9 @@ def index(request: Request, usuario: dict = Depends(autentica), mensagem: str = 
 async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.9"),
                   issn: str = Form(""), usuario: dict = Depends(autentica)):
     nome = arquivo.filename or "arquivo"
-    if not nome.lower().endswith(".pdf"):
-        raise HTTPException(400, "Por enquanto só PDF. O caminho DOCX vem na próxima fase.")
+    ext = os.path.splitext(nome)[1].lower()
+    if ext not in FORMATOS:
+        raise HTTPException(400, f"Formato não aceito: {ext or 'sem extensão'}. O sistema lê {', '.join(sorted(FORMATOS))}.")
     if confirmacao_pendente(usuario):
         raise HTTPException(403, "Confirme seu e-mail antes de enviar arquivos. Veja o link em Minha conta.")
     conteudo = await arquivo.read()
@@ -818,12 +878,13 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
     # "Detectar pelo ISSN": sem revista na lista, o número resolve o cadastro (e o cria, se as bases responderem)
     aviso_revista = None
     if not revista and issn.strip():
-        revista, aviso_revista, _ = revista_por_issn(issn, usuario)
+        # consulta de rede numa rota async: fora do event loop, senão o site inteiro fica parado esperando
+        revista, aviso_revista, _ = await run_in_threadpool(revista_por_issn, issn, usuario)
         revista = revista or ""
     doc_id = tempo.agora().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]
     pasta = DOCS / doc_id
     pasta.mkdir(parents=True, exist_ok=True)
-    with open(pasta / "original.pdf", "wb") as f:
+    with open(pasta / ("original" + ext), "wb") as f:
         f.write(conteudo)
     (pasta / "nome_original.txt").write_text(nome, encoding="utf-8")
     agora = tempo.agora_iso()
@@ -872,15 +933,17 @@ async def muda_etapa(request: Request, doc_id: str, usuario: dict = Depends(aute
 
 
 def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valores: dict, editados: set,
-                     pendencias: Optional[dict] = None, mensagem: str = "", erro: str = ""):
-    """Tudo que a tela de revisar precisa. Usado na abertura e na volta com pendências, para nada digitado se perder."""
+                     pendencias: Optional[dict] = None, mensagem: str = "", erro: str = "",
+                     modelo: Optional[dict] = None):
+    """Tudo que a tela de revisar precisa. Na volta com pendências recebe o modelo PROPOSTO, não o salvo:
+    senão a tabela ou o quadro que a pessoa acabou de criar sumiriam da tela junto com o texto digitado."""
     cfg = le_json(pasta / "config.json", {}) or {}
     r = le_json(pasta / "validacao.json", {}) or {}
     try:
         original = (pasta / "resumo.md").read_text(encoding="utf-8")
     except OSError:
         original = ""
-    modelo = modelo_efetivo(pasta)
+    modelo = sem_vagas_vazias(modelo_efetivo(pasta) if modelo is None else modelo)
     revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
     pend = obrigatorios.pendencias(modelo, revista, cfg.get("versao_sps") or "1.9") if pendencias is None else pendencias
     return templates.TemplateResponse(request, "editar.html", {
@@ -925,6 +988,13 @@ async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(a
             continue
         if k not in originais and not RE_CAMPO_LISTA.match(k):
             continue
+        if k.endswith("_remover"):
+            # a caixa desmarcada não é enviada pelo navegador; o formulário manda um campo vazio antes dela,
+            # e é isso que permite desfazer uma remoção em vez de ela ficar gravada para sempre
+            campos[k] = "1" if val else campos.get(k, "")
+            if not val:
+                campos.pop(k, None)
+            continue
         if val == (originais.get(k) or ""):
             campos.pop(k, None)  # voltou ao valor extraido: sem override
         else:
@@ -947,13 +1017,29 @@ async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(a
         valores = valores_editaveis(proposto)
         valores.update({k: (v or "") for k, v in campos.items()})
         quantos = len(pend)
-        return _contexto_editar(request, doc_id, pasta, usuario, valores, set(campos), pendencias=pend,
+        return _contexto_editar(request, doc_id, pasta, usuario, valores, set(campos), pendencias=pend, modelo=proposto,
                                 erro=f"Faltam {quantos} campo(s) que a SciELO exige. Nada foi salvo ainda: preencha o que "
                                      f"está marcado em vermelho e salve de novo, ou use \"Guardar rascunho\" para não "
                                      f"perder o que já digitou.")
     grava_json(pasta / "edicoes.json", ed)
     gera_e_valida(pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
+
+
+@app.get("/doc/{doc_id}/doi")
+def busca_por_doi(doc_id: str, numero: str = "", usuario: dict = Depends(autentica)):
+    """O que o Crossref sabe sobre este DOI. A tela mostra campo a campo, e quem revisa decide o que aplicar."""
+    pasta = _pasta(doc_id, usuario)
+    if not numero.strip():
+        modelo = modelo_efetivo(pasta)
+        numero = modelo.get("doi") or ""
+    return enriquece.por_doi(numero)
+
+
+@app.get("/orcid")
+def confere_orcid(numero: str = "", nome: str = "", usuario: dict = Depends(autentica)):
+    """Confere no registro público do ORCID se o número existe e de quem é."""
+    return enriquece.confere_orcid(numero, nome)
 
 
 @app.post("/doc/{doc_id}/figura")
@@ -1055,23 +1141,43 @@ def baixar_pacote(doc_id: str, usuario: dict = Depends(autentica)):
                     headers={"Content-Disposition": f'attachment; filename="{next(pasta.glob("*.xml")).stem}.zip"'})
 
 
+def _zip_bruto(pasta: Path, base: str, relatorio: Optional[bytes]) -> bytes:
+    """Monta o .zip com os arquivos na raiz, como o guia pede. O relatório entra quando já existe."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
+        z.write(str(pasta / f"{base}.xml"), f"{base}.xml") if (pasta / f"{base}.xml").exists() else None
+        xml = next(pasta.glob("*.xml"), None)
+        if xml and xml.name != f"{base}.xml":
+            z.write(str(xml), f"{base}.xml")
+        pdf = pasta / "original.pdf"
+        if pdf.exists():
+            z.write(str(pdf), f"{base}.pdf")
+        # entrada DOCX: o PDF de publicação ainda não existe, e o guia exige um por idioma.
+        # O relatório do pacote registra a falta; o .zip não sai com um PDF inventado.
+        for img in sorted((pasta / "pacote").glob("*")) if (pasta / "pacote").exists() else []:
+            z.write(str(img), img.name)
+        if relatorio:
+            z.writestr(f"{base}-relatorio.html", relatorio)
+    return buf.getvalue()
+
+
 def monta_pacote(pasta: Path) -> bytes:
-    """Pacote SPS: XML, PDF, imagens e o relatório de validação, todos na raiz do .zip, como o guia pede."""
+    """Pacote SPS com o relatório de validação dentro, e o relatório já com a conferência do guia.
+    É preciso montar duas vezes: a conferência lê o .zip, e o resultado dela entra no relatório."""
     xml = next(pasta.glob("*.xml"), None)
     if not xml:
         raise HTTPException(404)
     base = xml.stem
     val = le_json(pasta / "validacao.json", {}) or {}
-    buf = io.BytesIO()
-    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        z.write(str(xml), f"{base}.xml")
-        pdf = pasta / "original.pdf"
-        if pdf.exists():
-            z.write(str(pdf), f"{base}.pdf")
-        for img in sorted((pasta / "pacote").glob("*")) if (pasta / "pacote").exists() else []:
-            z.write(str(img), img.name)
-        z.writestr(f"{base}-relatorio.html", entrega.relatorio_html(base, val, {"itens": []}))
-    return buf.getvalue()
+    provisorio = pasta / f"{base}.parcial.zip"
+    provisorio.write_bytes(_zip_bruto(pasta, base, entrega.relatorio_html(base, val, {"itens": []})))
+    try:
+        conf = entrega.confere_pacote(str(provisorio))
+    except Exception:  # noqa: BLE001
+        conf = {"itens": []}
+    finally:
+        provisorio.unlink(missing_ok=True)
+    return _zip_bruto(pasta, base, entrega.relatorio_html(base, val, conf))
 
 
 def caminho_pacote(pasta: Path) -> Path:
@@ -1093,13 +1199,7 @@ def entrega_form(request: Request, doc_id: str, usuario: dict = Depends(autentic
     revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
     conferencia = None
     try:
-        zipe = caminho_pacote(pasta)
-        conferencia = entrega.confere_pacote(str(zipe))
-        # o relatório entra no pacote com a conferência dentro, então o zip é remontado uma vez
-        base = zipe.stem
-        with zipfile.ZipFile(zipe, "a", zipfile.ZIP_DEFLATED) as z:
-            if f"{base}-relatorio.html" not in z.namelist():
-                z.writestr(f"{base}-relatorio.html", entrega.relatorio_html(base, val, conferencia))
+        conferencia = entrega.confere_pacote(str(caminho_pacote(pasta)))
     except HTTPException:
         pass
     return templates.TemplateResponse(request, "entrega.html", {
@@ -1128,7 +1228,7 @@ async def entrega_deposita(request: Request, doc_id: str, usuario: dict = Depend
         falhas = "; ".join(i["que"] for i in conf["itens"] if not i["ok"])
         return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(
             f"O pacote não passa na conferência do guia ({falhas}). Corrija antes de depositar."), status_code=303)
-    r = entrega.deposita(CORREIO.config(), str(zipe), correcao=correcao)
+    r = await run_in_threadpool(entrega.deposita, CORREIO.config(), str(zipe), correcao)
     if not r["ok"]:
         return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(r["mensagem"]), status_code=303)
     assunto, corpo = entrega.email_deposito(zipe.stem, revista, val, correcao=correcao)
@@ -1244,7 +1344,7 @@ async def revista_importar(request: Request, usuario: dict = Depends(autentica))
     """Cadastra a revista a partir do ISSN, com o que as bases responderam. Quem valida precisa da revista no cadastro;
     editar e remover continuam sendo do administrador."""
     form = await request.form()
-    acr, msg, _ = revista_por_issn(str(form.get("numero") or ""), usuario)
+    acr, msg, _ = await run_in_threadpool(revista_por_issn, str(form.get("numero") or ""), usuario)
     voltar = str(form.get("voltar") or "/revistas")
     if not voltar.startswith("/"):
         voltar = "/revistas"

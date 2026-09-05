@@ -43,13 +43,13 @@
         <div class="drop" id="drop">
           <div class="row" style="gap:12px">
             <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></span>
-            <div><b>Arraste o PDF do artigo para aqui</b><div class="small muted">ou escolha no computador. Até 50 MB. DOCX entra na próxima fase.</div></div>
+            <div><b>Arraste o PDF ou o DOCX do artigo para aqui</b><div class="small muted">ou escolha no computador. Até 50 MB. No DOCX, as seções, as tabelas e as fórmulas vêm do próprio arquivo, sem adivinhação.</div></div>
           </div>
           <div class="row" style="gap:10px">
-            <label class="btn" for="arquivo" style="cursor:pointer"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>Escolher PDF</label>
+            <label class="btn" for="arquivo" style="cursor:pointer"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>Escolher arquivo</label>
             <span id="nome-arquivo" class="small muted">Nenhum arquivo escolhido.</span>
           </div>
-          <input id="arquivo" class="visualmente-oculto" type="file" name="arquivo" accept="application/pdf,.pdf" required>
+          <input id="arquivo" class="visualmente-oculto" type="file" name="arquivo" accept="application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
         </div>
       </div>
       <div class="row between">

@@ -110,6 +110,14 @@
           {{ campo('order', 'Order (5 dígitos)', hint='Ordem do artigo no sumário do número') }}
           {{ campo('licenca', 'Licença', hint='CC BY 4.0, CC BY-NC 4.0, CC BY-NC-SA 4.0') }}
         </div>
+        <div class="field caixa-doi">
+          <label>Completar pelo DOI</label>
+          <div class="row" style="gap:8px;align-items:center">
+            <button class="btn" type="button" id="doi-buscar"><svg viewBox="0 0 24 24"><path d="M12 20V8m0 0l-4 4m4-4l4 4"/><path d="M4 4h16"/></svg>Buscar no Crossref</button>
+            <span class="hint" style="margin:0">Traz volume, número, licença, resumo e o ORCID de cada autor do registro do DOI. Você escolhe o que aplicar.</span>
+          </div>
+          <div id="doi-saida" class="issn-saida" hidden></div>
+        </div>
       </div>
     </div>
 
@@ -145,14 +153,22 @@
           <div class="row between"><b>{{ loop.index }} · {{ a.nome_completo or 'autor sem nome' }}</b>
             <span class="row" style="gap:12px">
               <label class="check"><input type="radio" name="corresp" value="{{ i }}" {% if v.get('corresp') == i|string %}checked{% endif %}> correspondente</label>
-              <label class="check remover"><input type="checkbox" name="autor_{{ i }}_remover" value="1"> remover</label>
+              <input type="hidden" name="autor_{{ i }}_remover" value=""><label class="check remover"><input type="checkbox" name="autor_{{ i }}_remover" value="1"{% if m.autores[i].get("_removido") %} checked{% endif %}> remover</label>
             </span>
           </div>
           {% set bo = bloq.get('orcid:' ~ a.nome_completo) %}{% set ba = bloq.get('affs:' ~ a.nome_completo) %}
           <div class="grid4">
             {{ campo('autor_' ~ i ~ '_sobrenome', 'Sobrenome') }}
             {{ campo('autor_' ~ i ~ '_nomes', 'Nomes') }}
-            {{ campo('autor_' ~ i ~ '_orcid', 'ORCID', hint='0000-0000-0000-0000') }}
+            <div class="field campo-orcid {{ estado('autor_' ~ i ~ '_orcid') }}" id="f-autor_{{ i }}_orcid">
+              <label for="autor_{{ i }}_orcid">ORCID{% if obrig.get('autor_' ~ i ~ '_orcid') %} <span class="req">*</span>{% endif %}</label>
+              <div class="row" style="gap:6px;align-items:stretch">
+                <input id="autor_{{ i }}_orcid" name="autor_{{ i }}_orcid" value="{{ v.get('autor_' ~ i ~ '_orcid', '') }}" placeholder="0000-0000-0000-0000" style="flex:1;min-width:0">
+                <button class="btn small" type="button" data-confere-orcid="{{ i }}" data-nome="{{ a.nome_completo }}" title="Conferir no orcid.org">conferir</button>
+              </div>
+              <div class="orcid-saida small" id="orcid-saida-{{ i }}"></div>
+              {{ aviso('autor_' ~ i ~ '_orcid', '0000-0000-0000-0000') }}
+            </div>
             {{ campo('autor_' ~ i ~ '_email', 'E-mail') }}
           </div>
           {{ campo('autor_' ~ i ~ '_affs', 'Afiliações (ids separados por vírgula)', hint='ex.: aff1, aff2') }}
@@ -171,7 +187,7 @@
         <div class="bloco">
           <div class="row between"><b class="mono">{{ af.id or 'aff?' }}</b>
             <span class="row" style="gap:12px"><span class="small faint">{{ af.origem }} · confiança {{ af.confianca }}</span>
-              <label class="check remover"><input type="checkbox" name="aff_{{ j }}_remover" value="1"> remover</label></span></div>
+              <input type="hidden" name="aff_{{ j }}_remover" value=""><label class="check remover"><input type="checkbox" name="aff_{{ j }}_remover" value="1"{% if m.afiliacoes[j].get("_removido") %} checked{% endif %}> remover</label></span></div>
           <div class="grid5">
             {{ campo('aff_' ~ j ~ '_id', 'Id', hint='aff1, aff2…') }}
             {{ campo('aff_' ~ j ~ '_instituicao', 'Instituição') }}
@@ -193,7 +209,7 @@
         {% for res in m.resumos %}{% set k = loop.index0 %}
         <div class="bloco">
           <div class="row between"><b>{{ res.rotulo or 'Resumo' }}</b>
-            <label class="check remover"><input type="checkbox" name="resumo_{{ k }}_remover" value="1"> remover</label></div>
+            <input type="hidden" name="resumo_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="resumo_{{ k }}_remover" value="1"{% if m.resumos[k].get("_removido") %} checked{% endif %}> remover</label></div>
           <div class="grid3" style="grid-template-columns:1fr 3fr">
             {{ campo('resumo_' ~ k ~ '_idioma', 'Idioma', opcoes=idiomas) }}
             {{ campo('resumo_' ~ k ~ '_kw', 'Palavras-chave (separadas por ;)') }}
@@ -229,7 +245,7 @@
             <span class="row" style="gap:12px">
               <span class="chip {{ 'ok' if t.qualidade == 'alta' else ('warn' if t.qualidade == 'media' else 'crit') }}">grade {{ t.qualidade }}</span>
               <span class="small faint">página {{ t.pagina }}</span>
-              <label class="check remover"><input type="checkbox" name="tabela_{{ k }}_remover" value="1"> remover</label></span></div>
+              <input type="hidden" name="tabela_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="tabela_{{ k }}_remover" value="1"{% if m.tabelas[k].get("_removido") %} checked{% endif %}> remover</label></span></div>
           <div class="grid3" style="grid-template-columns:1fr 3fr 1fr">
             {{ campo('tabela_' ~ k ~ '_rotulo', 'Rótulo', hint='Tabela 1') }}
             {{ campo('tabela_' ~ k ~ '_legenda', 'Legenda') }}
@@ -252,7 +268,7 @@
         <div class="bloco anexo">
           <div class="row between"><b>{{ f.rotulo or 'Figura ' ~ loop.index }}</b>
             <span class="row" style="gap:12px"><span class="small faint">página {{ f.pagina }}{% if f.largura %} · {{ f.largura }}x{{ f.altura }}{% endif %}</span>
-              <label class="check remover"><input type="checkbox" name="figura_{{ k }}_remover" value="1"> remover</label></span></div>
+              <input type="hidden" name="figura_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="figura_{{ k }}_remover" value="1"{% if m.figuras[k].get("_removido") %} checked{% endif %}> remover</label></span></div>
           <div class="row" style="gap:var(--s-4);align-items:flex-start">
             <div class="fig-previa">
               {% if f.arquivo %}<img src="/doc/{{ id }}/img/{{ f.arquivo }}" alt="{{ f.rotulo }}" loading="lazy">
@@ -290,7 +306,7 @@
             <span class="row" style="gap:12px">
               {% if e.mathml %}<span class="chip ok">MathML pronto</span>{% else %}<span class="chip crit">falta o LaTeX</span>{% endif %}
               <span class="small faint">página {{ e.pagina }}</span>
-              <label class="check remover"><input type="checkbox" name="equacao_{{ k }}_remover" value="1"> remover</label></span></div>
+              <input type="hidden" name="equacao_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="equacao_{{ k }}_remover" value="1"{% if m.equacoes[k].get("_removido") %} checked{% endif %}> remover</label></span></div>
           <div class="row" style="gap:var(--s-4);align-items:flex-start">
             {% if e.arquivo %}<div class="fig-previa eq"><img src="/doc/{{ id }}/img/{{ e.arquivo }}" alt="{{ e.rotulo }}" loading="lazy"></div>{% endif %}
             <div class="stack" style="flex:1;gap:var(--s-3)">
@@ -312,7 +328,7 @@
         {% for q in m.quadros %}{% set k = loop.index0 %}
         <div class="bloco anexo">
           <div class="row between"><b>{{ q.rotulo or 'Quadro ' ~ loop.index }}</b>
-            <label class="check remover"><input type="checkbox" name="quadro_{{ k }}_remover" value="1"> remover</label></div>
+            <input type="hidden" name="quadro_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="quadro_{{ k }}_remover" value="1"{% if m.quadros[k].get("_removido") %} checked{% endif %}> remover</label></div>
           <div class="grid2">
             {{ campo('quadro_' ~ k ~ '_rotulo', 'Rótulo', hint='Quadro 1') }}
             {{ campo('quadro_' ~ k ~ '_legenda', 'Legenda') }}
@@ -331,7 +347,7 @@
         {% for dl in m.dialogos %}{% set k = loop.index0 %}
         <div class="bloco anexo">
           <div class="row between"><b>{{ dl.rotulo or 'Diálogo ' ~ loop.index }}</b>
-            <label class="check remover"><input type="checkbox" name="dialogo_{{ k }}_remover" value="1"> remover</label></div>
+            <input type="hidden" name="dialogo_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="dialogo_{{ k }}_remover" value="1"{% if m.dialogos[k].get("_removido") %} checked{% endif %}> remover</label></div>
           <div class="grid2">
             {{ campo('dialogo_' ~ k ~ '_rotulo', 'Rótulo', hint='Diálogo 1') }}
             {{ campo('dialogo_' ~ k ~ '_legenda', 'Legenda') }}
@@ -368,6 +384,13 @@
     <button class="btn small" type="button" id="zoom-mais" aria-label="Aumentar">+</button>
     <span class="sep"></span>
     <label class="check"><input type="checkbox" id="rolagem-continua" checked> todas as páginas</label>
+  </div>
+  <div class="visor-busca">
+    <svg viewBox="0 0 24 24" class="lupa"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="busca-texto" type="search" placeholder="Buscar no documento" autocomplete="off">
+    <span class="small mono" id="busca-conta"></span>
+    <button class="btn small" type="button" id="busca-ant" aria-label="Ocorrência anterior">‹</button>
+    <button class="btn small" type="button" id="busca-prox" aria-label="Próxima ocorrência">›</button>
   </div>
   <div class="visor-corpo">
     <div class="painel ativo" data-painel="pdf">
