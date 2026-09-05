@@ -5,7 +5,7 @@
 {#- marca de campo: vermelho quando a SciELO exige e está vazio, laranja quando foi editado à mão -#}
 {% macro estado(nome) -%}
   {%- set ob = obrig.get(nome) -%}
-  {%- if ob %}is-block{% elif bloq.get(nome) %}is-block{% elif nome in editados %}is-edit{% endif -%}
+  {%- if ob %}is-block{% elif bloq.get(nome) %}is-block{% elif nome in editados or da_revista.get(nome) %}is-edit{% endif -%}
 {%- endmacro %}
 {% macro aviso(nome, hint='') -%}
   {%- set ob = obrig.get(nome) -%}
@@ -13,6 +13,7 @@
   {% if ob %}<div class="msg block"><b>Obrigatório.</b> {{ ob.motivo }}<span class="fonte-regra">{{ ob.fonte }}</span></div>
   {% elif b and b[0] %}<div class="msg block">{{ b[0]|regra }}</div>
   {% elif b %}<span class="prov crit-text">bloqueante: veja ao lado</span>
+  {% elif da_revista.get(nome) %}<span class="prov">preenchido pelo cadastro: {{ da_revista[nome] }} — confirme e salve</span>
   {% elif nome in editados %}<span class="prov">editado à mão</span>
   {% elif hint %}<span class="hint">{{ hint }}</span>{% endif %}
 {%- endmacro %}
@@ -266,13 +267,49 @@
     <div class="fs">
       <header><h2>Seções do corpo</h2><span class="small muted">sec/title · toda seção precisa de título</span></header>
       <div class="in" data-grupo="secao" data-inicio="{{ m.secoes|length }}">
+        <p class="small muted" style="margin:0 0 var(--s-3)">O texto de cada seção sai daqui para o
+          <span class="mono">&lt;body&gt;</span> do XML: um parágrafo por bloco, separados por uma linha em branco.
+          Os botões no fim de cada seção inserem tabela, imagem, equação, quadro ou diálogo <b>naquele ponto do texto</b>.</p>
         {% for sec in m.secoes %}{% set k = loop.index0 %}
-        <div class="grid3" style="grid-template-columns:4fr 1fr;align-items:end">
-          {{ campo('secao_' ~ k ~ '_titulo', 'Seção ' ~ loop.index) }}
-          <div class="field"><label>Parágrafos</label><div class="chip neutral">{{ sec.paragrafos|length }}</div></div>
+        <div class="bloco secao-bloco" id="secao-{{ k }}">
+          <div class="row between">
+            <b>Seção {{ loop.index }}</b>
+            <span class="row" style="gap:10px">
+              <span class="chip neutral">{{ sec.paragrafos|length }} parágrafo(s)</span>
+              <label class="check remover"><input type="hidden" name="secao_{{ k }}_remover" value=""><input type="checkbox" name="secao_{{ k }}_remover" value="1"{% if m.secoes[k].get("_removido") %} checked{% endif %}> remover</label>
+            </span>
+          </div>
+          {{ campo('secao_' ~ k ~ '_titulo', 'Título da seção') }}
+          {{ area('secao_' ~ k ~ '_paragrafos', 'Texto da seção', 10, 'Um parágrafo por bloco, separados por uma linha em branco.') }}
+          {% set anexos_aqui = [] %}
+          {% for grupo, lista, rotulo in [('tabela', m.tabelas, 'Tabela'), ('figura', m.figuras, 'Figura'), ('equacao', m.equacoes, 'Equação'), ('quadro', m.quadros, 'Quadro'), ('dialogo', m.dialogos, 'Diálogo')] %}
+            {% for it in (lista or []) %}{% if it.get('secao_indice') == k and not it.get('_removido') %}
+              {% set _ = anexos_aqui.append((grupo, loop.index0, rotulo, it)) %}
+            {% endif %}{% endfor %}
+          {% endfor %}
+          {% if anexos_aqui %}
+          <div class="ancoras">
+            <span class="small muted">Nesta seção:</span>
+            {% for grupo, idx, rotulo, it in anexos_aqui %}
+            <a class="chip info" href="#f-{{ grupo }}_{{ idx }}_rotulo">{{ it.rotulo or rotulo }} · antes do parágrafo {{ (it.pos_paragrafo or 0) + 1 }}</a>
+            {% endfor %}
+          </div>
+          {% endif %}
+          <div class="row inserir-aqui" style="gap:6px;flex-wrap:wrap">
+            <span class="small muted">Inserir nesta seção:</span>
+            {% for grupo, rotulo in [('tabela', 'tabela'), ('figura', 'imagem'), ('equacao', 'equação'), ('quadro', 'quadro'), ('dialogo', 'diálogo')] %}
+            <button class="btn small" type="button" data-add="{{ grupo }}" data-secao="{{ k }}"
+                    data-paragrafos="{{ sec.paragrafos|length }}">+ {{ rotulo }}</button>
+            {% endfor %}
+          </div>
         </div>
         {% endfor %}
-        {% if not m.secoes %}{{ campo('secao_0_titulo', 'Seção 1') }}{% endif %}
+        {% if not m.secoes %}
+          {{ campo('secao_0_titulo', 'Título da seção 1') }}
+          {{ area('secao_0_paragrafos', 'Texto da seção 1', 8, 'Um parágrafo por bloco, separados por uma linha em branco.') }}
+        {% endif %}
+        <div class="novos"></div>
+        <button class="btn small" type="button" data-add="secao">+ Adicionar seção</button>
       </div>
     </div>
 
@@ -288,6 +325,17 @@
               <span class="small faint">página {{ t.pagina }}</span>
               <input type="hidden" name="tabela_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="tabela_{{ k }}_remover" value="1"{% if m.tabelas[k].get("_removido") %} checked{% endif %}> remover</label></span></div>
           <div class="grid3" style="grid-template-columns:1fr 3fr 1fr">
+          <div class="grid2 ancora-campos">
+            <div class="field">
+              <label for="tabela_{{ k }}_secao">Vai na seção</label>
+              <select id="tabela_{{ k }}_secao" name="tabela_{{ k }}_secao">
+                <option value="">no fim do corpo</option>
+                {% for sec in m.secoes %}<option value="{{ loop.index0 }}" {% if v.get('tabela_' ~ k ~ '_secao') == loop.index0|string %}selected{% endif %}>{{ loop.index }} · {{ (sec.titulo_completo or sec.titulo)[:44] }}</option>{% endfor %}
+              </select>
+              <span class="hint">Onde este item aparece no texto.</span>
+            </div>
+            {{ campo('tabela_' ~ k ~ '_posicao', 'Antes do parágrafo', tipo='number', hint='1 = antes do primeiro parágrafo da seção') }}
+          </div>
             {{ campo('tabela_' ~ k ~ '_rotulo', 'Rótulo', hint='Tabela 1') }}
             {{ campo('tabela_' ~ k ~ '_legenda', 'Legenda') }}
             {{ campo('tabela_' ~ k ~ '_cabecalho', 'Linhas de cabeçalho', tipo='number') }}
@@ -317,6 +365,17 @@
             </div>
             <div class="stack" style="flex:1;gap:var(--s-3)">
               <div class="grid2">
+          <div class="grid2 ancora-campos">
+            <div class="field">
+              <label for="figura_{{ k }}_secao">Vai na seção</label>
+              <select id="figura_{{ k }}_secao" name="figura_{{ k }}_secao">
+                <option value="">no fim do corpo</option>
+                {% for sec in m.secoes %}<option value="{{ loop.index0 }}" {% if v.get('figura_' ~ k ~ '_secao') == loop.index0|string %}selected{% endif %}>{{ loop.index }} · {{ (sec.titulo_completo or sec.titulo)[:44] }}</option>{% endfor %}
+              </select>
+              <span class="hint">Onde este item aparece no texto.</span>
+            </div>
+            {{ campo('figura_' ~ k ~ '_posicao', 'Antes do parágrafo', tipo='number', hint='1 = antes do primeiro parágrafo da seção') }}
+          </div>
                 {{ campo('figura_' ~ k ~ '_rotulo', 'Rótulo', hint='Figura 1') }}
                 {{ campo('figura_' ~ k ~ '_fonte', 'Fonte') }}
               </div>
@@ -351,6 +410,17 @@
           <div class="row" style="gap:var(--s-4);align-items:flex-start">
             {% if e.arquivo %}<div class="fig-previa eq"><img src="/doc/{{ id }}/img/{{ e.arquivo }}" alt="{{ e.rotulo }}" loading="lazy"></div>{% endif %}
             <div class="stack" style="flex:1;gap:var(--s-3)">
+          <div class="grid2 ancora-campos">
+            <div class="field">
+              <label for="equacao_{{ k }}_secao">Vai na seção</label>
+              <select id="equacao_{{ k }}_secao" name="equacao_{{ k }}_secao">
+                <option value="">no fim do corpo</option>
+                {% for sec in m.secoes %}<option value="{{ loop.index0 }}" {% if v.get('equacao_' ~ k ~ '_secao') == loop.index0|string %}selected{% endif %}>{{ loop.index }} · {{ (sec.titulo_completo or sec.titulo)[:44] }}</option>{% endfor %}
+              </select>
+              <span class="hint">Onde este item aparece no texto.</span>
+            </div>
+            {{ campo('equacao_' ~ k ~ '_posicao', 'Antes do parágrafo', tipo='number', hint='1 = antes do primeiro parágrafo da seção') }}
+          </div>
               {{ campo('equacao_' ~ k ~ '_rotulo', 'Rótulo', hint='(1)') }}
               {{ area('equacao_' ~ k ~ '_latex', 'LaTeX da fórmula', 3, 'Ex.: E = mc^2  ou  \\frac{a}{b} = \\sqrt{x^2+y^2}', true) }}
               {% if e.erro_mathml %}<div class="msg block">{{ e.erro_mathml }}</div>{% endif %}
@@ -371,6 +441,17 @@
           <div class="row between"><b>{{ q.rotulo or 'Quadro ' ~ loop.index }}</b>
             <input type="hidden" name="quadro_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="quadro_{{ k }}_remover" value="1"{% if m.quadros[k].get("_removido") %} checked{% endif %}> remover</label></div>
           <div class="grid2">
+          <div class="grid2 ancora-campos">
+            <div class="field">
+              <label for="quadro_{{ k }}_secao">Vai na seção</label>
+              <select id="quadro_{{ k }}_secao" name="quadro_{{ k }}_secao">
+                <option value="">no fim do corpo</option>
+                {% for sec in m.secoes %}<option value="{{ loop.index0 }}" {% if v.get('quadro_' ~ k ~ '_secao') == loop.index0|string %}selected{% endif %}>{{ loop.index }} · {{ (sec.titulo_completo or sec.titulo)[:44] }}</option>{% endfor %}
+              </select>
+              <span class="hint">Onde este item aparece no texto.</span>
+            </div>
+            {{ campo('quadro_' ~ k ~ '_posicao', 'Antes do parágrafo', tipo='number', hint='1 = antes do primeiro parágrafo da seção') }}
+          </div>
             {{ campo('quadro_' ~ k ~ '_rotulo', 'Rótulo', hint='Quadro 1') }}
             {{ campo('quadro_' ~ k ~ '_legenda', 'Legenda') }}
           </div>
@@ -390,6 +471,17 @@
           <div class="row between"><b>{{ dl.rotulo or 'Diálogo ' ~ loop.index }}</b>
             <input type="hidden" name="dialogo_{{ k }}_remover" value=""><label class="check remover"><input type="checkbox" name="dialogo_{{ k }}_remover" value="1"{% if m.dialogos[k].get("_removido") %} checked{% endif %}> remover</label></div>
           <div class="grid2">
+          <div class="grid2 ancora-campos">
+            <div class="field">
+              <label for="dialogo_{{ k }}_secao">Vai na seção</label>
+              <select id="dialogo_{{ k }}_secao" name="dialogo_{{ k }}_secao">
+                <option value="">no fim do corpo</option>
+                {% for sec in m.secoes %}<option value="{{ loop.index0 }}" {% if v.get('dialogo_' ~ k ~ '_secao') == loop.index0|string %}selected{% endif %}>{{ loop.index }} · {{ (sec.titulo_completo or sec.titulo)[:44] }}</option>{% endfor %}
+              </select>
+              <span class="hint">Onde este item aparece no texto.</span>
+            </div>
+            {{ campo('dialogo_' ~ k ~ '_posicao', 'Antes do parágrafo', tipo='number', hint='1 = antes do primeiro parágrafo da seção') }}
+          </div>
             {{ campo('dialogo_' ~ k ~ '_rotulo', 'Rótulo', hint='Diálogo 1') }}
             {{ campo('dialogo_' ~ k ~ '_legenda', 'Legenda') }}
           </div>

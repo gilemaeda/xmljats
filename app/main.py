@@ -70,7 +70,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.14.1"
+VERSAO_APP = "0.15.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -95,6 +95,15 @@ LICENCAS = [("https://creativecommons.org/licenses/by/4.0/", "CC BY 4.0"), ("htt
 
 app = FastAPI(title="xmljats", version=VERSAO_APP, docs_url=None, redoc_url=None)
 app.mount("/static", StaticFiles(directory=str(RAIZ / "app" / "static")), name="static")
+# CSS e JS que o packtools empacota para a pre-visualizacao ficar com a cara da SciELO sem depender do site dela
+try:
+    import packtools as _pt
+
+    _ESTATICO_PREVIA = Path(_pt.__file__).parent / "catalogs" / "htmlgenerator" / "static"
+    if _ESTATICO_PREVIA.is_dir():
+        app.mount("/previa-estatico", StaticFiles(directory=str(_ESTATICO_PREVIA)), name="previa-estatico")
+except Exception:  # noqa: BLE001
+    _ESTATICO_PREVIA = None
 templates = Jinja2Templates(directory=str(RAIZ / "app" / "templates"))
 templates.env.globals["versao"] = VERSAO_APP
 templates.env.globals["ETAPA_ROTULO"] = ETAPA_ROTULO
@@ -282,7 +291,7 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
     from extrator.util import issn_valido  # noqa: WPS433
     d = {k: (form.get(k) or "").strip() for k in ("acronimo", "titulo", "abrev", "issn_epub", "issn_ppub", "editora", "doi_prefixo",
                                                    "licenca_url", "modo_publicacao", "secao_padrao", "site", "_fonte",
-                                                   "area", "estilo_referencias")}
+                                                   "area", "estilo_referencias", "idioma_padrao")}
     d["acronimo"] = d["acronimo"].lower()
     d["na_scielo"] = (form.get("na_scielo") or "").strip() == "sim"
     erros = {}
@@ -312,7 +321,9 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
         erros["estilo_referencias"] = "Escolha um estilo da lista."
     if d["site"] and not re.match(r"^https?://", d["site"]):
         erros["site"] = "O site precisa começar com http:// ou https://."
-    for k in ("doi_prefixo", "secao_padrao", "site", "_fonte", "area", "estilo_referencias"):
+    if d["idioma_padrao"] and d["idioma_padrao"] not in IDIOMAS:
+        erros["idioma_padrao"] = "Use o código de duas letras: " + ", ".join(IDIOMAS) + "."
+    for k in ("doi_prefixo", "secao_padrao", "site", "_fonte", "area", "estilo_referencias", "idioma_padrao"):
         d[k] = d[k] or None
     return d, erros
 
@@ -423,6 +434,15 @@ def valores_editaveis(modelo: dict) -> dict:
         v[f"fomento_{k}_processo"] = f.get("processo") or ""
     for k, sec in enumerate(modelo.get("secoes", [])):
         v[f"secao_{k}_titulo"] = sec.get("titulo_completo") or sec.get("titulo") or ""
+        # um parágrafo por bloco, separados por linha em branco: é como se edita texto corrido
+        v[f"secao_{k}_paragrafos"] = "\n\n".join(sec.get("paragrafos") or [])
+    for grupo, lista in (("tabela", "tabelas"), ("figura", "figuras"), ("equacao", "equacoes"),
+                         ("quadro", "quadros"), ("dialogo", "dialogos")):
+        for k, item in enumerate(modelo.get(lista, [])):
+            si = item.get("secao_indice")
+            v[f"{grupo}_{k}_secao"] = "" if si is None else str(si)
+            # na tela a posição é 1-based ("antes do parágrafo 3"); no modelo é o índice do parágrafo
+            v[f"{grupo}_{k}_posicao"] = str(int(item.get("pos_paragrafo") or 0) + 1)
     for k, t in enumerate(modelo.get("tabelas", [])):
         v[f"tabela_{k}_rotulo"] = t.get("rotulo") or ""
         v[f"tabela_{k}_legenda"] = t.get("legenda") or ""
@@ -532,6 +552,12 @@ def aplica_edicoes(modelo: dict, campos: dict) -> dict:
             elif grupo == "secao" and campo == "titulo":
                 alvo["titulo"] = val
                 alvo["titulo_completo"] = val
+            elif grupo == "secao" and campo == "paragrafos":
+                alvo["paragrafos"] = [p.strip() for p in re.split(r"\n\s*\n", val or "") if p.strip()]
+            elif campo == "secao":
+                alvo["secao_indice"] = int(val) if (val or "").isdigit() else None
+            elif campo == "posicao":
+                alvo["pos_paragrafo"] = max(0, int(val) - 1) if (val or "").isdigit() else 0
             elif grupo == "tabela" and campo == "celulas":
                 alvo["celulas"] = texto_para_grade(val or "")
                 alvo["colunas"] = max((len(x) for x in alvo["celulas"]), default=0)
@@ -567,6 +593,28 @@ def sem_vagas_vazias(modelo: dict) -> dict:
             itens.pop()
         m[lista] = itens
     return m
+
+
+# campo do artigo -> campo do cadastro da revista que pode fornecê-lo. São dados da revista, não do artigo:
+# licença de publicação, seção do sumário e idioma em que ela publica. Não é invenção, é o cadastro.
+DA_REVISTA = {"licenca": "licenca_url", "heading": "secao_padrao", "idioma": "idioma_padrao"}
+
+
+def campos_da_revista(modelo: dict, revista: Optional[dict]) -> dict:
+    """O que o cadastro da revista preenche nos campos do artigo que estão vazios. Devolve {campo: (valor, de_onde)}."""
+    if not revista:
+        return {}
+    fora = {}
+    for campo, no_cadastro in DA_REVISTA.items():
+        valor = (revista.get(no_cadastro) or "").strip()
+        if not valor:
+            continue
+        atual = (modelo.get("licenca_url") if campo == "licenca" else modelo.get(campo)) or ""
+        if str(atual).strip():
+            continue
+        rotulo = {"licenca_url": "licença padrão", "secao_padrao": "seção padrão", "idioma_padrao": "idioma"}[no_cadastro]
+        fora[campo] = (valor, f"{rotulo} do cadastro de {revista.get('titulo') or revista.get('acronimo')}")
+    return fora
 
 
 def modelo_para_xml(modelo: dict) -> dict:
@@ -662,7 +710,8 @@ def sugestao_de_issn(consulta: dict) -> dict:
     """Converte o que as bases devolveram nos campos do formulário de revista. Só copia o que veio; não completa nada."""
     d = consulta.get("dados") or {}
     origem = consulta.get("origem") or {}
-    v = {k: d[k] for k in ("acronimo", "titulo", "abrev", "editora", "issn_epub", "issn_ppub", "area", "site") if d.get(k)}
+    v = {k: d[k] for k in ("acronimo", "titulo", "abrev", "editora", "issn_epub", "issn_ppub", "area", "site",
+                           "idioma_padrao") if d.get(k)}
     # valida_revista lê valores de formulário: "sim"/"não", não booleano
     v["na_scielo"] = "sim" if d.get("na_scielo") else "nao"
     if d.get("licenca") in {u for u, _ in LICENCAS}:
@@ -959,6 +1008,15 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
         original = ""
     modelo = sem_vagas_vazias(modelo_efetivo(pasta) if modelo is None else modelo)
     revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
+    # vincular o artigo a uma revista já preenche o que é dado da revista, e não do artigo
+    da_revista = campos_da_revista(modelo, revista)
+    for campo, (valor, de_onde) in da_revista.items():
+        if not (valores.get(campo) or "").strip():
+            valores[campo] = valor
+            if campo == "licenca":
+                modelo["licenca_url"] = valor
+            else:
+                modelo[campo] = valor
     pend = obrigatorios.pendencias(modelo, revista, cfg.get("versao_sps") or "1.9") if pendencias is None else pendencias
     return templates.TemplateResponse(request, "editar.html", {
         "id": doc_id, "m": modelo, "v": valores, "editados": editados, "bloq": r.get("campos_bloqueados", {}),
@@ -966,7 +1024,7 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
         "revista_atual": cfg.get("revista") or r.get("revista") or "",
         "tipos": TIPOS_ARTIGO, "idiomas": IDIOMAS, "original_html": markdown_html(original), "usuario": usuario, "r": r,
         "obrig": pend, "obrig_grupos": obrigatorios.resumo_por_grupo(pend), "paginas": visual.resumo(pasta),
-        "credit": xml_jats.CREDIT,
+        "credit": xml_jats.CREDIT, "da_revista": {k: t[1] for k, t in da_revista.items()},
         "mensagem": mensagem, "erro": erro, "vagas": VAGAS_NOVAS,
     }, status_code=400 if erro else 200)
 
@@ -1076,7 +1134,11 @@ def previa_do_artigo(doc_id: str, usuario: dict = Depends(autentica)):
         # jats.nlm.nih.gov e a prévia quebrava só em produção. Aqui o XML é lido sem rede — a
         # validação continua sendo feita, à parte, contra o DTD empacotado.
         arvore = _et.parse(str(xml), _et.XMLParser(load_dtd=False, resolve_entities=False, no_network=True))
-        hg = HTMLGenerator.parse(arvore, valid_only=False)
+        hg = HTMLGenerator.parse(
+            arvore, valid_only=False,
+            css="/previa-estatico/scielo-article-standalone.css",
+            print_css="/previa-estatico/scielo-bundle-print.css",
+            js="/previa-estatico/scielo-article-standalone-min.js")
         idioma = hg.languages[0] if hg.languages else "pt"
         html = str(hg.generate(idioma))
     except Exception as e:  # noqa: BLE001

@@ -92,6 +92,10 @@ proprias = [x for x in _re.findall(r'<img[^>]*src="([^"]*)"', prev.text) if not 
 ok(all(x.startswith(f"/doc/{doc}/img/") for x in proprias),
    f"toda imagem propria da previa aponta para este documento: {proprias[:3]}")
 ok("-gf01.tif" not in prev.text, "nenhum nome de arquivo do pacote sobra quebrado na previa")
+soltas = sorted({x for x in _re.findall(r'(?:href|src)="([^"]+)"', prev.text)
+                 if not x.startswith(("http", "#", "mailto", "data:", f"/doc/{doc}/"))})
+ok(all(c.get(u).status_code == 200 for u in soltas),
+   f"o CSS e o JS da previa sao servidos por nos, sem 404 e sem depender do site da SciELO: {soltas}")
 ok('data-aba="previa"' in pag and 'id="quadro-previa"' in pag, "aba 'Como fica' com o quadro da previa")
 
 # a consulta de outro documento nao vaza para quem nao e dono

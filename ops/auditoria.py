@@ -210,6 +210,15 @@ def roda_site():
         prev = c.get(doc + "/previa")
         check("pré-visualização do artigo (htmlgenerator do packtools)",
               prev.status_code == 200 and len(prev.text) > 20000 and "-gf01.tif" not in prev.text)
+    from app import main as _am
+    campos_rev_ok = _am.campos_da_revista({}, {"licenca_url": "https://creativecommons.org/licenses/by/4.0/", "titulo": "T"}).get("licenca") is not None
+    if doc:
+        ver4 = c.get(doc + "/editar").text
+        check("texto de cada seção do corpo é editável", 'name="secao_0_paragrafos"' in ver4 and "Texto da seção" in ver4)
+        check("inserir tabela/imagem/equação/quadro/diálogo dentro da seção",
+              'data-add="tabela" data-secao="0"' in ver4 and "Inserir nesta seção" in ver4)
+        check("vincular a revista preenche o que é dado dela", "preenchido pelo cadastro" in ver4 or
+              campos_rev_ok)
     import enriquece as enr
     check("DOI inválido é recusado sem ir à rede", enr.por_doi("abc")["ok"] is False)
     check("ORCID fora do formato é recusado sem ir à rede", enr.confere_orcid("abc")["ok"] is False)
@@ -344,6 +353,9 @@ def main():
           "| Financiamento em funding-group, com a nota cruzada que a SciELO exige | pronto | ops/test_credit.py |",
           "| Pedir à revista, por e-mail, tudo que falta de uma vez | pronto | ops/test_credit.py |",
           "| Pré-visualização do artigo como a SciELO publica (htmlgenerator) | pronto | verificação \"pré-visualização do artigo\" |",
+          "| Texto de cada seção editável no revisar | pronto | ops/test_secoes.py |",
+          "| Anexos ancorados no ponto do texto (seção + parágrafo) | pronto | ops/test_secoes.py |",
+          "| Vincular a revista preenche licença, seção e idioma | pronto | ops/test_secoes.py |",
           "| Referências cruzadas com o Crossref | não é confiável | medido: texto sem sentido recebe nota parecida com a de uma referência real, e o editor deposita as referências sem DOI; injetar DOI errado é pior que não ter |",
           "| API oficial do ISSN (api.issn.org) | fora de alcance | é paga e responde 403 sem token; lemos a ficha pública do portal |",
           "| Base consultável do CBISSN/IBICT | não existe | o site é institucional (pedido de ISSN), sem API de periódicos |",

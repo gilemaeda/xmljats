@@ -98,7 +98,7 @@
               <option value="regular" {% if v.get('modo_publicacao') == 'regular' %}selected{% endif %}>Regular (fascículos com páginas)</option>
             </select>
           </div>
-          {{ campo('secao_padrao', 'Seção padrão (heading)', 'ex.: Artigos; usada quando o PDF não indica a seção') }}
+          {{ campo('secao_padrao', 'Seção padrão (heading)', 'ex.: Artigos; preenche o artigo quando o arquivo não indica a seção') }}
           <div class="field">
             <label for="na_scielo">Na coleção SciELO</label>
             <select id="na_scielo" name="na_scielo">
@@ -107,7 +107,10 @@
             </select>
           </div>
         </div>
-        {{ campo('site', 'Site da revista (OJS)', 'para conferir datas e sumários', tipo='url', placeholder='https://') }}
+        <div class="grid2">
+          {{ campo('site', 'Site da revista (OJS)', 'para conferir datas e sumários', tipo='url', placeholder='https://') }}
+          {{ campo('idioma_padrao', 'Idioma em que publica', 'pt, en, es… preenche o idioma do artigo quando o arquivo não diz; vem do DOAJ na busca por ISSN') }}
+        </div>
         <div class="field">
           <label for="_fonte">Observações e origem dos dados</label>
           <textarea id="_fonte" name="_fonte" rows="3">{{ v.get('_fonte', '') or '' }}</textarea>

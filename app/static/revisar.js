@@ -265,7 +265,7 @@
     licenca: 'Licença', data_publicado: 'Data de publicação', resumo_0_texto: 'Resumo', paginas: 'Páginas'
   };
 
-  function escapa(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
+  var escapa = esc;
 
   function aplicaCampo(nome, valor) {
     var el = document.querySelector('#form-revisar [name="' + CSS.escape(nome) + '"]');
@@ -388,6 +388,10 @@
       return bloco(n, 'Quadro novo', [txt('quadro_' + n + '_rotulo', 'Rótulo (Quadro 1)'), txt('quadro_' + n + '_legenda', 'Legenda'),
         ta('quadro_' + n + '_texto', 'Conteúdo (um parágrafo por linha)', 4)], 'quadro');
     },
+    secao: function (n) {
+      return bloco(n, 'Seção nova', [txt('secao_' + n + '_titulo', 'Título da seção'),
+        ta('secao_' + n + '_paragrafos', 'Texto da seção (um parágrafo por bloco, separados por linha em branco)', 8)], 'secao');
+    },
     fomento: function (n) {
       return bloco(n, 'Fonte de fomento', [txt('fomento_' + n + '_fonte', 'Agencia ou fonte'),
         txt('fomento_' + n + '_processo', 'Numero do processo')], 'fomento');
@@ -398,6 +402,8 @@
     }
   };
   var IDIOMAS = ['pt', 'en', 'es', 'fr', 'it', 'de'];
+
+  function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
 
   function campoHTML(interno, rotulo, id) {
     return '<div class="field" id="f-' + id + '"><label for="' + id + '">' + rotulo + '</label>' + interno + '</div>';
@@ -423,11 +429,42 @@
       partes.join('') + '</div>';
   }
 
+  function opcoesSecao(n, escolhida) {
+    var op = '<option value="">no fim do corpo</option>';
+    $$('.secao-bloco').forEach(function (bloco, i) {
+      var t = (document.getElementById('secao_' + i + '_titulo') || {}).value || ('Seção ' + (i + 1));
+      op += '<option value="' + i + '"' + (String(i) === String(escolhida) ? ' selected' : '') + '>' +
+        (i + 1) + ' · ' + esc(t).slice(0, 44) + '</option>';
+    });
+    return op;
+  }
+
+  function ancora(grupo, n, secao, posicao) {
+    return '<div class="grid2 ancora-campos">' +
+      campoHTML('<select id="' + grupo + '_' + n + '_secao" name="' + grupo + '_' + n + '_secao">' +
+        opcoesSecao(n, secao) + '</select>', 'Vai na seção', grupo + '_' + n + '_secao') +
+      campoHTML('<input id="' + grupo + '_' + n + '_posicao" name="' + grupo + '_' + n + '_posicao" type="number" min="1" value="' +
+        (posicao || 1) + '">', 'Antes do parágrafo', grupo + '_' + n + '_posicao') +
+      '</div>';
+  }
+
+  // o botão dentro de uma seção cria o item já apontando para aquele ponto do texto; o botão do fim
+  // do formulário cria solto, e a pessoa escolhe a seção nos campos do próprio item
   $$('[data-add]').forEach(function (botao) {
     botao.addEventListener('click', function () {
-      var grupo = botao.dataset.add, area = botao.closest('[data-grupo]'), destino = $('.novos', area);
+      var grupo = botao.dataset.add;
+      var area = document.querySelector('[data-grupo="' + grupo + '"]');
+      if (!area) return;
+      var destino = $('.novos', area);
       var proximo = parseInt(area.dataset.inicio, 10) + $$('.bloco.novo', area).length;
-      destino.insertAdjacentHTML('beforeend', MOLDES[grupo](proximo));
+      var html = MOLDES[grupo](proximo);
+      if (grupo !== 'secao' && grupo !== 'autor' && grupo !== 'aff' && grupo !== 'resumo' &&
+          grupo !== 'titulo' && grupo !== 'fomento') {
+        var secao = botao.dataset.secao;
+        var pos = botao.dataset.paragrafos !== undefined ? (parseInt(botao.dataset.paragrafos, 10) + 1) : 1;
+        html = html.replace('</div>', ancora(grupo, proximo, secao === undefined ? '' : secao, pos) + '</div>');
+      }
+      destino.insertAdjacentHTML('beforeend', html);
       var criado = destino.lastElementChild;
       ligaPrevias(criado);
       var primeiro = criado.querySelector('input, textarea, select');

@@ -66,6 +66,8 @@ AREAS_ASSUNTO = [
     (re.compile(r"(?i)\b(linguistic|literature|art|philolog|letras|lingu)"), "Linguística, Letras e Artes"),
     (re.compile(r"(?i)\b(history|philosoph|psycholog|sociolog|anthropolog|education|geograph|história|filosofia|psicologia)"), "Ciências Humanas"),
 ]
+# codigo de idioma do DOAJ (ISO 639-2) -> o codigo de duas letras que o JATS usa
+IDIOMA_ISO3 = {"POR": "pt", "ENG": "en", "SPA": "es", "FRE": "fr", "FRA": "fr", "ITA": "it", "GER": "de", "DEU": "de"}
 RE_CC = re.compile(r"(?i)\bCC[ \-]?(BY(?:[ \-]?NC)?(?:[ \-]?SA)?(?:[ \-]?ND)?)\b")
 
 
@@ -230,6 +232,11 @@ def le_doaj(issn: str, sobra: int = TIMEOUT) -> dict:
         if achada:
             fora["licenca"] = achada
             break
+    # idioma que a revista publica: serve para preencher o idioma do artigo quando ele nao vier do arquivo
+    idiomas = [IDIOMA_ISO3.get((x or "").upper()) for x in (b.get("language") or [])]
+    idiomas = [x for x in idiomas if x]
+    if idiomas:
+        fora["idioma_padrao"] = idiomas[0]
     assuntos = ", ".join((s.get("term") or "") for s in (b.get("subject") or []))
     area = _area(assuntos)
     if area:
