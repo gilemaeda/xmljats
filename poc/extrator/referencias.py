@@ -86,6 +86,24 @@ def extrai_referencias(doc: Documento, model: ArticleModel, i_ref: Optional[int]
     if not linhas:
         model.aviso("Lista de referências vazia após o título (R01).")
         return i_back
+    # estilo numerado (Vancouver): "1. Autor...", "2. Autor..." em sequencia; a numeracao manda no agrupamento
+    seq = _sequencia_numerada(linhas)
+    if seq:
+        entradas_num, atual_num, esperado = [], [], 1
+        for l in linhas:
+            n = _num_entrada(l.texto)
+            if n == esperado:
+                if atual_num:
+                    entradas_num.append(atual_num)
+                atual_num = [l.texto]
+                esperado += 1
+                continue
+            atual_num.append(l.texto)
+        if atual_num:
+            entradas_num.append(atual_num)
+        _monta_entradas(model, entradas_num, "numeração (estilo Vancouver)")
+        _liga_citacoes(model)
+        return i_back
     xs = Counter(round(l.x0) for l in linhas)
     x_min = min(xs)
     n_esq = sum(c for x, c in xs.items() if x <= x_min + 2.5)
@@ -111,11 +129,40 @@ def extrai_referencias(doc: Documento, model: ArticleModel, i_ref: Optional[int]
         if media < 60:  # recuo mal detectado: entradas curtas demais
             modo_recuo = False
             entradas = agrupa(False)
+    _monta_entradas(model, entradas, "recuo francês" if modo_recuo else "padrões de início de entrada")
+    _liga_citacoes(model)
+    return i_back
+
+
+# "1. Autor", "1) Autor" (Vancouver) e "[1] Autor" (ABNT numerico / IEEE, comum em exatas)
+RE_NUM_ENTRADA = re.compile(r"^\s*(?:\[(\d{1,3})\]|(\d{1,3})[.)])\s*(?=[A-ZÀ-Ú])")
+
+
+def _num_entrada(texto):
+    m = RE_NUM_ENTRADA.match(texto or "")
+    return int(m.group(1) or m.group(2)) if m else None
+
+
+def _sequencia_numerada(linhas) -> bool:
+    """Ha uma numeracao 1., 2., 3. ... abrindo entradas? Exige comecar em 1 e pelo menos 4 numeros em ordem."""
+    nums = [n for n in (_num_entrada(l.texto) for l in linhas) if n is not None]
+    if len(nums) < 4 or 1 not in nums:
+        return False
+    esperado, achados = 1, 0
+    for n in nums:
+        if n == esperado:
+            achados += 1
+            esperado += 1
+    return achados >= 4 and achados >= 0.6 * esperado
+
+
+def _monta_entradas(model: ArticleModel, entradas, origem: str):
     abnt = apa = 0
     for e in entradas:
         texto = juntar_linhas(e).strip()
         if len(texto) < 15:
             continue
+        texto = RE_NUM_ENTRADA.sub("", texto, count=1) if origem.startswith("numeração") else texto
         r = Referencia(texto=texto)
         m = RE_ANO_PAREN.search(texto)
         sem_acesso = RE_ACESSO.sub("", texto)
@@ -136,10 +183,11 @@ def extrai_referencias(doc: Documento, model: ArticleModel, i_ref: Optional[int]
         model.referencias.append(r)
     n = len(model.referencias)
     if n:
-        model.estilo_referencias = "ABNT" if abnt >= 0.6 * n else ("APA" if apa >= 0.6 * n else f"misto (ABNT {abnt}, APA {apa})")
-        model.marca("referencias", f"lido ({'recuo francês' if modo_recuo else 'padrões de início de entrada'})")
-    _liga_citacoes(model)
-    return i_back
+        if origem.startswith("numeração"):
+            model.estilo_referencias = "numérico (Vancouver)"
+        else:
+            model.estilo_referencias = "ABNT" if abnt >= 0.6 * n else ("APA" if apa >= 0.6 * n else f"misto (ABNT {abnt}, APA {apa})")
+        model.marca("referencias", f"lido ({origem})")
 
 
 def _tipo(t):

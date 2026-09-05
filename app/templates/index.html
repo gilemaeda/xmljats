@@ -7,7 +7,7 @@
     <div>
       <p class="eyebrow">Validador</p>
       <h1 style="margin-top:4px">Validar artigo para XML SciELO</h1>
-      <p class="lead muted" style="margin-top:6px;max-width:64ch">Envie o PDF do artigo. O motor extrai os metadados, gera o XML SciELO PS e valida no packtools, o validador oficial da SciELO. O que não estiver no PDF vira bloqueante e se corrige na revisão; nunca é inventado.</p>
+      <p class="lead">Envie o PDF do artigo. O motor extrai os metadados, gera o XML SciELO PS e valida no packtools, o validador oficial da SciELO. O que não estiver no PDF vira bloqueante e se corrige na revisão; nunca é inventado.</p>
     </div>
     <form class="card pad stack" method="post" action="/validar" enctype="multipart/form-data" style="gap:var(--s-5)">
       <div class="grid2">
@@ -44,43 +44,43 @@
       </div>
       <div class="row between">
         <span class="small muted">O processamento leva alguns segundos. Nada é publicado.</span>
-        <button class="btn primary" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>Validar arquivo</button>
+        <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Validar arquivo</button>
       </div>
     </form>
   </div>
   <aside class="card pad">
     <p class="eyebrow">Como funciona</p>
     <ol class="steps">
-      <li><div><h3>Extração</h3><p class="muted small">Título, autores, ORCID, afiliações, resumos, seções, notas, referências, datas e licença.</p></div></li>
+      <li><div><h3>Extração</h3><p class="muted small">Título, autores, ORCID, afiliações, resumos, seções, notas, figuras, tabelas, equações, referências, datas e licença.</p></div></li>
       <li><div><h3>XML e validação</h3><p class="muted small">XML no nome-base da SPS, validado no DTD JATS e no Schematron SPS.</p></div></li>
-      <li><div><h3>Revisão</h3><p class="muted small">Bloqueantes dizem o que falta e de onde vem (OJS, cadastro da revista, DOCX). Corrija na tela e revalide.</p></div></li>
-      <li><div><h3>Pacote</h3><p class="muted small">XML e PDF com o nome que a SciELO exige, prontos para o depósito.</p></div></li>
+      <li><div><h3>Revisão</h3><p class="muted small">Bloqueantes dizem o que falta e de onde vem (OJS, cadastro da revista, arquivo original). Corrija na tela e revalide.</p></div></li>
+      <li><div><h3>Pacote</h3><p class="muted small">XML, PDF e imagens com o nome que a SciELO exige, prontos para o depósito.</p></div></li>
     </ol>
+    <hr class="sep" style="margin:var(--s-4) 0">
+    <a class="btn small quiet" href="/ajuda" style="padding-left:0">Ver o passo a passo completo</a>
   </aside>
 </div>
 
 <section class="card" style="margin-top:var(--s-6)">
-  <header class="cardhead"><h2>Documentos recentes</h2><span class="row" style="gap:10px"><span class="muted small">{{ docs|length }} de {{ total_docs }}</span><a class="btn small" href="/painel">Painel completo</a></span></header>
+  <header class="cardhead"><h2>Documentos recentes</h2><span class="row" style="gap:10px"><span class="muted small">{{ docs|length }} de {{ total_docs }}</span><a class="btn small" href="/painel">Ver todos</a></span></header>
   {% if docs %}
   <div class="tblwrap"><table class="tbl">
-    <thead><tr><th>Quando</th><th>Arquivo</th><th>Revista</th><th>Situação</th><th>Etapa</th><th>Bloq.</th><th>Avisos</th><th></th></tr></thead>
+    <thead><tr><th>Quando</th><th>Artigo</th><th>Revista</th><th>Situação</th><th>Etapa</th><th></th></tr></thead>
     <tbody>
     {% for d in docs %}
       <tr>
-        <td class="tnum muted">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
-        <td><span class="mono">{{ d.arquivo_original }}</span><div class="small muted" style="margin-top:2px">{{ d.titulo[:90] }}</div></td>
+        <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
+        <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }}</div></td>
         <td>{{ d.revista or '—' }}</td>
-        <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">Não pronto</span>{% endif %}</td>
+        <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
         <td><span class="chip neutral">{{ ETAPA_ROTULO.get(d.etapa, d.etapa) }}</span></td>
-        <td class="tnum">{{ d.bloqueantes|length }}</td>
-        <td class="tnum">{{ (d.avisos_gerador|length) + (d.avisos_extrator|length) }}</td>
         <td style="text-align:right"><a class="btn small" href="/doc/{{ d.id }}">Abrir</a></td>
       </tr>
     {% endfor %}
     </tbody>
   </table></div>
   {% else %}
-  <div class="empty"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento ainda. Envie o primeiro PDF acima.</div>
+  <div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento ainda. Envie o primeiro PDF acima.</div>
   {% endif %}
 </section>
 {% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% set ativo = 'ajuda' %}
+{% block titulo %}Como funciona · xmljats{% endblock %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Ajuda</p>
+    <h1 style="margin-top:4px">Como funciona</h1>
+    <p class="lead">O caminho de um artigo aqui dentro, do envio ao pacote, e o que o sistema faz e não faz.</p>
+  </div>
+</div>
+
+<div class="features" style="margin-top:0">
+  <div class="card feature">
+    <span class="step-ico"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></span>
+    <h3>1. Envio</h3>
+    <p class="small muted">Você manda o PDF do artigo. O motor lê texto, fontes e posições: metadados, autores, ORCID, afiliações, resumos, seções, notas, figuras, tabelas, equações e referências.</p>
+  </div>
+  <div class="card feature">
+    <span class="step-ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></svg></span>
+    <h3>2. XML e validação</h3>
+    <p class="small muted">Sai o XML no padrão SciELO PS, com o nome de arquivo que a SciELO exige, validado no DTD JATS e no Schematron SPS pelo packtools, o validador oficial.</p>
+  </div>
+  <div class="card feature">
+    <span class="step-ico"><svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg></span>
+    <h3>3. Revisão</h3>
+    <p class="small muted">O que falta aparece como bloqueante, dizendo de onde vem o dado (OJS, cadastro da revista, arquivo original). Você corrige na tela e o XML é gerado e validado de novo.</p>
+  </div>
+</div>
+
+<div class="review" style="grid-template-columns:3fr 2fr;margin-top:var(--s-5)">
+  <div class="stack">
+    <section class="card">
+      <header class="cardhead"><h2>Etapas do documento</h2><span class="muted small">anotadas à mão, seguem os nomes da SciELO</span></header>
+      <div class="pad">
+        <ol class="steps" style="margin-top:0">
+          {% for cod, rotulo in etapas %}
+          <li><div><h3>{{ rotulo }}</h3><p class="muted small">{{ {
+            'recebido': 'O arquivo chegou e foi processado pelo motor.',
+            'em_revisao': 'Alguém está corrigindo os campos que faltam.',
+            'pronto': 'Sem bloqueantes e sem erros do validador oficial: o pacote pode ser gerado.',
+            'entregue': 'Pacote enviado à SciELO.',
+            'pre_qa': 'A SciELO está na conferência inicial do pacote.',
+            'qa': 'Controle de qualidade da SciELO em andamento.',
+            'qa_finalizado': 'Controle de qualidade concluído.',
+            'publicado': 'Artigo publicado na coleção.'}.get(cod, '') }}</p></div></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </section>
+
+    <section class="card">
+      <header class="cardhead"><h2>O que o sistema faz com cada parte do artigo</h2></header>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr><th>Parte</th><th>O que acontece</th></tr></thead>
+        <tbody>
+          <tr><td><b>Metadados</b></td><td>DOI, volume, número, elocation, datas e licença saem do PDF; o que não está lá vira bloqueante.</td></tr>
+          <tr><td><b>Autores</b></td><td>Nome, ORCID (com dígito verificador conferido), e-mail e afiliação, ligados por marcador.</td></tr>
+          <tr><td><b>Figuras</b></td><td>Imagem extraída do PDF, ligada à legenda, com chamada no texto e nome <span class="mono">-gfNN.tif</span> no pacote.</td></tr>
+          <tr><td><b>Tabelas</b></td><td>Quando a grade tem linhas, vira <span class="mono">&lt;table&gt;</span> de verdade. Quando as colunas não são reconstruíveis com segurança, vai como imagem, para não entregar dado trocado.</td></tr>
+          <tr><td><b>Equações</b></td><td>PDF não guarda MathML. A equação é recortada em alta resolução e vai em <span class="mono">&lt;disp-formula&gt;</span> como imagem. Para MathML é preciso o DOCX ou o LaTeX original.</td></tr>
+          <tr><td><b>Notas</b></td><td>As chamadas no texto viram <span class="mono">xref</span> ligado ao rodapé.</td></tr>
+          <tr><td><b>Referências</b></td><td>Texto integral em <span class="mono">mixed-citation</span> e campos separados em <span class="mono">element-citation</span>, com o grau de confiança de cada uma.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+  </div>
+
+  <aside class="stack">
+    <div class="card pad stack" style="gap:10px">
+      <h3>A regra da casa</h3>
+      <p class="small">Nada é inventado. Se o dado não está no arquivo, ele não aparece no XML: vira bloqueante, com o nome do campo e de onde buscar. É a diferença entre um XML que passa no controle de qualidade e um que volta.</p>
+    </div>
+    <div class="card pad stack" style="gap:10px">
+      <h3>Limites de hoje</h3>
+      <ul class="small muted" style="margin:0;padding-left:18px">
+        <li>Entrada por PDF. DOCX entra na próxima fase.</li>
+        <li>Equações saem como imagem (limitação do PDF, não do sistema).</li>
+        <li>A etapa do documento é anotada por quem acompanha, não vem automática da SciELO.</li>
+      </ul>
+    </div>
+    <div class="card pad stack" style="gap:10px">
+      <h3>Padrões seguidos</h3>
+      <p class="small muted">SciELO PS 1.9 (JATS 1.1) e 1.10 (JATS 1.3), nomeação de arquivos da SPS e validação pelo packtools {{ '' }}— o mesmo que a SciELO roda.</p>
+    </div>
+  </aside>
+</div>
+{% endblock %}

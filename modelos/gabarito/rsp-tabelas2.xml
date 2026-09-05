@@ -1,0 +1,2156 @@
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "http://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.1" specific-use="sps-1.9" xml:lang="en">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="nlm-ta">Rev Saude Publica</journal-id>
+      <journal-id journal-id-type="publisher-id">rsp</journal-id>
+      <journal-title-group>
+        <journal-title>Revista de Saúde Pública</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Saúde Pública</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0034-8910</issn>
+      <issn pub-type="epub">1518-8787</issn>
+      <publisher>
+        <publisher-name>Faculdade de Saúde Pública da Universidade de São Paulo</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id specific-use="scielo-v3" pub-id-type="publisher-id">7FDXkDwsddTBpYZxQKh75tr</article-id>
+      <article-id specific-use="scielo-v2" pub-id-type="publisher-id">S0034-89102024000100223</article-id>
+      <article-id pub-id-type="other">00223</article-id>
+      <article-id pub-id-type="doi">10.11606/s1518-8787.2024058005505</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Article</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Validation of self-reported measures of nutritional status: a study based on the PNS 2019</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-9712-1321</contrib-id>
+          <name>
+            <surname>Brito</surname>
+            <given-names>Renatha Celiana da Silva</given-names>
+          </name>
+          <role>Conception and planning of the study</role>
+          <role>Data collection, analysis, and interpretation</role>
+          <role>Drafting or revising the manuscript</role>
+          <role>Approval of the final version</role>
+          <role>Public responsibility for the content of the article</role>
+          <xref ref-type="aff" rid="aff1">
+            <sup>I</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0001-5311-697X</contrib-id>
+          <name>
+            <surname>Oliveira</surname>
+            <given-names>Angelo Giuseppe Roncalli da Costa</given-names>
+          </name>
+          <role>Conception and planning of the study</role>
+          <role>Data collection, analysis, and interpretation</role>
+          <role>Drafting or revising the manuscript</role>
+          <role>Approval of the final version</role>
+          <role>Public responsibility for the content of the article</role>
+          <xref ref-type="aff" rid="aff2">
+            <sup>II</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <label>I</label>
+        <institution content-type="orgname">Universidade Federal do Rio Grande do Norte</institution>
+        <institution content-type="orgdiv1">Programa de Pós-Graduação em Saúde Coletiva</institution>
+        <addr-line>
+          <named-content content-type="city">Natal</named-content>
+          <named-content content-type="state">RN</named-content>
+        </addr-line>
+        <country country="BR">Brasil</country>
+        <institution content-type="original"> Universidade Federal do Rio Grande do Norte. Programa de Pós-Graduação em Saúde Coletiva. Natal, RN, Brasil</institution>
+      </aff>
+      <aff id="aff2">
+        <label>II</label>
+        <institution content-type="orgname">Universidade Federal do Rio Grande do Norte</institution>
+        <institution content-type="orgdiv1">Departamento de Odontologia</institution>
+        <addr-line>
+          <named-content content-type="city">Natal</named-content>
+          <named-content content-type="state">RN</named-content>
+        </addr-line>
+        <country country="BR">Brasil</country>
+        <institution content-type="original"> Universidade Federal do Rio Grande do Norte. Departamento de Odontologia. Natal, RN, Brasil</institution>
+      </aff>
+      <author-notes>
+        <corresp id="c01"><bold>Correspondence:</bold> Renatha Celiana da Silva Brito Universidade Federal do Rio Grande do Norte Departamento de Odontologia Avenida Senador Salgado, 1.787 59056-000 Natal, RN, Brasil E-mail: <email>renathacsb13@gmail.com</email> </corresp>
+        <fn fn-type="conflict">
+          <p><bold>Conflict of Interest:</bold> The authors declare no conflict of interest.</p>
+        </fn>
+      </author-notes>
+      <pub-date date-type="pub" publication-format="electronic">
+        <day>26</day>
+        <month>07</month>
+        <year>2024</year>
+      </pub-date>
+      <pub-date date-type="collection" publication-format="electronic">
+        <year>2024</year>
+      </pub-date>
+      <volume>58</volume>
+      <elocation-id>28</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>23</day>
+          <month>04</month>
+          <year>2023</year>
+        </date>
+        <date date-type="accepted">
+          <day>07</day>
+          <month>11</month>
+          <year>2023</year>
+        </date>
+      </history>
+      <permissions>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/" xml:lang="en">
+          <license-p> This is an Open Access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited. </license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <title>ABSTRACT</title>
+        <p>The aim of this study was to analyze the validity of self-reported anthropometric measurements (weight and height) for classifying the nutritional status of Brazilian adults and elderly people using data from the 2019 National Health Survey (PNS). The PNS sample is made up of permanent private households from all of Brazil’s federative units and this is a cross-sectional study in which 6,571 records were identified with measured and reported data, with no missing data for one variable being identified when in the presence of another. Validation was carried out with 6,381 data after removing atypical data. The variables used for stratification were: gender, age, race/color, schooling, and income, and the weighted Kappa Coefficient and the Intraclass Correlation Coefficient (ICC) were used to analyze agreement between the nutritional status categories. Accuracy was analyzed based on sensitivity, specificity, positive predictive value (PPV) and negative predictive value (NPV). For construct validity, a Poisson regression was performed for each outcome (measured and self-reported), with the independent variables “gender”, “color/race”, “schooling”, and “family income”. All the analyses showed positive results for validation. There was greater reproducibility among adults (18 to 59 years old) compared to the elderly and among men compared to women. This validation indicates a concrete possibility of carrying out an association of observational studies using reported nutritional status as the outcome variable, as an efficient strategy which could minimize the operational difficulties often encountered.</p>
+      </abstract>
+      <kwd-group xml:lang="en">
+        <kwd>Epidemiology</kwd>
+        <kwd>Validation Study</kwd>
+        <kwd>Nutritional Status</kwd>
+        <kwd>Public Health</kwd>
+      </kwd-group>
+      <counts>
+        <fig-count count="2"/>
+        <table-count count="8"/>
+        <equation-count count="0"/>
+        <ref-count count="30"/>
+      </counts>
+    </article-meta>
+  </front>
+  <body>
+    <sec sec-type="intro">
+      <title>INTRODUCTION</title>
+      <p>An individual’s nutritional status is characterized by the relationship between their intake and expenditure of nutrients which, in turn, is determined by the body’s need and ability to digest, absorb, and use the nutrients ingested<sup><xref ref-type="bibr" rid="B1">1</xref></sup>. This nutritional status is identified using anthropometric variables such as height and body mass, which are consequently classified according to their positive or negative relationship with health. Anthropometry is a simple method to use in clinical practice but it is very logistical when it comes to population surveys<sup><xref ref-type="bibr" rid="B2">2</xref></sup>.</p>
+      <p>Overweight is an important public health problem, given its rampant and progressive increase in recent decades worldwide, characterized by multifactorial causes, which encompasses a complex interaction between genetic predispositions, environmental factors and lifestyle<sup><xref ref-type="bibr" rid="B1">1</xref>,<xref ref-type="bibr" rid="B2">2</xref></sup>. In Brazil, in 2018, 55.7% of the adult population was overweight, of which 19.8% was classified of obesity<sup><xref ref-type="bibr" rid="B3">3</xref></sup>. More recent studies show that out of a total of 12 million adults followed up in Primary Health Care (PHC), 8 million (63.0%) were overweight, of which 2.6 million (28.5%) were classified of obesity.<sup><xref ref-type="bibr" rid="B4">4</xref></sup></p>
+      <p>Monitoring the nutritional status of the Brazilian population is essential not only to understand the population profile, but also to plan and evaluate public policies at different levels of health care. For this reason, surveys using anthropometry are carried out. This data makes it possible to find out about trends in overweight and obesity in different geographical areas, with different population groups, and to identify the main associated factors<sup><xref ref-type="bibr" rid="B5">5</xref></sup>.</p>
+      <p>However, these surveys require high costs and logistics for them to be effective, with anthropometric assessment being one of the modules with the greatest limitations, such as the acquisition of suitable instruments, difficulties in transporting the material, standardization, and poor mastery of measurement techniques, training, increased fieldwork time, among others<sup><xref ref-type="bibr" rid="B6">6</xref></sup>.</p>
+      <p>In this sense, several surveys have used the strategy of self-reporting weight and height - direct measurements used to calculate the Body Mass Index (BMI) and, consequently, classification of nutritional status - to minimize the difficulties encountered, since they promote resource savings and simplify fieldwork<sup><xref ref-type="bibr" rid="B9">9</xref>,<xref ref-type="bibr" rid="B10">10</xref></sup>. In Brazil, for example, the Surveillance System of Risk and Protective Factors for Chronic Diseases by Telephone Survey for adults in Brazil (Vigitel) program has been using the self-report technique since 2006 and, in its 2019 edition, showed that obesity among Brazilians over 18 increased by 72.0% between 2006 and 2019, from 11.8% to 20.3%<sup><xref ref-type="bibr" rid="B4">4</xref>,<xref ref-type="bibr" rid="B11">11</xref></sup>.</p>
+      <p>The National Health Survey (Pesquisa Nacional de Saúde - PNS), a large survey with a sample from all Brazilian regions, has already been carried out in two editions (2013 and 2019). In addition to using measured weight and height, it has also used self-reported measures and its main objective is to produce data on the health and lifestyles of the population, in addition to providing knowledge about access to and use of health services by users<sup><xref ref-type="bibr" rid="B12">12</xref></sup>.</p>
+      <p>Therefore, the aim of this study was to analyze the validity of self-reported anthropometric measurements (weight and height) for classifying the nutritional status of Brazilian adults and elderly people based on data from the 2019 PNS.</p>
+    </sec>
+    <sec sec-type="methods">
+      <title>METHODS</title>
+      <p>The PNS sample is made up of residents of permanent private households (built exclusively for housing purposes) in Brazil, in rural and urban areas, except for special census tracts (lodgings, long-stay institutions for the elderly, camps, among others) or those with little housing.</p>
+      <p>Sampling was done by conglomerates in three stages, with stratification of the Primary Sampling Units (PSU). For all stages, the PSUs were selected by simple random sampling, and this edition of the PNS was approved by the National Committee of Ethics in Research (Conep) under opinion No. 3.529.376, with the Brazilian Institute of Geography and Statistics (IBGE) being responsible for the fieldwork. All the individuals selected for the study gave their consent for the questionnaire to be administered and for their anthropometric measurements to be taken<sup><xref ref-type="bibr" rid="B12">12</xref></sup>.</p>
+      <p>In 2019, IBGE interviewers conducted 94,114 interviews with male and female residents aged 15 and over in all Brazilian state capitals. To this end, self-reported and measured anthropometric data were collected from 87,678 and 6,571 individuals, respectively, aged 18 and older (excluding 736 data from individuals aged between 15 and 17 for analysis in this study). Self-reported anthropometric data was not collected from women who reported being pregnant at the time of the interview.</p>
+      <p>Self-reported data was collected in the Lifestyle Module using the questions: “Do you know your weight?” and “Do you know your height?”, the answers to which were recorded in kilograms (kg) and centimeters (cm). The measurements were taken with a defined sub-sample allocated proportionally to the strata, with at least two PSUs per stratum.</p>
+      <p>The measurements were taken using the same procedures used in the 2008-2009 Consumer Expenditure Survey (POF) conducted by the Ministry of Health in partnership with the IBGE<sup><xref ref-type="bibr" rid="B13">13</xref></sup>, by teams trained by the Oswaldo Cruz Foundation (Fiocruz) and the Laboratory of Nutritional Assessment of Populations (Lanpop) at the University of São Paulo’s School of Public Health (FSP/USP), using portable stadiometers and digital scales.</p>
+      <p>For both measured and self-reported data, nutritional status was classified based on BMI, obtained from the ratio between the individual’s weight and height squared (weight/height<sup><xref ref-type="bibr" rid="B2">2</xref></sup>), considering the reference values recommended by the Ministry of Health<sup><xref ref-type="bibr" rid="B3">3</xref></sup> for adults (18 to 59 years): ≤ 18.4 kg/m<sup>2</sup> for underweight, between 18.5 and 24.9 kg/m<sup>2</sup> for eutrophy and ≥ 25 kg/m<sup>2</sup> for overweight<sup><xref ref-type="bibr" rid="B14">14</xref></sup>; and for the elderly (aged 60 or over): ≤ 21.9 kg/m<sup>2</sup> for underweight, between 22 and 26.9 kg/m<sup>2</sup> for eutrophic and ≥ 27 kg/m<sup>2</sup> for overweight<sup><xref ref-type="bibr" rid="B15">15</xref></sup>. In the analyses, BMI data was used as a categorical variable, based on its classification.</p>
+      <p>The variables used for stratification were: gender (male/female); age - classified as “non-elderly” for those aged between 18 and 59 and “elderly” for those aged 60 or older; race or color - with a dichotomous classification as “white” and “non-white” (grouping those who declared themselves as “black”, “yellow”, “brown”, or “indigenous”); schooling - dichotomous classification of yes/no for the question “Can you read and write?”; income - classified as “≤ 1 minimum wage” and “&gt; 1 minimum wage”.”; income - classified as “≤ 1 minimum wage” and “&gt; 1 minimum wage”, considering the minimum wage for 2019, equivalent to R$998.00.</p>
+      <p>Initially, to check the consistency between the measured and self-reported data, an analysis of atypical data (outliers) was carried out to identify possible recording errors using the multivariate detection technique, calculating the Mahalanobis D<sup>2</sup>distance.</p>
+      <p>Next, to analyze the reliability between the nutritional status categories, the Chi<sup><xref ref-type="bibr" rid="B2">2</xref></sup> test was used, along with the Phi coefficient (which has a result ranging from -1 to 1, where zero indicates that there is no relationship between the variables, while values close to the extremes -1 and 1 indicate a strong correlation), the weighted and unweighted Kappa Coefficient, the Pearson Correlation Coefficient and the Intraclass Correlation Coefficient (ICC) were used, adopting the Landis and Koch criterion<sup><xref ref-type="bibr" rid="B16">16</xref></sup> , considering the following levels of reliability: none (less than zero); discrete (0 to 0.20); regular (0.21 to 0.40); moderate (0.41 to 0.60); substantial (0.61 to 0.80); and perfect (0.81 to 1.00).</p>
+      <p>Accuracy was analyzed based on the values of sensitivity, specificity, positive predictive value (PPV) and negative predictive value (NPV), using the measurements taken to classify nutritional status (BMI) as the gold standard.</p>
+      <p>For construct validity, a Poisson regression was performed for each outcome (measured and self-reported), with the independent variables “gender”, “color/race”, “schooling”, and “family income”. STATA software, version 14.0, was used for all statistical analyses, considering a 95% confidence interval (CI) and a 5% significance level (<italic>p</italic>). The prevalence ratio (PR) measure was used for the association tests.</p>
+    </sec>
+    <sec sec-type="results">
+      <title>RESULTS</title>
+      <sec>
+        <title>Data Consistency Analysis</title>
+        <p>A total of 6,571 records were identified with measured and reported weight and height data and, consequently, estimated BMI, and no data was lost for one variable when another was present. This sample has the following characteristics: in terms of gender, 50.2% are men (n = 3,298) and 49.8% are women (n = 3,273), with an average age of 48. As for schooling, 87.6% answered “yes” to “can read and write” (n = 5,756) and 12.4% “no” (n = 815); as for race/color, 60.2% self-declared as black, yellow, brown, or indigenous (n = 3,954) and 39.8% self-declared as white (n = 2,617). As for income, 59.4% of individuals reported having a family income of one minimum wage or less (n = 3,901).</p>
+        <p>An analysis of atypical data (outliers) was then carried out in order to identify possible recording errors. In an initial analysis, considering the normalized values, some values above three standard deviations were observed, especially at the upper limit. An analysis of atypical data was then carried out using the multivariate detection technique, calculating the Mahalanobis D<sup>2</sup> distance and its respective probability, in accordance with the approach recommended by Hair et al.<sup><xref ref-type="bibr" rid="B17">17</xref></sup>, and 190 atypical data (2.9%) were identified, which can be seen in the <xref ref-type="fig" rid="f01">Figure</xref>. Thus, 6,381 records of measured BMI and reported BMI were included in the validation analysis.</p>
+        <p>
+          <fig id="f01">
+            <label>Figure</label>
+            <caption>
+              <title>Identification of atypical data for Body Mass Index (BMI) using the multivariate detection technique.</title>
+            </caption>
+            <attrib>Source: Authors’ analysis of data from the National Health Survey (PNS), 2019.</attrib>
+            <alternatives>
+              <graphic xlink:href="https://minio.scielo.br/documentstore/1518-8787/7FDXkDwsddTBpYZxQKh75tr/0f46a5c0c62ebab95e577884417fcb824c48fe51.tif"/>
+              <graphic xlink:href="https://minio.scielo.br/documentstore/1518-8787/7FDXkDwsddTBpYZxQKh75tr/93a17f3a045e9e1722ec6370836f42e4ada49f9e.png" specific-use="scielo-web"/>
+              <graphic xlink:href="https://minio.scielo.br/documentstore/1518-8787/7FDXkDwsddTBpYZxQKh75tr/95485638c5b240b8c61f49928b431e2035c5fa09.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+            </alternatives>
+          </fig>
+        </p>
+      </sec>
+      <sec>
+        <title>Reliability Analysis - BMI Variable in Quantitative Form</title>
+        <p>Reliability was assessed by calculating Pearson’s Correlation Coefficient and ICC based on BMI in quantitative form. A simple linear regression was also carried out, with measured BMI as the dependent variable and reported BMI as the independent variable.</p>
+        <p>Pearson’s correlation coefficient was 0.826 (p &lt; 0.001), indicating a strong correlation. However, this coefficient has a natural bias, which is that it shows the correlation without considering the agreement between the values. In this sense, the ICC was also calculated, with a value of 0.904 (p &lt; 0.001; 95%CI 0.899-0.909), which is considered perfect.</p>
+        <p>The linear regression showed an R<sup>2</sup> of 0.682, indicating that 68.2% of the variation in measured BMI can be credited to reported BMI. The model proved to be significant by the Analysis of Variance (p &lt; 0.001) and the resulting final equation was: measured BMI = 3.96 + 0.864 x reported BMI. The evaluation of the model’s predictive power showed a variation in the standardized residuals between -3.9 and 4.0, with a normal distribution and a Durbin-Watson value of 1.32, indicating independence between the residuals.</p>
+      </sec>
+      <sec>
+        <title>Reliability Analysis - BMI Variable in Categorized Form</title>
+        <p>There was an association between the categories of reported BMI and measured BMI, using the Chi<sup><xref ref-type="bibr" rid="B2">2</xref></sup> test equal to 4.711 and a significance value of <italic>p</italic>&lt;0.001, considering the limits for classifying BMI for adults and the elderly, characterized as “Underweight”, “Eutrophic”, and “Overweight”.</p>
+        <p>In addition to observing significance, the Phi coefficient was calculated and found to be 0.859 (p &lt; 0.001), indicating a strong association. The unweighted Kappa was 0.637 (p &lt; 0.001; 95%CI: 0.619-0.654). However, considering that this is an ordinal variable, the weighted Kappa can better express agreement, and a value of 0.664 (p &lt; 0.001; 95%CI: 0.648-0.681) was found, indicating good agreement for the nutritional status categories. When the weighted Kappa was assessed in a stratified manner (<xref ref-type="table" rid="t1">Tables 1</xref> and <xref ref-type="table" rid="t2">2</xref>), we saw that there was good reliability for both gender (0.681 for men and 0.646 for women) and age (0.684 for the non-elderly and 0.587 for the elderly).</p>
+        <p>
+          <table-wrap id="t1">
+            <label>Table 1</label>
+            <caption>
+              <title>Bivariate analysis by gender, following the categories of measured body mass index and reported body mass index. Brazil, 2023.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup width="11%">
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left">Category</th>
+                  <th rowspan="2">Referred BMI classification</th>
+                  <th colspan="3">Classification of measured BMI</th>
+                  <th rowspan="2">Total</th>
+                  <th rowspan="2">Weighted Kappa</th>
+                  <th rowspan="2">95%CI</th>
+                  <th rowspan="2">p-value</th>
+                </tr>
+                <tr>
+                  <th align="left">Sex</th>
+                  <th>Underweight</th>
+                  <th>Eutrophic</th>
+                  <th>Overweight</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="4">Men</td>
+                  <td align="center">Underweight</td>
+                  <td align="center">104</td>
+                  <td align="center">72</td>
+                  <td align="center">6</td>
+                  <td align="center">182</td>
+                  <td align="center" rowspan="4">0.681</td>
+                  <td align="center" rowspan="4">0.658–0.704</td>
+                  <td align="center" rowspan="4">0.001</td>
+                </tr>
+                <tr>
+                  <td align="center">Eutrophic</td>
+                  <td align="center">79</td>
+                  <td align="center">1,067</td>
+                  <td align="center">239</td>
+                  <td align="center">1,385</td>
+                </tr>
+                <tr>
+                  <td align="center">Overweight</td>
+                  <td align="center">11</td>
+                  <td align="center">207</td>
+                  <td align="center">1,468</td>
+                  <td align="center">1,686</td>
+                </tr>
+                <tr>
+                  <td align="center">Total</td>
+                  <td align="center">194</td>
+                  <td align="center">1,346</td>
+                  <td align="center">1,713</td>
+                  <td align="center">3,253</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">Women</td>
+                  <td align="center">Underweight</td>
+                  <td align="center">103</td>
+                  <td align="center">66</td>
+                  <td align="center">11</td>
+                  <td align="center">180</td>
+                  <td align="center" rowspan="4">0.646</td>
+                  <td align="center" rowspan="4">0.622–0.671</td>
+                  <td align="center" rowspan="4">0.001</td>
+                </tr>
+                <tr>
+                  <td align="center">Eutrophic</td>
+                  <td align="center">56</td>
+                  <td align="center">901</td>
+                  <td align="center">346</td>
+                  <td align="center">1,303</td>
+                </tr>
+                <tr>
+                  <td align="center">Overweight</td>
+                  <td align="center">8</td>
+                  <td align="center">158</td>
+                  <td align="center">1,479</td>
+                  <td align="center">1,645</td>
+                </tr>
+                <tr>
+                  <td align="center">Total</td>
+                  <td align="center">167</td>
+                  <td align="center">1,125</td>
+                  <td align="center">1,836</td>
+                  <td align="center">3,128</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">Total</td>
+                  <td align="center">Underweight</td>
+                  <td align="center">207</td>
+                  <td align="center">138</td>
+                  <td align="center">17</td>
+                  <td align="center">362</td>
+                  <td colspan="3" rowspan="4"> </td>
+                </tr>
+                <tr>
+                  <td align="center">Eutrophic</td>
+                  <td align="center">135</td>
+                  <td align="center">1,968</td>
+                  <td align="center">585</td>
+                  <td align="center">2,688</td>
+                </tr>
+                <tr>
+                  <td align="center">Overweight</td>
+                  <td align="center">19</td>
+                  <td align="center">365</td>
+                  <td align="center">2,947</td>
+                  <td align="center">3,331</td>
+                </tr>
+                <tr>
+                  <td align="center">Total</td>
+                  <td align="center">361</td>
+                  <td align="center">2,471</td>
+                  <td align="center">3,549</td>
+                  <td align="center">6,381</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN1">
+                <p>BMI: Body mass index; CI: Confidence interval.</p>
+              </fn>
+              <attrib>Source: Authors’ analysis of data from the National Health Survey (PNS) 2019</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+        <p>
+          <table-wrap id="t2">
+            <label>Table 2</label>
+            <caption>
+              <title>Bivariate analysis by age, following the categories of measured body mass index and reported body mass index. Brazil, 2023.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup width="11%">
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left">Category</th>
+                  <th rowspan="2">Referred BMI classification</th>
+                  <th colspan="3">Classification of measured BMI</th>
+                  <th rowspan="2">Total</th>
+                  <th rowspan="2">Weighted Kappa</th>
+                  <th rowspan="2">95%CI</th>
+                  <th rowspan="2">p-value</th>
+                </tr>
+                <tr>
+                  <th align="left">Age</th>
+                  <th>Underweight</th>
+                  <th>Eutrophic</th>
+                  <th>Overweight</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="4">Not elderly</td>
+                  <td align="center">Underweight</td>
+                  <td align="center">28</td>
+                  <td align="center">19</td>
+                  <td align="center">2</td>
+                  <td align="center">49</td>
+                  <td align="center" rowspan="4">0.684</td>
+                  <td align="center" rowspan="4">0.664–0.704</td>
+                  <td align="center" rowspan="4">0.001</td>
+                </tr>
+                <tr>
+                  <td align="center">Eutrophic</td>
+                  <td align="center">18</td>
+                  <td align="center">678</td>
+                  <td align="center">228</td>
+                  <td align="center">924</td>
+                </tr>
+                <tr>
+                  <td align="center">Overweight</td>
+                  <td align="center">1</td>
+                  <td align="center">108</td>
+                  <td align="center">1,204</td>
+                  <td align="center">1,313</td>
+                </tr>
+                <tr>
+                  <td align="center">Total</td>
+                  <td align="center">47</td>
+                  <td align="center">805</td>
+                  <td align="center">1,434</td>
+                  <td align="center">2,286</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">Elderly</td>
+                  <td align="center">Underweight</td>
+                  <td align="center">75</td>
+                  <td align="center">47</td>
+                  <td align="center">9</td>
+                  <td align="center">131</td>
+                  <td align="center" rowspan="4">0.587</td>
+                  <td align="center" rowspan="4">0.555–0.620</td>
+                  <td align="center" rowspan="4">0.001</td>
+                </tr>
+                <tr>
+                  <td align="center">Eutrophic</td>
+                  <td align="center">38</td>
+                  <td align="center">223</td>
+                  <td align="center">118</td>
+                  <td align="center">379</td>
+                </tr>
+                <tr>
+                  <td align="center">Overweight</td>
+                  <td align="center">7</td>
+                  <td align="center">50</td>
+                  <td align="center">275</td>
+                  <td align="center">332</td>
+                </tr>
+                <tr>
+                  <td align="center">Total</td>
+                  <td align="center">120</td>
+                  <td align="center">320</td>
+                  <td align="center">402</td>
+                  <td align="center">842</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">Total</td>
+                  <td align="center">Underweight</td>
+                  <td align="center">103</td>
+                  <td align="center">66</td>
+                  <td align="center">11</td>
+                  <td align="center">180</td>
+                  <td colspan="3" rowspan="4"> </td>
+                </tr>
+                <tr>
+                  <td align="center">Eutrophic</td>
+                  <td align="center">56</td>
+                  <td align="center">901</td>
+                  <td align="center">346</td>
+                  <td align="center">1,303</td>
+                </tr>
+                <tr>
+                  <td align="center">Overweight</td>
+                  <td align="center">8</td>
+                  <td align="center">158</td>
+                  <td align="center">1,479</td>
+                  <td align="center">1,645</td>
+                </tr>
+                <tr>
+                  <td align="center">Total</td>
+                  <td align="center">167</td>
+                  <td align="center">1,125</td>
+                  <td align="center">1,836</td>
+                  <td align="center">3,128</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN2">
+                <p>BMI: Body mass index; CI: Confidence interval.</p>
+              </fn>
+              <attrib>Source: Authors’ analysis of data from the National Health Survey (PNS) 2019</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+      </sec>
+      <sec>
+        <title>Categorized BMI Analysis - Criterion Validity (Accuracy)</title>
+        <p>Accuracy statistics were also calculated, considering measured BMI as the gold standard. For this purpose, overweight was considered as the outcome. The parameters were also calculated stratified by sex (men and women) and age (non-elderly and elderly). The results are shown in <xref ref-type="table" rid="t3">Table 3</xref>.</p>
+        <p>
+          <table-wrap id="t3">
+            <label>Table 3</label>
+            <caption>
+              <title>Parameters found for the analysis of accuracy between measured body mass index and reported body mass index according to the subgroups studied and for the total sample. Brazil, 2023.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup width="17%">
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left" rowspan="2">Variable</th>
+                  <th>Sensitivity</th>
+                  <th>Specificity</th>
+                  <th>PPV</th>
+                  <th>NPV</th>
+                  <th>Diagnostic accuracy</th>
+                </tr>
+                <tr>
+                  <th>% (95%CI)</th>
+                  <th>% (95%CI)</th>
+                  <th>% (95%CI)</th>
+                  <th>% (95%CI)</th>
+                  <th>% (95%CI)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Men</td>
+                  <td align="center">85.7 (84.0–87.3)</td>
+                  <td align="center">85.8 (84.0–87.5)</td>
+                  <td align="center">87.1 (85.4–88.6)</td>
+                  <td align="center">84.4 (82.5–86.1)</td>
+                  <td align="center">85.8 (84.5–86.9)</td>
+                </tr>
+                <tr>
+                  <td>Women</td>
+                  <td align="center">80.6 (78.7–82.3)</td>
+                  <td align="center">87.2 (85.2–88.9)</td>
+                  <td align="center">89.9 (88.4–91.3)</td>
+                  <td align="center">75.9 (73.7–78.0)</td>
+                  <td align="center">83.3 (81.9–84.6)</td>
+                </tr>
+                <tr>
+                  <td>Not elderly</td>
+                  <td align="center">85.8 (84.5–87.0)</td>
+                  <td align="center">85.0 (83.3–86.6)</td>
+                  <td align="center">89.7 (88.5–90.8)</td>
+                  <td align="center">79.6 (77.8–81.4)</td>
+                  <td align="center">85.5 (84.4–86.5)</td>
+                </tr>
+                <tr>
+                  <td>Elderly</td>
+                  <td align="center">72.1 (68.7–75.3)</td>
+                  <td align="center">89.2 (87.1–91.0)</td>
+                  <td align="center">82.9 (79.8–85.7)</td>
+                  <td align="center">81.4 (79.0–83.7)</td>
+                  <td align="center">82.0 (80.1–83.8)</td>
+                </tr>
+                <tr>
+                  <td>Total sample</td>
+                  <td align="center">83.0 (81.8–84.2)</td>
+                  <td align="center">86.4 (85.1–87.6)</td>
+                  <td align="center">88.5 (87.3–89.5)</td>
+                  <td align="center">80.3 (78.8–81.6)</td>
+                  <td align="center">84.6 (83.6–85.4)</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN3">
+                <p>PPV: Positive predictive value; NPV: Negative predictive value; CI: Confidence interval.</p>
+              </fn>
+              <attrib>Source: Authors’ analysis of data from the National Health Survey (PNS) 2019</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+        <p>Sensitivity, the ability of overweight individuals to report their weight and height data correctly, was high at 83.0% (95%CI between 81.8% and 84.2%), while specificity, the ability of non-overweight individuals to report their data correctly, was also high at 86.4% (95%CI between 85.1% and 87.7%).). When stratified by sex and age, we see that overweight women and elderly people (≥ 60 years) have lower sensitivity for self-reporting their nutritional status, 80.6 and 72.1%, respectively.</p>
+      </sec>
+      <sec>
+        <title>Analysis of Categorized BMI - Construct Validity</title>
+        <p>Finally, categorized BMI was analyzed according to some predictor variables that are commonly associated with nutritional status, such as: gender, race/color, schooling and income<sup><xref ref-type="bibr" rid="B8">8</xref>,<xref ref-type="bibr" rid="B18">18</xref></sup>. The Poisson regression analysis for reported BMI and measured BMI (<xref ref-type="table" rid="t4">Table 4</xref>) showed that the only variable that differed in the two models was gender (which was significant for measured BMI and not for reported BMI). This reinforces the need to always stratify by sex when using reported BMI, corroborating the previous results.</p>
+        <p>
+          <table-wrap id="t4">
+            <label>Table 4</label>
+            <caption>
+              <title>Poisson regression analysis for reported body mass index and measured body mass index. Brazil, 2023.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup width="20%">
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left">BMI</th>
+                  <th>Variable</th>
+                  <th>Adjusted PR</th>
+                  <th>95%CI</th>
+                  <th>p-value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="4">Referred BMI</td>
+                  <td align="center">Sex</td>
+                  <td align="center">1.022</td>
+                  <td align="center">0.974–1.072</td>
+                  <td align="center">0.367</td>
+                </tr>
+                <tr>
+                  <td align="center">Color/race</td>
+                  <td align="center">1.031</td>
+                  <td align="center">0.982–1.083</td>
+                  <td align="center">0.217</td>
+                </tr>
+                <tr>
+                  <td align="center">Education</td>
+                  <td align="center">0.781</td>
+                  <td align="center">0.715–0.854</td>
+                  <td align="center">0.001</td>
+                </tr>
+                <tr>
+                  <td align="center">Family income</td>
+                  <td align="center">0.94</td>
+                  <td align="center">0.895–0.988</td>
+                  <td align="center">0.014</td>
+                </tr>
+                <tr>
+                  <td rowspan="4">Measured BMI</td>
+                  <td align="center">Sex</td>
+                  <td align="center">1.122</td>
+                  <td align="center">1.073–1.174</td>
+                  <td align="center">0.001</td>
+                </tr>
+                <tr>
+                  <td align="center">Color/race</td>
+                  <td align="center">1.002</td>
+                  <td align="center">0.958–1.048</td>
+                  <td align="center">0.925</td>
+                </tr>
+                <tr>
+                  <td align="center">Education</td>
+                  <td align="center">0.812</td>
+                  <td align="center">0.748–0.881</td>
+                  <td align="center">0.001</td>
+                </tr>
+                <tr>
+                  <td align="center">Family income</td>
+                  <td align="center">0.948</td>
+                  <td align="center">0.906–0.993</td>
+                  <td align="center">0.022</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN4">
+                <p>BMI: Body mass index; PR: Prevalence ratio; CI: Confidence interval; p: Significance.</p>
+              </fn>
+              <attrib>Source: Authors’ analysis of data from the National Health Survey (PNS) 2019.</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+      </sec>
+    </sec>
+    <sec sec-type="discussion">
+      <title>DISCUSSION</title>
+      <p>Through the series of statistical analyses carried out to validate the measured and reported weight and height data (and consequent estimation of BMI), this study showed that the self-reference technique can be used in population surveys and is an efficient strategy to minimize the difficulties often encountered (especially in terms of logistics and time) in directly measuring these anthropometric measurements.</p>
+      <p>There was greater reproducibility among non-elderly adults (18 to 59 years old) compared to elderly people and among men compared to women. This conclusion is reinforced when we see that, among the socioeconomic and demographic variables analyzed, the only one that has a difference in all the statistical models is gender, corroborating some similar studies<sup><xref ref-type="bibr" rid="B8">8</xref>,<xref ref-type="bibr" rid="B18">18</xref></sup>.</p>
+      <p>Sensitivity among women was 80.6%, while among men it was 87.0%, meaning that among overweight women and men, women were able to report their data less accurately. On the other hand, when they were not overweight, women had a higher specificity (87.2%), in line with other studies which have shown that people who are not overweight are able to report their measurements more accurately<sup><xref ref-type="bibr" rid="B7">7</xref></sup>.</p>
+      <p>The results of this study on women reinforce the hypothesis that, while they are more concerned about monitoring their measurements and health status<sup><xref ref-type="bibr" rid="B21">21</xref></sup>, in general, when compared to men, they also have a greater tendency to underestimate their weight and overestimate their height<sup><xref ref-type="bibr" rid="B6">6</xref>,<xref ref-type="bibr" rid="B20">20</xref>,<xref ref-type="bibr" rid="B22">22</xref></sup>, which can lead to important fluctuations in the definition of their nutritional status. This can be explained by the fact that this group often has higher levels of body dissatisfaction, triggered by high social pressure to achieve certain standards of beauty<sup><xref ref-type="bibr" rid="B23">23</xref>,<xref ref-type="bibr" rid="B24">24</xref></sup>. In general, when individuals feel more satisfied with their own body image or are closer to the body weight of their peers, they are less likely to misreport their weight.<sup><xref ref-type="bibr" rid="B21">21</xref></sup></p>
+      <p>Elderly people showed lower sensitivity (72.1%) when compared to non-elderly adults (85.0%), i.e. overweight elderly people are less accurate in reporting their anthropometric data, while elderly people who are not overweight (specificity of 89.2%) are able to report more accurately, which corroborates other similar studies<sup><xref ref-type="bibr" rid="B20">20</xref>,<xref ref-type="bibr" rid="B25">25</xref></sup>. This may be associated with the physiological process of ageing itself<sup><xref ref-type="bibr" rid="B26">26</xref></sup>, which leads to a decrease in height over the years, as well as a progressive reduction in muscle mass and/or increase in adipose tissue due to a decrease in metabolic rate, impacting on changes in body weight, often not perceived by the elderly<sup><xref ref-type="bibr" rid="B27">27</xref>,<xref ref-type="bibr" rid="B28">28</xref></sup>.</p>
+      <p>In addition, this is a group that generally does not check its weight and height regularly, thus leading to more inaccurate and outdated information, which may also be associated with memory bias, commonly present in this public, corroborating these results with other studies that observed an underestimation of weight and overestimation of height in the elderly<sup><xref ref-type="bibr" rid="B18">18</xref>,<xref ref-type="bibr" rid="B20">20</xref></sup>.</p>
+      <p>This validation of the PNS is very important, given the wide use of this database in cross-sectional and longitudinal studies to assess morbidity, the functioning of health care and the lifestyle of the Brazilian population, in different areas of knowledge due to the wealth of variables, large sample size and representativeness of all the federative units in Brazil.</p>
+      <p>Furthermore, although we found good agreement for the categories of nutritional status, showing that the PNS 2019 can be used to estimate the prevalence of overweight in this population, other population-based studies, different from this one, found values of underestimation<sup><xref ref-type="bibr" rid="B29">29</xref>,<xref ref-type="bibr" rid="B30">30</xref></sup> and overestimation for overweight and obesity<sup><xref ref-type="bibr" rid="B18">18</xref></sup>.</p>
+      <p>To validate the construct, we used some predictors that the literature commonly shows to be associated with nutritional status (gender, race/color, schooling, and income), which reinforced the legitimacy of using self-reported data in association studies, due to its similarity to measured data. Therefore, although caution is recommended when using self-reported data for prevalence studies of nutritional status for overweight, especially with the elderly and women, the results of this study indicate that there is a real possibility of carrying out association studies using self-reported nutritional status as the outcome variable.</p>
+      <p>This becomes even more relevant when it comes to large population surveys, where there is a high cost and logistical demand for fieldwork, based on the need for training, the acquisition of suitable materials in large quantities, difficulties with transportation and the long duration of the collections. The use of self-reported anthropometric data increases the feasibility of observational studies, pointing to the importance of good planning of the research design, considering its central objective and the characteristics of the target population, especially sociocultural, demographic and economic.</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <title>REFERENCES</title>
+      <ref id="B1">
+        <label>1</label>
+        <mixed-citation>1. World Health Organization. Obesity and overweight fact sheet. Geneve: World Health Organization; 2018 [cited 2024 Mar 1]. Available from: <ext-link ext-link-type="uri" xlink:href="http://www.who.int/mediacentre/factsheets/fs311/en/">http://www.who.int/mediacentre/factsheets/fs311/en/</ext-link> </mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <collab>World Health Organization</collab>
+          </person-group>
+          <source>Obesity and overweight fact sheet</source>
+          <publisher-loc>Geneve</publisher-loc>
+          <publisher-name>World Health Organization</publisher-name>
+          <year>2018</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 1</date-in-citation>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="http://www.who.int/mediacentre/factsheets/fs311/en/">http://www.who.int/mediacentre/factsheets/fs311/en/</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B2">
+        <label>2</label>
+        <mixed-citation>2. Blüher M. Obesity: global epidemiology and pathogenesis. Nat Rev Endocrinol. 2019 May;15(5):288-98. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41574-019-0176-8">https://doi.org/10.1038/s41574-019-0176-8</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Blüher</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <article-title>Obesity: global epidemiology and pathogenesis</article-title>
+          <source>Nat Rev Endocrinol</source>
+          <year>2019</year>
+          <month>05</month>
+          <volume>15</volume>
+          <issue>5</issue>
+          <fpage>288</fpage>
+          <lpage>298</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1038/s41574-019-0176-8">https://doi.org/10.1038/s41574-019-0176-8</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B3">
+        <label>3</label>
+        <mixed-citation>3. Ministério da Saúde (BR). Secretaria de Ciência, Tecnologia, Inovação e Insumos Estratégicos em Saúde. Protocolo clínico e diretrizes terapêuticas do sobrepeso e obesidade em adultos. Brasília, DF: Ministério da Saúde; 2020.</mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Ministério da Saúde (BR)</collab>
+            <collab>Secretaria de Ciência, Tecnologia, Inovação e Insumos Estratégicos em Saúde</collab>
+          </person-group>
+          <source>Protocolo clínico e diretrizes terapêuticas do sobrepeso e obesidade em adultos</source>
+          <publisher-loc>Brasília, DF</publisher-loc>
+          <publisher-name>Ministério da Saúde</publisher-name>
+          <year>2020</year>
+        </element-citation>
+      </ref>
+      <ref id="B4">
+        <label>4</label>
+        <mixed-citation>4. Ministério da Saúde (BR). Secretaria de Atenção à Saúde. Departamento de Atenção Básica. Situação alimentar e nutricional no Brasil: excesso de peso e obesidade da população adulta na Atenção Primária à Saúde. Brasília, DF: Ministério da Saúde; 2020.</mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Ministério da Saúde (BR)</collab>
+            <collab>Secretaria de Atenção à Saúde</collab>
+            <collab>Departamento de Atenção Básica</collab>
+          </person-group>
+          <source>Situação alimentar e nutricional no Brasil: excesso de peso e obesidade da população adulta na Atenção Primária à Saúde</source>
+          <publisher-loc>Brasília, DF</publisher-loc>
+          <publisher-name>Ministério da Saúde</publisher-name>
+          <year>2020</year>
+        </element-citation>
+      </ref>
+      <ref id="B5">
+        <label>5</label>
+        <mixed-citation>5. Ferreira AP, Szwarcwald CL, Damacena GN, Boccolini CS, Souza Junior PR. Validity of self-reported anthropometric measures in estimating obesity prevalence in brazil: study with data from the National Health Survey (PNS), 2013. J Nutrit Health Food Sci. 2021;9(2):1-10. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.15226/jnhfs.2021.001182">https://doi.org/10.15226/jnhfs.2021.001182</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ferreira</surname>
+              <given-names>AP</given-names>
+            </name>
+            <name>
+              <surname>Szwarcwald</surname>
+              <given-names>CL</given-names>
+            </name>
+            <name>
+              <surname>Damacena</surname>
+              <given-names>GN</given-names>
+            </name>
+            <name>
+              <surname>Boccolini</surname>
+              <given-names>CS</given-names>
+            </name>
+            <name>
+              <surname>Souza</surname>
+              <given-names>PR</given-names>
+              <suffix>Junior</suffix>
+            </name>
+          </person-group>
+          <article-title>Validity of self-reported anthropometric measures in estimating obesity prevalence in brazil: study with data from the National Health Survey (PNS), 2013</article-title>
+          <source>J Nutrit Health Food Sci</source>
+          <year>2021</year>
+          <volume>9</volume>
+          <issue>2</issue>
+          <fpage>1</fpage>
+          <lpage>10</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.15226/jnhfs.2021.001182">https://doi.org/10.15226/jnhfs.2021.001182</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B6">
+        <label>6</label>
+        <mixed-citation>6. Silveira EA, Araújo CL, Gigante DP, Barros AJ, Lima MS. Validação do peso e altura referidos para o diagnóstico do estado nutricional em uma população de adultos no Sul do Brasil. Cad Saude Publica. 2005;21(1):235-45. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2005000100026">https://doi.org/10.1590/S0102-311X2005000100026</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Silveira</surname>
+              <given-names>EA</given-names>
+            </name>
+            <name>
+              <surname>Araújo</surname>
+              <given-names>CL</given-names>
+            </name>
+            <name>
+              <surname>Gigante</surname>
+              <given-names>DP</given-names>
+            </name>
+            <name>
+              <surname>Barros</surname>
+              <given-names>AJ</given-names>
+            </name>
+            <name>
+              <surname>Lima</surname>
+              <given-names>MS</given-names>
+            </name>
+          </person-group>
+          <article-title>Validação do peso e altura referidos para o diagnóstico do estado nutricional em uma população de adultos no Sul do Brasil</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2005</year>
+          <volume>21</volume>
+          <issue>1</issue>
+          <fpage>235</fpage>
+          <lpage>245</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2005000100026">https://doi.org/10.1590/S0102-311X2005000100026</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B7">
+        <label>7</label>
+        <mixed-citation>7. Ternus DL, Canuto R, Henn RL, Macagnan JA, Pattussi MP, Olinto MT. Use of self-reported weight and height for determining workers' nutritional status. Rev Nutr. 2016;29(3):347-56. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1678-98652016000300005">https://doi.org/10.1590/1678-98652016000300005</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ternus</surname>
+              <given-names>DL</given-names>
+            </name>
+            <name>
+              <surname>Canuto</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Henn</surname>
+              <given-names>RL</given-names>
+            </name>
+            <name>
+              <surname>Macagnan</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Pattussi</surname>
+              <given-names>MP</given-names>
+            </name>
+            <name>
+              <surname>Olinto</surname>
+              <given-names>MT</given-names>
+            </name>
+          </person-group>
+          <article-title>Use of self-reported weight and height for determining workers' nutritional status</article-title>
+          <source>Rev Nutr</source>
+          <year>2016</year>
+          <volume>29</volume>
+          <issue>3</issue>
+          <fpage>347</fpage>
+          <lpage>356</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1678-98652016000300005">https://doi.org/10.1590/1678-98652016000300005</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B8">
+        <label>8</label>
+        <mixed-citation>8. Moreira NF, Luz VG, Moreira CC, Pereira RA, Sichieri R, Ferreira MG, et al. Self-reported weight and height are valid measures to determine weight status: results from the Brazilian National Health Survey (PNS 2013). Cad Saude Publica. 2018 May;34(5):e00063917. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311x00063917">https://doi.org/10.1590/0102-311x00063917</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Moreira</surname>
+              <given-names>NF</given-names>
+            </name>
+            <name>
+              <surname>Luz</surname>
+              <given-names>VG</given-names>
+            </name>
+            <name>
+              <surname>Moreira</surname>
+              <given-names>CC</given-names>
+            </name>
+            <name>
+              <surname>Pereira</surname>
+              <given-names>RA</given-names>
+            </name>
+            <name>
+              <surname>Sichieri</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Ferreira</surname>
+              <given-names>MG</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Self-reported weight and height are valid measures to determine weight status: results from the Brazilian National Health Survey (PNS 2013)</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2018</year>
+          <month>05</month>
+          <volume>34</volume>
+          <issue>5</issue>
+          <elocation-id>e00063917</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311x00063917">https://doi.org/10.1590/0102-311x00063917</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B9">
+        <label>9</label>
+        <mixed-citation>9. Rodrigues PR, Gonçalves-Silva RM, Pereira RA. Validity of self-reported weight and stature in adolescents from Cuiabá, Central-Western Brazil. Rev Nutr. 2013;26(3):283-90. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1415-52732013000300003">https://doi.org/10.1590/S1415-52732013000300003</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Rodrigues</surname>
+              <given-names>PR</given-names>
+            </name>
+            <name>
+              <surname>Gonçalves-Silva</surname>
+              <given-names>RM</given-names>
+            </name>
+            <name>
+              <surname>Pereira</surname>
+              <given-names>RA</given-names>
+            </name>
+          </person-group>
+          <article-title>Validity of self-reported weight and stature in adolescents from Cuiabá, Central-Western Brazil</article-title>
+          <source>Rev Nutr</source>
+          <year>2013</year>
+          <volume>26</volume>
+          <issue>3</issue>
+          <fpage>283</fpage>
+          <lpage>290</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1415-52732013000300003">https://doi.org/10.1590/S1415-52732013000300003</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B10">
+        <label>10</label>
+        <mixed-citation>10. Ortiz-Panozo E, Yunes-Díaz E, Lajous M, Romieu I, Monge A, López-Ridaura R. Validity of self-reported anthropometry in adult Mexican women. Salud Publica Mex. 2017;59(3):266-75. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.21149/7860">https://doi.org/10.21149/7860</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ortiz-Panozo</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Yunes-Díaz</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Lajous</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Romieu</surname>
+              <given-names>I</given-names>
+            </name>
+            <name>
+              <surname>Monge</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>López-Ridaura</surname>
+              <given-names>R</given-names>
+            </name>
+          </person-group>
+          <article-title>Validity of self-reported anthropometry in adult Mexican women</article-title>
+          <source>Salud Publica Mex</source>
+          <year>2017</year>
+          <volume>59</volume>
+          <issue>3</issue>
+          <fpage>266</fpage>
+          <lpage>275</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.21149/7860">https://doi.org/10.21149/7860</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B11">
+        <label>11</label>
+        <mixed-citation>11. Ministério da Saúde (BR). Vigitel Brasil 2019: vigilância de fatores de risco e proteção para doenças crônicas por inquérito telefônico: estimativas sobre frequência e distribuição sociodemográfica de fatores de risco e proteção para doenças crônicas nas capitais dos 26 estados brasileiros e no Distrito Federal em 2019. Brasília, DF: Ministério da Saúde; 2020.</mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Ministério da Saúde (BR)</collab>
+          </person-group>
+          <source>Vigitel Brasil 2019: vigilância de fatores de risco e proteção para doenças crônicas por inquérito telefônico: estimativas sobre frequência e distribuição sociodemográfica de fatores de risco e proteção para doenças crônicas nas capitais dos 26 estados brasileiros e no Distrito Federal em 2019</source>
+          <publisher-loc>Brasília, DF</publisher-loc>
+          <publisher-name>Ministério da Saúde</publisher-name>
+          <year>2020</year>
+        </element-citation>
+      </ref>
+      <ref id="B12">
+        <label>12</label>
+        <mixed-citation>12. Stopa SR, Szwarcwald CL, Oliveira MM, Gouvea EC, Vieira ML, Freitas MP, et al. National Health Survey 2019: history, methods and perspectives. Epidemiol Serv Saude. 2020 Oct;29(5):e2020315. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1679-49742020000500004">https://doi.org/10.1590/s1679-49742020000500004</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Stopa</surname>
+              <given-names>SR</given-names>
+            </name>
+            <name>
+              <surname>Szwarcwald</surname>
+              <given-names>CL</given-names>
+            </name>
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>MM</given-names>
+            </name>
+            <name>
+              <surname>Gouvea</surname>
+              <given-names>EC</given-names>
+            </name>
+            <name>
+              <surname>Vieira</surname>
+              <given-names>ML</given-names>
+            </name>
+            <name>
+              <surname>Freitas</surname>
+              <given-names>MP</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>National Health Survey 2019: history, methods and perspectives</article-title>
+          <source>Epidemiol Serv Saude</source>
+          <year>2020</year>
+          <month>10</month>
+          <volume>29</volume>
+          <issue>5</issue>
+          <elocation-id>e2020315</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1679-49742020000500004">https://doi.org/10.1590/s1679-49742020000500004</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B13">
+        <label>13</label>
+        <mixed-citation>13. Instituto Brasileiro de Geografia e Estatística. Pesquisa de Orçamentos Familiares 2008-2009: antropometria e estado nutricional de crianças, adolescentes e adultos no Brasil. Rio de Janeiro: IBGE; 2010.</mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Instituto Brasileiro de Geografia e Estatística</collab>
+          </person-group>
+          <source>Pesquisa de Orçamentos Familiares 2008-2009: antropometria e estado nutricional de crianças, adolescentes e adultos no Brasil</source>
+          <publisher-loc>Rio de Janeiro</publisher-loc>
+          <publisher-name>IBGE</publisher-name>
+          <year>2010</year>
+        </element-citation>
+      </ref>
+      <ref id="B14">
+        <label>14</label>
+        <mixed-citation>14. World Health Organization. Obesity: preventing and managing the global epidemic. Report of a World Health Organization Consultation. Geneva: World Health Organization; 2000.</mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>World Health Organization</collab>
+          </person-group>
+          <source>Obesity: preventing and managing the global epidemic. Report of a World Health Organization Consultation</source>
+          <publisher-loc>Geneva</publisher-loc>
+          <publisher-name>World Health Organization</publisher-name>
+          <year>2000</year>
+        </element-citation>
+      </ref>
+      <ref id="B15">
+        <label>15</label>
+        <mixed-citation>15. Lipschitz DA. Screening for nutritional status in the elderly. Primary Care: Clinics in Office Practice. 1994;21(1):55-67. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/S0095-4543 (21)00452-8">https://doi.org/10.1016/S0095-4543 (21)00452-8</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lipschitz</surname>
+              <given-names>DA</given-names>
+            </name>
+          </person-group>
+          <article-title>Screening for nutritional status in the elderly</article-title>
+          <source>Primary Care: Clinics in Office Practice</source>
+          <year>1994</year>
+          <volume>21</volume>
+          <issue>1</issue>
+          <fpage>55</fpage>
+          <lpage>67</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/S0095-4543 (21)00452-8">https://doi.org/10.1016/S0095-4543 (21)00452-8</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B16">
+        <label>16</label>
+        <mixed-citation>16. Landis JR, Koch GG. The measurement of observer agreement for categorical data. Biometrics. 1977 Mar;33(1):159-74. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2307/2529310">https://doi.org/10.2307/2529310</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Landis</surname>
+              <given-names>JR</given-names>
+            </name>
+            <name>
+              <surname>Koch</surname>
+              <given-names>GG</given-names>
+            </name>
+          </person-group>
+          <article-title>The measurement of observer agreement for categorical data</article-title>
+          <source>Biometrics</source>
+          <year>1977</year>
+          <month>03</month>
+          <volume>33</volume>
+          <issue>1</issue>
+          <fpage>159</fpage>
+          <lpage>174</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2307/2529310">https://doi.org/10.2307/2529310</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B17">
+        <label>17</label>
+        <mixed-citation>17. Hair JF, Black WC, Babin BJ, Anderson RE, Tatham RL. Análise multivariada de dados. 6a ed. Porto Alegre. Bookman; 2009.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hair</surname>
+              <given-names>JF</given-names>
+            </name>
+            <name>
+              <surname>Black</surname>
+              <given-names>WC</given-names>
+            </name>
+            <name>
+              <surname>Babin</surname>
+              <given-names>BJ</given-names>
+            </name>
+            <name>
+              <surname>Anderson</surname>
+              <given-names>RE</given-names>
+            </name>
+            <name>
+              <surname>Tatham</surname>
+              <given-names>RL</given-names>
+            </name>
+          </person-group>
+          <source>Análise multivariada de dados</source>
+          <edition>6a</edition>
+          <publisher-loc>Porto Alegre</publisher-loc>
+          <publisher-name>Bookman</publisher-name>
+          <year>2009</year>
+        </element-citation>
+      </ref>
+      <ref id="B18">
+        <label>18</label>
+        <mixed-citation>18. Del Duca GF, González-Chica DA, Santos JV, Knuth AG, Camargo MB, Araújo CL. Peso e altura autorreferidos para determinação do estado nutricional de adultos e idosos: validade e implicações em análises de dados. Cad Saude Publica. 2012 Jan;28(1):75-85. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2012000100008">https://doi.org/10.1590/S0102-311X2012000100008</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Del Duca</surname>
+              <given-names>GF</given-names>
+            </name>
+            <name>
+              <surname>González-Chica</surname>
+              <given-names>DA</given-names>
+            </name>
+            <name>
+              <surname>Santos</surname>
+              <given-names>JV</given-names>
+            </name>
+            <name>
+              <surname>Knuth</surname>
+              <given-names>AG</given-names>
+            </name>
+            <name>
+              <surname>Camargo</surname>
+              <given-names>MB</given-names>
+            </name>
+            <name>
+              <surname>Araújo</surname>
+              <given-names>CL</given-names>
+            </name>
+          </person-group>
+          <article-title>Peso e altura autorreferidos para determinação do estado nutricional de adultos e idosos: validade e implicações em análises de dados</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2012</year>
+          <month>01</month>
+          <volume>28</volume>
+          <issue>1</issue>
+          <fpage>75</fpage>
+          <lpage>85</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2012000100008">https://doi.org/10.1590/S0102-311X2012000100008</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B19">
+        <label>19</label>
+        <mixed-citation>19. Connor Gorber S, Tremblay M, Moher D, Gorber B. A comparison of direct vs. self-report measures for assessing height, weight and body mass index: a systematic review. Obes Rev. 2007 Jul;8(4):307-26. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/j.1467-789X.2007.00347.x">https://doi.org/10.1111/j.1467-789X.2007.00347.x</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Connor Gorber</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Tremblay</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Moher</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Gorber</surname>
+              <given-names>B</given-names>
+            </name>
+          </person-group>
+          <article-title>A comparison of direct vs. self-report measures for assessing height, weight and body mass index: a systematic review</article-title>
+          <source>Obes Rev</source>
+          <year>2007</year>
+          <month>07</month>
+          <volume>8</volume>
+          <issue>4</issue>
+          <fpage>307</fpage>
+          <lpage>326</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1111/j.1467-789X.2007.00347.x">https://doi.org/10.1111/j.1467-789X.2007.00347.x</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B20">
+        <label>20</label>
+        <mixed-citation>20. Martins PC, Carvalho MB, Machado CJ. Uso de medidas autorreferidas de altura, peso e índice de massa corporal em uma população rural do Nordeste do Brasil. Rev Bras Epidemiol. 2015;18(1):137-48. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-5497201500010011">https://doi.org/10.1590/1980-5497201500010011</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Martins</surname>
+              <given-names>PC</given-names>
+            </name>
+            <name>
+              <surname>Carvalho</surname>
+              <given-names>MB</given-names>
+            </name>
+            <name>
+              <surname>Machado</surname>
+              <given-names>CJ</given-names>
+            </name>
+          </person-group>
+          <article-title>Uso de medidas autorreferidas de altura, peso e índice de massa corporal em uma população rural do Nordeste do Brasil</article-title>
+          <source>Rev Bras Epidemiol</source>
+          <year>2015</year>
+          <volume>18</volume>
+          <issue>1</issue>
+          <fpage>137</fpage>
+          <lpage>148</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-5497201500010011">https://doi.org/10.1590/1980-5497201500010011</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B21">
+        <label>21</label>
+        <mixed-citation>21. Salles-Costa R, Heilborn ML, Werneck GL, Faerstein E, Lopes CS. Gênero e prática de atividade física de lazer [Internet]. Cad Saude Publica. 2003;19(2 Suppl 2):S325-33. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2003000800014">https://doi.org/10.1590/S0102-311X2003000800014</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Salles-Costa</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Heilborn</surname>
+              <given-names>ML</given-names>
+            </name>
+            <name>
+              <surname>Werneck</surname>
+              <given-names>GL</given-names>
+            </name>
+            <name>
+              <surname>Faerstein</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Lopes</surname>
+              <given-names>CS</given-names>
+            </name>
+          </person-group>
+          <article-title>Gênero e prática de atividade física de lazer</article-title>
+          <comment>Internet</comment>
+          <source>Cad Saude Publica</source>
+          <year>2003</year>
+          <volume>19</volume>
+          <issue>2</issue>
+          <supplement>Suppl 2</supplement>
+          <fpage>S325</fpage>
+          <lpage>S333</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2003000800014">https://doi.org/10.1590/S0102-311X2003000800014</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B22">
+        <label>22</label>
+        <mixed-citation>22. Gil J, Mora T. The determinants of misreporting weight and height: the role of social norms. Econ Hum Biol. 2011 Jan;9(1):78-91. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ehb.2010.05.016">https://doi.org/10.1016/j.ehb.2010.05.016</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gil</surname>
+              <given-names>J</given-names>
+            </name>
+            <name>
+              <surname>Mora</surname>
+              <given-names>T</given-names>
+            </name>
+          </person-group>
+          <article-title>The determinants of misreporting weight and height: the role of social norms</article-title>
+          <source>Econ Hum Biol</source>
+          <year>2011</year>
+          <month>01</month>
+          <volume>9</volume>
+          <issue>1</issue>
+          <fpage>78</fpage>
+          <lpage>91</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ehb.2010.05.016">https://doi.org/10.1016/j.ehb.2010.05.016</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B23">
+        <label>23</label>
+        <mixed-citation>23. Silva GA, Lange ES. Corporal image: the perception of the concept in obese female. Psicol Argum. 2017;28(60):43-54.</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Silva</surname>
+              <given-names>GA</given-names>
+            </name>
+            <name>
+              <surname>Lange</surname>
+              <given-names>ES</given-names>
+            </name>
+          </person-group>
+          <article-title>Corporal image: the perception of the concept in obese female</article-title>
+          <source>Psicol Argum</source>
+          <year>2017</year>
+          <volume>28</volume>
+          <issue>60</issue>
+          <fpage>43</fpage>
+          <lpage>54</lpage>
+        </element-citation>
+      </ref>
+      <ref id="B24">
+        <label>24</label>
+        <mixed-citation>24. Mota VE, Haikal DS, Magalhães TA, Silva NS, Silva RR. Dissatisfaction with body image and associated factors in adult women [Internet]. Rev Nutr. 2020;33:e190185. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1678-9865202033e190185">https://doi.org/10.1590/1678-9865202033e190185</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Mota</surname>
+              <given-names>VE</given-names>
+            </name>
+            <name>
+              <surname>Haikal</surname>
+              <given-names>DS</given-names>
+            </name>
+            <name>
+              <surname>Magalhães</surname>
+              <given-names>TA</given-names>
+            </name>
+            <name>
+              <surname>Silva</surname>
+              <given-names>NS</given-names>
+            </name>
+            <name>
+              <surname>Silva</surname>
+              <given-names>RR</given-names>
+            </name>
+          </person-group>
+          <article-title>Dissatisfaction with body image and associated factors in adult women</article-title>
+          <comment>Internet</comment>
+          <source>Rev Nutr</source>
+          <year>2020</year>
+          <volume>33</volume>
+          <elocation-id>e190185</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1678-9865202033e190185">https://doi.org/10.1590/1678-9865202033e190185</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B25">
+        <label>25</label>
+        <mixed-citation>25. Rech CR, Petroski EL, Böing O, Babel Júnior RJ, Soares MR. Agreement between self-reported weight and height measurements for the diagnosis of the nutritional status of older residents in Southern Brazil. Rev Bras Med Esporte. 2008 mar-abr;14(2):126-31. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1517-86922008000200009">https://doi.org/10.1590/S1517-86922008000200009</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Rech</surname>
+              <given-names>CR</given-names>
+            </name>
+            <name>
+              <surname>Petroski</surname>
+              <given-names>EL</given-names>
+            </name>
+            <name>
+              <surname>Böing</surname>
+              <given-names>O</given-names>
+            </name>
+            <name>
+              <surname>Babel</surname>
+              <given-names>RJ</given-names>
+              <suffix>Júnior</suffix>
+            </name>
+            <name>
+              <surname>Soares</surname>
+              <given-names>MR</given-names>
+            </name>
+          </person-group>
+          <article-title>Agreement between self-reported weight and height measurements for the diagnosis of the nutritional status of older residents in Southern Brazil</article-title>
+          <source>Rev Bras Med Esporte</source>
+          <year>2008</year>
+          <season>mar-abr</season>
+          <volume>14</volume>
+          <issue>2</issue>
+          <fpage>126</fpage>
+          <lpage>131</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1517-86922008000200009">https://doi.org/10.1590/S1517-86922008000200009</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B26">
+        <label>26</label>
+        <mixed-citation>26. Kuczmarski MF, Kuczmarski RJ, Najjar M. Effects of age on validity of self-reported height, weight, and body mass index: findings from the Third National Health and Nutrition Examination Survey, 1988-1994. J Am Diet Assoc. 2001 Jan;101(1):28-34. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/S0002-8223 (01)00008-6">https://doi.org/10.1016/S0002-8223 (01)00008-6</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Kuczmarski</surname>
+              <given-names>MF</given-names>
+            </name>
+            <name>
+              <surname>Kuczmarski</surname>
+              <given-names>RJ</given-names>
+            </name>
+            <name>
+              <surname>Najjar</surname>
+              <given-names>M</given-names>
+            </name>
+          </person-group>
+          <article-title>Effects of age on validity of self-reported height, weight, and body mass index: findings from the Third National Health and Nutrition Examination Survey, 1988-1994</article-title>
+          <source>J Am Diet Assoc</source>
+          <year>2001</year>
+          <month>01</month>
+          <volume>101</volume>
+          <issue>1</issue>
+          <fpage>28</fpage>
+          <lpage>34</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/S0002-8223 (01)00008-6">https://doi.org/10.1016/S0002-8223 (01)00008-6</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B27">
+        <label>27</label>
+        <mixed-citation>27. Fonseca MJ, Faerstein E, Chor D, Lopes CS. Validade de peso e estatura informados e índice de massa corporal: estudo pró-saúde. Rev Saude Publica. 2004 Jun;38(3):392-8. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0034-89102004000300009">https://doi.org/10.1590/S0034-89102004000300009</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Fonseca</surname>
+              <given-names>MJ</given-names>
+            </name>
+            <name>
+              <surname>Faerstein</surname>
+              <given-names>E</given-names>
+            </name>
+            <name>
+              <surname>Chor</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Lopes</surname>
+              <given-names>CS</given-names>
+            </name>
+          </person-group>
+          <article-title>Validade de peso e estatura informados e índice de massa corporal: estudo pró-saúde</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2004</year>
+          <month>06</month>
+          <volume>38</volume>
+          <issue>3</issue>
+          <fpage>392</fpage>
+          <lpage>398</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0034-89102004000300009">https://doi.org/10.1590/S0034-89102004000300009</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B28">
+        <label>28</label>
+        <mixed-citation>28. Souza R, Fraga JS, Gottschall CB, Busnello FM, Rabito EI. Avaliação antropométrica em idosos: estimativas de peso e altura e concordância entre classificações de IMC. Rev Bras Geriatr Gerontol. 2013;16(1):81-90. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1809-98232013000100009">https://doi.org/10.1590/S1809-98232013000100009</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Souza</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Fraga</surname>
+              <given-names>JS</given-names>
+            </name>
+            <name>
+              <surname>Gottschall</surname>
+              <given-names>CB</given-names>
+            </name>
+            <name>
+              <surname>Busnello</surname>
+              <given-names>FM</given-names>
+            </name>
+            <name>
+              <surname>Rabito</surname>
+              <given-names>EI</given-names>
+            </name>
+          </person-group>
+          <article-title>Avaliação antropométrica em idosos: estimativas de peso e altura e concordância entre classificações de IMC</article-title>
+          <source>Rev Bras Geriatr Gerontol</source>
+          <year>2013</year>
+          <volume>16</volume>
+          <issue>1</issue>
+          <fpage>81</fpage>
+          <lpage>90</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1809-98232013000100009">https://doi.org/10.1590/S1809-98232013000100009</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B29">
+        <label>29</label>
+        <mixed-citation>29. Lucca A, Moura EC. Validity and reliability of self-reported weight, height and body mass index from telephone interviews. Cad Saude Publica. 2010 Jan;26(1):110-22. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2010000100012">https://doi.org/10.1590/S0102-311X2010000100012</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Lucca</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Moura</surname>
+              <given-names>EC</given-names>
+            </name>
+          </person-group>
+          <article-title>Validity and reliability of self-reported weight, height and body mass index from telephone interviews</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2010</year>
+          <month>01</month>
+          <volume>26</volume>
+          <issue>1</issue>
+          <fpage>110</fpage>
+          <lpage>122</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2010000100012">https://doi.org/10.1590/S0102-311X2010000100012</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B30">
+        <label>30</label>
+        <mixed-citation>30. Teixeira IP, Pereira JL, Barbosa JP, Mello AV, Onita BM, Fisberg RM, et al. Validade da massa corporal e da estatura autorreferidas: relações com sexo, idade, atividade física e fatores de risco cardiometabólicos. Rev Bras Epidemiol. 2021 Aug;24:e210043. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-549720210043">https://doi.org/10.1590/1980-549720210043</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Teixeira</surname>
+              <given-names>IP</given-names>
+            </name>
+            <name>
+              <surname>Pereira</surname>
+              <given-names>JL</given-names>
+            </name>
+            <name>
+              <surname>Barbosa</surname>
+              <given-names>JP</given-names>
+            </name>
+            <name>
+              <surname>Mello</surname>
+              <given-names>AV</given-names>
+            </name>
+            <name>
+              <surname>Onita</surname>
+              <given-names>BM</given-names>
+            </name>
+            <name>
+              <surname>Fisberg</surname>
+              <given-names>RM</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Validade da massa corporal e da estatura autorreferidas: relações com sexo, idade, atividade física e fatores de risco cardiometabólicos</article-title>
+          <source>Rev Bras Epidemiol</source>
+          <year>2021</year>
+          <month>08</month>
+          <volume>24</volume>
+          <elocation-id>e210043</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-549720210043">https://doi.org/10.1590/1980-549720210043</ext-link>
+        </element-citation>
+      </ref>
+    </ref-list>
+  </back>
+  <sub-article article-type="translation" id="TRpt" xml:lang="pt">
+    <front-stub>
+      <article-id pub-id-type="doi"/>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Artigo Original</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Validação de medidas autorreferidas para estado nutricional: estudo a partir da PNS 2019</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-9712-1321</contrib-id>
+          <name>
+            <surname>Brito</surname>
+            <given-names>Renatha Celiana da Silva</given-names>
+          </name>
+          <role>Concepção e planejamento do estudo</role>
+          <role>Coleta, análise e interpretação dos dados</role>
+          <role>Elaboração ou revisão do manuscrito</role>
+          <role>Aprovação da versão final</role>
+          <role>Responsabilidade pública pelo conteúdo do artigo</role>
+          <xref ref-type="aff" rid="aff1002">
+            <sup>I</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0001-5311-697X</contrib-id>
+          <name>
+            <surname>Oliveira</surname>
+            <given-names>Angelo Giuseppe Roncalli da Costa</given-names>
+          </name>
+          <role>Concepção e planejamento do estudo</role>
+          <role>Coleta, análise e interpretação dos dados</role>
+          <role>Elaboração ou revisão do manuscrito</role>
+          <role>Aprovação da versão final</role>
+          <role>Responsabilidade pública pelo conteúdo do artigo</role>
+          <xref ref-type="aff" rid="aff2002">
+            <sup>II</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1002">
+        <label>I</label>
+        <country country="BR">Brasil</country>
+        <institution content-type="original"> Universidade Federal do Rio Grande do Norte. Programa de Pós-Graduação em Saúde Coletiva. Natal, RN, Brasil</institution>
+      </aff>
+      <aff id="aff2002">
+        <label>II</label>
+        <country country="BR">Brasil</country>
+        <institution content-type="original"> Universidade Federal do Rio Grande do Norte. Departamento de Odontologia. Natal, RN, Brasil</institution>
+      </aff>
+      <author-notes>
+        <corresp id="c01002"><bold>Correspondência:</bold> Renatha Celiana da Silva Brito Universidade Federal do Rio Grande do Norte Departamento de Odontologia Avenida Senador Salgado, 1.787 59056-000 Natal, RN, Brasil E-mail: renathacsb13@gmail.com </corresp>
+        <fn id="fn1002">
+          <p><bold>Conflito de Interesses:</bold> Os autores declaram não haver conflito de interesses.</p>
+        </fn>
+      </author-notes>
+      <abstract>
+        <title>RESUMO</title>
+        <p>Este estudo tem o objetivo de analisar a validade da autorreferência de medidas antropométricas (peso e altura) para a classificação do estado nutricional de adultos e idosos brasileiros a partir dos dados da Pesquisa Nacional de Saúde (PNS), edição de 2019. A amostra da PNS é constituída por domicílios particulares permanentes de todas as unidades federativas do Brasil e este é um recorte transversal no qual foram identificados 6.571 registros com dados aferidos e referidos, não sendo identificados dados perdidos para uma variável quando na presença de outra. A validação foi realizada com 6.381 dados após a retirada de dados atípicos. As variáveis utilizadas para estratificação foram: sexo, idade, raça/cor, escolaridade e renda e, para analisar a concordância entre as categorias do estado nutricional, foram utilizados o Coeficiente Kappa ponderado e o Coeficiente de Correlação Intraclasse (CCI). A acurácia foi analisada com base nos valores de sensibilidade, especificidade, valor preditivo positivo (VPP) e valor preditivo negativo (VPN). E para a validade de constructo, foi realizada uma regressão de Poisson para cada desfecho (aferido e autorreferido), com as variáveis independentes “sexo”, “cor/raça”, “escolaridade” e “renda familiar”. Todas as análises mostraram resultados positivos para a validação. Houve uma maior reprodutibilidade entre adultos (18 a 59 anos) quando comparados às pessoas idosas e entre homens quando comparados às mulheres. Esta validação indica uma possibilidade concreta de realizar estudos observacionais de associação tendo como variável de desfecho o estado nutricional referido, como uma estratégia eficiente, podendo minimizar as dificuldades operacionais frequentemente encontradas.</p>
+      </abstract>
+      <kwd-group xml:lang="pt">
+        <kwd>Epidemiologia</kwd>
+        <kwd>Estudo de Validação</kwd>
+        <kwd>Estado Nutricional</kwd>
+        <kwd>Saúde Pública</kwd>
+      </kwd-group>
+    </front-stub>
+    <body>
+      <sec sec-type="intro">
+        <title>INTRODUÇÃO</title>
+        <p>O estado nutricional de um indivíduo é caracterizado pela relação entre sua ingestão e gasto de nutrientes que, por sua vez, é determinada pela necessidade e capacidade que o corpo tem de digerir, absorver e utilizar os nutrientes ingeridos<sup><xref ref-type="bibr" rid="B1">1</xref></sup>. Este estado nutricional é identificado a partir de variáveis antropométricas de estatura e massa corporal que, consequentemente, é classificado quanto a sua relação positiva ou negativa com a saúde, sendo a antropometria um método de simples utilização na prática clínica, porém de grande logística quando se trata de inquéritos populacionais<sup><xref ref-type="bibr" rid="B2">2</xref></sup>.</p>
+        <p>O excesso de peso é um importante problema de Saúde Pública, tendo em vista seu aumento desenfreado e progressivo nas últimas décadas de forma mundial, caracterizado por causas multifatoriais, que engloba uma interação complexa entre predisposições genéticas, fatores ambientais e estilo de vida<sup><xref ref-type="bibr" rid="B1">1</xref>,<xref ref-type="bibr" rid="B2">2</xref></sup>. No Brasil, em 2018, 55,7% da população adulta brasileira possuía excesso de peso, dos quais 19,8% estavam classificadas com obesidade<sup><xref ref-type="bibr" rid="B3">3</xref></sup>. Já estudos mais recentes mostram que de um total de 12 milhões de adultos acompanhados na Atenção Primária à Saúde (APS), 8 milhões (63,0%) apresentaram excesso de peso, dos quais 2,6 milhões (28,5%) apresentaram o estado nutricional de obesidade<sup><xref ref-type="bibr" rid="B4">4</xref></sup>.</p>
+        <p>O monitoramento do estado nutricional da população brasileira é essencial para, além de conhecer o perfil populacional, planejar e avaliar as políticas públicas nos diferentes níveis de atenção à saúde. Por isso, são realizados inquéritos que utilizam a antropometria como objeto de coleta. Esses dados permitem conhecer as tendências de sobrepeso e obesidade em diferentes áreas geográficas, com grupos populacionais distintos, e identificar os principais fatores associados<sup><xref ref-type="bibr" rid="B5">5</xref></sup>.</p>
+        <p>No entanto, essas pesquisas demandam alto custo e grande logística para sua eficácia, sendo a avaliação antropométrica um dos módulos com maiores limitações, como a aquisição de instrumentos adequados, dificuldades de transporte do material, padronização e baixo domínio das técnicas de aferição, treinamentos, aumento do tempo de trabalho de campo, entre outros<sup><xref ref-type="bibr" rid="B6">6</xref></sup>.</p>
+        <p>Neste sentido, vários inquéritos têm utilizado a estratégia de autorreferência de peso e altura – medidas diretas utilizadas para o cálculo do Índice de Massa Corporal (IMC) e, consequentemente, classificação de estado nutricional – para minimizar as dificuldades encontradas, uma vez que promovem a economia de recursos e simplifica o trabalho de campo<sup><xref ref-type="bibr" rid="B9">9</xref>,<xref ref-type="bibr" rid="B10">10</xref></sup>. No Brasil, por exemplo, o programa de Vigilância dos Fatores de Risco e Proteção para Doenças Crônicas por Inquérito Telefônico (Vigitel) vem utilizando a técnica de autorrelato desde 2006 e, em sua edição de 2019, mostrou que a obesidade entre brasileiros maiores de 18 anos aumentou 72,0% entre 2006 e 2019, passando de 11,8% para 20,3%<sup><xref ref-type="bibr" rid="B4">4</xref>,<xref ref-type="bibr" rid="B11">11</xref></sup>.</p>
+        <p>A Pesquisa Nacional de Saúde (PNS), grande inquérito com amostra de todas as regiões brasileiras, já realizada em duas edições (2013 e 2019), além de utilizar medidas de peso e altura aferidas, também tem utilizado medidas autorreferidas e tem como principal objetivo produzir dados sobre a saúde e os estilos de vida da população, além de trazer conhecimento sobre o acesso e o uso dos serviços de saúde pelos usuários<sup><xref ref-type="bibr" rid="B12">12</xref></sup>.</p>
+        <p>Sendo assim, o presente estudo teve o objetivo de analisar a validade da autorreferência de medidas antropométricas (peso e altura) para a classificação do estado nutricional de adultos e idosos brasileiros a partir de dados da PNS, edição de 2019.</p>
+      </sec>
+      <sec sec-type="methods">
+        <title>MÉTODOS</title>
+        <p>A amostra da PNS é constituída por moradores dos domicílios particulares permanentes (construídos com a finalidade exclusiva de habitação) do Brasil, da zona rural e zona urbana, com exceção dos setores censitários especiais (alojamentos, instituições de longa permanência para idosos, acampamentos, dentre outros) ou com pouca habitação.</p>
+        <p>A amostragem deu-se por conglomerados em três estágios, com estratificação das Unidades Primárias de Amostragem (UPA). Para todas as etapas, a seleção das UPA foi realizada por amostragem aleatória simples, e esta edição da PNS foi aprovada pela Comissão Nacional de Ética em Pesquisa (Conep) sob o parecer nº 3.529.376, tendo sido o Instituto Brasileiro de Geografia e Estatística (IBGE) responsável pelo trabalho de campo. Todos os indivíduos selecionados para a pesquisa forneceram consentimento para a aplicação do questionário e para a aferição de suas medidas antropométricas<sup><xref ref-type="bibr" rid="B12">12</xref></sup>.</p>
+        <p>Em 2019, os entrevistadores do IBGE realizaram 94.114 entrevistas com moradores do sexo masculino e feminino, a partir dos 15 anos, distribuídos em todas as capitais brasileiras. Para tanto, foram coletados dados antropométricos autorreferidos e aferidos de 87.678 e 6.571 indivíduos, respectivamente, com idade igual ou superior a 18 anos (excluindo 736 dados de indivíduos entre 15 e 17 anos para análise do presente estudo). Não foram coletados dados antropométricos aferidos e referidos de mulheres que relataram estar gestantes no momento da entrevista.</p>
+        <p>Os dados autorreferidos foram coletados no Módulo de Estilo de Vida por meio das perguntas: “O(a) senhor(a) sabe o seu peso?” e “O(a) senhor(a) sabe a sua altura?”, cujas respostas foram registradas em quilogramas (kg) e em centímetros (cm). A aferição das medidas aconteceu com uma subamostra definida e alocada proporcionalmente nos estratos com, no mínimo, duas UPA por estrato.</p>
+        <p>Para a aferição das medidas foram utilizados os mesmos procedimentos da Pesquisa de Orçamento Familiar (POF) 2008–2009, do Ministério da Saúde em parceria com o IBGE<sup><xref ref-type="bibr" rid="B13">13</xref></sup>, por equipes treinadas pela Fundação Oswaldo Cruz (Fiocruz) e pelo Laboratório de Avaliação Nutricional de Populações (Lanpop) da Faculdade de Saúde Pública da Universidade de São Paulo (FSP/USP), utilizando estadiômetros portáteis e balanças digitais.</p>
+        <p>Tanto para os dados aferidos quanto para os dados autorreferidos, a classificação do estado nutricional foi feita a partir do IMC, obtido pela razão entre o peso e a altura ao quadrado do indivíduo (peso/altura<sup>2</sup>), considerando os valores de referência recomendados pelo Ministério da Saúde<sup><xref ref-type="bibr" rid="B3">3</xref></sup> para adultos (18 a 59 anos): ≤ 18,4 kg/m<sup>2</sup> para baixo peso, entre 18,5 e 24,9 kg/m<sup>2</sup> para eutrofia e ≥ 25 kg/m<sup>2</sup> para excesso de peso<sup><xref ref-type="bibr" rid="B14">14</xref></sup>; e para idosos (maior ou igual a 60 anos): ≤ 21,9 kg/m<sup>2</sup> para baixo peso, entre 22 e 26,9 kg/m<sup>2</sup> para eutrofia e ≥ 27 kg/m<sup>2</sup> para excesso de peso<sup><xref ref-type="bibr" rid="B15">15</xref></sup>. Nas análises, portanto, os dados de IMC foram utilizados enquanto variável categórica, a partir de sua classificação.</p>
+        <p>As variáveis utilizadas para estratificação foram: sexo (homem/mulher); idade – classificada em “não idoso” para aquele com idade entre 18 e 59 anos e em “idoso” para os com 60 anos ou mais; raça ou cor – com a classificação dicotômica em “branco” e “não branco” (agrupamento dos que se autodeclararam como “preto”, “amarelo”, “pardo” ou “indígena”); escolaridade – classificação dicotômica de sim/não para a pergunta “O senhor(a) sabe ler e escrever?”; renda – classificada em “≤ 1 salário mínimo” e “&gt; 1 salário mínimo”, considerando o salário mínimo referente ao ano de 2019, equivalente a R$ 998,00.</p>
+        <p>Inicialmente, para verificar a consistência entre os dados aferidos e autorreferidos, foi realizada uma análise de dados atípicos (<italic>outliers</italic>), para identificar possíveis erros de registros a partir da técnica de detecção multivariada, com o cálculo da distância D<sup>2</sup> de Mahalanobis.</p>
+        <p>Na sequência, para analisar a confiabilidade entre as categorias do estado nutricional, foram utilizados o teste de Qui<sup><xref ref-type="bibr" rid="B2">2</xref></sup> juntamente com o coeficiente Phi (que possui um resultado que vai de -1 a 1, no qual o zero indica que não há relação entre as variáveis, enquanto os valores próximos aos extremos -1 e 1 indicam correlação forte), o Coeficiente Kappa ponderado e não ponderado, o Coeficiente de Correlação de Pearson e o Coeficiente de Correlação Intraclasse (CCI), adotando-se o critério de Landis e Koch<sup><xref ref-type="bibr" rid="B16">16</xref></sup>, considerando os seguintes níveis de confiabilidade: nenhuma (menor que zero); discreta (0 a 0,20); regular (0,21 a 0,40); moderada (0,41 a 0,60); substancial (0,61 a 0,80); e perfeita (0,81 a 1,00).</p>
+        <p>A acurácia foi analisada com base nos valores de sensibilidade, especificidade, valor preditivo positivo (VPP) e valor preditivo negativo (VPN), tomando como padrão-ouro as medidas aferidas para a classificação do estado nutricional (IMC).</p>
+        <p>Para a validade de constructo, foi realizada uma regressão de Poisson para cada desfecho (aferido e autorreferido), com as variáveis independentes “sexo”, “cor/raça”, “escolaridade” e “renda familiar”. Para todas as análises estatísticas, foi utilizado o <italic>software</italic> STATA, versão 14.0, considerando o intervalo de confiança (IC) de 95% e nível de significância (<italic>p</italic>) de 5%. Para os testes de associação, foi utilizada a medida de razão de prevalência (RP).</p>
+      </sec>
+      <sec sec-type="results">
+        <title>RESULTADOS</title>
+        <sec>
+          <title>Análise de Consistência dos Dados</title>
+          <p>Foram identificados 6.571 registros com dados aferidos e referidos de peso e altura e, consequentemente, estimativa de IMC, não sendo identificados dados perdidos para uma variável quando na presença de outra. Essa amostra tem as seguintes características: quanto ao sexo, 50,2% são homens (n = 3.298) e 49,8% são mulheres (n = 3.273), com idade média de 48 anos. Quanto à escolaridade, 87,6% responderam “sim” para “sabe ler e escrever” (n = 5.756) e 12,4% “não” (n = 815); quanto à raça/cor, 60,2% se autodeclaram como pretos, amarelos, pardos ou indígenas (n = 3.954) e 39,8% se autodeclaram brancos (n = 2.617). Quanto à renda, 59,4% dos indivíduos relataram ter renda familiar igual ou menor a 1 salário-mínimo (n = 3.901).</p>
+          <p>Foi então realizada a análise de dados atípicos (<italic>outliers</italic>) no sentido de identificar possíveis erros de registro. Em uma análise inicial, considerando os valores normalizados, foram observados alguns valores acima de três desvios-padrões, principalmente no limite superior. Desse modo, foi realizada uma análise de dados atípicos a partir da técnica de detecção multivariada, com o cálculo da distância D<sup>2</sup> de Mahalanobis e sua respectiva probabilidade, de acordo com a abordagem preconizada por Hair et al<sup><xref ref-type="bibr" rid="B17">17</xref></sup>, sendo identificados 190 dados atípicos (2,9%), os quais podem ser observados na <xref ref-type="fig" rid="f01002">Figura</xref>. Assim, foram incluídos na análise de validação 6.381 registros de IMC aferido e de IMC referido.</p>
+          <p>
+            <fig id="f01002">
+              <label>Figura</label>
+              <caption>
+                <title>Identificação dos dados atípicos para o Índice de Massa Corporal (IMC) pela técnica de detecção multivariada.</title>
+              </caption>
+              <attrib>Fonte: Análise dos autores sobre dados da Pesquisa Nacional de Saúde (PNS), 2019.</attrib>
+              <alternatives>
+                <graphic xlink:href="https://minio.scielo.br/documentstore/1518-8787/7FDXkDwsddTBpYZxQKh75tr/8bc5e6be5cf6790f3fb2c1cee4859aee3ca42dab.tif"/>
+                <graphic xlink:href="https://minio.scielo.br/documentstore/1518-8787/7FDXkDwsddTBpYZxQKh75tr/557a428c6670c67db00a2a45e45051d9db018f68.png" specific-use="scielo-web"/>
+                <graphic xlink:href="https://minio.scielo.br/documentstore/1518-8787/7FDXkDwsddTBpYZxQKh75tr/e89669a9284879f9706400550e4ac73c01fa434a.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+              </alternatives>
+            </fig>
+          </p>
+        </sec>
+        <sec>
+          <title>Análise de Confiabilidade – Variável IMC na Forma Quantitativa</title>
+          <p>A avaliação da confiabilidade, tendo como base o IMC na forma quantitativa, se deu a partir do cálculo do Coeficiente de Correlação de Pearson e do CCI. Além disso, foi realizada uma regressão linear simples, tendo o IMC aferido como variável dependente e o IMC referido como variável independente.</p>
+          <p>O Coeficiente de Correlação de Pearson foi igual a 0,826 (p &lt; 0,001) indicando uma correlação forte. Porém, este coeficiente tem um viés natural que é o fato de mostrar a correlação sem considerar a concordância entre os valores. Neste sentido, foi calculado também o CCI, cujo valor foi de 0,904 (p &lt; 0,001; IC95% 0,899–0,909), considerado perfeito.</p>
+          <p>A regressão linear mostrou um R<sup>2</sup> de 0,682, indicando que 68,2% da variação do IMC aferido pode ser creditada ao IMC referido. O modelo revelou-se significativo pela Análise de Variância (p &lt; 0,001) e a equação final resultante foi: IMC aferido = 3,96 + 0,864 x IMC referido. A avaliação do poder preditivo do modelo mostrou uma variação dos resíduos padronizados entre -3,9 e 4,0 e com distribuição normal e o valor do Durbin-Watson foi de 1,32, indicando independência entre os resíduos.</p>
+        </sec>
+        <sec>
+          <title>Análise de Confiabilidade – Variável IMC na Forma Categorizada</title>
+          <p>Houve associação entre as categorias do IMC referido e do IMC aferido, através do teste de Qui<sup><xref ref-type="bibr" rid="B2">2</xref></sup> igual a 4.711 e valor de significância de <italic>p</italic>&lt;0,001, considerando os limites para a classificação do IMC, para adultos e idosos, caracterizados em “Baixo Peso”, “Eutrofia” e “Excesso de Peso”.</p>
+          <p>Além de observar a significância, foi calculado o Coeficiente Phi, sendo encontrado um valor de 0,859 (p &lt; 0,001), indicando uma associação forte. O Kappa não ponderado foi de 0,637 (p &lt; 0,001; IC95%: 0,619–0,654). Contudo, considerando que se trata de uma variável ordinal, o Kappa ponderado pode expressar melhor a concordância, tendo sido encontrado um valor de 0,664 (p &lt; 0,001; IC95%: 0,648–0,681), indicando uma boa concordância para as categorias do estado nutricional. Quando avaliado o Kappa ponderado de forma estratificada (<xref ref-type="table" rid="t1002">Tabelas 1</xref> e <xref ref-type="table" rid="t2002">2</xref>), vimos que há boa confiabilidade tanto para sexo (0,681 para homens e 0,646 para mulheres), quanto para idade (0,684 para não idosos e 0,587 para idosos).</p>
+          <p>
+            <table-wrap id="t1002">
+              <label>Tabela 1</label>
+              <caption>
+                <title>Análise bivariada por sexo, seguindo as categorias do índice de massa corporal aferido e do índice de massa corporal referido. Brasil, 2023.</title>
+              </caption>
+              <table frame="hsides" rules="groups">
+                <colgroup width="11%">
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th align="left">Categoria</th>
+                    <th rowspan="2">Classificação do IMC referido</th>
+                    <th colspan="3">Classificação do IMC aferido</th>
+                    <th rowspan="2">Total</th>
+                    <th rowspan="2">Kappa ponderado</th>
+                    <th rowspan="2">IC95%</th>
+                    <th rowspan="2">Valor de p</th>
+                  </tr>
+                  <tr>
+                    <th align="left">Sexo</th>
+                    <th>Baixo peso</th>
+                    <th>Eutrofia</th>
+                    <th>Excesso de peso</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td rowspan="4">Homens</td>
+                    <td align="center">Baixo peso</td>
+                    <td align="center">104</td>
+                    <td align="center">72</td>
+                    <td align="center">6</td>
+                    <td align="center">182</td>
+                    <td align="center" rowspan="4">0,681</td>
+                    <td align="center" rowspan="4">0,658–0,704</td>
+                    <td align="center" rowspan="4">0,001</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Eutrofia</td>
+                    <td align="center">79</td>
+                    <td align="center">1.067</td>
+                    <td align="center">239</td>
+                    <td align="center">1.385</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Excesso de peso</td>
+                    <td align="center">11</td>
+                    <td align="center">207</td>
+                    <td align="center">1.468</td>
+                    <td align="center">1.686</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Total</td>
+                    <td align="center">194</td>
+                    <td align="center">1.346</td>
+                    <td align="center">1.713</td>
+                    <td align="center">3.253</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4">Mulheres</td>
+                    <td align="center">Baixo peso</td>
+                    <td align="center">103</td>
+                    <td align="center">66</td>
+                    <td align="center">11</td>
+                    <td align="center">180</td>
+                    <td align="center" rowspan="4">0,646</td>
+                    <td align="center" rowspan="4">0,622–0,671</td>
+                    <td align="center" rowspan="4">0,001</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Eutrofia</td>
+                    <td align="center">56</td>
+                    <td align="center">901</td>
+                    <td align="center">346</td>
+                    <td align="center">1.303</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Excesso de peso</td>
+                    <td align="center">8</td>
+                    <td align="center">158</td>
+                    <td align="center">1.479</td>
+                    <td align="center">1.645</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Total</td>
+                    <td align="center">167</td>
+                    <td align="center">1.125</td>
+                    <td align="center">1.836</td>
+                    <td align="center">3.128</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4">Total</td>
+                    <td align="center">Baixo peso</td>
+                    <td align="center">207</td>
+                    <td align="center">138</td>
+                    <td align="center">17</td>
+                    <td align="center">362</td>
+                    <td colspan="3" rowspan="4"> </td>
+                  </tr>
+                  <tr>
+                    <td align="center">Eutrofia</td>
+                    <td align="center">135</td>
+                    <td align="center">1.968</td>
+                    <td align="center">585</td>
+                    <td align="center">2.688</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Excesso de peso</td>
+                    <td align="center">19</td>
+                    <td align="center">365</td>
+                    <td align="center">2.947</td>
+                    <td align="center">3.331</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Total</td>
+                    <td align="center">361</td>
+                    <td align="center">2.471</td>
+                    <td align="center">3.549</td>
+                    <td align="center">6.381</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table-wrap-foot>
+                <fn id="TFN1002">
+                  <p>IMC: Índice de massa corporal; IC: Intervalo de confiança.</p>
+                </fn>
+                <attrib>Fonte: Análise dos autores sobre dados da Pesquisa Nacional de Saúde (PNS) 2019</attrib>
+              </table-wrap-foot>
+            </table-wrap>
+          </p>
+          <p>
+            <table-wrap id="t2002">
+              <label>Tabela 2</label>
+              <caption>
+                <title>Análise bivariada por idade, seguindo as categorias do índice de massa corporal aferido e do índice de massa corporal referido. Brasil, 2023.</title>
+              </caption>
+              <table frame="hsides" rules="groups">
+                <colgroup width="11%">
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th align="left">Categoria</th>
+                    <th rowspan="2">Classificação do IMC referido</th>
+                    <th colspan="3">Classificação do IMC aferido</th>
+                    <th rowspan="2">Total</th>
+                    <th rowspan="2">Kappa ponderado</th>
+                    <th rowspan="2">IC95%</th>
+                    <th rowspan="2">Valor de p</th>
+                  </tr>
+                  <tr>
+                    <th align="left">Idade</th>
+                    <th>Baixo peso</th>
+                    <th>Eutrofia</th>
+                    <th>Excesso de peso</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td rowspan="4">Não idoso</td>
+                    <td align="center">Baixo peso</td>
+                    <td align="center">28</td>
+                    <td align="center">19</td>
+                    <td align="center">2</td>
+                    <td align="center">49</td>
+                    <td align="center" rowspan="4">0,684</td>
+                    <td align="center" rowspan="4">0,664–0,704</td>
+                    <td align="center" rowspan="4">0,001</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Eutrofia</td>
+                    <td align="center">18</td>
+                    <td align="center">678</td>
+                    <td align="center">228</td>
+                    <td align="center">924</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Excesso de peso</td>
+                    <td align="center">1</td>
+                    <td align="center">108</td>
+                    <td align="center">1.204</td>
+                    <td align="center">1.313</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Total</td>
+                    <td align="center">47</td>
+                    <td align="center">805</td>
+                    <td align="center">1.434</td>
+                    <td align="center">2.286</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4">Idoso</td>
+                    <td align="center">Baixo peso</td>
+                    <td align="center">75</td>
+                    <td align="center">47</td>
+                    <td align="center">9</td>
+                    <td align="center">131</td>
+                    <td align="center" rowspan="4">0,587</td>
+                    <td align="center" rowspan="4">0,555–0,620</td>
+                    <td align="center" rowspan="4">0,001</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Eutrofia</td>
+                    <td align="center">38</td>
+                    <td align="center">223</td>
+                    <td align="center">118</td>
+                    <td align="center">379</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Excesso de peso</td>
+                    <td align="center">7</td>
+                    <td align="center">50</td>
+                    <td align="center">275</td>
+                    <td align="center">332</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Total</td>
+                    <td align="center">120</td>
+                    <td align="center">320</td>
+                    <td align="center">402</td>
+                    <td align="center">842</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4">Total</td>
+                    <td align="center">Baixo peso</td>
+                    <td align="center">103</td>
+                    <td align="center">66</td>
+                    <td align="center">11</td>
+                    <td align="center">180</td>
+                    <td colspan="3" rowspan="4"> </td>
+                  </tr>
+                  <tr>
+                    <td align="center">Eutrofia</td>
+                    <td align="center">56</td>
+                    <td align="center">901</td>
+                    <td align="center">346</td>
+                    <td align="center">1.303</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Excesso de peso</td>
+                    <td align="center">8</td>
+                    <td align="center">158</td>
+                    <td align="center">1.479</td>
+                    <td align="center">1.645</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Total</td>
+                    <td align="center">167</td>
+                    <td align="center">1.125</td>
+                    <td align="center">1.836</td>
+                    <td align="center">3.128</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table-wrap-foot>
+                <fn id="TFN2002">
+                  <p>IMC: Índice de massa corporal; IC: Intervalo de confiança.</p>
+                </fn>
+                <attrib>Fonte: Análise dos autores sobre dados da Pesquisa Nacional de Saúde (PNS) 2019</attrib>
+              </table-wrap-foot>
+            </table-wrap>
+          </p>
+        </sec>
+        <sec>
+          <title>Análise do IMC Categorizado – Validade de Critério (Acurácia)</title>
+          <p>Também foram calculadas estatísticas relativas à acurácia, considerando o IMC aferido como padrão-ouro. Para isso, considerou-se como desfecho a ocorrência de excesso de peso. Além disso, foram calculados os parâmetros na forma estratificada para sexo (homens e mulheres) e idade (não idosos e idosos). Os resultados encontrados estão dispostos na <xref ref-type="table" rid="t3002">Tabela 3</xref>.</p>
+          <p>
+            <table-wrap id="t3002">
+              <label>Tabela 3</label>
+              <caption>
+                <title>Parâmetros encontrados para a análise de acurácia entre do índice de massa corporal aferido e do índice de massa corporal referido de acordo com os subgrupos estudados e para a amostra total. Brasil, 2023.</title>
+              </caption>
+              <table frame="hsides" rules="groups">
+                <colgroup width="17%">
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th align="left" rowspan="2">Variável</th>
+                    <th>Sensibilidade</th>
+                    <th>Especificidade</th>
+                    <th>VPP</th>
+                    <th>VPN</th>
+                    <th>Precisão do diagnóstico</th>
+                  </tr>
+                  <tr>
+                    <th>% (IC95%)</th>
+                    <th>% (IC95%)</th>
+                    <th>% (IC95%)</th>
+                    <th>% (IC95%)</th>
+                    <th>% (IC95%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Homens</td>
+                    <td align="center">85,7 (84,0–87,3)</td>
+                    <td align="center">85,8 (84,0–87,5)</td>
+                    <td align="center">87,1 (85,4–88,6)</td>
+                    <td align="center">84,4 (82,5–86,1)</td>
+                    <td align="center">85,8 (84,5–86,9)</td>
+                  </tr>
+                  <tr>
+                    <td>Mulheres</td>
+                    <td align="center">80,6 (78,7–82,3)</td>
+                    <td align="center">87,2 (85,2–88,9)</td>
+                    <td align="center">89,9 (88,4–91,3)</td>
+                    <td align="center">75,9 (73,7–78,0)</td>
+                    <td align="center">83,3 (81,9–84,6)</td>
+                  </tr>
+                  <tr>
+                    <td>Não idoso</td>
+                    <td align="center">85,8 (84,5–87,0)</td>
+                    <td align="center">85,0 (83,3–86,6)</td>
+                    <td align="center">89,7 (88,5–90,8)</td>
+                    <td align="center">79,6 (77,8–81,4)</td>
+                    <td align="center">85,5 (84,4–86,5)</td>
+                  </tr>
+                  <tr>
+                    <td>Idoso</td>
+                    <td align="center">72,1 (68,7–75,3)</td>
+                    <td align="center">89,2 (87,1–91,0)</td>
+                    <td align="center">82,9 (79,8–85,7)</td>
+                    <td align="center">81,4 (79,0–83,7)</td>
+                    <td align="center">82,0 (80,1–83,8)</td>
+                  </tr>
+                  <tr>
+                    <td>Amostra total</td>
+                    <td align="center">83,0 (81,8–84,2)</td>
+                    <td align="center">86,4 (85,1–87,6)</td>
+                    <td align="center">88,5 (87,3–89,5)</td>
+                    <td align="center">80,3 (78,8–81,6)</td>
+                    <td align="center">84,6 (83,6–85,4)</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table-wrap-foot>
+                <fn id="TFN3002">
+                  <p>VPP: Valor preditivo positivo; VPN: Valor preditivo negativo; IC: Intervalo de confiança.</p>
+                </fn>
+                <attrib>Fonte: Análise dos autores sobre dados da Pesquisa Nacional de Saúde (PNS) 2019</attrib>
+              </table-wrap-foot>
+            </table-wrap>
+          </p>
+          <p>A sensibilidade, capacidade do indivíduo com excesso de peso de referir seus dados de peso e altura corretamente, foi elevada, 83,0% (IC95% entre 81,8% e 84,2%), enquanto a especificidade, capacidade do indivíduo sem excesso de peso de referir seus dados corretamente, também foi elevada, 86,4% (IC95% entre 85,1% e 87,7%). Quando estratificados por sexo e idade, vemos que mulheres e idosos (≥ 60 anos) com excesso de peso têm menor sensibilidade para a autorreferência de seu estado nutricional, 80,6 e 72,1%, respectivamente.</p>
+        </sec>
+        <sec>
+          <title>Análise do IMC Categorizado – Validade de Constructo</title>
+          <p>Finalmente, o IMC categorizado foi analisado em função de algumas variáveis preditoras que comumente estão associadas ao estado nutricional, tais como: sexo, raça/cor, escolaridade e renda<sup><xref ref-type="bibr" rid="B8">8</xref>,<xref ref-type="bibr" rid="B18">18</xref></sup>. A análise de regressão de Poisson para IMC referido e para IMC aferido (<xref ref-type="table" rid="t4002">Tabela 4</xref>) mostrou que a única variável que tem diferença nos dois modelos é o sexo (que foi significativo para o aferido e não para o referido). Isso reforça a necessidade de, ao se utilizar o IMC referido, sempre estratificar por sexo, corroborando os resultados anteriores.</p>
+          <p>
+            <table-wrap id="t4002">
+              <label>Tabela 4</label>
+              <caption>
+                <title>Análise por Regressão de Poisson para o índice de massa corporal referido e índice de massa corporal aferido. Brasil, 2023.</title>
+              </caption>
+              <table frame="hsides" rules="groups">
+                <colgroup width="20%">
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                  <col/>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th align="left">IMC</th>
+                    <th>Variável</th>
+                    <th>RP ajustada</th>
+                    <th>IC95%</th>
+                    <th>valor de p</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td rowspan="4">IMC referido</td>
+                    <td align="center">Sexo</td>
+                    <td align="center">1,022</td>
+                    <td align="center">0,974–1,072</td>
+                    <td align="center">0,367</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Cor/Raça</td>
+                    <td align="center">1,031</td>
+                    <td align="center">0,982–1,083</td>
+                    <td align="center">0,217</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Escolaridade</td>
+                    <td align="center">0,781</td>
+                    <td align="center">0,715–0,854</td>
+                    <td align="center">0,001</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Renda familiar</td>
+                    <td align="center">0,94</td>
+                    <td align="center">0,895–0,988</td>
+                    <td align="center">0,014</td>
+                  </tr>
+                  <tr>
+                    <td rowspan="4">IMC aferido</td>
+                    <td align="center">Sexo</td>
+                    <td align="center">1,122</td>
+                    <td align="center">1,073—1,174</td>
+                    <td align="center">0,001</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Cor/Raça</td>
+                    <td align="center">1,002</td>
+                    <td align="center">0,958—1,048</td>
+                    <td align="center">0,925</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Escolaridade</td>
+                    <td align="center">0,812</td>
+                    <td align="center">0,748—0,881</td>
+                    <td align="center">0,001</td>
+                  </tr>
+                  <tr>
+                    <td align="center">Renda familiar</td>
+                    <td align="center">0,948</td>
+                    <td align="center">0,906–0,993</td>
+                    <td align="center">0,022</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table-wrap-foot>
+                <fn id="TFN4002">
+                  <p>IMC: Índice de massa corporal; RP: Razão de prevalência; IC: Intervalo de confiança; p: Significância.</p>
+                </fn>
+                <attrib>Fonte: Análise dos autores sobre dados da Pesquisa Nacional de Saúde (PNS) 2019.</attrib>
+              </table-wrap-foot>
+            </table-wrap>
+          </p>
+        </sec>
+      </sec>
+      <sec sec-type="discussion">
+        <title>DISCUSSÃO</title>
+        <p>Por meio da série de análises estatísticas realizadas para validação dos dados de peso e altura aferidos e referidos (e consequente estimativa de IMC), este estudo demonstrou que a técnica de autorreferência pode ser utilizada em inquéritos populacionais, sendo uma estratégia eficiente a fim de minimizar as dificuldades frequentemente encontradas (de logística e tempo, especialmente) em aferir diretamente estas medidas antropométricas.</p>
+        <p>Houve uma maior reprodutibilidade entre adultos não idosos (18 a 59 anos) quando comparados às pessoas idosas e entre homens quando comparados às mulheres. Essa conclusão é reforçada quando vemos que, dentre as variáveis socioeconômicas e demográficas analisadas, a única que tem diferença em todos os modelos estatísticos é o sexo, corroborando com alguns estudos semelhantes<sup><xref ref-type="bibr" rid="B8">8</xref>,<xref ref-type="bibr" rid="B18">18</xref></sup>.</p>
+        <p>A sensibilidade entre as mulheres foi de 80,6%, enquanto entre os homens foi de 87,0%, ou seja, entre mulheres e homens com excesso de peso, as mulheres conseguem relatar com menor precisão os seus dados. Em contrapartida, quando sem excesso de peso, as mulheres apresentaram uma especificidade (87,2%) maior, em acordo com outros estudos, que mostraram que aquelas pessoas sem excesso de peso conseguem relatar com maior precisão sobre suas medidas<sup><xref ref-type="bibr" rid="B7">7</xref></sup>.</p>
+        <p>O resultado do presente estudo sobre as mulheres reforça a hipótese de que elas, ao mesmo tempo em que apresentam maior preocupação em monitorar suas medidas e estado de saúde<sup><xref ref-type="bibr" rid="B21">21</xref></sup>, de forma geral, quando comparada aos homens, também têm uma maior tendência a subestimar seu peso e superestimar sua estatura<sup><xref ref-type="bibr" rid="B6">6</xref>,<xref ref-type="bibr" rid="B20">20</xref>,<xref ref-type="bibr" rid="B22">22</xref></sup>, o que pode gerar importantes flutuações na definição do seu estado nutricional. Isso pode ser explicado pelo fato desse grupo comumente apresentarem maiores índices de insatisfação corporal, desencadeada pela alta pressão social para atingir determinados padrões de beleza<sup><xref ref-type="bibr" rid="B23">23</xref>,<xref ref-type="bibr" rid="B24">24</xref></sup>. De forma geral, quando os indivíduos se sentem mais satisfeitos com sua própria imagem corporal ou estão mais próximos do peso corporal de seus pares, são menos propensos a informar incorretamente seu peso<sup><xref ref-type="bibr" rid="B21">21</xref></sup>.</p>
+        <p>Os idosos apresentaram menor sensibilidade (72,1%) quando comparados aos adultos não idosos (85,0%), ou seja, idosos com excesso de peso conseguem ter uma menor precisão no relato de seus dados antropométricos, ao passo em que idosos sem excesso de peso (especificidade de 89,2%) conseguem realizar esse relato com maior precisão, o que corrobora outros estudos semelhantes<sup><xref ref-type="bibr" rid="B20">20</xref>,<xref ref-type="bibr" rid="B25">25</xref></sup>. Isso pode estar associado ao próprio processo fisiológico do envelhecimento<sup><xref ref-type="bibr" rid="B26">26</xref></sup>, que leva a uma diminuição de sua estatura ao longo dos anos, bem como uma progressiva redução de massa muscular e/ou aumento de tecido adiposo pela diminuição do ritmo metabólico, impactando em mudanças no peso corporal, muitas vezes não percebidas pela pessoa idosa<sup><xref ref-type="bibr" rid="B27">27</xref>,<xref ref-type="bibr" rid="B28">28</xref></sup>.</p>
+        <p>Além disso, este é um grupo que, geralmente, não verifica seu peso e altura com regularidade, levando, portanto, a um relato de informações mais imprecisas e desatualizadas, que também pode estar associado ao viés de memória, presente comumente nesse público, corroborando estes resultados com outros estudos que observaram uma subestimação no peso e superestimação da altura em idosos<sup><xref ref-type="bibr" rid="B18">18</xref>,<xref ref-type="bibr" rid="B20">20</xref></sup>.</p>
+        <p>Esta validação da PNS é muito importante, tendo em vista a larga utilização deste banco de dados em estudos transversais e longitudinais a fim de avaliar a morbidade, o funcionamento da assistência de saúde e o estilo de vida da população brasileira, em diferentes áreas de conhecimento pela riqueza de variáveis, grande tamanho amostral e representatividade de todas as unidades federativas do Brasil.</p>
+        <p>Ademais, ainda que tenhamos encontrado boa concordância para as categorias do estado nutricional, mostrando que a PNS 2019 pode ser utilizada para estimar prevalência de excesso de peso nesta população avaliada, outros estudos de base populacional diferentes dessa, encontraram valores de subestimação<sup><xref ref-type="bibr" rid="B29">29</xref>,<xref ref-type="bibr" rid="B30">30</xref></sup> e superestimação quanto ao sobrepeso e obesidade<sup><xref ref-type="bibr" rid="B18">18</xref></sup>.</p>
+        <p>Para a validação de constructo foram utilizados alguns indicadores preditores que a literatura comumente mostra associação ao estado nutricional (sexo, raça/cor, escolaridade e renda), o que reforçou a legitimidade da utilização dos dados autorreferidos em estudos de associações, pela sua similaridade com dados aferidos. Portanto, embora seja recomendável cautela ao utilizar o autorrelato para estudos de prevalência do estado nutricional para excesso de peso, especialmente com idosos e mulheres, os resultados do presente estudo indicam que há uma possibilidade concreta de realizar estudos de associação tendo como variável de desfecho o estado nutricional referido.</p>
+        <p>Isso se torna mais relevante quando se trata de grandes inquéritos populacionais, em que há uma grande demanda de custo e logística para o trabalho de campo, a partir da necessidade de treinamentos, aquisição de materiais adequados e em grandes quantidades, dificuldades com transporte e longa duração das coletas. A utilização de dados antropométricos autorreferidos aumenta a viabilidade dos estudos observacionais, apontando para a importância de um bom planejamento do delineamento da pesquisa, levando em consideração seu objetivo central e as características da população-alvo, especialmente socioculturais, demográficas e econômicas.</p>
+      </sec>
+    </body>
+  </sub-article>
+</article>

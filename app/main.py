@@ -12,7 +12,9 @@ Rotas:
   GET  /doc/{id}/pacote.zip     XML + PDF renomeado no padrao SPS
   GET  /doc/{id}/modelo.json, /doc/{id}/resumo.md, /doc/{id}/validacao.json
   POST /doc/{id}/etapa          muda a etapa do artigo no fluxo SciELO (recebido ... publicado)
-  GET  /painel                  todos os documentos, com filtros por revista, etapa e situacao
+  GET  /painel                  documentos do usuario (cliente ve so os seus), com filtros
+  GET  /conta, POST /conta/senha, GET /ajuda    area da conta
+  GET  /admin, /admin/documentos                administracao (visao geral e todos os documentos)
   GET  /revistas, /revistas/nova, /revistas/{acr}, POST idem, POST /revistas/{acr}/remover   cadastro editavel (admin)
   GET/POST /entrar, POST /sair  login por sessao (cookie assinado); GET/POST /usuarios... (admin)
   GET  /saude                   healthcheck
@@ -59,10 +61,11 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.6.1"
+VERSAO_APP = "0.7.0"
 CONTAS = Contas(DATA)
 
 # etapas do artigo no fluxo de entrega a SciELO (anotadas a mao no painel)
+# papel "cliente" vê só os próprios documentos; "operador" vê todos; "admin" também administra
 ETAPAS = [("recebido", "Recebido"), ("em_revisao", "Em revisão"), ("pronto", "Pronto para entrega"),
           ("entregue", "Entregue à SciELO"), ("pre_qa", "Pré-QA"), ("qa", "QA"), ("qa_finalizado", "QA finalizado"), ("publicado", "Publicado")]
 ETAPA_ROTULO = dict(ETAPAS)
@@ -149,11 +152,21 @@ def grava_json(caminho: Path, obj):
 
 
 def _arquivo_revistas() -> Path:
-    """Cadastro editavel em XMLJATS_DATA/revistas.json; na primeira vez copia a semente modelos/revistas.json."""
+    """Cadastro editavel em XMLJATS_DATA/revistas.json, semeado de modelos/revistas.json.
+    Revistas novas da semente entram uma unica vez (a lista 'semeadas' guarda o que ja veio de la), para que uma
+    atualizacao do codigo traga revistas novas sem ressuscitar as que o administrador removeu nem desfazer edicoes."""
     arq = DATA / "revistas.json"
+    semente = (le_json(RAIZ / "modelos" / "revistas.json", {"revistas": []}) or {}).get("revistas", [])
     if not arq.exists():
-        semente = le_json(RAIZ / "modelos" / "revistas.json", {"revistas": []})
-        grava_json(arq, {"revistas": semente.get("revistas", [])})
+        grava_json(arq, {"revistas": semente, "semeadas": [r["acronimo"] for r in semente]})
+        return arq
+    atual = le_json(arq, {"revistas": []}) or {"revistas": []}
+    ja = set(atual.get("semeadas") or [r["acronimo"] for r in atual.get("revistas", [])])
+    novas = [r for r in semente if r["acronimo"] not in ja]
+    if novas or "semeadas" not in atual:
+        atual["revistas"] = list(atual.get("revistas", [])) + novas
+        atual["semeadas"] = sorted(ja | {r["acronimo"] for r in semente})
+        grava_json(arq, atual)
     return arq
 
 
@@ -162,7 +175,10 @@ def carrega_revistas():
 
 
 def grava_revistas(lista):
-    grava_json(_arquivo_revistas(), {"revistas": lista})
+    arq = _arquivo_revistas()
+    atual = le_json(arq, {}) or {}
+    atual["revistas"] = lista
+    grava_json(arq, atual)
 
 
 RE_ACRONIMO = re.compile(r"^[a-z][a-z0-9]{1,24}$")
@@ -204,16 +220,27 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
     return d, erros
 
 
-def _pasta(doc_id: str) -> Path:
+def _pasta(doc_id: str, usuario: Optional[dict] = None) -> Path:
     if not doc_id or "/" in doc_id or "\\" in doc_id or ".." in doc_id:
         raise HTTPException(404)
     pasta = DOCS / doc_id
     if not pasta.is_dir():
         raise HTTPException(404, "Documento não encontrado")
+    if usuario is not None:
+        cfg = le_json(pasta / "config.json", {}) or {}
+        if not pode_ver(cfg, usuario):
+            raise HTTPException(403, "Este documento é de outra conta.")
     return pasta
 
 
-def lista_docs(limite=30):
+def pode_ver(doc: dict, usuario: dict) -> bool:
+    """Cliente só vê os próprios documentos; operador e admin veem todos."""
+    if usuario.get("papel") in ("admin", "operador"):
+        return True
+    return (doc.get("criado_por_id") or doc.get("criado_por")) in (usuario.get("id"), usuario.get("nome"))
+
+
+def lista_docs(limite=30, usuario: Optional[dict] = None):
     itens = []
     for pasta in DOCS.iterdir():
         d = le_json(pasta / "validacao.json")
@@ -226,6 +253,9 @@ def lista_docs(limite=30):
         cfg = le_json(pasta / "config.json", {}) or {}
         d["etapa"] = cfg.get("etapa") or "recebido"
         d["criado_por"] = cfg.get("criado_por")
+        d["criado_por_id"] = cfg.get("criado_por_id")
+        if usuario is not None and not pode_ver(d, usuario):
+            continue
         hist = cfg.get("historico_etapas") or []
         d["etapa_por"] = hist[-1].get("por") if hist else None
         itens.append(d)
@@ -423,6 +453,11 @@ def gera_e_valida(pasta: Path) -> dict:
         "editados": editados,
         "figuras": [{"rotulo": f["rotulo"], "legenda": f.get("legenda"), "fonte": f.get("fonte"), "arquivo": f.get("arquivo"),
                      "href": figuras_pacote.get(f.get("arquivo")), "chamada": f.get("chamada_no_texto")} for f in modelo.get("figuras", []) if f["tipo"] == "fig"],
+        "tabelas": [{"rotulo": t.get("rotulo"), "legenda": t.get("legenda"), "colunas": t.get("colunas"), "linhas": len(t.get("celulas") or []),
+                     "qualidade": t.get("qualidade"), "chamada": t.get("chamada_no_texto"), "pagina": t.get("pagina"),
+                     "arquivo": t.get("arquivo"), "previa": (t.get("celulas") or [])[:4]} for t in modelo.get("tabelas", [])],
+        "equacoes": [{"rotulo": e.get("rotulo"), "numero": e.get("numero"), "texto": (e.get("texto") or "")[:120], "pagina": e.get("pagina"),
+                      "arquivo": e.get("arquivo"), "chamada": e.get("chamada_no_texto")} for e in modelo.get("equacoes", [])],
         "notas": [{"id": n["id"], "rotulo": n["rotulo"], "tipo": n.get("tipo"), "chamada": n.get("chamada_no_texto"), "ligada_a": n.get("ligada_a"),
                    "texto": (n.get("texto") or "")[:160]} for n in modelo.get("notas", [])],
         "referencias": [{"texto": r["texto"], "tipo": r.get("tipo"), "confianca": c.get("confianca", "baixa"),
@@ -437,6 +472,8 @@ def gera_e_valida(pasta: Path) -> dict:
             "secoes": len(modelo.get("secoes", [])),
             "notas": len(modelo.get("notas", [])),
             "figuras": len(modelo.get("figuras", [])),
+            "tabelas": len(modelo.get("tabelas", [])),
+            "equacoes": len(modelo.get("equacoes", [])),
             "referencias": len(modelo.get("referencias", [])),
             "citacoes": len({(c["autor"], c["ano"]) for c in modelo.get("citacoes", [])}),
         },
@@ -470,7 +507,8 @@ def saude():
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request, usuario: dict = Depends(autentica)):
-    return templates.TemplateResponse(request, "index.html", {"revistas": carrega_revistas(), "docs": lista_docs(8), "total_docs": len(lista_docs(0)), "usuario": usuario})
+    meus = lista_docs(0, usuario)
+    return templates.TemplateResponse(request, "index.html", {"revistas": carrega_revistas(), "docs": meus[:8], "total_docs": len(meus), "usuario": usuario})
 
 
 @app.post("/validar")
@@ -490,7 +528,8 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
         f.write(conteudo)
     (pasta / "nome_original.txt").write_text(nome, encoding="utf-8")
     agora = dt.datetime.now().isoformat(timespec="seconds")
-    grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None, "criado_por": usuario["nome"], "etapa": "recebido",
+    grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None, "criado_por": usuario["nome"],
+                                       "criado_por_id": usuario["id"], "etapa": "recebido",
                                        "historico_etapas": [{"etapa": "recebido", "por": usuario["nome"], "em": agora}]})
     try:
         extrai_e_salva(pasta)
@@ -503,7 +542,7 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
 
 @app.get("/doc/{doc_id}", response_class=HTMLResponse)
 def ver_doc(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id)
+    pasta = _pasta(doc_id, usuario)
     r = le_json(pasta / "validacao.json")
     if not r:
         raise HTTPException(404, "Documento sem resultado")
@@ -515,7 +554,7 @@ def ver_doc(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
 
 @app.post("/doc/{doc_id}/etapa")
 async def muda_etapa(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id)
+    pasta = _pasta(doc_id, usuario)
     form = await request.form()
     etapa = str(form.get("etapa") or "")
     if etapa not in ETAPA_ROTULO:
@@ -534,7 +573,7 @@ async def muda_etapa(request: Request, doc_id: str, usuario: dict = Depends(aute
 
 @app.get("/doc/{doc_id}/editar", response_class=HTMLResponse)
 def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id)
+    pasta = _pasta(doc_id, usuario)
     modelo = le_json(pasta / "model.json", {})
     ed = le_json(pasta / "edicoes.json", {}) or {}
     campos = ed.get("campos", {})
@@ -555,7 +594,7 @@ def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica
 
 @app.post("/doc/{doc_id}/editar")
 async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id)
+    pasta = _pasta(doc_id, usuario)
     form = await request.form()
     modelo = le_json(pasta / "model.json", {})
     originais = valores_editaveis(modelo)
@@ -586,7 +625,7 @@ async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(a
 
 @app.post("/doc/{doc_id}/reprocessar")
 def reprocessar(doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id)
+    pasta = _pasta(doc_id, usuario)
     extrai_e_salva(pasta)
     gera_e_valida(pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
@@ -594,7 +633,7 @@ def reprocessar(doc_id: str, usuario: dict = Depends(autentica)):
 
 @app.get("/doc/{doc_id}/xml")
 def baixar_xml(doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id)
+    pasta = _pasta(doc_id, usuario)
     xml = next(pasta.glob("*.xml"), None)
     if not xml:
         raise HTTPException(404)
@@ -604,7 +643,7 @@ def baixar_xml(doc_id: str, usuario: dict = Depends(autentica)):
 @app.get("/doc/{doc_id}/pacote.zip")
 def baixar_pacote(doc_id: str, usuario: dict = Depends(autentica)):
     """Pacote SPS minimo: <base>.xml + <base>.pdf (o PDF original renomeado). Imagens entram quando o extrator as gerar."""
-    pasta = _pasta(doc_id)
+    pasta = _pasta(doc_id, usuario)
     xml = next(pasta.glob("*.xml"), None)
     if not xml:
         raise HTTPException(404)
@@ -623,9 +662,9 @@ def baixar_pacote(doc_id: str, usuario: dict = Depends(autentica)):
 
 @app.get("/doc/{doc_id}/img/{nome}")
 def imagem(doc_id: str, nome: str, usuario: dict = Depends(autentica)):
-    if not re.fullmatch(r"fig\d{2}\.[a-z0-9]{2,5}", nome):
+    if not re.fullmatch(r"(fig|eq|tab)\d{2}\.[a-z0-9]{2,5}", nome):
         raise HTTPException(404)
-    caminho = _pasta(doc_id) / "imagens" / nome
+    caminho = _pasta(doc_id, usuario) / "imagens" / nome
     if not caminho.exists():
         raise HTTPException(404)
     return FileResponse(str(caminho))
@@ -633,17 +672,17 @@ def imagem(doc_id: str, nome: str, usuario: dict = Depends(autentica)):
 
 @app.get("/doc/{doc_id}/modelo.json")
 def baixar_modelo(doc_id: str, usuario: dict = Depends(autentica)):
-    return FileResponse(str(_pasta(doc_id) / "model.json"), media_type="application/json", filename=f"{doc_id}-modelo.json")
+    return FileResponse(str(_pasta(doc_id, usuario) / "model.json"), media_type="application/json", filename=f"{doc_id}-modelo.json")
 
 
 @app.get("/doc/{doc_id}/validacao.json")
 def baixar_validacao(doc_id: str, usuario: dict = Depends(autentica)):
-    return FileResponse(str(_pasta(doc_id) / "validacao.json"), media_type="application/json")
+    return FileResponse(str(_pasta(doc_id, usuario) / "validacao.json"), media_type="application/json")
 
 
 @app.get("/doc/{doc_id}/resumo.md", response_class=PlainTextResponse)
 def ver_resumo(doc_id: str, usuario: dict = Depends(autentica)):
-    return (_pasta(doc_id) / "resumo.md").read_text(encoding="utf-8")
+    return (_pasta(doc_id, usuario) / "resumo.md").read_text(encoding="utf-8")
 
 
 @app.get("/revistas", response_class=HTMLResponse)
@@ -684,7 +723,7 @@ def _revista_ou_404(acronimo: str):
 @app.get("/revistas/{acronimo}", response_class=HTMLResponse)
 def revista_editar(request: Request, acronimo: str, usuario: dict = Depends(exige_admin)):
     _, rev = _revista_ou_404(acronimo)
-    n_docs = sum(1 for d in lista_docs(0) if d.get("revista") == acronimo)
+    n_docs = sum(1 for d in lista_docs(0) if d.get("revista") == acronimo)  # admin: conta de todos
     return _form_revista(request, usuario, rev, {}, False, n_docs)
 
 
@@ -712,7 +751,7 @@ def revista_remover(acronimo: str, usuario: dict = Depends(exige_admin)):
 
 @app.get("/painel", response_class=HTMLResponse)
 def painel(request: Request, usuario: dict = Depends(autentica), revista: str = "", etapa: str = "", situacao: str = ""):
-    docs = lista_docs(0)
+    docs = lista_docs(0, usuario)
     if revista:
         docs = [d for d in docs if d.get("revista") == revista]
     if etapa:
@@ -724,7 +763,8 @@ def painel(request: Request, usuario: dict = Depends(autentica), revista: str = 
     filtros = {"revista": revista, "etapa": etapa, "situacao": situacao}
     query = "?" + urllib.parse.urlencode({k: v for k, v in filtros.items() if v}) if any(filtros.values()) else ""
     return templates.TemplateResponse(request, "painel.html", {"docs": docs, "revistas": carrega_revistas(), "etapas": ETAPAS, "filtros": filtros,
-                                                               "filtro_ativo": any(filtros.values()), "query": query, "usuario": usuario})
+                                                               "filtro_ativo": any(filtros.values()), "query": query, "usuario": usuario,
+                                                               "total_docs": len(lista_docs(0, usuario))})
 
 
 # ---------------------------------------------------------------- contas
@@ -749,6 +789,109 @@ async def entrar(request: Request):
     resp = RedirectResponse(url=proximo if proximo.startswith("/") else "/", status_code=303)
     resp.set_cookie(COOKIE, CONTAS.assina_sessao(u["id"]), httponly=True, samesite="lax", secure=request.url.scheme == "https", max_age=12 * 3600, path="/")
     return resp
+
+
+@app.get("/registrar", response_class=HTMLResponse)
+def registrar_form(request: Request):
+    CONTAS.garante_admin(os.environ.get("APP_SENHA"))
+    if CONTAS.le_sessao(request.cookies.get(COOKIE)):
+        return RedirectResponse(url="/", status_code=303)
+    return templates.TemplateResponse(request, "registrar.html", {"usuario": None})
+
+
+@app.post("/registrar", response_class=HTMLResponse)
+async def registrar(request: Request):
+    form = dict((await request.form()).items())
+    CONTAS.garante_admin(os.environ.get("APP_SENHA"))
+    if (form.get("senha") or "") != (form.get("senha2") or ""):
+        return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": "As duas senhas não são iguais.", "form": form}, status_code=400)
+    try:
+        u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), "cliente")
+    except ValueError as e:
+        return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": str(e), "form": form}, status_code=400)
+    resp = RedirectResponse(url="/", status_code=303)
+    resp.set_cookie(COOKIE, CONTAS.assina_sessao(u["id"]), httponly=True, samesite="lax", secure=request.url.scheme == "https", max_age=12 * 3600, path="/")
+    return resp
+
+
+@app.get("/conta", response_class=HTMLResponse)
+def conta(request: Request, usuario: dict = Depends(autentica), mensagem: str = "", erro: str = ""):
+    meus = lista_docs(0, usuario)
+    return templates.TemplateResponse(request, "conta.html", {"usuario": usuario, "mensagem": mensagem, "erro": erro,
+                                                              "docs": meus, "total_docs": len(meus)})
+
+
+@app.post("/conta/senha")
+async def conta_senha(request: Request, usuario: dict = Depends(autentica)):
+    form = await request.form()
+    atual, nova, nova2 = str(form.get("atual") or ""), str(form.get("nova") or ""), str(form.get("nova2") or "")
+    if usuario["id"] in ("local", "api"):
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("Esta sessão não tem conta própria."), status_code=303)
+    if not CONTAS.autentica(usuario["email"], atual):
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("A senha atual não confere."), status_code=303)
+    if nova != nova2:
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("As duas senhas novas não são iguais."), status_code=303)
+    try:
+        CONTAS.define_senha(usuario["id"], nova)
+    except ValueError as e:
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/conta?mensagem=" + urllib.parse.quote("Senha trocada."), status_code=303)
+
+
+@app.get("/ajuda", response_class=HTMLResponse)
+def ajuda(request: Request, usuario: dict = Depends(autentica)):
+    return templates.TemplateResponse(request, "ajuda.html", {"usuario": usuario, "etapas": ETAPAS})
+
+
+# ---------------------------------------------------------------- administração
+
+def _metricas(docs):
+    from collections import Counter
+    por_revista, por_etapa = Counter(), Counter()
+    bloq = Counter()
+    for d in docs:
+        por_revista[d.get("revista") or "sem revista"] += 1
+        por_etapa[d.get("etapa") or "recebido"] += 1
+        for b in d.get("bloqueantes", []):
+            for cod in re.findall(r"\(([A-Z]\d{2})\)", b):
+                bloq[cod] += 1
+    return por_revista, por_etapa, bloq
+
+
+@app.get("/admin", response_class=HTMLResponse)
+def admin(request: Request, usuario: dict = Depends(exige_admin)):
+    docs = lista_docs(0)
+    por_revista, por_etapa, bloq = _metricas(docs)
+    usuarios = CONTAS.lista()
+    prontos = [d for d in docs if d.get("pronto")]
+    return templates.TemplateResponse(request, "admin.html", {
+        "usuario": usuario, "docs": docs, "total": len(docs), "prontos": len(prontos),
+        "por_revista": por_revista.most_common(), "por_etapa": por_etapa, "etapas": ETAPAS,
+        "bloqueantes": bloq.most_common(8), "usuarios": usuarios, "revistas": carrega_revistas(),
+        "por_papel": {p: sum(1 for u in usuarios if u["papel"] == p) for p in ("admin", "operador", "cliente")},
+        "recentes": docs[:8],
+    })
+
+
+@app.get("/admin/documentos", response_class=HTMLResponse)
+def admin_documentos(request: Request, usuario: dict = Depends(exige_admin), revista: str = "", etapa: str = "",
+                     situacao: str = "", dono: str = ""):
+    docs = lista_docs(0)
+    if revista:
+        docs = [d for d in docs if d.get("revista") == revista]
+    if etapa:
+        docs = [d for d in docs if d.get("etapa") == etapa]
+    if situacao == "pronto":
+        docs = [d for d in docs if d.get("pronto")]
+    elif situacao == "bloqueado":
+        docs = [d for d in docs if not d.get("pronto")]
+    if dono:
+        docs = [d for d in docs if (d.get("criado_por_id") or "") == dono]
+    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao, "dono": dono}
+    query = "?" + urllib.parse.urlencode({k: v for k, v in filtros.items() if v}) if any(filtros.values()) else ""
+    return templates.TemplateResponse(request, "admin_docs.html", {
+        "docs": docs, "revistas": carrega_revistas(), "etapas": ETAPAS, "filtros": filtros, "usuarios": CONTAS.lista(),
+        "filtro_ativo": any(filtros.values()), "query": query, "usuario": usuario})
 
 
 @app.post("/sair")

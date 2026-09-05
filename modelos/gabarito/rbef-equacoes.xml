@@ -1,0 +1,896 @@
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.1" specific-use="sps-1.9" xml:lang="pt">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">rbef</journal-id>
+      <journal-title-group>
+        <journal-title>Revista Brasileira de Ensino de Física</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Bras. Ensino Fís.</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1806-1117</issn>
+      <issn pub-type="epub">1806-9126</issn>
+      <publisher>
+        <publisher-name>Sociedade Brasileira de Física</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id specific-use="scielo-v3" pub-id-type="publisher-id">JVcMmDRwZZ5WYSw95fVJgCn</article-id>
+      <article-id specific-use="scielo-v2" pub-id-type="publisher-id">S1806-11172024000100434</article-id>
+      <article-id pub-id-type="other">00434</article-id>
+      <article-id pub-id-type="doi">10.1590/1806-9126-RBEF-2024-0103</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Artigos Gerais</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Reflexões de Sadi Carnot</article-title>
+        <trans-title-group xml:lang="en">
+          <trans-title>Reflections of Sadi Carnot</trans-title>
+        </trans-title-group>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-4139-1445</contrib-id>
+          <name>
+            <surname>Oliveira</surname>
+            <given-names>Mário J. de</given-names>
+          </name>
+          <xref ref-type="corresp" rid="cor1">*</xref>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <label>1</label>
+        <institution content-type="original">Universidade de São Paulo, Instituto de Física, 05508-0900, São Paulo, SP, Brasil.</institution>
+        <institution content-type="orgname">Universidade de São Paulo</institution>
+        <institution content-type="orgdiv1">Instituto de Física</institution>
+        <addr-line>
+          <postal-code>05508-0900</postal-code>
+          <named-content content-type="city">São Paulo</named-content>
+          <named-content content-type="state">SP</named-content>
+        </addr-line>
+        <country country="BR">Brasil</country>
+      </aff>
+      <author-notes>
+        <corresp id="cor1"><label>*</label>Endereço de correspondência: <email>oliveira@if.usp.br</email> </corresp>
+      </author-notes>
+      <pub-date date-type="pub" publication-format="electronic">
+        <day>10</day>
+        <month>06</month>
+        <year>2024</year>
+      </pub-date>
+      <pub-date date-type="collection" publication-format="electronic">
+        <year>2024</year>
+      </pub-date>
+      <volume>46</volume>
+      <elocation-id>e20240103</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>24</day>
+          <month>03</month>
+          <year>2024</year>
+        </date>
+        <date date-type="accepted">
+          <day>17</day>
+          <month>04</month>
+          <year>2024</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright by Sociedade Brasileira de Física. Printed in Brazil.</copyright-statement>
+        <copyright-year>2023</copyright-year>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/deed.en" xml:lang="en">
+          <license-p>This is an open-access article distributed under the terms of the Creative Commons Attribution License (CC BY). The use, distribution or reproduction in other forums is permitted, provided the original author(s) and the copyright owner(s) are credited and that the original publication in this journal is cited, in accordance with accepted academic practice. No use, distribution or reproduction is permitted which does not comply with these terms.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <p>A teoria de Carnot é singular entre as teorias do calor desenvolvidas antes do surgimento da termodinâmica por considerar a relação entre calor e trabalho. A teoria está contida no livro de Carnot publicado em 1824, que contém as ideias básicas do funcionamento das máquinas térmicas entre elas a necessidade de uma diferença de temperaturas. O princípio fundamental da teoria é enunciado com o auxílío do processo cíclico inventado por Carnot envolvendo duas isotermas e duas adiabáticas. A razão entre o trabalho mecânico produzido durante o ciclo e o calor envolvido depende apenas das temperaturas. Fazemos uma análise critica da teoria de Carnot e mostramos como o principio de Carnot foi utilizado por Clausius para a definição da entropia em termos da qual ele enunciou a segunda lei da termodinâmica.</p>
+      </abstract>
+      <trans-abstract xml:lang="en">
+        <p>The theory of Carnot is unique among the theories of heat developed before the emergence of thermodynamics because it considers the relationship between heat and work. The theory is contained in Carnot’s book published in 1824, which contains the basic ideas on how thermal machines work, including the need for a temperature difference. The fundamental principle of the theory is stated with the help of a cyclic process invented by Carnot involving two isotherms and two adiabatics. The ratio between the mechanical work produced during the cycle and the heat involved depends only on the temperatures. We make a critical analysis of Carnot’s theory and show how the fundamental principle was used by Clausius to define entropy in terms of which he enunciated the second law of thermodynamics.</p>
+      </trans-abstract>
+      <kwd-group xml:lang="pt">
+        <title>Palavras-chave:</title>
+        <kwd>Sadi Carnot</kwd>
+        <kwd>princípio de Carnot</kwd>
+        <kwd>segunda lei da termodinâmica</kwd>
+      </kwd-group>
+      <kwd-group xml:lang="en">
+        <title>Keywords:</title>
+        <kwd>Sadi Carnot</kwd>
+        <kwd>principle of Carnot</kwd>
+        <kwd>second law of thermodynamics</kwd>
+      </kwd-group>
+      <counts>
+        <fig-count count="04"/>
+        <equation-count count="39"/>
+        <ref-count count="30"/>
+      </counts>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introdução</title>
+      <p>Em 1824 Sadi Carnot publicou as <italic>Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance</italic> (Reflexões sobre a potência motriz do fogo e sobre as máquinas próprias para desenvolver essa potência) [<xref ref-type="bibr" rid="b1">1</xref>], livro que contém sua teoria do calor. A potência motriz é o termo utilizado por Carnot para o trabalho mecânico realizado por uma máquina térmica. O termo fogo significa o calor envolvido na produção do trabalho mecânico.</p>
+      <p>A teoria de Carnot é singular entre as teorias do calor surgidas antes do aparecimento da termodinâmica por abordar a relação entre trabalho e calor. Para explicar a produção de trabalho por uma máquina térmica, Carnot utilizou uma analogia com a queda de um grave. Quando um grave desce de uma altura maior para uma outra menor, o trabalho realizado pelo grave é proporcional à sua massa e à diferença de altura. Quando uma certa quantidade de calor passa de uma temperatura mais alta para uma temperatura mais baixa, o trabalho realizado é proporcional à essa quantidade de calor e depende apenas das duas temperaturas.</p>
+      <p>Essa explicação é a base do princípio introduzido por Carnot que é enunciado pela utilização de um processo específico pelo qual passa o corpo que realiza trabalho. Esse processo é cíclico e formado por dois processos isotérmicos a temperaturas distintas e por dois processos que não envolvem a troca de calor. Utilizando esse processo cíclico, o princípio é enunciado da seguinte forma:</p>
+      <disp-quote>
+        <p>A razão entre o trabalho mecânico e o calor envolvido depende apenas das duas temperaturas e é independente da natureza do corpo que realiza o trabalho.</p>
+      </disp-quote>
+      <p>É preciso enfatizar que o calor envolvido é o calor recebido pelo corpo a uma temperatura mais alta que é o <italic>mesmo</italic> calor liberado pelo corpo à temperatura mais baixa. Usando a analogia entre a produção de trabalho por uma maquina térmica e o trabalho devido a queda de um grave, o calor é o análogo da massa do grave, que permanece a mesma. Dito de outra maneira, o calor é uma grandeza que se conserva, que é a lei fundamental das teorias do calor predominantes antes do surgimento da termodinâmica, denominada teoria do calórico [<xref ref-type="bibr" rid="b2">2</xref>], implícita na teoria de Carnot.</p>
+      <p>A teoria de Carnot foi desenvolvida em forma analítica por Clayperon em artigo <italic>Mémoire sur la puissance motrice de la chaleur</italic> (Dissertação sobre a potência motriz do calor) publicado em 1834 [<xref ref-type="bibr" rid="b3">3</xref>]. Nesse artigo Clapeyron introduz o diagrama pressão-volume para representar os estados do sistema. Ele também obtém resultados inéditos a partir da teoria de Carnot como a equação que evolve temperatura e pressão de um líquido em equilíbrio com seu vapor, que foi mais tarde modificada por Clausius, passando a ser conhecida como equação de Clausius-Clapeyron.</p>
+      <p>O princípio de Carnot foi utilizado por Clausius na formulação da segunda lei da termodinâmica, apresentada nos seus trabalhos sobre a teoria mecânica do calor, publicadas a partir de 1850 [<xref ref-type="bibr" rid="b4">4</xref>,<xref ref-type="bibr" rid="b5">5</xref>,<xref ref-type="bibr" rid="b6">6</xref>]. Para isso Clausius dividiu o princípio de Carnot em duas partes. Ele rejeitou a parte referente à conservação do calor por ser ser incompatível com a conservação da energia e interpretou o calor envolvido apenas como o calor introduzido. A partir do principio de Carnot modificado dessa forma, Clausius define a entropia em termos da qual enuncia a segunda lei da termodinâmica.</p>
+      <p>A seguir apresentamos a teoria de Carnot na forma analítica seguindo a formulação de Clapeyron. Usaremos a notação (p. <italic>n</italic>) para nos referirmos à página <italic>n</italic> da edição de 1824 das <italic>Réflexions</italic>. Na seção <xref ref-type="sec" rid="S3">3</xref>, mostramos como Clausius utilizou o principio de Carnot para formular a segunda lei da termodinâmica. Na seção <xref ref-type="sec" rid="S4">4</xref> listamos as diversas edições do livro de Carnot, cuja tradução parcial está contida na seção <xref ref-type="sec" rid="S5">5</xref>. Na seção <xref ref-type="sec" rid="S5">5</xref> apresentamos uma breve biografia de Carnot baseada principalmente nas notas biográficas escritas por seu irmão Hippolyte, contidas na segunda edição do livro de Carnot de 1878.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Teoria de Carnot</title>
+      <p>Consideramos um corpo que sofre um processo cíclico constituído por quatro etapas, que denominamos ciclo de Carnot (p. 32–34). Uma expansão isotérmica à temperatura <italic>θ</italic><sub>1</sub>, uma expansão adiabática, uma contração isotérmica à temperatura <italic>θ</italic><sub>2</sub>, e uma contração adiabática. Durante a expansão isotérmica o corpo está em contato com um reservatório A do qual recebe uma quantidade de calor <italic>q</italic>. Na expansão adiabática o corpo está isolado. Na contração isotérmica o corpo está em contato com um reservatório B para o qual cede o calor <italic>q</italic> recebido de A. O trabalho <italic>w</italic> realizado pelo corpo é dado por<disp-formula id="DM1"><label>(1)</label><mml:math display="block"><mml:mfrac><mml:mi>w</mml:mi><mml:mi>q</mml:mi></mml:mfrac><mml:mo>=</mml:mo><mml:mi>F</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>,</mml:mo></mml:math></disp-formula>onde <italic>F</italic>(<italic>θ</italic><sub>1</sub>, <italic>θ</italic><sub>2</sub>) é uma função que depende apenas das duas temperaturas sendo portanto a mesma para quaisquer corpos. Na linguagem utilizadas por Carnot, ela é independente da natureza do corpo. É importante notar que a quantidade de calor recebida pelo corpo à temperatura <italic>θ</italic><sub>1</sub> é a <italic>mesma</italic> quantidade de calor cedida pelo corpo à temperatura <italic>θ</italic><sub>2</sub>, ambas denotadas por <italic>q</italic>, que é resultado da conservação do calor. A <xref ref-type="disp-formula" rid="DM1">equação (1)</xref> traduz de forma analítica o princípio de Carnot (p. 38).</p>
+      <p>Se considerarmos um segundo ciclo de Carnot nas temperaturas <italic>θ</italic><sub>2</sub> e <italic>θ</italic><sub>3</sub> envolvendo o mesmo calor <italic>q</italic>, o trabalho será <italic>w</italic>′ = <italic>qF</italic>(<italic>θ</italic><sub>2</sub>, <italic>θ</italic><sub>3</sub>). Para um terceiro ciclo de Carnot nas temperaturas <italic>θ</italic><sub>1</sub> e <italic>θ</italic><sub>3</sub> e com o mesmo calor <italic>q</italic>, o trabalho será <italic>w</italic>′′ = <italic>qF</italic>(<italic>θ</italic><sub>1</sub>, <italic>θ</italic><sub>3</sub>). Como <italic>w</italic>′′ =<italic>w</italic> + <italic>w</italic>′ então<disp-formula id="DM2"><label>(2)</label><mml:math display="block"><mml:mi>F</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>=</mml:mo><mml:mi>F</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>+</mml:mo><mml:mi>F</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>,</mml:mo></mml:math></disp-formula>de onde concluímos que <italic>F</italic>(<italic>θ</italic><sub>1</sub>, <italic>θ</italic><sub>3</sub>) possui a forma<disp-formula id="DM3"><label>(3)</label><mml:math display="block"><mml:mi>F</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>=</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>−</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>,</mml:mo></mml:math></disp-formula>onde <italic>f</italic>(<italic>θ</italic>) depende apenas de <italic>θ</italic>, e o principio de carnot adquire a forma<disp-formula id="DM4"><label>(4)</label><mml:math display="block"><mml:mfrac><mml:mi>w</mml:mi><mml:mi>q</mml:mi></mml:mfrac><mml:mo>=</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>−</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>.</mml:mo></mml:math></disp-formula> </p>
+      <p>Se considerarmos um ciclo de Carnot formado por duas isotermas muito próximas e correspondentes às temperaturas <italic>θ</italic><sub>1</sub> = <italic>θ</italic> + <italic>dθ</italic> e <italic>θ</italic><sub>2</sub> = <italic>θ</italic> então o trabalho <italic>dw</italic> é dado por<disp-formula id="DM5"><label>(5)</label><mml:math display="block"><mml:mi>d</mml:mi><mml:mi>w</mml:mi><mml:mo>=</mml:mo><mml:mi>q</mml:mi><mml:msup><mml:mi>f</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mi>d</mml:mi><mml:mi>θ</mml:mi><mml:mo>,</mml:mo></mml:math></disp-formula>onde <italic>f</italic>′ = <italic>df</italic>/<italic>dθ</italic>.</p>
+      <p>Em seguida consideramos um processo cíclico qualquer e o particionamos em vários ciclos elementares, cada um com diferença de temperaturas iguais a <italic>dθ</italic>. Cada um desses ciclos elementares é aproximado por um ciclo de Carnot cujo calor associado depende da temperatura. O trabalho total <italic>w</italic> é a soma dos trabalhos desse ciclos elementares e portanto<disp-formula id="DM6"><label>(6)</label><mml:math display="block"><mml:mi>w</mml:mi><mml:mo>=</mml:mo><mml:mstyle displaystyle="true"><mml:mrow><mml:mo>∫</mml:mo><mml:mrow><mml:mi>q</mml:mi><mml:msup><mml:mi>f</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mrow></mml:mstyle><mml:mo>.</mml:mo></mml:math></disp-formula>O processo cíclico é representado no diagrama (<italic>v</italic>, <italic>p</italic>) como uma curva fechada e o trabalho <italic>w</italic> é a área dentro da curva,<disp-formula id="DM7"><label>(7)</label><mml:math display="block"><mml:mi>w</mml:mi><mml:mo>=</mml:mo><mml:mstyle displaystyle="true"><mml:mrow><mml:msub><mml:mo>∫</mml:mo><mml:mi mathvariant="script">A</mml:mi></mml:msub><mml:mrow><mml:mi>d</mml:mi><mml:mi>p</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi></mml:mrow></mml:mrow></mml:mstyle><mml:mo>,</mml:mo></mml:math></disp-formula>onde <inline-formula id="ILM01"><mml:math display="inline"><mml:mi mathvariant="script">A</mml:mi></mml:math></inline-formula> é a região delimitada pela curva fechada. Analogamente o mesmo processo cíclico pode ser representado no diagrama (<italic>θ</italic>, <italic>q</italic>) por uma curva fechada de modo que a integral do lado direito de (<xref ref-type="disp-formula" rid="DM6">6</xref>)é dada por<disp-formula id="DM8"><label>(8)</label><mml:math display="block"><mml:mstyle displaystyle="true"><mml:mrow><mml:msub><mml:mo>∫</mml:mo><mml:mi mathvariant="script">B</mml:mi></mml:msub><mml:mrow><mml:msup><mml:mi>f</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mi>d</mml:mi><mml:mi>q</mml:mi><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mrow></mml:mstyle><mml:mo>,</mml:mo></mml:math></disp-formula>onde <inline-formula id="ILM02"><mml:math display="inline"><mml:mi mathvariant="script">B</mml:mi></mml:math></inline-formula> é a região delimitada pela curva fechada no plano (<italic>θ</italic>, <italic>q</italic>).</p>
+      <p>Usando os resultados acima escrevemos<disp-formula id="DM9"><label>(9)</label><mml:math display="block"><mml:mstyle displaystyle="true"><mml:mrow><mml:msub><mml:mo>∫</mml:mo><mml:mi mathvariant="script">A</mml:mi></mml:msub><mml:mrow><mml:mi>d</mml:mi><mml:mi>p</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi></mml:mrow></mml:mrow></mml:mstyle><mml:mo>=</mml:mo><mml:mstyle displaystyle="true"><mml:mrow><mml:msub><mml:mo>∫</mml:mo><mml:mi mathvariant="script">B</mml:mi></mml:msub><mml:mrow><mml:msup><mml:mi>f</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mi>d</mml:mi><mml:mi>q</mml:mi><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mrow></mml:mstyle></mml:math></disp-formula>de modo que <italic>f</italic>′ é entendido como o jacobiano da transformação (<italic>v</italic>, <italic>p</italic>) → (<italic>θ</italic>, <italic>q</italic>) e portanto<disp-formula id="DM10"><label>(10)</label><mml:math display="block"><mml:mrow><mml:mfrac><mml:mrow><mml:mo>∂</mml:mo><mml:mi>q</mml:mi></mml:mrow><mml:mrow><mml:mo>∂</mml:mo><mml:mi>v</mml:mi></mml:mrow></mml:mfrac><mml:mfrac><mml:mrow><mml:mo>∂</mml:mo><mml:mi>θ</mml:mi></mml:mrow><mml:mrow><mml:mo>∂</mml:mo><mml:mi>p</mml:mi></mml:mrow></mml:mfrac><mml:mo>−</mml:mo><mml:mfrac><mml:mrow><mml:mo>∂</mml:mo><mml:mi>θ</mml:mi></mml:mrow><mml:mrow><mml:mo>∂</mml:mo><mml:mi>v</mml:mi></mml:mrow></mml:mfrac><mml:mfrac><mml:mrow><mml:mo>∂</mml:mo><mml:mi>p</mml:mi></mml:mrow><mml:mrow><mml:mo>∂</mml:mo><mml:mi>p</mml:mi></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mi>h</mml:mi><mml:mo>,</mml:mo></mml:mrow></mml:math></disp-formula>onde <italic>h</italic> = 1/<italic>f</italic>′ é uma função de <italic>θ</italic>.</p>
+      <p>A <xref ref-type="disp-formula" rid="DM10">equação (10)</xref> pode ser entendida como a equação fundamental da teoria de Carnot. A partir dela podemos determinar <italic>q</italic>(<italic>v</italic>, <italic>p</italic>) uma vez que se conheça <italic>θ</italic>(<italic>v</italic>, <italic>p</italic>). Por exemplo para um gás,<disp-formula id="DM11"><label>(11)</label><mml:math display="block"><mml:mrow><mml:mi>p</mml:mi><mml:mi>v</mml:mi><mml:mo>=</mml:mo><mml:mi>R</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:mi>θ</mml:mi><mml:mo>+</mml:mo><mml:mi>a</mml:mi><mml:mo stretchy="false">)</mml:mo><mml:mo>.</mml:mo></mml:mrow></mml:math></disp-formula>Carnot utilizou o valor <italic>a</italic> = 267 e Clapeyron o valor <italic>a</italic> = 273. Usando essa equação, obtemos<disp-formula id="DM12"><label>(12)</label><mml:math display="block"><mml:mi>v</mml:mi><mml:mfrac><mml:mrow><mml:mo>∂</mml:mo><mml:mi>q</mml:mi></mml:mrow><mml:mrow><mml:mo>∂</mml:mo><mml:mi>v</mml:mi></mml:mrow></mml:mfrac><mml:mo>−</mml:mo><mml:mi>p</mml:mi><mml:mfrac><mml:mrow><mml:mo>∂</mml:mo><mml:mi>q</mml:mi></mml:mrow><mml:mrow><mml:mo>∂</mml:mo><mml:mi>p</mml:mi></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mi>R</mml:mi><mml:mi>h</mml:mi><mml:mo>,</mml:mo></mml:math></disp-formula>que é a equação derivada por Clapeyron em seu artigo de 1834.</p>
+      <p>A função universal <italic>h</italic>, que Clapeyron chamou de <italic>C</italic>, possui um papel fundamental na teoria de Carnot. Em seu artigo de 1834, Clapeyron afirma que “ela é o lugar comum de todos os fenômenos que o calor produz em corpos sólidos, líquidos ou gasosos, seria desejável que experimentos de grande precisão, como as pesquisas sobre a propagação do som em gases realizados em temperaturas diferentes, tornassem essa função conhecida com toda a precisão desejável, serviria para determinar vários outros elementos importantes da teoria do calor”.</p>
+      <p>Considerando que <italic>h</italic> é função de <italic>θ</italic> e portanto que é uma função do produto <italic>pv</italic>, a <xref ref-type="disp-formula" rid="DM12">equação (12)</xref> pode ser integrada. O resultado é<disp-formula id="DM13"><label>(13)</label><mml:math display="block"><mml:mi>q</mml:mi><mml:mo>=</mml:mo><mml:mi>R</mml:mi><mml:mi>h</mml:mi><mml:mi>ln</mml:mi><mml:mfrac><mml:mi>v</mml:mi><mml:mrow><mml:msub><mml:mi>v</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>,</mml:mo></mml:math></disp-formula>onde <italic>v</italic><sub>0</sub> depende de <italic>θ</italic>. Carnot se refere a esse resultado nos seguintes termos. O calor absorvido ao longo de uma isoterma cresce em progressão aritmética quando o volume cresce em progressão geométrica (p. 52).</p>
+      <p>Em seguida escrevemos (<xref ref-type="disp-formula" rid="DM13">13</xref>) na forma<disp-formula id="DM14"><label>(14)</label><mml:math display="block"><mml:mi>q</mml:mi><mml:mo>=</mml:mo><mml:mi>g</mml:mi><mml:mn> </mml:mn><mml:msub><mml:mi>p</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:msub><mml:mi>v</mml:mi><mml:mn>0</mml:mn></mml:msub><mml:mi>ln</mml:mi><mml:mfrac><mml:mi>v</mml:mi><mml:mrow><mml:msub><mml:mi>v</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>,</mml:mo></mml:math></disp-formula>onde <italic>g</italic>(<italic>θ</italic>) = <italic>h</italic>(<italic>θ</italic>)/(<italic>θ</italic> + <italic>a</italic>) só depende de <italic>θ</italic>. Esse resultado nos diz que gases distintos consomem o mesmo calor quando percorrem uma isoterma se inicialmente possuem a mesma temperatura, o mesma pressão e o mesmo volume (p. 41–42). Observamos que para que isso seja viável é necessário que as massas dos gases sejam distintas.</p>
+      <p>Derivando (<xref ref-type="disp-formula" rid="DM13">13</xref>) a <italic>v</italic> constante, encontramos a capacidade térmica a <italic>v</italic> constante, definida por <italic>c</italic><sub><italic>v</italic></sub> = (<italic>dq</italic>/<italic>dθ</italic>)<sub><italic>v</italic>,</sub><disp-formula id="DM15"><label>(15)</label><mml:math display="block"><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mi>R</mml:mi><mml:msup><mml:mi>h</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mi>ln</mml:mi><mml:mfrac><mml:mi>v</mml:mi><mml:mrow><mml:msub><mml:mi>v</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>,</mml:mo></mml:math></disp-formula>onde <italic>h</italic>ʹ = <italic>dh</italic>/<italic>dθ</italic>, e derivando a mesma expressão a <italic>p</italic> constante, encontramos a capacidade térmica a <italic>p</italic> constante, definida por <italic>c</italic><sub><italic>p</italic></sub> = (<italic>dq</italic>/<italic>dθ</italic>)<sub><italic>p</italic>,</sub>,<disp-formula id="DM16"><label>(16)</label><mml:math display="block"><mml:msub><mml:mi>c</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mi>R</mml:mi><mml:msup><mml:mi>h</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mi>ln</mml:mi><mml:mfrac><mml:mi>v</mml:mi><mml:mrow><mml:msub><mml:mi>v</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>+</mml:mo><mml:mfrac><mml:mrow><mml:mi>R</mml:mi><mml:mi>h</mml:mi></mml:mrow><mml:mrow><mml:mi>θ</mml:mi><mml:mo>+</mml:mo><mml:mi>a</mml:mi></mml:mrow></mml:mfrac><mml:mo>.</mml:mo></mml:math></disp-formula>Quando o volume cresce em progressão geométrica, as capacidades térmicas crescem em progressão aritmética (p. 58). Esse resultado significa que, para uma determinada massa de gás, as capacidades térmicas dependem do volume, ou equivalentemente, dependem da densidade. Entretanto, a diferença delas, dada por<disp-formula id="DM17"><label>(17)</label><mml:math display="block"><mml:msub><mml:mi>c</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>−</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mi>R</mml:mi><mml:mi>h</mml:mi></mml:mrow><mml:mrow><mml:mi>θ</mml:mi><mml:mo>+</mml:mo><mml:mi>a</mml:mi></mml:mrow></mml:mfrac><mml:mo>,</mml:mo></mml:math></disp-formula>é independente do volume, ou seja, independente da densidade (p. 58).</p>
+      <p>Quando um gás se expande por uma variação Δ<italic>θ</italic> na temperatura, a variação de volume será proporcional a Δ<italic>θ</italic> para pequenos valores dessa variação. Se a expansão for feita a pressão constante, o volume original <italic>v</italic> se tornará <italic>v</italic>′ = <italic>v</italic> + <italic>vα</italic>Δ<italic>θ</italic>. Se a expansão for feita sem intervenção de calor, então o novo volume será <italic>v</italic>″ = <italic>v</italic> − <italic>vβ</italic>Δ<italic>θ</italic>. Para um gás, a equação de estado (<xref ref-type="disp-formula" rid="DM11">11</xref>) nos dá <italic>α</italic> = 1/(<italic>θ</italic> + <italic>a</italic>). Portanto a 0◦, <italic>α</italic> = 1/<italic>a</italic>, ou <italic>α</italic> = 1/267 que é o valor assumido por Carnot (p. 44). Quanto a <italic>β</italic>, Carnot assume o valor <italic>β</italic> = 1/116 obtido experimentalmente pela compressão súbita de um gás (p. 43). Carnot afirma que esse resultado é devido a Poisson e que esse valor concorda bem com os resultados de Clément e Desormes (p. 43).</p>
+      <p>Carnot argumenta (p. 42–45) que <italic>α</italic> e <italic>β</italic> estão relacionados com a razão entre as capacidades térmicas da seguinte forma<disp-formula id="DM18"><label>(18)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>−</mml:mo><mml:mfrac><mml:mi>α</mml:mi><mml:mi>β</mml:mi></mml:mfrac><mml:mo>.</mml:mo></mml:math></disp-formula>Usando os resultados numéricos Carnot chegou ao resultado (p. 45, 60)<disp-formula id="DM19"><label>(19)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mn>267</mml:mn><mml:mo>+</mml:mo><mml:mn>116</mml:mn></mml:mrow><mml:mrow><mml:mn>267</mml:mn></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mn>1</mml:mn><mml:mo>,</mml:mo><mml:mn>44</mml:mn><mml:mo>,</mml:mo></mml:math></disp-formula>e portanto próximo do valor 1,3748 obtido experimentalmente por Gay-Lussac e Welter, citados por Carnot (p. 59).</p>
+      <p>A identidade (<xref ref-type="disp-formula" rid="DM18">18</xref>) é demonstrada como segue. Começamos com a identidade<disp-formula id="DM20"><label>(20)</label><mml:math display="block"><mml:msub><mml:mfenced><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>q</mml:mi></mml:mrow><mml:mrow><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced><mml:mi>p</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mfenced><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>q</mml:mi></mml:mrow><mml:mrow><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced><mml:mi>v</mml:mi></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mfenced><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>q</mml:mi></mml:mrow><mml:mrow><mml:mi>d</mml:mi><mml:mi>v</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced><mml:mi>θ</mml:mi></mml:msub><mml:msub><mml:mfenced><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>v</mml:mi></mml:mrow><mml:mrow><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced><mml:mi>p</mml:mi></mml:msub><mml:mo>,</mml:mo></mml:math></disp-formula>de onde obtemos<disp-formula id="DM21"><label>(21)</label><mml:math display="block"><mml:msub><mml:mi>c</mml:mi><mml:mi>p</mml:mi></mml:msub><mml:mo>−</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub><mml:mfrac><mml:mrow><mml:msub><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>d</mml:mi><mml:mi>q</mml:mi><mml:mo>/</mml:mo><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mi>θ</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>d</mml:mi><mml:mi>q</mml:mi><mml:mo>/</mml:mo><mml:mi>d</mml:mi><mml:mi>θ</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mi>v</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:msub><mml:mfenced><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>v</mml:mi></mml:mrow><mml:mrow><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mfrac></mml:mrow></mml:mfenced><mml:mi>p</mml:mi></mml:msub><mml:mo>,</mml:mo></mml:math></disp-formula>que pode ser escrito como<disp-formula id="DM22"><label>(22)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:mo>−</mml:mo><mml:mn>1</mml:mn><mml:mo>=</mml:mo><mml:mo>−</mml:mo><mml:mfrac><mml:mrow><mml:msub><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo>/</mml:mo><mml:mi>d</mml:mi><mml:mi>θ</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mi>p</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo>/</mml:mo><mml:mi>d</mml:mi><mml:mi>θ</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mi>q</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:mo>.</mml:mo></mml:math></disp-formula>Mas <italic>α</italic> = (1/<italic>v</italic>)(<italic>dv</italic>/<italic>dθ</italic>)<sub><italic>p</italic></sub> e <italic>β</italic> = −(1/<italic>v</italic>)(<italic>dv</italic>/<italic>θ</italic>)<sub><italic>q</italic></sub> e chegamos ao resultado (<xref ref-type="disp-formula" rid="DM18">18</xref>). Vale a pena notar que a relação (<xref ref-type="disp-formula" rid="DM18">18</xref>) também é valida dentro do domínio da termodinâmica. Embora a teoria de Carnot e a termodinâmica nos levem a resultados distintos, genericamente falando, alguns resultados podem ser iguais como acontece com a relação (<xref ref-type="disp-formula" rid="DM18">18</xref>)e também com a relação<disp-formula id="DM23"><label>(23)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>p</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>c</mml:mi><mml:mi>v</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:msub><mml:mi>κ</mml:mi><mml:mi>T</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>κ</mml:mi><mml:mi>q</mml:mi></mml:msub></mml:mrow></mml:mfrac><mml:mo>,</mml:mo></mml:math></disp-formula>que envolve as compressibilidades <inline-formula id="ILM03"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>κ</mml:mi><mml:mi>T</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mo>−</mml:mo><mml:mo stretchy="false">(</mml:mo><mml:mn>1</mml:mn><mml:mo>/</mml:mo><mml:mi>v</mml:mi><mml:mo stretchy="false">)</mml:mo><mml:msub><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo>/</mml:mo><mml:mi>d</mml:mi><mml:mi>p</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mi>θ</mml:mi></mml:msub></mml:mrow></mml:math></inline-formula> e <inline-formula id="ILM04"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>κ</mml:mi><mml:mi>q</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mo>−</mml:mo><mml:mo stretchy="false">(</mml:mo><mml:mn>1</mml:mn><mml:mo>/</mml:mo><mml:mi>v</mml:mi><mml:mo stretchy="false">)</mml:mo><mml:msub><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo>/</mml:mo><mml:mi>d</mml:mi><mml:mi>p</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow><mml:mi>q</mml:mi></mml:msub></mml:mrow></mml:math></inline-formula>, conhecida muito antes do surgimento da termodinâmica.</p>
+      <p>Vamos considera um líquido em equilibrio com seu vapor e um ciclo de Carnot. Como há coexistência de fases, ao longo de um processo a temperatura constante, a pressão também é constante. Portanto o trabalho ao longo de uma isoterma é igual <italic>p</italic>(<italic>v</italic><sub><italic>g</italic></sub> − <italic>v</italic><sub><italic>l</italic></sub>) onde <italic>v</italic><sub><italic>g</italic></sub> e <italic>v</italic><sub><italic>l</italic></sub> são os volumes do vapor e do liquido. Portanto, considerando duas temperaturas próximas então <italic>dw</italic> = <italic>dp</italic>(<italic>v</italic><sub><italic>g</italic></sub> − <italic>v</italic><sub><italic>l</italic></sub>) que substituído em (<xref ref-type="disp-formula" rid="DM5">5</xref>)nos conduz ao resultado<disp-formula id="DM24"><label>(24)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>p</mml:mi></mml:mrow><mml:mrow><mml:mi>d</mml:mi><mml:mi>θ</mml:mi></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mi>q</mml:mi><mml:msup><mml:mi>f</mml:mi><mml:mo>′</mml:mo></mml:msup></mml:mrow><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>v</mml:mi><mml:mi>g</mml:mi></mml:msub><mml:mo>−</mml:mo><mml:msub><mml:mi>v</mml:mi><mml:mi>l</mml:mi></mml:msub><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mfrac></mml:math></disp-formula>que é a equação derivada por Clayperon [<xref ref-type="bibr" rid="b3">3</xref>]. Posteriormente essa equação foi modificada por Clausius dentro do âmbito da termodinâmica ficando conhecida como equação de Clausius-Clapeyron.</p>
+      <p>É interessante observar que a <xref ref-type="disp-formula" rid="DM9">equação (9)</xref> pode ser escrita na forma<disp-formula id="DM25"><label>(25)</label><mml:math display="block"><mml:mstyle displaystyle="true"><mml:mrow><mml:mo>∮</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>f</mml:mi><mml:mi>d</mml:mi><mml:mi>q</mml:mi><mml:mo>−</mml:mo><mml:mi>p</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow></mml:mstyle><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo></mml:math></disp-formula>onde o lado esquerdo é uma integral ao longo de um caminho fechado no diagrama (<italic>v</italic>, <italic>q</italic>). Portanto, a integral<disp-formula id="DM26"><label>(26)</label><mml:math display="block"><mml:mstyle displaystyle="true"><mml:mrow><mml:msub><mml:mo>∫</mml:mo><mml:mi>C</mml:mi></mml:msub><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>f</mml:mi><mml:mi>d</mml:mi><mml:mi>q</mml:mi><mml:mo>−</mml:mo><mml:mi>p</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow></mml:mstyle><mml:mo>,</mml:mo></mml:math></disp-formula>entre dois pontos do diagrama (<italic>v</italic>, <italic>q</italic>) é independente do caminho o que significa que podemos definir uma grandeza <italic>ϕ</italic> tal que<disp-formula id="DM27"><label>(27)</label><mml:math display="block"><mml:mi>d</mml:mi><mml:mi>ϕ</mml:mi><mml:mo>=</mml:mo><mml:mi>f</mml:mi><mml:mi>d</mml:mi><mml:mi>q</mml:mi><mml:mo>−</mml:mo><mml:mi>p</mml:mi><mml:mi>d</mml:mi><mml:mi>v</mml:mi><mml:mo>,</mml:mo></mml:math></disp-formula>ou em outros termos, <italic>fdq</italic> − <italic>pdv</italic> é um diferencial exato. Embora <italic>pdv</italic> seja o trabalho infinitesimal, <italic>fdq</italic> não é o calor infinitesimal já que o calor infinitesimal é <italic>dq</italic>.</p>
+    </sec>
+    <sec id="S3">
+      <title>3. Entropia e Segunda Lei da Termodinâmica</title>
+      <p>O princípio de Carnot foi utilizado por Clausius na formulação da segunda lei da termodinâmica, apresentada nos seus trabalhos sobre a teoria mecânica do calor, publicadas a partir de 1850 [<xref ref-type="bibr" rid="b4">4</xref>–<xref ref-type="bibr" rid="b6">6</xref>]. Para entender de que forma isso foi feito por Clausius, enunciamos o princípio de Carnot em duas partes:</p>
+      <disp-quote>
+        <list list-type="order">
+          <list-item>
+            <p>Um corpo realiza trabalho recebendo do exterior uma quantidade de calor e liberando ao exterior a mesma quantidade de calor.</p>
+          </list-item>
+          <list-item>
+            <p>A razão entre o trabalho mecânico realizado pelo corpo e o calor recebido depende apenas das duas temperaturas e é independente da natureza do corpo que realiza o trabalho.</p>
+          </list-item>
+        </list>
+      </disp-quote>
+      <p>A primeira parte é incompatível com a conservação da energia estabelecida por Mayer e Joule durante a década de 1840. Clausius rejeitou a parte 1 e manteve a parte 2. Em outros termos, Clausius interpretou o calor envolvido, que aparece no enunciado original de Carnot, apenas como o calor recebido. Dessa forma, Clausius pode afirmar que o calor cedido é diferente do recebido e é tal que a diferença deles é igual ao trabalho realizado, em acordo com a conservação da energia.</p>
+      <p>Utilizando o processo cíclico de Carnot, a conservação da energia é traduzida na seguinte forma. Uma certa quantidade de calor <italic>Q</italic><sub>1</sub> é recebido pelo corpo que sofre o ciclo de um corpo A que se encontra à temperatura <italic>θ</italic><sub>1</sub>. Parte dele se transforma em trabalho <italic>W</italic> e a parte restante <inline-formula id="ILM06"><mml:math display="inline"><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub></mml:math></inline-formula> é transferida a um corpo B à temperatura <italic>θ</italic><sub>2</sub>. A conservação da energia se escreve portanto<disp-formula id="DM28"><label>(28)</label><mml:math display="block"><mml:mi>W</mml:mi><mml:mo>=</mml:mo><mml:msub><mml:mi>Q</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>−</mml:mo><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub><mml:mo>.</mml:mo></mml:math></disp-formula>Tendo rejeitado a primeira parte do princípio de Carnot e mantido a segunda forma, isso equivale substituir <italic>q</italic> na expressão (<xref ref-type="disp-formula" rid="DM1">1</xref>) pelo calor introduzido <italic>Q</italic><sub>1</sub>, que adquire a forma<disp-formula id="DM29"><label>(29)</label><mml:math display="block"><mml:mfrac><mml:mi>W</mml:mi><mml:mrow><mml:msub><mml:mi>Q</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mi>F</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>.</mml:mo></mml:math></disp-formula>Substituindo (<xref ref-type="disp-formula" rid="DM28">28</xref>) nessa expressão, ela se transforma em<disp-formula id="DM30"><label>(30)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>Q</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>,</mml:mo></mml:math></disp-formula>onde <italic>f</italic> = 1 − <italic>F</italic> e depende apenas de <italic>θ</italic><sub>1</sub> e <italic>θ</italic><sub>2</sub>.</p>
+      <p>Se considerarmos um segundo ciclo de carnot nas temperaturas <italic>θ</italic><sub>2</sub> e <italic>θ</italic><sub>3</sub>, e denotarmos por <inline-formula id="ILM07"><mml:math display="inline"><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>3</mml:mn></mml:msub></mml:math></inline-formula> o calor cedido, então <inline-formula id="ILM08"><mml:math display="inline"><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>3</mml:mn></mml:msub><mml:mo>/</mml:mo><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub><mml:mo>=</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo></mml:math></inline-formula>. Se considerarmos um terceiro ciclo composto pelos dois primeiros, então <inline-formula id="ILM09"><mml:math display="inline"><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>3</mml:mn></mml:msub><mml:mo>/</mml:mo><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>1</mml:mn></mml:msub><mml:mo>=</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo></mml:math></inline-formula>. Como <inline-formula id="ILM11"><mml:math display="inline"><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>3</mml:mn></mml:msub><mml:mo>/</mml:mo><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>1</mml:mn></mml:msub><mml:mo>=</mml:mo><mml:mfenced><mml:mrow><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>3</mml:mn></mml:msub><mml:mo>/</mml:mo><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub></mml:mrow></mml:mfenced><mml:mfenced><mml:mrow><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub><mml:mo>/</mml:mo><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfenced></mml:math></inline-formula> então<disp-formula id="DM31"><label>(31)</label><mml:math display="block"><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>=</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mi>f</mml:mi><mml:mo stretchy="false">(</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>,</mml:mo><mml:msub><mml:mi>θ</mml:mi><mml:mn>3</mml:mn></mml:msub><mml:mo stretchy="false">)</mml:mo><mml:mo>.</mml:mo></mml:math></disp-formula>A partir dessa expressão percebemos que a função <italic>f</italic> possui a forma <italic>f</italic>(<italic>θ</italic><sub>1</sub>, <italic>θ</italic><sub>2</sub>) = <italic>ϕ</italic>(<italic>θ</italic><sub>2</sub>)/<italic>ϕ</italic>(<italic>θ</italic><sub>1</sub>), onde <italic>ϕ</italic>(<italic>θ</italic>) depende apenas de <italic>θ</italic>. Definido <italic>T</italic> = <italic>ϕ</italic>(<italic>θ</italic>), podemos escrever<disp-formula id="DM32"><label>(32)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>Q</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:msub><mml:mi>T</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>T</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>.</mml:mo></mml:math></disp-formula>Colocando <inline-formula id="ILM10"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>Q</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>=</mml:mo><mml:mo>−</mml:mo><mml:msub><mml:msup><mml:mi>Q</mml:mi><mml:mo>′</mml:mo></mml:msup><mml:mn>2</mml:mn></mml:msub></mml:mrow></mml:math></inline-formula>, então<disp-formula id="DM33"><label>(33)</label><mml:math display="block"><mml:mfrac><mml:mrow><mml:msub><mml:mi>Q</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>T</mml:mi><mml:mn>1</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>+</mml:mo><mml:mfrac><mml:mrow><mml:msub><mml:mi>Q</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>T</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:mrow></mml:mfrac><mml:mo>=</mml:mo><mml:mn>0</mml:mn></mml:math></disp-formula>Considerando um processo cíclico qualquer aproximado por vários ciclos de Carnot, então essa relação se escreve<disp-formula id="DM34"><label>(34)</label><mml:math display="block"><mml:mstyle displaystyle="true"><mml:munder><mml:mo>∑</mml:mo><mml:mi>i</mml:mi></mml:munder><mml:mrow><mml:mfrac><mml:mrow><mml:msub><mml:mi>Q</mml:mi><mml:mi>i</mml:mi></mml:msub></mml:mrow><mml:mrow><mml:msub><mml:mi>T</mml:mi><mml:mi>i</mml:mi></mml:msub></mml:mrow></mml:mfrac></mml:mrow></mml:mstyle><mml:mo>=</mml:mo><mml:mn>0</mml:mn><mml:mo>,</mml:mo></mml:math></disp-formula>ou no limite em que os calores trocados são infinitesimais,<disp-formula id="DM35"><label>(35)</label><mml:math display="block"><mml:mstyle displaystyle="true"><mml:mrow><mml:mo>∮</mml:mo><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>Q</mml:mi></mml:mrow><mml:mi>T</mml:mi></mml:mfrac></mml:mrow></mml:mrow></mml:mstyle><mml:mo>=</mml:mo><mml:mn>0.</mml:mn></mml:math></disp-formula>Essa integral fechada significa que <italic>dQ</italic>/<italic>T</italic> = <italic>dS</italic> é um diferencial exato e portanto existe uma função de estado <italic>S</italic> que Clausius chama de entropia. Se consideramos um processo qualquer, a variação de entropia é dada por<disp-formula id="DM36"><label>(36)</label><mml:math display="block"><mml:mi>Δ</mml:mi><mml:mi>S</mml:mi><mml:mo>=</mml:mo><mml:mstyle displaystyle="true"><mml:mrow><mml:mo>∫</mml:mo><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>Q</mml:mi></mml:mrow><mml:mi>T</mml:mi></mml:mfrac></mml:mrow></mml:mrow></mml:mstyle><mml:mo>,</mml:mo></mml:math></disp-formula>e é independente do caminho.</p>
+      <p>Nas expressões (<xref ref-type="disp-formula" rid="DM35">35</xref>) e (<xref ref-type="disp-formula" rid="DM36">36</xref>) a temperatura <italic>T</italic> é a temperatura do corpo que é igual à temperatura do ambiente com o qual o corpo troca calor. Isto é, o processo ocorre de tal forma que em qualquer instante o corpo possui a mesma temperatura que o ambiente. Entretanto, em geral, as temperaturas são diferentes. Em seu livro, Carnot comenta que é necessário que as diferenças de temperaturas sejam as menores possíveis para extrair o máximo trabalho possível. Vamos supor que a temperatura do ambiente seja <italic>T</italic>′. Para que uma quantidade de calor entre no corpo é necessário que <italic>T</italic>′ ≥ <italic>T</italic>, o que nos conduz ao resultado<disp-formula id="DM37"><label>(37)</label><mml:math display="block"><mml:mi>d</mml:mi><mml:mi>S</mml:mi><mml:mo>=</mml:mo><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>Q</mml:mi></mml:mrow><mml:mi>T</mml:mi></mml:mfrac><mml:mo>≥</mml:mo><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>Q</mml:mi></mml:mrow><mml:msup><mml:mi>T</mml:mi><mml:mo>′</mml:mo></mml:msup></mml:mfrac><mml:mo>,</mml:mo></mml:math></disp-formula>que pode ser entendido como a expressão da segunda lei da termodinâmica na forma diferencial. Integrando ao longo de um processo obtemos<disp-formula id="DM38"><label>(38)</label><mml:math display="block"><mml:mi>Δ</mml:mi><mml:mi>S</mml:mi><mml:mo>=</mml:mo><mml:mstyle displaystyle="true"><mml:mrow><mml:mo>∫</mml:mo><mml:mrow><mml:mfrac><mml:mrow><mml:mi>d</mml:mi><mml:mi>Q</mml:mi></mml:mrow><mml:msup><mml:mi>T</mml:mi><mml:mo>′</mml:mo></mml:msup></mml:mfrac></mml:mrow></mml:mrow></mml:mstyle><mml:mo>,</mml:mo></mml:math></disp-formula>que é a expressão da segunda lei da termodinâmica na formulação dada por Clausius na forma integrada.</p>
+    </sec>
+    <sec id="S4">
+      <title>4. Livro</title>
+      <p>A página de rosto das <italic>Réflexions</italic> de Carnot pode ser vista na <xref ref-type="fig" rid="F1">Figura 1</xref>. O termo <italic>puissance motrice</italic>, que significa trabalho, foi usado de forma excepcional por Carnot já que os termos mais comuns eram por exemplo <italic>force motrice</italic> e <italic>quantité d’action</italic>, O termo <italic>travail</italic> foi introduzido por Coriolis em 1829. Embora Clapeyron tenha escrito <italic>puissance motrice</italic> no titulo de seu artigo de 1834 [<xref ref-type="bibr" rid="b3">3</xref>], o termo empregado por ele no interior do artigo para trabalho é <italic>quantité d’action</italic>.</p>
+      <p>A teoria do calor apresentada nas <italic>Réflexions</italic> é singular entre aquelas surgidas durante o período em que prevaleceu a teoria do calórico e portanto antes do aparecimento da teoria mecânica do calor de Clausius. Apesar da singularidade e da relevância da teoria proposta por Carnot, seu livro recebeu pouca atenção nas duas décadas subsequentes à publicação. A exceção significativa se deve a Clapeyron que se baseou na teoria de Carnot para escrever seu artigo de 1834 [<xref ref-type="bibr" rid="b3">3</xref>], e se refere explicitamente ao livro de Carnot.</p>
+      <fig id="F1" position="float">
+        <label>Figura 1</label>
+        <caption>
+          <title>Página de rosto da edição de 1824 das <italic>Réflexions</italic> de Sadi Carnot.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/2c9fd5ac04b4016a22353af3daed963dc1a15b6d.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/b5556bfdc32b6735a7cb3e7f94977738ae1150a0.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>O artigo de Clapeyron foi traduzido para inglês em 1837 [<xref ref-type="bibr" rid="b7">7</xref>] e parcialmente para o alemão em 1843 [<xref ref-type="bibr" rid="b8">8</xref>]. No prefácio à tradução alemã o editor esclarece que o artigo recebeu pouca atenção mas que está sendo publicado pela sua importância. Em seu livro sobre o calor e a elasticidade do gases de 1845 [<xref ref-type="bibr" rid="b9">9</xref>], Holtzmann cita o artigo de Clapeyron e diz no prefácio que o artigo se baseia no trabalho de Carnot mas que não conseguiu obter uma cópia do livro dele.</p>
+      <p>Em 1848, Thomson publicou um artigo [<xref ref-type="bibr" rid="b10">10</xref>] sobre a escala absoluta de temperatura tendo como fundamento a teoria de Carnot. Afirmou nesse artigo que não encontrou o livro original de Carnot mas chegou ao seu conteúdo através do artigo de Clapeyron, que conheceu em 1845 durante o período que passou no laboratório de Regnault. Mas, em artigo de 1849 [<xref ref-type="bibr" rid="b11">11</xref>] sobre a teoria de Carnot, Kelvin já faz referência direta ao livro de Carnot.</p>
+      <p>Clausius também se refere a Carnot em seu artigo sobre a teoria do calor de 1850 [<xref ref-type="bibr" rid="b4">4</xref>]dizendo que não conseguiu encontrar uma cópia do livro e que se tornou familiarizado com as ideias de Carnot através dos trabalhos de Clapeyron e Thomson. Em artigo de 1863 [<xref ref-type="bibr" rid="b12">12</xref>], Clausius se refere aos resultados de Carnot citando explicitamente o livro dele.</p>
+      <p>O tratado de Carnot apareceu mais tarde nos Annales Scientifiques de l’École Normale Supérieure em 1872 [<xref ref-type="bibr" rid="b13">13</xref>]. Esse texto foi utilizado na publicação de 1878 [<xref ref-type="bibr" rid="b14">14</xref>]que continha ainda três suplementos. O primeiro é uma carta de seu irmão Hippolyte Carnot, senador da república, endereçada à Academia de Ciências e ao presidente da republica, François Sadi Carnot, sobrinho de Carnot e filho de Hippolyte. O segundo são notas biográficas sobre Carnot escrita por Hyppolyte e o terceiro é um extrato das notas manuscritas de Carnot precedida por um fac-simile dessas notas relativas ao equivalente mecânico do calor. O livro contém ainda a reprodução do retrato de Carnot com 17 anos em uniforme da École Polytechnique, como se vê na <xref ref-type="fig" rid="F2">Figura 2</xref>.</p>
+      <fig id="F2" position="float">
+        <label>Figura 2</label>
+        <caption>
+          <title>Sadi Carnot com 17 anos em uniforme da École Polytechnique, de acordo com um retrato pintado por Boilly em 1813, constante da edição de 1878 das <italic>Réflexions</italic>.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/a55ddcc780477a12e7d0e0af13ba17135baef57b.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/97193d4e3e23c722cba5a98f5c216f245b8f58ed.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Há uma edição de 1903 [<xref ref-type="bibr" rid="b15">15</xref>] que reproduz de forma fac-similar o texto de 1824 e é suplementada por uma reprodução de uma folha das notas manuscritas de Carnot referente ao equivalente mecânica do caor. A edição de 1953 [<xref ref-type="bibr" rid="b16">16</xref>] também é uma reprodução facsimilar do texto de 1824 e possui como apêndice a carta de Hippolyte Carnot e manuscritos científicos de Carnot. Em 1978, uma edição crítica do texto francês de 1824 foi publicada por Fox [<xref ref-type="bibr" rid="b17">17</xref>] contendo documentos e diversos manuscritos de Carnot. Essa edição contém ainda a reprodução de um retrato de Carnot de 1830 por Despois, como se vê na <xref ref-type="fig" rid="F3">Figura 3</xref>.</p>
+      <fig id="F3" position="float">
+        <label>Figura 3</label>
+        <caption>
+          <title>Retrato de Sadi Carnot pintado por Despois em 1830, contida na edição crítica de 1978.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/c64658c8081a3f8022ca561fe145676ef3385fd3.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/51329aaa0af67d13b4035c8532d2ba4409e5bac5.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>A tradução para inglês do livro de Carnot foi publicada em 1890 [<xref ref-type="bibr" rid="b18">18</xref>] e em segunda edição em 1897 [<xref ref-type="bibr" rid="b19">19</xref>]. Essa segunda edição contém ainda o artigo de Kelvin de 1849 [<xref ref-type="bibr" rid="b11">11</xref>] sobre a teoria de Carnot. Há ainda uma outra tradução para o inglês publicada em 1899 [<xref ref-type="bibr" rid="b20">20</xref>], que contém também a versão em inglês do artigo de Clausius de 1850 [<xref ref-type="bibr" rid="b4">4</xref>]e um artigo de Kelvin de 1853 [<xref ref-type="bibr" rid="b21">21</xref>]. Outra edição em inglês ocorreu em 1943 [<xref ref-type="bibr" rid="b22">22</xref>]. Vale a pena destacar ainda a publicação de 1960 [<xref ref-type="bibr" rid="b23">23</xref>] que além da tradução para o inglês do livro de Carnot, contém ainda a traduções para inglês do artigo de Clapeyron de 1834 [<xref ref-type="bibr" rid="b3">3</xref>] e do artigo de Clausius de 1850 [<xref ref-type="bibr" rid="b4">4</xref>]. Em 1986 apareceu a tradução para o inglês da edição critica de Fox menciondada acima [<xref ref-type="bibr" rid="b24">24</xref>].</p>
+      <p>A tradução do livro de Carnot para o alemão foi feita por Ostwald e publicado em 1892 [<xref ref-type="bibr" rid="b25">25</xref>]como o número 37 da coleção <italic>Ostwald’s Klassiker der Exakten Wissenschaften</italic> (Os clássicos das ciências exatas de Ostwald). A tradução para o russo ocorreu em 1923 [<xref ref-type="bibr" rid="b26">26</xref>]. Há uma tradução para o espanhol de 1927 [<xref ref-type="bibr" rid="b27">27</xref>]e outra de 1987 [<xref ref-type="bibr" rid="b28">28</xref>]. Em 1992 apareceu a edição em lingua italiana [<xref ref-type="bibr" rid="b29">29</xref>].</p>
+    </sec>
+    <sec id="S5">
+      <title>5. Tradução do Texto</title>
+      <p>[Calor como causa do movimento]</p>
+      <p>p. 1–2</p>
+      <p>Ninguém ignora que o calor pode ser a causa do movimento, que tem mesmo uma grande potência motriz: as máquinas a vapor, hoje tão difundidas, são uma prova clara disso à vista de todos.</p>
+      <p>É ao calor que devem ser atribuídos os grandes movimentos que atingem o nosso olhar sobre a terra; é a ele que se devem as agitações da atmosfera, a ascensão das nuvens, a queda das chuvas e de outros meteoros, as correntes de água que cruzam a superfície do globo e que o homem conseguiu utilizar uma pequena parte para seu uso, finalmente, os terremotos e as erupções vulcânicas também reconhecem o calor como a causa.</p>
+      <p>É desse imenso reservatório que podemos extrair a potência motriz necessária às nossas necessidades; a natureza, ao fornecer-nos combustível por toda parte, deu-nos a capacidade de gerar calor e a potência motriz que dele resulta, a todo tempo e em qualquer lugar. Desenvolver essa potência, apropriando-se dela para nosso uso, tal é o objetivo das máquinas térmicas.</p>
+      <p>[Máquinas térmicas]</p>
+      <p>p. 2–6</p>
+      <p>O estudo destas máquinas é do maior interesse, a sua importância é imensa, a sua utilização aumenta a cada dia; elas parecem destinadas a produzir uma grande revolução no mundo civilizado.</p>
+      <p>Já a máquina térmica explora as nossas minas, movimenta nossos navios, escava nossos portos e nossos rios, forja o ferro, molda a madeira, tritura grãos, fia e torce nossos tecidos, transporta as cargas mais pesadas, etc.; parece que um dia servirá como motor universal e terá preferência sobre a força dos animais, das quedas d’água e do vento. Tem sobre o primeiro destes motores a vantagem da economia; sobre os outros dois, a vantagem inestimável de poder trabalhar a qualquer hora e em qualquer lugar e de nunca sofrer interrupções no trabalho.</p>
+      <p>Se um dia as melhorias na máquina térmica se estenderem o suficiente para torná-la barata em termos de instalação e de combustível, ela reunirá todas as qualidades desejáveis e dará às artes industriais um avanço cuja extensão seria difícil de prever.</p>
+      <p>De fato, um motor potente e cômodo, que pode ser obtido ou transportado para qualquer lugar, não só substitui os motores já em uso, como faz com que as artes onde é aplicado assumam uma rápida expansão, podendo até mesmo criar artes inteiramente novas.</p>
+      <p>O serviço mais notável que a máquina térmica prestou à Inglaterra foi, sem dúvida, ter reavivado a exploração das suas minas de carvão, que se tinham definhado e que ameaçavam desaparecer completamente devido à dificuldade cada vez maior de extração de combustível. Devemos colocar em segundo plano os serviços prestados à fabricação do ferro, tanto pelo carvão, oferecido em abundância e em substituição à madeira na época em que esta começava a esgotar-se, como por poderosas máquinas de todos os tipos, das quais o uso da máquina térmica permitiu ou facilitou o uso.</p>
+      <p>O ferro e o fogo são, como sabemos, os alimentos e suportes das artes mecânicas. Talvez não exista um estabelecimento industrial na Inglaterra cuja existência não se baseie na utilização destes agentes e que não os utilize profusamente. Tirar as máquinas a vapor da Inglaterra seria hoje tirar tanto o carvão quanto o ferro; secaria todas as suas fontes de riqueza, arruinaria todos os seus meios de prosperidade; isso aniquilaria esse poder colossal. A destruição da sua marinha, que considera o seu maior apoio, talvez lhe fosse menos funesta.</p>
+      <p>A navegação segura e rápida de navios a vapor pode ser considerada uma arte inteiramente nova devido às máquinas térmicas. Esta arte já permitiu estabelecer comunicações rápidas e regulares nos braços do mar, nos grandes rios do velho e do novo continente. Possibilitou viajar por regiões ainda selvagens, onde antes mal se conseguia penetrar; permitiu que os frutos da civilização fossem levados a lugares do globo onde seriam esperados por muitos mais anos. A navegação por máquinas térmicas aproxima de alguma forma as nações mais distantes; tende a unir os povos da terra como se vivessem no mesmo país. Na verdade, reduzir o tempo, o cansaço, as incertezas e os perigos das viagens não significa reduzir muito as distâncias?</p>
+      <p>A descoberta das máquinas térmicas deve, como a maioria das invenções humanas, o seu nascimento a ensaios quase informais, ensaios que foram atribuídos a várias pessoas e cujo verdadeiro autor não é bem conhecido. Aliás, é menos nesses primeiros ensaios que consiste a principal descoberta do que nos sucessivos melhoramentos que levaram as máquinas térmicas ao estado em que as vemos hoje. Há quase tanta distância entre os primeiros dispositivos onde se desenvolveu a força expansiva do vapor e as máquinas atuais como entre a primeira jangada que os homens formaram e a embarcação de alto bordo.</p>
+      <p>Se a honra de uma descoberta pertence à nação onde ela adquiriu todo o seu crescimento, todos os seus desenvolvimentos, esta honra não pode ser recusada aqui à Inglaterra: Savery, Newcomen, Smeaton, o famoso Watt, Woolf, Trevithick e alguns outros engenheiros ingleses são os verdadeiros criadores da máquina térmica; ela adquiriu em suas mãos todos os seus sucessivos graus de aperfeiçoamento. É natural, aliás, que uma invenção nasça e, sobretudo, se desenvolva e se aperfeiçoe onde a necessidade é mais urgente.</p>
+      <p>[Limite da potência motriz]</p>
+      <p>p. 6–7</p>
+      <p>Apesar dos trabalhos de todos os tipos realizados pelas máquinas térmicas, apesar do estado satisfatório que alcançaram hoje, a sua teoria está muito pouco avançada e as tentativas de melhoramento delas ainda são dirigidas quase ao acaso.</p>
+      <p>A questão de saber se a potência motriz do calor é limitada ou ilimitada tem sido frequentemente levantada; se as eventuais melhorias das máquinas térmicas tem um limite que a natureza das coisas impede de ser ultrapassado por qualquer meio, ou se, pelo contrário, essas melhorias são susceptíveis de extensão indefinida. Também procuramos durante muito tempo, e ainda procuramos hoje, se não existiriam agentes preferíveis ao vapor de água para desenvolver a potência motriz do calor; se o ar atmosférico, por exemplo, não apresentaria grandes vantagens nesse aspecto. Propomos aqui submeter essas questões a um exame cuidadoso.</p>
+      <p>[Diferença de temperaturas]</p>
+      <p>p. 10–12</p>
+      <p>A produção de potência motriz deve-se, portanto, nas máquinas a vapor, não a um consumo real do calórico, <italic>mas ao seu transporte de um corpo quente para um corpo frio</italic>, ou seja, à restauração do equilíbrio, equilíbrio que se supõe ter sido quebrado por qualquer causa, por uma ação química como combustão, ou por qualquer outra. Veremos em breve que esse princípio é aplicável a qualquer máquina operada colocada em movimento pelo calor.</p>
+      <p>Segundo esse princípio, não basta, para dar origem à potência motriz, produzir calor: é também necessário ter o frio; sem ele o calor seria inútil. E, de fato, se ao nosso redor apenas encontrássemos corpos tão quentes quanto as fornalhas, como conseguiríamos condensar o vapor?onde o colocaríamos depois de produzi-lo? Não poderíamos libertá-lo para a atmosfera, como acontece em certas máquinas: a atmosfera não o receberia. Só o recebe, no estado atual das coisas, porque ela cumpre a função de um vasto condensador, porque está a uma temperatura menor: caso contrário, logo ficaria repleto dele, ou melhor, já estaria saturado.</p>
+      <p>[Trabalho máximo]</p>
+      <p>p. 20–22</p>
+      <p>Ora, se existissem meios de utilizar o calor preferíveis aos que utilizamos, isto é, se fosse possível, por qualquer método, fazer com que o calórico produzisse uma quantidade de potência motriz superior à que fizemos através da nossa primeira série de operações, bastaria desviar uma parte dessa potência para elevar, pelo método que acabamos de indicar, o calórico do corpo B ao corpo A, do condensador para a fornalha, para restaurar ao estado inicial e assim poder reiniciar uma operação inteiramente semelhante à primeira e assim por diante: isso seria, não apenas um movimento perpétuo, mas uma criação indefinida de potência motriz sem consumo de calórico ou qualquer outro agente. Tal criação é completamente contrária às ideias concebidas até agora, às leis da mecânica e da física sensata; é inadmissível. Devemos, portanto, concluir que <italic>a potência motriz máxima resultante do uso do vapor é também a potência motriz máxima alcançável por qualquer meio</italic>. Em breve daremos uma segunda prova mais rigorosa desse teorema. Isso deve ser considerado apenas uma visão geral. (V. pag. 29).</p>
+      <p>[Restauração do equilíbrio]</p>
+      <p>p. 23–24</p>
+      <p>Dado que qualquer restauração do equilíbrio do calórico pode ser a causa da produção de potência motriz, qualquer restauração do equilíbrio que ocorra sem a produção dessa potência deve ser considerada uma perda real. No entanto, pensando melhor, perceberemos que qualquer mudança de temperatura que não seja devida a uma mudança no volume dos corpos só pode ser um inútil restabelecimento do equilíbrio calórico. A condição necessária do máximo é, portanto, <italic>que não ocorra nenhuma mudança de temperatura nos corpos usados para produzir a potência motriz do calor que não seja devida a uma mudança de volume</italic>. Reciprocamente, sempre que essa condição for atendida, o máximo será alcançado.</p>
+      <p>Esse princípio nunca deve ser perdido de vista na construção de máquinas térmicas;é a sua base fundamental. Se ele não puder ser estritamente observado, devemos pelo menos desviar-nos dele o menos possível.</p>
+      <p>Qualquer mudança na temperatura que não seja devida a uma mudança no volume ou a uma ação química (uma ação que provisoriamente admitimos não ser encontrada aqui) á necessariamente devida à passagem direta do calórico de um corpo mais quente para um corpo mais frio. Essa passagem ocorre principalmente pelo contato de corpos de temperaturas diferentes: portanto, tal contato deve ser evitado tanto quanto possível. Ele não se pode evitar completamente, sem dúvida; mas é pelo menos necessário garantir que as diferenças de temperatura dos corpos colocados em contato uns com os outros sejam as menores possíveis.</p>
+      <p>[Analogia com queda d’água]</p>
+      <p>p. 28–29</p>
+      <p>De acordo com as noções até agora estabelecidas, podemos comparar com bastante precisão a potência motriz do calor com a queda d’água: ambas têm um máximo que não podemos ultrapassar, seja qual for, por um lado, a máquina utilizada para receber a ação da água, e qualquer que seja, por outro lado, a substância utilizada para receber a ação do calor. A potência motriz de uma queda d’água depende da sua altura e da quantidade de líquido; a potência motriz do calor também depende da quantidade de calor utilizado, e do que poderíamos chamar, e que de fato chamaremos de altura de sua queda, ou seja, da diferença de temperatura dos corpos entre os quais o ocorre a troca do calórico. Na queda d’água, a potência motriz é estritamente proporcional à diferença de nível entre o reservatório superior e o reservatório inferior. Na queda do calórico, a potência motriz aumenta sem dúvida com a diferença de temperatura entre o corpo quente e o corpo frio; mas não sabemos se é proporcional a essa diferença. Não sabemos, por exemplo, se a queda do calórico de 100° para 50° proporciona mais ou menos potência motriz do que a queda do mesmo calórico de 50° para 0°. Essa é uma questão que pretendemos examinar mais tarde.</p>
+      <p>[Expansão e compressão adiabáticas]</p>
+      <p>p. 29–30</p>
+      <p>Daremos aqui uma segunda demonstração da proposição fundamental firmada na p. 22, e apresentamos essa proposição de uma forma mais geral do que fizemos acima.</p>
+      <p>Quando um fluido gasoso é rapidamente comprimido, a sua temperatura aumenta; ao contrário, ela diminui quando ele é rapidamente dilatado. Esse é um dos fatos mais bem estabelecidos pela experiência e será usado base da nossa demonstração <xref ref-type="fn" rid="footnote1">(1)</xref>.</p>
+      <p>[Ciclo de Carnot]</p>
+      <p>p. 32–34</p>
+      <p>Estabelecida essa noção preliminar, imaginemos um fluido elástico, por exemplo o ar atmosférico, encerrado num recipiente cilíndrico <italic>abcd</italic>, <xref ref-type="fig" rid="F4">Fig. 4</xref>, equipado com diafragma móvel ou pistão <italic>cd</italic> Sejam ainda dois corpos A, B, cada um mantido a uma temperatura constante, sendo a de A superior a de B. Imaginemos agora a sequência de operações descritas como segue:</p>
+      <fig id="F4" position="float">
+        <label>Figura 4</label>
+        <caption>
+          <title>Figura da edição de 1824 das <italic>Réflexions</italic> mostrando as etapas do ciclo inventado por Carnot: 1) <italic>cd</italic>, posição inicial do pistão; 2) <italic>cd</italic> → <italic>ef</italic>, expansão em contato com o corpo A; 3) <italic>ef</italic> → <italic>gh</italic>, expansão em isolamento, a temperatura cai; 4) <italic>gh</italic> → <italic>cd</italic>, compressão em contato com B; 5) <italic>cd</italic> → <italic>ik</italic>, compressão em isolamento, a temperatura sobe; 6) <italic>ik</italic> → <italic>cd</italic> → <italic>ef</italic>, expansão em contato com o corpo A.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/d71ecbd9f475449336924c3ba9697680437ea07d.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/JVcMmDRwZZ5WYSw95fVJgCn/d2159c6c69ae491c94e748f9a85e0d0601ac5a49.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <list list-type="order">
+        <list-item>
+          <p>Contato do corpo A com o ar contido no espaço <italic>abcd</italic>, ou com a parede desse espaço, parede que supomos transmitir facilmente o calórico. Por esse contato o ar se encontra na mesma temperatura do corpo A;<italic>cd</italic> é a posição atual do pistão.</p>
+        </list-item>
+        <list-item>
+          <p>O pistão sobe gradualmente e assume a posição <italic>ef</italic>. O contato com o corpo A mantém a temperatura do ar constante durante a rarefação. O corpo A fornece o calórico necessário para manter a temperatura constante.</p>
+        </list-item>
+        <list-item>
+          <p>O corpo A é removido e o ar não está mais em contato com nenhum corpo capaz de lhe fornecer calórico; o pistão, enquanto isso, continua a se mover e passa da posição <italic>ef</italic> para a posição <italic>gh</italic>. O ar fica rarefeito sem receber calórico e sua temperatura cai. Imaginemos que ela caia até ficar igual ao do corpo B: nesse momento o pistão para e ocupa a posição <italic>gh</italic>.</p>
+        </list-item>
+        <list-item>
+          <p>O ar entra em contato com o corpo B; é comprimido pelo retorno do pistão, que é trazido de volta da posição <italic>gh</italic> para a posição <italic>cd</italic>. Esse ar, porém, permanece a uma temperatura constante, devido ao seu contato com o corpo B, para o qual transfere seu calórico.</p>
+        </list-item>
+        <list-item>
+          <p>O corpo B é removido e a compressão do ar continua, e encontrando-se isolado, tem sua temperatura aumentada. A compressão continua até que o ar adquira a temperatura do corpo A. O pistão passa durante esse tempo da posição <italic>cd</italic> para a posição <italic>ik</italic>.</p>
+        </list-item>
+        <list-item>
+          <p>O ar é colocado novamente em contato com o corpo A; o pistão retorna da posição <italic>ik</italic> para a posição <italic>ef</italic>; a temperatura permanece inalterada.</p>
+        </list-item>
+        <list-item>
+          <p>O passo numero 3 é renovado, seguindo-se sucessivamente os passos 4, 5, 6, 3, 4, 5, 6, 3, 4, 5, e assim sucessivamente.</p>
+        </list-item>
+      </list>
+      <p>[Princípio fundamental]</p>
+      <p>p. 37–38</p>
+      <p>Escolhemos o ar atmosférico como instrumento para desenvolver a potência motriz do calor; mas é óbvio que o raciocínio teria sido o mesmo para qualquer outra substância gasosa, e mesmo para qualquer outro corpo capaz de mudar de temperatura por meio de contrações e expansões sucessivas, o que inclui todos os corpos da natureza, ou pelo menos todos aqueles que são adequados para realizar a potência motriz do calor. Assim somos levados a estabelecer a seguinte proposição geral:</p>
+      <disp-quote>
+        <p><italic>A potência motriz do calor é independente dos agentes utilizados para alcançá-la; sua quantidade é fixada apenas pelas temperaturas dos corpos entre os quais ocorre o transporte do calórico</italic>.</p>
+      </disp-quote>
+      <p>Deve ser entendido aqui que cada método de desenvolvimento da potência motora atinge a perfeição de que é capaz. Essa condição será satisfeita se, como dissemos acima, não ocorrer nenhuma mudança de temperatura nos corpos que não seja devida a uma mudança de volume, ou, o que é a mesma coisa expressa de forma diferente, se nunca houver contato entre corpos com temperaturas significativamente diferentes.</p>
+      <p>[Calor trocado numa isoterma]</p>
+      <p>p. 41–42</p>
+      <p>Dado que dois gases diferentes, à mesma temperatura e sob a mesma pressão, comportam-se igualmente nas mesmas circunstâncias, se ambos forem submetidos às operações descritas acima, terão de dar origem a quantidades iguais de potência motriz. Ora, isto supõe, segundo a proposição fundamental que estabelecemos, a utilização de duas quantidades iguais de calórico, ou seja, a quantidade de calórico que passa do corpo A para o corpo B é a mesma, quer operemos com um dos gases, quer operemos com o outro.</p>
+      <p>A quantidade de calor que passa do corpo A para o corpo B é obviamente aquela que é absorvida pelo gás em sua extensão de volume, ou aquela que esse gás cede por compressão. Somos, portanto, levados a estabelecer a seguinte proposição:</p>
+      <disp-quote>
+        <p><italic>Quando um gás passa, sem alteração de temperatura, de um volume e pressão determinados para outro volume e pressão igualmente determinados, a quantidade de calórico absorvido ou cedido é sempre o mesmo, seja qual for a natureza do gás escolhido como objeto do experimento</italic>.</p>
+      </disp-quote>
+      <p>[Expansão térmica]</p>
+      <p>p. 42–45</p>
+      <p>A quantidade de calor que os fluidos elásticos liberam ou absorvem nas suas mudanças de volume nunca foi medida por qualquer experiência direta, uma experiência que sem dúvida apresentaria grandes dificuldades; mas existe um dado que é aproximadamente equivalente para nós: esse dado foi fornecido pela sua teoria do som; merece muita confiança pelo rigor das considerações por parte daqueles que a estabeleceram. Consiste no seguinte:</p>
+      <p>O ar atmosférico deve subir de 1° quando sofre uma redução de volume de 1/116 por compressão súbita <xref ref-type="fn" rid="footnote2">(1)</xref>.</p>
+      <p>As experiências sobre a velocidade do som foram realizadas no ar sob uma pressão de 760 milímetros de mercúrio e a uma temperatura de 6°, e são apenas a essas duas circunstâncias que os nossos dados devem se referir. Porém, para facilitar, iremos nos referir à temperatura de 0°, que é aproximadamentamente a mesma.</p>
+      <p>O ar comprimido em 1/116 e elevado portanto em 1° difere do ar aquecido diretamente em um grau apenas pela sua densidade. Supondo que o volume original seja V, a compressão de 1/116 o reduz para <italic>V</italic> − (1/116)<italic>V</italic>.</p>
+      <p>De acordo com a regra de Gay-Lussac, o aquecimento direto sob pressão constante deve aumentar o volume do ar em 1/267 daquilo que seria a 0°. Assim o ar, por um lado é reduzida ao volume <italic>V</italic> − (1/116)<italic>V</italic>, e, por outro lado, é aumentado para <italic>V</italic> + (1/267)<italic>V</italic>.</p>
+      <p>A diferença entre as quantidades de calor que o ar possui em um e em outro caso é obviamente a quantidade usada para aumentá-lo diretamente em 1°: portanto, a quantidade de calor que o ar absorveria ao passar do volume <italic>V</italic> − (1/116)<italic>V</italic> para o volume <italic>V</italic> + (1/267)<italic>V</italic> é igual ao necessário para aumentá-lo em 1°.</p>
+      <p>Imaginemos agora que em vez de aquecer em 1° o ar submetido a uma pressão constante e capaz de se expandir livremente, o encerramos num espaço inextensível, e que nesse estado o fazemos adquirir 1° de temperatura. O ar assim aquecido em 1° diferirá do ar comprimido em (1/116) apenas por (1/116) de seu volume. Portanto, a quantidade de calor que o ar cederia por uma redução no volume de (1/116) é igual àquela que seria necessária para elevar de 1° centígrado sob volume constante. Como as diferenças entre os volumes <italic>V</italic> − (1/116)<italic>V</italic>, <italic>V</italic> e <italic>V</italic> + (1/267)<italic>V</italic>, são pequenas em relação aos próprios volumes, podemos considerar as quantidades de calor absorvido pelo ar, passando do primeiro desses volumes para o segundo, e do primeiro para o terceiro, como substancialmente proporcionais às mudanças no volume. Somos, portanto, levados a estabelecer a seguinte relação:</p>
+      <p>A quantidade de calor necessária para elevar o ar sob pressão constante em 1° é a quantidade de calor necessária para elevar o mesmo ar em 1° sob volume constante, na proporção dos números<disp-formula id="DM39"><mml:math display="block"><mml:mrow><mml:mfrac><mml:mn>1</mml:mn><mml:mrow><mml:mn>116</mml:mn></mml:mrow></mml:mfrac><mml:mo>+</mml:mo><mml:mfrac><mml:mn>1</mml:mn><mml:mrow><mml:mn>267</mml:mn></mml:mrow></mml:mfrac><mml:mtext> </mml:mtext><mml:mtext>para</mml:mtext><mml:mfrac><mml:mn>1</mml:mn><mml:mrow><mml:mn>116</mml:mn></mml:mrow></mml:mfrac></mml:mrow></mml:math></disp-formula>ou multiplicando ambos os lados por 116. 267, na proporção dos números 267 + 116 para 267.</p>
+      <p>[Calor específico dos gases]</p>
+      <p>p. 45–46</p>
+      <p>Essa é, portanto, a relação que existe entre a capacidade térmica do ar a pressão constante e a sua capacidade térmica a volume constante. Se a primeira dessas duas capacidades for expressa pela unidade, a outra será expressa pelo número 267/(267 + 116) ou aproximadamente 0,700; sua diferença de 1 − 0,700 ou 0,300 expressará obviamente a quantidade de calor destinada a produzir o aumento no volume do ar quando ele é aquecido de 1° sob pressão constante.</p>
+      <p>De acordo com a lei de Gay-Lussac e Dalton, esse aumento de volume seria o mesmo para todos os outros gases; de acordo com o teorema demonstrado na pág. 41, o calor absorvido para aumentos iguais de volume é o mesmo para todos os fluidos elásticos. Somos, portanto, levados a estabelecer a seguinte proposição:</p>
+      <disp-quote>
+        <p><italic>A diferença entre o calor específico sob pressão constante e o calor específico sob volume constante é a mesma para todos os gases</italic>.</p>
+      </disp-quote>
+      <p>Deve-se notar aqui que todos os gases são considerados sob a mesma pressão, por exemplo, a pressão atmosférica, e que além disso os calores específicos são medidos em relação aos volumes.</p>
+      <p>[Variação isotérmica do volume]</p>
+      <p>p. 52</p>
+      <p>Esse teorema pode ser expresso de outra maneira como segue:</p>
+      <disp-quote>
+        <p><italic>Quando um gás varia de volume sem alterar a temperatura, as quantidades de calor absorvidas ou liberadas por esse gás estão em progressão aritmética, se os aumentos ou reduções de volume ocorrerem em progressão geométrica</italic>.</p>
+      </disp-quote>
+      <p>[Relação do calor especifico com volume]</p>
+      <p>p. 58</p>
+      <disp-quote>
+        <p><italic>Quando um gás aumenta de volume em progressão geométrica, seu calor específico aumenta em progressão aritmética</italic>.</p>
+      </disp-quote>
+      <p>[Diferença entre calores específicos]</p>
+      <p>p. 58–60</p>
+      <p>Qual é a causa da diferença entre os calores específicos obtidos sob volume constante e sob pressão constante? Ao calórico necessário para produzir no segundo caso o aumento de volume. Ora, segundo a lei de Mariotte, para uma determinada variação de temperatura, o aumento de volume de um gás deve ser uma fração determinada do volume original, uma fração independente da pressão. De acordo com o teorema declarado na p. 52, se for dada a razão entre o volume original e o volume variado, o calor necessário para produzir um aumento de volume é assim determinado. Depende unicamente dessa relação e da quantidade ponderável do gás. Devemos portanto concluir que:</p>
+      <disp-quote>
+        <p><italic>A diferença entre o calor específico sob pressão constante e o calor específico sob volume constante é sempre a mesma, qualquer que seja a densidade do gás, desde que a quantidade ponderável permaneça a mesma</italic>.</p>
+      </disp-quote>
+      <p>Esses calores específicos aumentam quando a densidade do gás diminui, mas sua diferença não varia <xref ref-type="fn" rid="footnote3">(1)</xref>.</p>
+      <p>A razão entre o calor específico do ar atmosférico sob pressão constante e sob volume constante é, segundo Gay-Lussac e Welter, 1,3748, um número aproximadamente constante para todas as pressões e mesmo para todas as temperaturas. Chegamos, por outras considerações, ao número (267 + 116)/267 = 1,44, que difere daquele de 1/20.</p>
+    </sec>
+    <sec id="S6">
+      <title>6. Notas Biográficas</title>
+      <p>Nicolas Léonard Sadi Carnot nasceu em Paris em primeiro de junho de 1796. Seu pai era Lazare Carnot, conhecido como Organizador da Vitória por sua atuação na revolução francesa. Foi um dos cinco Diretores que detinham o poder executivo na França entre 1795 e 1799. Como membro do Diretório morava no <italic>petit Luxembourg</italic>, onde nasceu Sadi. Esse nome se deveu à predileção de Lazare pelo poeta e naturalista persa do século treze. Após o golpe de estado de 1797, Lazare partiu para o exílio enquanto Sadi e sua mãe, Sophie Dupont, passaram a morar em Saint-Omer, próximo a Calais.</p>
+      <p>Com a subida de Napoleão ao poder, Lazare voltou à França e se tornou brevemente ministro em 1800. Além das atividades políticas e militares, Lazare também se dedicou à ciência. Entre 1801, quando nasceu o irmão de Sadi, Hippolyte, e 1813, ano da morte de Sophie, Lazare dedicou-se intensamente à matemática e à ciência da mecânica. Em 1803 publicou a segunda edição de seu livro sobre a teoria das máquinas [<xref ref-type="bibr" rid="b30">30</xref>]. Nesse período Lazare também se encarregou da educação de Sadi até ele completar dezesseis anos [<xref ref-type="bibr" rid="b17">17</xref>]. Após oito meses de preparação, frequentando o curso de Bourdon no Lycée Charlemagne, Sadi entrou na École Polytechnique em novembro de 1812, com apenas dezesseis anos.</p>
+      <p>A vida dos internos da escola era muito restritiva com uma disciplina militar muito rigorosa. Levantavamse às cinco horas, seguiam os cursos por nove horas por dia, exceto domingo, sendo controlados por tudo que faziam. É difícil imaginar alguém feliz nesse regime, particularmente Sadi. A partir de dezembro de 1813, os politécnicos se prepararam militarmente para a defesa de Paris ocorrida em março de 1814. Sadi participou da ação militar em Vincennes com bravura embora Paris tenha sucumbido às tropas da Coalisão.</p>
+      <p>Em outubro de 1814, Sadi terminou seus estudos na École Polytechnique e em janeiro de 1815 entrou na Escola de aplicação de artilharia e de engenharia de Metz. Ficou ai até ser nomeado segundo tenente em 1817. Nos dois anos seguintes atuou no serviço de engenharia militar. Em 1819, retirou-se desse serviço ao ser nomeado tenente do Estado-Maior. Isso lhe permitiu a obtenção de uma licença permanente e residir por mais de dez anos em Paris. Livre das restrições da vida militar, pode iniciar as atividades de estudo e pesquisa que continuaram até o fim de sua vida. Entretanto, parece que ele nunca ocupou ou procurou ocupar uma posição acadêmica ou um cargo de professor.</p>
+      <p>Em 1821 Sadi interrompeu seus estudos para fazer uma visita ao seu pai que estava exilado em Magdeburg. É bem possível que as conversas com o pai nessa ocasião tenham chamado a atenção de Sadi para os problemas tratados nas <italic>Réflexions</italic>.</p>
+      <p>De acordo com seu irmão Hippolyte, Sadi frequentava o Conservatoire des Arts et Métiers. Em 1819, o Conservatoire criou três cátedras entre elas a de química aplicada confiada a Nicolas Clément. Ele e Charles Desormes são conhecidos pelas experiências realizadas em 1819 para a determinação da razão entre as capacidades térmicas a pressão constante e a volume constante dos gases. Essas experiências são baseadas na expansão adiabática dos gases.</p>
+      <p>Algumas notas das conferências de Clément indicam que ele também se ocupava da elaboração de uma teoria das máquinas térmicas ao mesmo tempo que Sadi. Isso sugere ter havido uma influência por parte de Clément sobre Sadi. A maior influência pode ter sido aquela relativa a explicação da expansão livre de um gás. De acordo com Clément e Desormes, a expansão súbita é entendida como um processo que ocorre sem troca de calor e não de maneira isotérmica, de modo que a temperatura diminui.</p>
+      <p>Além dos interesses científicos é possível que Sadi também tivesse interesses industriais o que está de acordo com sua preocupação com o progresso da industria francesa manifestada na introdução das <italic>Réflexions</italic>. Sadi foi um dos primeiros membros da <italic>Association Polytechnique</italic>, fundada logo após a revolução de 1830 com a finalidade de difusão popular do conhecimento científico e tecnológico.</p>
+      <p>Sadi morreu em 24 de outubro de 1832 aos 36 anos. Nas notas biográficas da edição de 1878 das <italic>Réflexions</italic> encontramos a seguinte mensagem escrita por Hippolyte. “Sadi Carnot faleceu no auge da vida, no limiar de uma carreira que prometeu realizar com brilhantismo, deixando uma memória de profunda estima e carinho no coração de alguns amigos. Os seus manuscritos atestam a atividade do seu espírito, a variedade dos seus conhecimentos, o seu amor pela humanidade, os seus sentimentos iluminados de justiça e liberdade. Podese acompanhar os rastros de todos os tipos de estudos neles. Mas o único trabalho que concluiu é aquele que publicamos pela segunda vez. Bastará para que o seu nome não seja esquecido.”</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <title>Referências</title>
+      <ref id="b1">
+        <label>[1]</label>
+        <mixed-citation>[1] S. Carnot, <italic>Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance</italic> (Bachelier, Paris, 1824).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance</source>
+          <publisher-name>Bachelier</publisher-name>
+          <publisher-loc>Paris</publisher-loc>
+          <year>1824</year>
+        </element-citation>
+      </ref>
+      <ref id="b2">
+        <label>[2]</label>
+        <mixed-citation>[2] R. Fox, <italic>The Caloric Theory of Gases</italic> (Clarendon Press, Oxford, 1971).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Fox</surname>
+              <given-names>R.</given-names>
+            </name>
+          </person-group>
+          <source>The Caloric Theory of Gases</source>
+          <publisher-name>Clarendon Press</publisher-name>
+          <publisher-loc>Oxford</publisher-loc>
+          <year>1971</year>
+        </element-citation>
+      </ref>
+      <ref id="b3">
+        <label>[3]</label>
+        <mixed-citation>[3] E. Clapeyron, “Mémoire sur la puissance motrice de la chaleur”, Journal de l’École Royale Polytechnique 14, 153 (1834).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Clapeyron</surname>
+              <given-names>E.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Mémoire sur la puissance motrice de la chaleur”</article-title>
+          <source>Journal de l’École Royale Polytechnique</source>
+          <volume>14</volume>
+          <fpage>153</fpage>
+          <year>1834</year>
+        </element-citation>
+      </ref>
+      <ref id="b4">
+        <label>[4]</label>
+        <mixed-citation>[4] R. Clausius, “Ueber die bewegende Kraft der Wärme und die Gesetze, welche sich daraus für die Wärmelehre selbst ableiten lassen”, Annalen der Physik und Chemie 79, 368 (1850).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Clausius</surname>
+              <given-names>R.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Ueber die bewegende Kraft der Wärme und die Gesetze, welchesich daraus für die Wärmelehre selbst ableiten lassen”</article-title>
+          <source>Annalen der Physik und Chemie</source>
+          <volume>79</volume>
+          <fpage>368</fpage>
+          <year>1850</year>
+        </element-citation>
+      </ref>
+      <ref id="b5">
+        <label>[5]</label>
+        <mixed-citation>[5] R. Clausius, “Ueber eine veränderte Form des zweiten Hauptsatzes der mechanischen Wärmetheorie”, Annalen der Physik und Chemie 3, 481 (1854).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Clausius</surname>
+              <given-names>R.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Ueber eine veränderte Form des zweiten Hauptsatzes dermechanischen Wärmetheorie”</article-title>
+          <source>Annalen der Physik und Chemie</source>
+          <volume>3</volume>
+          <fpage>481</fpage>
+          <year>1854</year>
+        </element-citation>
+      </ref>
+      <ref id="b6">
+        <label>[6]</label>
+        <mixed-citation>[6] R. Clausius, “Ueber verschiedene für die Anwendung bequeme Formen der Hauptgleichungen der mechanischen Wärmetheorie”, Annalen der Physik und Chemie 125, 353 (1865).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Clausius</surname>
+              <given-names>R.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Ueber verschiedene für die Anwendung bequeme Formen derHauptgleichungen der mechanischen Wärmetheorie”</article-title>
+          <source>Annalen der Physik und Chemie</source>
+          <volume>125</volume>
+          <fpage>353</fpage>
+          <year>1865</year>
+        </element-citation>
+      </ref>
+      <ref id="b7">
+        <label>[7]</label>
+        <mixed-citation>[7] E. Clapeyron, “Memoir on the motive power of heat”, (Scientific Memoirs: Selected from the Transactions of Foreign Academies of Science and Learned Scocietes and from Foreign Journals, London, 1837), v. 1, p. 347.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Clapeyron</surname>
+              <given-names>E.</given-names>
+            </name>
+          </person-group>
+          <chapter-title>“Memoir on the motive power of heat”</chapter-title>
+          <source>Scientific Memoirs</source>
+          <publisher-name>Selected from the Transactions of ForeignAcademies of Science and Learned Scocietes and from Foreign Journals</publisher-name>
+          <publisher-loc>London</publisher-loc>
+          <year>1837</year>
+          <volume>1</volume>
+          <fpage>347</fpage>
+        </element-citation>
+      </ref>
+      <ref id="b8">
+        <label>[8]</label>
+        <mixed-citation>[8] E. Clapeyron, “Ueber die bewegende Kraft der Wärme”, Annalen der Physik und Chemie 59, 446 (1843).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Clapeyron</surname>
+              <given-names>E.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Ueber die bewegende Kraft der Wärme”</article-title>
+          <source>Annalen der Physik und Chemie</source>
+          <volume>59</volume>
+          <fpage>446</fpage>
+          <year>1843</year>
+        </element-citation>
+      </ref>
+      <ref id="b9">
+        <label>[9]</label>
+        <mixed-citation>[9] C. Holtzmann, Ueber die Wärme und Elasticität der Gase und Dämpfe (Loeffler, Mannheim, 1845).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Holtzmann</surname>
+              <given-names>C.</given-names>
+            </name>
+          </person-group>
+          <source>Ueber die Wärme und Elasticität der Gase und Dämpfe</source>
+          <publisher-name>Loeffler</publisher-name>
+          <publisher-loc>Mannheim</publisher-loc>
+          <year>1845</year>
+        </element-citation>
+      </ref>
+      <ref id="b10">
+        <label>[10]</label>
+        <mixed-citation>[10] W. Thomson, “On an absolute thermometric scale founded on Carnot’s theory of the motive power of heat”, Philosophical Magazine 33, 313 (1848).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Thomson</surname>
+              <given-names>W.</given-names>
+            </name>
+          </person-group>
+          <article-title>“On an absolute thermometric scalefounded on Carnot’s theory of the motive power of heat”</article-title>
+          <source>Philosophical Magazine</source>
+          <volume>33</volume>
+          <fpage>313</fpage>
+          <year>1848</year>
+        </element-citation>
+      </ref>
+      <ref id="b11">
+        <label>[11]</label>
+        <mixed-citation>[11] W. Thomson, “Carnot’s theory of the motive power of heat”, Transactions of the Royal Society of Edinburgh 16, 541 (1849).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Thomson</surname>
+              <given-names>W.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Carnot’s theory of the motive power of heat”</article-title>
+          <source>Transactions of the Royal Society of Edinburgh</source>
+          <volume>16</volume>
+          <fpage>541</fpage>
+          <year>1849</year>
+        </element-citation>
+      </ref>
+      <ref id="b12">
+        <label>[12]</label>
+        <mixed-citation>[12] R. Clausius, “Ueber einem Grundsatz der mechanischen Wärmetheorie” Annalen der Physik und Chemie 120, 426 (1863)</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Clausius</surname>
+              <given-names>R.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Ueber einem Grundsatz der mechanischen Wärmetheorie”</article-title>
+          <source>Annalen der Physik und Chemie</source>
+          <volume>120</volume>
+          <fpage>426</fpage>
+          <year>1863</year>
+        </element-citation>
+      </ref>
+      <ref id="b13">
+        <label>[13]</label>
+        <mixed-citation>[13] S. Carnot, “Réflexions sur la puissance motrice du feu et sur le machines propres a developper cette puissance”, Annales Scientifiques de L’École Normale Supérieure 1, 393 (1872).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <article-title>“Réflexions sur la puissance motrice du feu et sur le machinespropres a developper cette puissance”</article-title>
+          <source>Annales Scientifiques de L’École Normale Supérieure</source>
+          <volume>1</volume>
+          <fpage>393</fpage>
+          <year>1872</year>
+        </element-citation>
+      </ref>
+      <ref id="b14">
+        <label>[14]</label>
+        <mixed-citation>[14] S. Carnot, Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance (Gauthier-Villars, Paris, 1878).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance</source>
+          <publisher-name>Gauthier-Villars</publisher-name>
+          <publisher-loc>Paris</publisher-loc>
+          <year>1878</year>
+        </element-citation>
+      </ref>
+      <ref id="b15">
+        <label>[15]</label>
+        <mixed-citation>[15] S. Carnot, Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance (Hermann, Paris, 1903).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance</source>
+          <publisher-name>Hermann</publisher-name>
+          <publisher-loc>Paris</publisher-loc>
+          <year>1903</year>
+        </element-citation>
+      </ref>
+      <ref id="b16">
+        <label>[16]</label>
+        <mixed-citation>[16] S. Carnot, Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance (Blanchard, Paris, 1953).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Réflexions sur la Puissance Motrice du Feu et sur les Machines propres à Développer cette Puissance</source>
+          <publisher-name>Blanchard</publisher-name>
+          <publisher-loc>Paris</publisher-loc>
+          <year>1953</year>
+        </element-citation>
+      </ref>
+      <ref id="b17">
+        <label>[17]</label>
+        <mixed-citation>[17] S. Carnot, Réflexions sur la Puissance Motrice du Feu, (Vrin, Paris, 1978). Édition critique par R. Fox.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Réflexions sur la Puissance Motrice du Feu</source>
+          <publisher-name>Vrin</publisher-name>
+          <publisher-loc>Paris</publisher-loc>
+          <year>1978</year>
+          <person-group person-group-type="editor">
+            <name>
+              <surname>Fox</surname>
+              <given-names>R.</given-names>
+            </name>
+          </person-group>
+        </element-citation>
+      </ref>
+      <ref id="b18">
+        <label>[18]</label>
+        <mixed-citation>[18] S. Carnot, Reflections on the Motive Power of Heat, (Macmillan, London, 1890). Translated by R. H. Thurston.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Reflections on the Motive Power of Heat</source>
+          <publisher-name>Macmillan</publisher-name>
+          <publisher-loc>London</publisher-loc>
+          <year>1890</year>
+          <person-group person-group-type="translator">
+            <name>
+              <surname>Thurston</surname>
+              <given-names>R. H.</given-names>
+            </name>
+          </person-group>
+        </element-citation>
+      </ref>
+      <ref id="b19">
+        <label>[19]</label>
+        <mixed-citation>[19] S. Carnot, Reflections on the Motive Power of Heat (Wiley, New York, 1897), 2nd edition.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Reflections on the Motive Power of Heat</source>
+          <publisher-name>Wiley</publisher-name>
+          <publisher-loc>New York</publisher-loc>
+          <year>1897</year>
+          <edition>2nd</edition>
+        </element-citation>
+      </ref>
+      <ref id="b20">
+        <label>[20]</label>
+        <mixed-citation>[20] W. F. Magie, The Second Law of Thermodynamics (Harper &amp; brothers, New York, 1899).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Magie</surname>
+              <given-names>W. F.</given-names>
+            </name>
+          </person-group>
+          <source>The Second Law of Thermodynamics</source>
+          <publisher-name>Harper &amp; brothers</publisher-name>
+          <publisher-loc>New York</publisher-loc>
+          <year>1899</year>
+        </element-citation>
+      </ref>
+      <ref id="b21">
+        <label>[21]</label>
+        <mixed-citation>[21] W. Thomson, “On the dynamical theory of heat with numerical results deduced from Mr. Joule’s equivalent of a thermal unit, and M. Regnault’s observation on steam”, Transactions of the Royal Society of Edinburgh 20, 261 (1853).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Thomson</surname>
+              <given-names>W.</given-names>
+            </name>
+          </person-group>
+          <article-title>“On the dynamical theory of heat with numerical results deduced from Mr. Joule’s equivalent of a thermal unit, and M. Regnault’s observation on steam”</article-title>
+          <source>Transactions of the Royal Society of Edinburgh</source>
+          <volume>20</volume>
+          <fpage>261</fpage>
+          <year>1853</year>
+        </element-citation>
+      </ref>
+      <ref id="b22">
+        <label>[22]</label>
+        <mixed-citation>[22] S. Carnot, <italic>Reflections on the Motive Power of Heat</italic> (American Society of Mechanical Engineers, New York, 1943).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Reflections on the Motive Power of Heat</source>
+          <publisher-name>American Society of Mechanical Engineers</publisher-name>
+          <publisher-loc>New York</publisher-loc>
+          <year>1943</year>
+        </element-citation>
+      </ref>
+      <ref id="b23">
+        <label>[23]</label>
+        <mixed-citation>[23] E. Mendoza (editor), Reflections on the Motive Power of Fire by Sadi Carnot and other Papers on the Second Law of Thermodynamics (Dover Publications, New York, 1960).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="editor">
+            <name>
+              <surname>Mendoza</surname>
+              <given-names>E.</given-names>
+            </name>
+          </person-group>
+          <source>Reflections on the Motive Power of Fire by Sadi Carnot and other Papers on the Second Law of Thermodynamics</source>
+          <publisher-name>Dover Publications</publisher-name>
+          <publisher-loc>New York</publisher-loc>
+          <year>1960</year>
+        </element-citation>
+      </ref>
+      <ref id="b24">
+        <label>[24]</label>
+        <mixed-citation>[24] S. Carnot <italic>Reflexions on the Motive Power of Fire</italic> (Manchester University Press, Manchester, 1986). Translated and edited by R. Fox.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Reflexions on the Motive Power of Fire</source>
+          <publisher-name>Manchester University Press</publisher-name>
+          <publisher-loc>Manchester</publisher-loc>
+          <year>1986</year>
+          <person-group person-group-type="editor">
+            <name>
+              <surname>Fox</surname>
+              <given-names>R.</given-names>
+            </name>
+          </person-group>
+        </element-citation>
+      </ref>
+      <ref id="b25">
+        <label>[25]</label>
+        <mixed-citation>[25] S. Carnot, Betrachtungen über die bewegende Kraft des Feuers und die zur Entwickelung dieser Kraft geeigneten Maschinen (Wilhelm Engelmann, Leipzig, 1892). Uebersetzt und herausgegeben von W. Ostwald.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Betrachtungen über die bewegende Kraft des Feuers und die zur Entwickelung dieser Kraft geeigneten Maschinen</source>
+          <publisher-name>Wilhelm Engelmann</publisher-name>
+          <publisher-loc>Leipzig</publisher-loc>
+          <year>1892</year>
+          <person-group person-group-type="translator">
+            <name>
+              <surname>Ostwald</surname>
+              <given-names>W.</given-names>
+            </name>
+          </person-group>
+        </element-citation>
+      </ref>
+      <ref id="b26">
+        <label>[26]</label>
+        <mixed-citation>[26] S. Karno, Razmyshleniya o dvizhushchey sile ognya i o mashinakh, sposobnykh razvivat etu silu (Gosudarstvennoye Izdatelstvo, Moscou, 1923).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Karno</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Razmyshleniya o dvizhushchey sile ognya i o mashinakh, sposobnykh razvivat etu silu</source>
+          <publisher-name>Gosudarstvennoye Izdatelstvo</publisher-name>
+          <publisher-loc>Moscou</publisher-loc>
+          <year>1923</year>
+        </element-citation>
+      </ref>
+      <ref id="b27">
+        <label>[27]</label>
+        <mixed-citation>[27] S. Carnot, Reflexiones sobre la Potencia Motriz del Fuego y sobre las Máquinas Aptas para Desarrollar esta Potencia, (Madrid, 1927). Traducido por J. Cabrera.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Reflexiones sobre la Potencia Motriz del Fuego y sobre las Máquinas Aptas para Desarrollar esta Potencia</source>
+          <publisher-loc>Madrid</publisher-loc>
+          <year>1927</year>
+          <person-group person-group-type="translator">
+            <name>
+              <surname>Cabrera</surname>
+              <given-names>J.</given-names>
+            </name>
+          </person-group>
+        </element-citation>
+      </ref>
+      <ref id="b28">
+        <label>[28]</label>
+        <mixed-citation>[28] S. Carnot, Reflexiones sobre la Potencia Motriz del Fuego y sobre las Máquinas Adecuadas para Desarrollar esta Potencia (Alianza Editorial, Madrid, 1987). Traducción de J. O. Ordoñez.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Reflexiones sobre la Potencia Motriz del Fuego y sobre las Máquinas Adecuadas para Desarrollar esta Potencia</source>
+          <publisher-name>Alianza Editorial</publisher-name>
+          <publisher-loc>Madrid</publisher-loc>
+          <year>1987</year>
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ordoñez</surname>
+              <given-names>J. O.</given-names>
+            </name>
+          </person-group>
+        </element-citation>
+      </ref>
+      <ref id="b29">
+        <label>[29]</label>
+        <mixed-citation>[29] S. Carnot, Riflessioni sulla Potenza Motrice del Fuoco (Bollati Boringhieri, Turim, 1992).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Riflessioni sulla Potenza Motrice del Fuoco</source>
+          <publisher-name>Bollati Boringhieri</publisher-name>
+          <publisher-loc>Turim</publisher-loc>
+          <year>1992</year>
+        </element-citation>
+      </ref>
+      <ref id="b30">
+        <label>[30]</label>
+        <mixed-citation>[30] L. N. M. Carnot, Principes Fondamentaux de l’Équilibre et du Mouvement (Deterville, Paris, 1803).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Carnot</surname>
+              <given-names>L. N. M.</given-names>
+            </name>
+          </person-group>
+          <source>Principes Fondamentaux de l’Équilibre et du Mouvement</source>
+          <publisher-name>Deterville</publisher-name>
+          <publisher-loc>Paris</publisher-loc>
+          <year>1803</year>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn fn-type="supported-by" id="footnote1">
+        <label>(1)</label>
+        <p>Os fatos experimentais que mais bem comprovam a mudança detemperatura dos gases por compressão ou expansão são os seguintes: 1. Abaixamento do termômetro colocado sob o recipiente de uma máquinapneumática onde é criado um vácuo. Essa redução é bem perceptível notermômetro Bréguet: pode passar dos 40 a 50 graus. A nuvem que seforma nessa ocasião parece ser atribuída à condensação do vapord’água causada pelo resfriamento do ar. 2. A ignição do isqueiros pneumáticos, que são pequenabombas onde o ar é submetido a uma rápida compressão;3. O abaixamento do termômetro colocado num recipiente onde, após ter sido comprimido, se deixa sair pela aberturade uma torneira. 4. Resultados de experiências sobre a velocidade do som. Laplace mostrou que, para submeter esses resultados exatamenteà teoria e ao cálculo, era necessário admitir o aquecimento do arpor compressão repentina.</p>
+      </fn>
+      <fn fn-type="supported-by" id="footnote2">
+        <label>(2)</label>
+        <p>Poisson, a quem esses dados são devidos, mostrou que eles concordamcom o resultado de um experimento de Clément e Desormes sobre areentrada do ar no vácuo, ou melhor, no ar rarefeito. Também concorda, em certa medida, com alguns resultados encontrados por Gay-Lussac eWelter. (Ver nota pag, 59).</p>
+      </fn>
+      <fn fn-type="supported-by" id="footnote3">
+        <label>(3)</label>
+        <p>Gay-Lussac e Welter descobriram através de experimentos diretos, citados na Mecanique celeste, e nos Annales de Chimie et de Physique, julho de 1822, p. 267, que a razão entre o calor específico sob pressãoconstante e o calor específico sob volume constante varia muito poucocom a densidade do gás. Pelo que acabamos de ver, é a diferença quedeve permanecer constante, e não a razão. Além disso, como o calorespecífico dos gases, para um determinado peso, varia muito pouco coma densidade, é bastante simples que a própria relação sofra apenaspequenas alterações.</p>
+      </fn>
+    </fn-group>
+  </back>
+</article>

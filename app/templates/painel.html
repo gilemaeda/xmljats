@@ -1,39 +1,39 @@
 {% extends "base.html" %}
 {% set ativo = 'painel' %}
-{% block titulo %}Painel · xmljats{% endblock %}
+{% block titulo %}Meus documentos · xmljats{% endblock %}
 {% block conteudo %}
 <div class="page-head">
   <div>
-    <p class="eyebrow">Painel</p>
-    <h1 style="margin-top:4px">Documentos</h1>
-    <p class="lead">Tudo que passou pelo validador, com a etapa de cada artigo no fluxo da SciELO. A etapa é anotada à mão por quem acompanha a entrega; a situação (pronto ou não) vem do validador.</p>
+    <p class="eyebrow">Documentos</p>
+    <h1 style="margin-top:4px">{{ 'Meus documentos' if usuario.papel == 'cliente' else 'Documentos' }}</h1>
+    <p class="lead">{% if usuario.papel == 'cliente' %}Tudo que você enviou, com a etapa de cada artigo no fluxo da SciELO.{% else %}Documentos de todas as contas, com a etapa de cada artigo no fluxo da SciELO. A etapa é anotada à mão; a situação vem do validador.{% endif %}</p>
   </div>
-  <a class="btn primary" href="/"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Validar novo PDF</a>
+  <div class="acoes"><a class="btn primary" href="/"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Validar novo PDF</a></div>
 </div>
 
-<div class="kpis" style="margin-bottom:var(--s-5)">
-  <div><div class="v">{{ docs|length }}</div><div class="k">documentos{% if filtro_ativo %} no filtro{% endif %}</div></div>
-  <div><div class="v">{{ docs|selectattr('pronto')|list|length }}</div><div class="k">prontos para entrega</div></div>
-  <div><div class="v">{{ docs|rejectattr('pronto')|list|length }}</div><div class="k">com bloqueantes</div></div>
-  <div><div class="v">{{ docs|selectattr('etapa', 'in', ['entregue', 'pre_qa', 'qa'])|list|length }}</div><div class="k">na SciELO (entregue, pré-QA, QA)</div></div>
+<div class="kpis">
+  <div class="card kpi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></span><div><div class="v">{{ docs|length }}</div><div class="k">documentos{% if filtro_ativo %} no filtro{% endif %}</div></div></div>
+  <div class="card kpi"><span class="ico ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="v">{{ docs|selectattr('pronto')|list|length }}</div><div class="k">prontos para entrega</div></div></div>
+  <div class="card kpi"><span class="ico crit"><svg viewBox="0 0 24 24"><path d="M12 8v5M12 16.5v.5"/><path d="M10.3 3.9L2.5 18a2 2 0 001.7 3h15.6a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg></span><div><div class="v">{{ docs|rejectattr('pronto')|list|length }}</div><div class="k">com bloqueantes</div></div></div>
+  <div class="card kpi"><span class="ico info"><svg viewBox="0 0 24 24"><path d="M12 3v6M12 15v6M3 12h6M15 12h6"/><circle cx="12" cy="12" r="2.5"/></svg></span><div><div class="v">{{ docs|selectattr('etapa', 'in', ['entregue', 'pre_qa', 'qa'])|list|length }}</div><div class="k">na SciELO</div></div></div>
 </div>
 
-<form class="card pad row" method="get" action="/painel" style="gap:var(--s-4);align-items:flex-end;margin-bottom:var(--s-4)">
-  <div class="field" style="min-width:220px">
+<form class="card filtros" method="get" action="/painel">
+  <div class="field larga">
     <label for="f-revista">Revista</label>
     <select id="f-revista" name="revista">
       <option value="">Todas</option>
       {% for r in revistas %}<option value="{{ r.acronimo }}" {% if filtros.revista == r.acronimo %}selected{% endif %}>{{ r.titulo }} ({{ r.acronimo }})</option>{% endfor %}
     </select>
   </div>
-  <div class="field" style="min-width:200px">
+  <div class="field">
     <label for="f-etapa">Etapa</label>
     <select id="f-etapa" name="etapa">
       <option value="">Todas</option>
       {% for cod, rotulo in etapas %}<option value="{{ cod }}" {% if filtros.etapa == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
     </select>
   </div>
-  <div class="field" style="min-width:160px">
+  <div class="field">
     <label for="f-situacao">Situação</label>
     <select id="f-situacao" name="situacao">
       <option value="">Todas</option>
@@ -49,31 +49,32 @@
   <header class="cardhead"><h2>Lista</h2><span class="muted small">{{ docs|length }} documento(s)</span></header>
   {% if docs %}
   <div class="tblwrap"><table class="tbl">
-    <thead><tr><th>Atualizado</th><th>Artigo</th><th>Revista</th><th>Situação</th><th>Etapa</th><th>Quem</th><th></th></tr></thead>
+    <thead><tr><th>Atualizado</th><th>Artigo</th><th>Revista</th><th>Situação</th><th>Etapa</th><th></th></tr></thead>
     <tbody>
     {% for d in docs %}
       <tr>
         <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
-        <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:90] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }} · {{ d.nome_base }}</div></td>
+        <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }} · {{ d.nome_base }}</div></td>
         <td>{{ d.revista or '—' }}</td>
         <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
         <td>
           <form method="post" action="/doc/{{ d.id }}/etapa" class="row" style="gap:6px;flex-wrap:nowrap">
             <input type="hidden" name="voltar" value="/painel{{ query }}">
-            <select name="etapa" class="etapa-select" aria-label="Etapa">
+            <select name="etapa" class="mini" aria-label="Etapa">
               {% for cod, rotulo in etapas %}<option value="{{ cod }}" {% if d.etapa == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
             </select>
             <button class="btn small" type="submit">Salvar</button>
           </form>
         </td>
-        <td class="small muted">{{ d.criado_por or '—' }}{% if d.etapa_por and d.etapa_por != d.criado_por %}<br>etapa: {{ d.etapa_por }}{% endif %}</td>
         <td style="text-align:right"><a class="btn small" href="/doc/{{ d.id }}">Abrir</a></td>
       </tr>
     {% endfor %}
     </tbody>
   </table></div>
   {% else %}
-  <div class="empty"><div class="icon"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento{% if filtro_ativo %} neste filtro{% endif %}.</div>
+  <div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>
+    Nenhum documento{% if filtro_ativo %} neste filtro{% endif %}. <a href="/">Envie o primeiro PDF</a>.
+  </div>
   {% endif %}
 </section>
 {% endblock %}

@@ -3,7 +3,7 @@ import re
 from typing import List, Optional
 
 from .leitura import Documento, Paragrafo
-from .modelo import ArticleModel, Secao, Citacao, Nota, Figura
+from .modelo import ArticleModel, Secao, Citacao, Nota, Figura, Tabela, Equacao
 from .util import RE_MARCADOR, RE_CHAMADA_NOTA, SUPERSCRITOS, normaliza, marcador_normalizado, limpa_chamadas
 
 RE_NUM = re.compile(r"^\s*(\d+(?:\.\d+)*)\.?\s+(\S.*)$")
@@ -126,7 +126,7 @@ def extrai_corpo(doc: Documento, model: ArticleModel, i_sec: Optional[int], i_re
             continue
         if atual is None:
             continue
-        if RE_FIG.match(t) or RE_FONTE.match(t):
+        if (RE_FIG.match(t) and _eh_legenda(t)) or RE_FONTE.match(t):
             _registra_figura(model, p, t, doc, atual)
             continue
         # continuacao de paragrafo entre paginas; os paragrafos guardam as chamadas de nota como "[^n]"
@@ -140,14 +140,37 @@ def extrai_corpo(doc: Documento, model: ArticleModel, i_sec: Optional[int], i_re
         model.marca("secoes", "lido (negrito / tamanho / numeração / fonte diferente do corpo)")
     _citacoes(model)
     _notas(doc, model, i_sec, fim)
+    _liga_tabelas(doc, model)
+    _liga_equacoes(doc, model)
     _chamadas_figuras(model)
     _back_matter(doc, model, i_ref)
+
+
+def _eh_legenda(t: str) -> bool:
+    """Distingue legenda ("Tabela 1 Descrição da amostra...") de menção no texto ("Table 1 shows the sample...").
+    Vale como legenda quando há separador depois do número, ou quando o texto seguinte não continua a frase."""
+    m = RE_FIG.match(t)
+    if not m:
+        return False
+    resto = (m.group(3) or "").strip()
+    if not resto:
+        return True
+    entre = t[m.end(2):m.end(2) + 3]
+    if re.match(r"\s*[-–—:.]", entre):  # "Tabela 1: ..." / "Figura 2 - ..."
+        return True
+    if resto[:1].islower():  # "Table 1 shows ..." é menção
+        return False
+    return len(t) <= 400
 
 
 def _registra_figura(model: ArticleModel, p: Paragrafo, t: str, doc: Documento, atual: Secao):
     m = RE_FIG.match(t)
     if m:
         tipo = "table" if re.match(r"tabela|table|quadro", m.group(1), re.I) else "fig"
+        if tipo == "table":
+            # a grade vem do detector do PyMuPDF; aqui guardamos so a legenda e onde ela aparece
+            model.tabelas.append(Tabela(numero=m.group(2), rotulo=f"{m.group(1)} {m.group(2)}", legenda=m.group(3).strip(" -:"),
+                                        pagina=p.pagina, secao_indice=len(model.secoes) - 1, pos_paragrafo=len(atual.paragrafos)))
         f = Figura(tipo=tipo, rotulo=f"{m.group(1)} {m.group(2)}", legenda=m.group(3).strip(" -:"), pagina=p.pagina,
                    numero=m.group(2), secao_indice=len(model.secoes) - 1, pos_paragrafo=len(atual.paragrafos))
         if tipo == "fig":
@@ -163,8 +186,78 @@ def _registra_figura(model: ArticleModel, p: Paragrafo, t: str, doc: Documento, 
         model.figuras.append(f)
         return
     m = RE_FONTE.match(t)
-    if m and model.figuras and model.figuras[-1].pagina == p.pagina and not model.figuras[-1].fonte:
+    if not m:
+        return
+    if model.tabelas and model.tabelas[-1].pagina == p.pagina and not model.tabelas[-1].fonte and (
+            not model.figuras or model.figuras[-1].pagina != p.pagina):
+        model.tabelas[-1].fonte = m.group(2).strip()
+    elif model.figuras and model.figuras[-1].pagina == p.pagina and not model.figuras[-1].fonte:
         model.figuras[-1].fonte = m.group(2).strip()
+
+
+def _liga_tabelas(doc, model: ArticleModel):
+    """Casa cada legenda 'Tabela N' com a grade detectada na mesma pagina (a mais proxima abaixo da legenda, senao acima).
+    Grades sem legenda entram como tabela sem rotulo, para o operador nomear na revisao."""
+    livres = list(doc.tabelas)
+    for t in model.tabelas:
+        cands = [g for g in livres if g["pagina"] == t.pagina]
+        if not cands:
+            cands = [g for g in livres if abs(g["pagina"] - t.pagina) <= 1]
+        if not cands:
+            continue
+        g = min(cands, key=lambda g: g["bbox"][1])
+        livres.remove(g)
+        t.celulas, t.linhas_cabecalho, t.colunas, t.bbox = g["celulas"], g["linhas_cabecalho"], g["colunas"], g["bbox"]
+        t.qualidade = g.get("qualidade", "alta")
+    for g in livres:
+        model.tabelas.append(Tabela(numero=None, rotulo="", legenda="", pagina=g["pagina"], celulas=g["celulas"],
+                                    linhas_cabecalho=g["linhas_cabecalho"], colunas=g["colunas"], bbox=g["bbox"],
+                                    qualidade=g.get("qualidade", "alta")))
+    model.tabelas.sort(key=lambda t: (t.pagina, t.bbox[1] if t.bbox else 0))
+    sem_grade = [t.rotulo for t in model.tabelas if not t.celulas]
+    if sem_grade:
+        model.aviso(f"Legenda(s) de tabela sem grade reconhecida no PDF: {', '.join(sem_grade)} (T01).")
+    incertas = [t.rotulo or "(sem rótulo)" for t in model.tabelas if t.celulas and t.qualidade == "baixa"]
+    if incertas:
+        model.aviso(f"Tabela(s) sem linhas verticais no PDF cujas colunas não foram reconstruídas com segurança "
+                    f"({', '.join(incertas)}); vão para o XML como imagem (T02).")
+    sem_legenda = sum(1 for t in model.tabelas if t.celulas and not t.rotulo)
+    if sem_legenda:
+        model.aviso(f"{sem_legenda} tabela(s) sem legenda 'Tabela N' no PDF; rotule na revisão (T01).")
+    if model.tabelas:
+        model.marca("tabelas", "lido (grade do PDF + legenda)")
+    texto = " ".join(par for s in model.secoes for par in s.paragrafos)
+    for t in model.tabelas:
+        if t.numero and re.search(r"\b(Tabela|Table|Quadro)s?\.?\s*" + re.escape(t.numero) + r"(?!\d)", texto, re.I):
+            t.chamada_no_texto = True
+
+
+def _liga_equacoes(doc, model: ArticleModel):
+    """Cada equacao detectada vira Equacao, posicionada na secao/paragrafo em que aparece."""
+    if not doc.equacoes:
+        return
+    # posicao: usa a ultima secao/paragrafo cuja pagina e <= a da equacao
+    pos_por_pagina = {}
+    for si, sec in enumerate(model.secoes):
+        pos_por_pagina.setdefault(sec.pagina, (si, len(sec.paragrafos)))
+    for eq in doc.equacoes:
+        si, pp = None, None
+        for si_c, sec in enumerate(model.secoes):
+            if sec.pagina <= eq["pagina"]:
+                si, pp = si_c, len(sec.paragrafos)
+        model.equacoes.append(Equacao(numero=eq.get("rotulo"), rotulo=(f"({eq['rotulo']})" if eq.get("rotulo") else None),
+                                      texto=eq.get("texto") or "", pagina=eq["pagina"], numerada=bool(eq.get("numerada")),
+                                      secao_indice=si, pos_paragrafo=pp, largura=eq.get("largura"), altura=eq.get("altura"),
+                                      bbox=eq.get("bbox") or []))
+    model.marca("equacoes", "lido (número entre parênteses / fonte matemática); recortadas como imagem")
+    texto = " ".join(par for s in model.secoes for par in s.paragrafos)
+    for e in model.equacoes:
+        if e.numero and re.search(r"(equa[çc][ãa]o|equation|eq\.?|f[óo]rmula)\s*\(?" + re.escape(e.numero) + r"\)?(?!\d)", texto, re.I):
+            e.chamada_no_texto = True
+    n_img = sum(1 for e in model.equacoes if e.largura)
+    if model.equacoes:
+        model.aviso(f"{len(model.equacoes)} equação(ões) destacada(s) recortada(s) do PDF como imagem ({n_img} com recorte); "
+                    f"o PDF não guarda MathML, então o XML leva a imagem — para MathML é preciso o DOCX ou o LaTeX original (E01).")
 
 
 def _chamadas_figuras(model: ArticleModel):

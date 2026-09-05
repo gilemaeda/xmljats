@@ -7,6 +7,7 @@ from typing import Dict, List, Optional
 
 import pymupdf
 
+from .tabelas import detecta_equacoes, detecta_tabelas, recorta
 from .util import RE_MARCADOR, marcador_normalizado
 
 RE_ROTULO_CAIXA = re.compile(
@@ -98,6 +99,8 @@ class Documento:
     imagens_por_pagina: List[int]
     coluna_esquerda: Dict[int, float]
     imagens: List[dict] = field(default_factory=list)  # {pagina, bbox, ext, dados, largura, altura}
+    tabelas: List[dict] = field(default_factory=list)  # {pagina, bbox, celulas, linhas_cabecalho, colunas}
+    equacoes: List[dict] = field(default_factory=list)  # {pagina, bbox, rotulo, texto, numerada, png, largura, altura}
 
     def linhas_zona(self, zona):
         return [ln for ln in self.linhas if ln.zona == zona]
@@ -473,6 +476,20 @@ def ler_pdf(caminho: str) -> Documento:
                 font_chars[ln.font] += len(ln.texto)
     corpo_font = font_chars.most_common(1)[0][0] if font_chars else ""
     cabecalhos = _classifica(paginas, W, H, corpo)
+    # tabelas e equacoes saem do fluxo do corpo antes de montar os paragrafos
+    tabelas = detecta_tabelas(pdf, paginas, H)
+    equacoes = detecta_equacoes(paginas, corpo)
+    for tb in tabelas:
+        if tb.get("qualidade") == "baixa":
+            try:
+                tb["png"], tb["largura"], tb["altura"] = recorta(pdf, tb["pagina"], tb["bbox"], zoom=3.0)
+            except Exception:  # noqa: BLE001
+                tb["png"] = None
+    for eq in equacoes:
+        try:
+            eq["png"], eq["largura"], eq["altura"] = recorta(pdf, eq["pagina"], eq["bbox"])
+        except Exception:  # noqa: BLE001  (recorte e opcional; sem ele a equacao vira aviso)
+            eq["png"], eq["largura"], eq["altura"] = None, None, None
     layout = _layout(paginas, W, corpo)
 
     todas, paragrafos, notas, laterais, margens = [], [], [], [], []
@@ -499,5 +516,5 @@ def ler_pdf(caminho: str) -> Documento:
         caminho=caminho, paginas=pdf.page_count, metadata={k: v for k, v in pdf.metadata.items() if v}, largura=W, altura=H,
         corpo_size=corpo, corpo_font=corpo_font, layout=layout, linhas=todas, cabecalhos=cabecalhos, paragrafos=paragrafos,
         notas=notas, laterais=laterais, margens=margens, imagens_por_pagina=imagens, coluna_esquerda=col_esq,
-        imagens=blocos_imagem,
+        imagens=blocos_imagem, tabelas=tabelas, equacoes=equacoes,
     )

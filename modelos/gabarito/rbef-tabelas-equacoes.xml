@@ -1,0 +1,2906 @@
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.1" specific-use="sps-1.9" xml:lang="pt">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="publisher-id">rbef</journal-id>
+      <journal-title-group>
+        <journal-title>Revista Brasileira de Ensino de Física</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Bras. Ensino Fís.</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">1806-1117</issn>
+      <issn pub-type="epub">1806-9126</issn>
+      <publisher>
+        <publisher-name>Sociedade Brasileira de Física</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id specific-use="scielo-v3" pub-id-type="publisher-id">QTvss3J7XSVTTHT6snCpCcz</article-id>
+      <article-id specific-use="scielo-v2" pub-id-type="publisher-id">S1806-11172024000100427</article-id>
+      <article-id pub-id-type="other">00427</article-id>
+      <article-id pub-id-type="doi">10.1590/1806-9126-RBEF-2023-0329</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Artigos Gerais</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>A Terceira Lei de Kepler em diferente escalas:<break/>de luas até galáxias</article-title>
+        <trans-title-group xml:lang="en">
+          <trans-title>The Third Law of Kepler at different scales: from moons to galaxies</trans-title>
+        </trans-title-group>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0009-0002-8262-1515</contrib-id>
+          <name>
+            <surname>Pereira</surname>
+            <given-names>C.C.</given-names>
+          </name>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-2345-3999</contrib-id>
+          <name>
+            <surname>Velásquez-Toribio</surname>
+            <given-names>A.M.</given-names>
+          </name>
+          <xref ref-type="corresp" rid="c001">*</xref>
+          <xref ref-type="aff" rid="aff1">
+            <sup>1</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>2</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <label>1</label>
+        <institution content-type="original">Universidade Federal do Espírito Santo, Departamento de Física, 29075-910, Vitória, ES, Brasil.</institution>
+        <institution content-type="orgname">Universidade Federal do Espírito Santo</institution>
+        <institution content-type="orgdiv1">Departamento de Física</institution>
+        <addr-line>
+          <postal-code>29075-910</postal-code>
+          <named-content content-type="city">Vitória</named-content>
+          <named-content content-type="state">ES</named-content>
+        </addr-line>
+        <country country="BR">Brasil</country>
+      </aff>
+      <aff id="aff2">
+        <label>2</label>
+        <institution content-type="original">Universidade Federal do Espírito Santo, Núcleo de Astrofísica e Cosmologia, Vitória, ES, Brasil.</institution>
+        <institution content-type="orgname">Universidade Federal do Espírito Santo</institution>
+        <institution content-type="orgdiv1">Núcleo de Astrofísica e Cosmologia</institution>
+        <addr-line>
+          <named-content content-type="city">Vitória</named-content>
+          <named-content content-type="state">ES</named-content>
+        </addr-line>
+        <country country="BR">Brasil</country>
+      </aff>
+      <author-notes>
+        <corresp id="c001"><label>*</label>Endereço de correspondência: <email>alan.toribio@ufes.br</email> </corresp>
+      </author-notes>
+      <pub-date date-type="pub" publication-format="electronic">
+        <day>06</day>
+        <month>05</month>
+        <year>2024</year>
+      </pub-date>
+      <pub-date date-type="collection" publication-format="electronic">
+        <year>2024</year>
+      </pub-date>
+      <volume>46</volume>
+      <elocation-id>e20230329</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>30</day>
+          <month>10</month>
+          <year>2023</year>
+        </date>
+        <date date-type="rev-recd">
+          <day>18</day>
+          <month>03</month>
+          <year>2024</year>
+        </date>
+        <date date-type="accepted">
+          <day>19</day>
+          <month>03</month>
+          <year>2024</year>
+        </date>
+      </history>
+      <permissions>
+        <copyright-statement>Copyright by Sociedade Brasileira de Física. Printed in Brazil.</copyright-statement>
+        <copyright-year>2023</copyright-year>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/deed.en" xml:lang="en">
+          <license-p>This is an open-access article distributed under the terms of the Creative Commons Attribution License (CC BY). The use, distribution or reproduction in other forums is permitted, provided the original author(s) and the copyright owner(s) are credited and that the original publication in this journal is cited, in accordance with accepted academic practice. No use, distribution or reproduction is permitted which does not comply with these terms.</license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <p>Este artigo tem como objetivo verificar a terceira lei de Kepler para diferentes sistemas astronômicos em diversas escalas de distância, tais como Júpiter e suas quatro luas Galileanas, bem como o Sistema Solar, exoplanetas e galáxias. No caso de Júpiter utilizamos dados reais e simulados usando o programa <italic>Contemporary Laboratory in Astronomy (CLEA)</italic> valendo-se da equivalência entre o movimento harmônico simples (MHS) e movimento circular uniforme (MCU). Para o Sistema Solar e exoplanetas usamos dados das missões espaciais da NASA, e para galáxias, usamos dados do movimento de estrelas próximas do buraco negro Sargittarius A* da Via Láctea. A lei de Kepler é verificada nas escalas lunares, planetárias e exoplanetárias, sendo aproximadamente satisfeita também para Sargittarius A*. Por outro lado, a Terceira lei de Kepler não se verifica para o movimento geral de estrelas ao redor dos centros galácticos, pois as curvas de rotação de galáxias apresentam comportamento diferente do estabelecido pela lei do inverso do quadrado e é possível que a influência da componente de matéria escura seja dominante nestes sistemas.</p>
+      </abstract>
+      <trans-abstract xml:lang="en">
+        <p>This article aims to verify Kepler’s Third Law for different astronomical systems across various distance scales, such as Jupiter and its four Galilean moons, as well as the Solar System, exoplanets, and galaxies. In the case of Jupiter, we used real and simulated data using the Contemporary Laboratory in Astronomy (CLEA) program, using the equivalence between Simple Harmonic Motion (SHM) and Uniform Circular Motion (UCM). For the Solar System and exoplanets, we employed data from NASA’s space missions, and for galaxies, we utilized data regarding the motion of nearby stars around the Sagittarius A* black hole in the Milky Way. Kepler’s law is verified at lunar, planetary, and exoplanetary scales and is also approximately satisfied for Sagittarius A*. However, Kepler’s Third Law does not hold for the overall motion of stars around galactic centers, as the rotation curves of galaxies exhibit behavior different from that predicted by the inverse square law. It is possible that the influence of dark matter may be dominant in these systems.</p>
+      </trans-abstract>
+      <kwd-group xml:lang="pt">
+        <title>Palavras-chave:</title>
+        <kwd>Física</kwd>
+        <kwd>astronomia</kwd>
+        <kwd>luas galileanas</kwd>
+        <kwd>exoplanetas</kwd>
+        <kwd>galáxias</kwd>
+      </kwd-group>
+      <kwd-group xml:lang="en">
+        <title>Keywords:</title>
+        <kwd>Physics</kwd>
+        <kwd>astronomy</kwd>
+        <kwd>Galilean moons</kwd>
+        <kwd>exoplanets</kwd>
+        <kwd>galaxies</kwd>
+      </kwd-group>
+      <counts>
+        <fig-count count="18"/>
+        <table-count count="05"/>
+        <equation-count count="34"/>
+        <ref-count count="28"/>
+      </counts>
+    </article-meta>
+  </front>
+  <body>
+    <sec id="S1">
+      <title>1. Introdução</title>
+      <p>No início do século XVII, o pensamento predominante era o geocentrismo, sustentado pela filosofia de Aristóteles e pelo trabalho matemático de Ptolomeu. Essa concepção afirmava que a Terra ocupava o centro do universo, enquanto os demais corpos celestes, incluindo o Sol e os outros planetas conhecidos, orbitavam em círculos perfeitos ao seu redor.</p>
+      <p>Concomitantemente, Johannes Kepler, astrônomo e matemático alemão, vivia imerso nas ideias de seu mentor Michael Maestlin, um entusiasta da nova Astronomia de Nicolau Copérnico. Kepler compartilhava dessa visão, que postulava, em contraste com a teoria geocêntrica, que o Sol ocupava a posição central no universo, substituindo a Terra [<xref ref-type="bibr" rid="B1">1</xref>].</p>
+      <p>Neste período, as teorias de Copérnico e Ptolomeu não apresentavam vantagens significativas uma sobre a outra, por exemplo, ao comparar as predições das posições dos planetas, ambas as teorias eram competitivas [<xref ref-type="bibr" rid="B2">2</xref>]. Embora a abordagem de Copérnico fosse mais elegante, evitando o uso do equante e sendo mais intuitiva fisicamente, a teoria de Ptolomeu era amplamente utilizada pelos astrônomos da época, que estavam mais familiarizados com ela.</p>
+      <p>Neste contexto o trabalho de Tycho Brahe foi fundamental, o qual se destacou como o principal astrônomo observacional da era pré-telescópica, sendo capaz de determinar, com maior precisão, a posição dos diversos planetas visíveis em comparação a seus predecessores. Usando os dados de Tycho Brahe, Kepler pôde estabelecer as leis empíricas do movimento dos planetas e com isto, definitivamente, o modelo de Copérnico começou a ser aceito. Em 1609, Kepler publica seus primeiros resultados em sua obra intitulada “Astronomia Nova”, onde apresenta a trajetória elíptica dos planetas. Para uma melhor compreensão do conceito, consulte o esquema demonstrativo na <xref ref-type="fig" rid="F1">Figura 1</xref>.</p>
+      <fig id="F1" position="float">
+        <label>Figura 1</label>
+        <caption>
+          <title>Esquema representando a primeira lei de Kepler com o Sol ocupando um dos focos e o planeta na trajetória de uma elipse. Fonte: Acervo Pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/0da3fc45d9abdefdac664366e5e53afbfa830a91.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/25e25e64a412df0f0d7c06bc0dd73e539ad5e391.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Adicionalmente, Kepler conseguiu determinar outras duas leis do movimento planetário. A segunda lei, denominada lei das áreas é apresentada também no livro “Astronomia Nova”, e afirma que “a reta que une um planeta ao Sol percorre áreas iguais em intervalos de tempos iguais” [<xref ref-type="bibr" rid="B3">3</xref>]. Em resumo, ao longo de sua órbita, um planeta varia sua velocidade. Assim, quando o planeta se encontra no periélio, isto é, o ponto de sua órbita mais próximo do Sol, sua velocidade é maior em comparação ao afélio, que é o ponto mais distante da órbita [<xref ref-type="bibr" rid="B3">3</xref>].</p>
+      <p>Por outro lado, Kepler tinha a ideia fundamental da terceira lei ainda em seu primeiro livro, Mysterium Cosmographicum, publicado em 1597, antes mesmo de usar os dados de Tycho Brahe. Neste primeiro livro Kepler apresesenta um tratado sobre a teoria heliocêntrica do sistema solar proposta por Nicolaus Copérnico. Kepler estava fascinado pela ideia de que as órbitas dos planetas poderiam ser explicadas através de figuras geométricas simples. No livro, ele desenvolve a ideia de que os espaços entre as órbitas dos planetas são relacionados às proporções dos sólidos platônicos. Kepler propôs uma relação específica entre os diâmetros esféricos imaginários que circunscrevem as órbitas planetárias e os sólidos platônicos. Mesmo que suas ideias iniciais tenham resultado puramente especulativas, Kepler propôs hipóteses interessantes que serviriam de guia para seu futuro trabalho na descoberta das leis empíricas do movimento planetário. Entre estas ideias Kepler propõe que o Sol exerce uma força propulsora que mantém os planetas em órbita. Isto basicamente é observado por ele ao analisar os períodos (<italic>P</italic>) e as distâncias (<italic>r</italic>) dos planetas com os dados de Copérnico, ele identifica uma relação inversamente proporcional entre a força propulsora e a distância de cada planeta ao Sol, pois observa que quanto mais distantes os planetas do Sol seus períodos de rotação aumentam e o raciocínio inverso também resulta evidente. É interessante mencionar que, neste contexto, está incluída a ideia fundamental da terceira lei, mas de forma qualitativa.</p>
+      <p>Para obter uma forma quantitativa do que seria a terceira lei, Kepler precisou utilizar os dados de Tycho Brahe. Assim, em 1618, Kepler publica sua obra <italic>Harmonices Mundi</italic>, onde introduz o que será conhecida como a terceira lei, a qual pode ser enunciada como: “O quadrado do período orbital de um planeta é diretamente proporcional ao cubo de sua distância média ao Sol” [<xref ref-type="bibr" rid="B3">3</xref>, <xref ref-type="bibr" rid="B4">4</xref>]. Matematicamente, essa lei pode ser escrita da forma:</p>
+      <p>
+        <disp-formula id="DM1">
+          <label>(1)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:msup>
+                  <mml:mi>P</mml:mi>
+                  <mml:mn>2</mml:mn>
+                </mml:msup>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mi>K</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:msup>
+                    <mml:mi>R</mml:mi>
+                    <mml:mn>3</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>onde <italic>P</italic> é o período do planeta, <italic>R</italic> é a distância média e <italic>K</italic> é uma constante que depende da massa do Sol. Este mesmo resultado é também apresentado em seu livro <italic>Epitome Astronominae Copernicanae</italic>, publicada entre 1618 (primeira edição) e 1621 (segunda edição) de forma mais abrangente e coerente. Também, na segunda edição de seu livro <italic>Mysterium Cosmographicum</italic> em 1621 Kepler incluiu outra discussão original sobre a terceira lei. De outro lado, é importante mencionar que, para Kepler, essa lei não era concebida como uma imposição independente, mas sim como uma consequência das leis fundamentais da natureza [<xref ref-type="bibr" rid="B4">4</xref>].</p>
+      <p>Essas três leis, que descrevem o movimento planetário com base em observações empíricas, desempenharam um papel crucial nos desenvolvimentos subsequentes da Astronomia. Notavelmente, Isaac Newton adotou essas leis como alicerce para formular sua Lei da Gravitação Universal [<xref ref-type="bibr" rid="B5">5</xref>, <xref ref-type="bibr" rid="B6">6</xref>]. Em sua obra seminal “Princípios Matemáticos da Filosofia Natural”, publicada em 1687, Newton propôs que a força gravitacional é diretamente proporcional às massas dos corpos e inversamente proporcional ao quadrado da distância entre eles, expressando-a da seguinte maneira:</p>
+      <p>
+        <disp-formula id="DM2">
+          <label>(2)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mover accent="true">
+                  <mml:mi>F</mml:mi>
+                  <mml:mo stretchy="false">→</mml:mo>
+                </mml:mover>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mi>G</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:msub>
+                        <mml:mi>m</mml:mi>
+                        <mml:mn>1</mml:mn>
+                      </mml:msub>
+                      <mml:mo lspace="0.222em" rspace="0.222em">⋅</mml:mo>
+                      <mml:msub>
+                        <mml:mi>m</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msub>
+                    </mml:mrow>
+                    <mml:msup>
+                      <mml:mi>R</mml:mi>
+                      <mml:mn>2</mml:mn>
+                    </mml:msup>
+                  </mml:mfrac>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mover accent="true">
+                    <mml:mi>r</mml:mi>
+                    <mml:mo>^</mml:mo>
+                  </mml:mover>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>sendo <italic>m<sub>1</sub></italic> e <italic>m<sub>2</sub></italic> as massas das partículas interagindo gravitacionalmente, <italic>R</italic> a distância entre os duas partículas e <italic>G</italic> a constante gravitacional [<xref ref-type="bibr" rid="B5">5</xref>].</p>
+      <p>Podemos utilizar a lei da gravitação de Newton para estudar o movimento de dois corpos que interagem gravitacionalmente. Vale destacar que a excentricidade (<italic>e</italic>) das órbitas planetárias, no sistema solar, geralmente é muito pequena, o que nos permite aproximar suas órbitas por círculos, ver <xref ref-type="fig" rid="F2">Figura 2</xref>.</p>
+      <fig id="F2" position="float">
+        <label>Figura 2</label>
+        <caption>
+          <title>Esquema de um planeta em órbita circular em torno do Sol. Fonte: Acervo Pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/c8d52daccb8085313650b15603738ea235795659.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/6fac2ab731db735f2015420ea996eed413824dd9.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Agora considere dois corpos de massas <italic>m<sub>1</sub></italic> e <italic>m<sub>2</sub></italic>, afastados do centro de massa do sistema por uma distância <italic>r<sub>1</sub></italic> e <italic>r<sub>2</sub></italic> respectivamente, ver <xref ref-type="fig" rid="F3">Figura 3</xref>. A atração gravitacional entre eles depende da distância total entre eles e é dada em módulo por:</p>
+      <p>
+        <disp-formula id="DM3">
+          <label>(3)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mi>F</mml:mi>
+              <mml:mo>=</mml:mo>
+              <mml:mi>G</mml:mi>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>m</mml:mi>
+                    <mml:mn>1</mml:mn>
+                  </mml:msub>
+                  <mml:msub>
+                    <mml:mi>m</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+                <mml:mrow>
+                  <mml:msup>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:msub>
+                        <mml:mi>r</mml:mi>
+                        <mml:mn>1</mml:mn>
+                      </mml:msub>
+                      <mml:mo>+</mml:mo>
+                      <mml:msub>
+                        <mml:mi>r</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msub>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mfrac>
+              <mml:mo>.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <fig id="F3" position="float">
+        <label>Figura 3</label>
+        <caption>
+          <title>Esquema onde corpos de massas <italic>m<sub>1</sub></italic> e <italic>m<sub>2</sub></italic>, estão afastados do centro de massa do sistema por uma distância <italic>r<sub>1</sub></italic> e <italic>r<sub>2</sub></italic>. Fonte: Acervo Pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/cc5faa84bb3f46723ec25ce3ee9c9a1cbe4b5f23.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/050b823ffd1ad8a73b82a53a1b223070bd12bc54.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>A força centrípeta de cada partícula dirigida ao centro de massa pode ser escrita como:</p>
+      <p>
+        <disp-formula id="DM4">
+          <label>(4)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:msub>
+                <mml:mi>F</mml:mi>
+                <mml:mn>1</mml:mn>
+              </mml:msub>
+              <mml:mo>=</mml:mo>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>m</mml:mi>
+                    <mml:mn>1</mml:mn>
+                  </mml:msub>
+                  <mml:msubsup>
+                    <mml:mi>v</mml:mi>
+                    <mml:mn>1</mml:mn>
+                    <mml:mn>2</mml:mn>
+                  </mml:msubsup>
+                </mml:mrow>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>1</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+              </mml:mfrac>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+        <disp-formula id="DM5">
+          <label>(5)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:msub>
+                <mml:mi>F</mml:mi>
+                <mml:mn>2</mml:mn>
+              </mml:msub>
+              <mml:mo>=</mml:mo>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>m</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msub>
+                  <mml:msubsup>
+                    <mml:mi>v</mml:mi>
+                    <mml:mn>2</mml:mn>
+                    <mml:mn>2</mml:mn>
+                  </mml:msubsup>
+                </mml:mrow>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>1</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+              </mml:mfrac>
+              <mml:mo>.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Como estamos assumindo órbitas circulares e para que o centro de massa seja fixo, os períodos das duas massas devem ser iguais, assim podemos escrever para as velocidades das partículas:</p>
+      <p>
+        <disp-formula id="DM6">
+          <label>(6)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:msub>
+                <mml:mi>v</mml:mi>
+                <mml:mn>1</mml:mn>
+              </mml:msub>
+              <mml:mo>=</mml:mo>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:mn>2</mml:mn>
+                  <mml:mi>π</mml:mi>
+                  <mml:msub>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>1</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+                <mml:mi>P</mml:mi>
+              </mml:mfrac>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+        <disp-formula id="DM7">
+          <label>(7)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:msub>
+                <mml:mi>v</mml:mi>
+                <mml:mn>2</mml:mn>
+              </mml:msub>
+              <mml:mo>=</mml:mo>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:mn>2</mml:mn>
+                  <mml:mi>π</mml:mi>
+                  <mml:msub>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+                <mml:mi>P</mml:mi>
+              </mml:mfrac>
+              <mml:mo>.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Substituindo estas expressões nas fórmulas para as forças centrípetas e considerando que, para manter o movimento circular, os módulos das forças gravitacionais e centrípetas são idênticos:</p>
+      <p>
+        <disp-formula id="DM8">
+          <label>(8)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mi>F</mml:mi>
+              <mml:mo>=</mml:mo>
+              <mml:msub>
+                <mml:mi>F</mml:mi>
+                <mml:mn>1</mml:mn>
+              </mml:msub>
+              <mml:mo>=</mml:mo>
+              <mml:mi>G</mml:mi>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>m</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+                <mml:mrow>
+                  <mml:msup>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:msub>
+                        <mml:mi>r</mml:mi>
+                        <mml:mn>1</mml:mn>
+                      </mml:msub>
+                      <mml:mo>+</mml:mo>
+                      <mml:msub>
+                        <mml:mi>r</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msub>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mfrac>
+              <mml:mo>=</mml:mo>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:mn>4</mml:mn>
+                  <mml:msup>
+                    <mml:mi>π</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                  <mml:msub>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>1</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+                <mml:mrow>
+                  <mml:msup>
+                    <mml:mi>P</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mfrac>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+        <disp-formula id="DM9">
+          <label>(9)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mi>F</mml:mi>
+              <mml:mo>=</mml:mo>
+              <mml:msub>
+                <mml:mi>F</mml:mi>
+                <mml:mn>2</mml:mn>
+              </mml:msub>
+              <mml:mo>=</mml:mo>
+              <mml:mi>G</mml:mi>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>m</mml:mi>
+                    <mml:mn>1</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+                <mml:mrow>
+                  <mml:msup>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:msub>
+                        <mml:mi>r</mml:mi>
+                        <mml:mn>1</mml:mn>
+                      </mml:msub>
+                      <mml:mo>+</mml:mo>
+                      <mml:msub>
+                        <mml:mi>r</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msub>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mfrac>
+              <mml:mo>=</mml:mo>
+              <mml:mfrac>
+                <mml:mrow>
+                  <mml:mn>4</mml:mn>
+                  <mml:msup>
+                    <mml:mi>π</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                  <mml:msub>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msub>
+                </mml:mrow>
+                <mml:mrow>
+                  <mml:msup>
+                    <mml:mi>P</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mfrac>
+              <mml:mo>.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Agora somando ambas as fórmulas acima e colocando em evidência o período orbital, obtemos:</p>
+      <p>
+        <disp-formula id="DM10">
+          <label>(10)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:msup>
+                  <mml:mi>P</mml:mi>
+                  <mml:mn>2</mml:mn>
+                </mml:msup>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mn>4</mml:mn>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:msup>
+                        <mml:mi>π</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msup>
+                    </mml:mrow>
+                    <mml:mrow>
+                      <mml:mi>G</mml:mi>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:mrow>
+                        <mml:mo stretchy="false">(</mml:mo>
+                        <mml:mrow>
+                          <mml:msub>
+                            <mml:mi>m</mml:mi>
+                            <mml:mn>1</mml:mn>
+                          </mml:msub>
+                          <mml:mo>+</mml:mo>
+                          <mml:msub>
+                            <mml:mi>m</mml:mi>
+                            <mml:mn>2</mml:mn>
+                          </mml:msub>
+                        </mml:mrow>
+                        <mml:mo stretchy="false">)</mml:mo>
+                      </mml:mrow>
+                    </mml:mrow>
+                  </mml:mfrac>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:msup>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:mrow>
+                        <mml:msub>
+                          <mml:mi>r</mml:mi>
+                          <mml:mn>1</mml:mn>
+                        </mml:msub>
+                        <mml:mo>+</mml:mo>
+                        <mml:msub>
+                          <mml:mi>r</mml:mi>
+                          <mml:mn>2</mml:mn>
+                        </mml:msub>
+                      </mml:mrow>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                    <mml:mn>3</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Se consideramos que <inline-formula id="ILM1"><mml:math display="inline"><mml:mrow><mml:mrow><mml:msub><mml:mi>r</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>+</mml:mo><mml:msub><mml:mi>r</mml:mi><mml:mn>2</mml:mn></mml:msub></mml:mrow><mml:mo>=</mml:mo><mml:mi>R</mml:mi></mml:mrow></mml:math></inline-formula> e comparamos com a forma empírica da terceira lei de Kepler observamos que a lei da gravitação de Newton permite determinar a constante <italic>K</italic> como:</p>
+      <p>
+        <disp-formula id="DM11">
+          <label>(11)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mi>K</mml:mi>
+                <mml:mo>=</mml:mo>
+                <mml:mfrac>
+                  <mml:mrow>
+                    <mml:mn>4</mml:mn>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msup>
+                      <mml:mi>π</mml:mi>
+                      <mml:mn>2</mml:mn>
+                    </mml:msup>
+                  </mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>G</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:mrow>
+                        <mml:msub>
+                          <mml:mi>m</mml:mi>
+                          <mml:mn>1</mml:mn>
+                        </mml:msub>
+                        <mml:mo>+</mml:mo>
+                        <mml:msub>
+                          <mml:mi>m</mml:mi>
+                          <mml:mn>2</mml:mn>
+                        </mml:msub>
+                      </mml:mrow>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mfrac>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Neste sentido, é importante observar que <inline-formula id="ILM2"><mml:math display="inline"><mml:mrow><mml:mi>K</mml:mi><mml:mo>=</mml:mo><mml:mfrac><mml:msup><mml:mi>P</mml:mi><mml:mn>2</mml:mn></mml:msup><mml:msup><mml:mi>R</mml:mi><mml:mn>3</mml:mn></mml:msup></mml:mfrac></mml:mrow></mml:math></inline-formula> se mantém praticamente constante para todos os planetas do nosso sistema solar. Isso porque as massas dos planetas são muito pequenas em comparação com a massa do Sol. Por exemplo, a massa de Júpiter, o maior planeta do sistema solar, é apenas cerca de um milésimo da massa do Sol e no caso da Terra a diferença fica na ordem de dezenas de milhões. Assim, assumir que <italic>K</italic> é constante para o nosso sistema solar é uma aproximação válida e consistente. Podemos observar que a terceira lei de Kepler recalculada pelo método de Newton permite ter um método de determinar a massa do sistema. Em geral, poderemos determinar para qualquer conjunto de <italic>n</italic> partículas interagindo gravitacionalmente que: <inline-formula id="ILM3"><mml:math display="inline"><mml:mrow><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mn>1</mml:mn></mml:msub><mml:mo>⁢</mml:mo><mml:mi>K</mml:mi></mml:mrow><mml:mo>=</mml:mo><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mn>2</mml:mn></mml:msub><mml:mo>⁢</mml:mo><mml:mi>K</mml:mi></mml:mrow><mml:mo>=</mml:mo><mml:mi mathvariant="normal">…</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mi>n</mml:mi></mml:msub><mml:mo>⁢</mml:mo><mml:mi>K</mml:mi><mml:mo>⁢</mml:mo><mml:mfrac><mml:mrow><mml:mn>4</mml:mn><mml:mo>⁢</mml:mo><mml:msup><mml:mi>π</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:mrow><mml:mi>G</mml:mi></mml:mfrac></mml:mrow></mml:mrow></mml:math></inline-formula>, onde <italic>M<sub>i</sub></italic> representa a massa do sistema. Por exemplo, no caso de satélites orbitando um planeta <italic>M</italic> seria a massa do planeta.</p>
+      <p>Neste artigo, examinamos a aplicação da terceira lei de Kepler em diferentes escalas astronômicas. A estrutura do artigo é a seguinte: na Seção 2, apresentamos um breve histórico das descobertas de Galileu Galilei relacionadas a Júpiter. Isso inclui a análise da equivalência entre Movimento Harmônico Simples (MHS) e Movimento Circular Uniforme (MCU), a explicação do funcionamento do <italic>Software CLEA</italic>, e o teste da validade da terceira lei de Kepler para as Luas de Júpiter. Na Seção 3, abordamos a aplicação da terceira lei de Kepler ao planetas do Sistema Solar. Na seção 4 estendemos nossa análise para exoplanetas e na seção 5 discutios a aplicação da terceira lei de Kepler para galáxias. Na seção 6 concluímos com uma síntese dos principais resultados.</p>
+    </sec>
+    <sec id="S2">
+      <title>2. Galileu e a Terceira Lei de Kepler para as Luas de Júpiter</title>
+      <p>Galileu Galilei, em 1609, constrói sua luneta e torna-se o primeiro cientista a utilizar um telescópio para observar os céus. A invenção do telescópio é atribuída a Hans Lippershey, pois especulava-se na comunidade científica que Lippershey foi o primeiro a registrar uma patente em 1608. No entanto, utilizava-se o telescópio para fins militares, não científicos na época. O telescópio de Lippershey tinha um aumento de 3 a 4 vezes, enquanto o primeiro telescópio de Galileu possuía um aumento de 9 vezes (ver <xref ref-type="fig" rid="F4">Figura 4</xref>) [<xref ref-type="bibr" rid="B3">3</xref>].</p>
+      <fig id="F4" position="float">
+        <label>Figura 4</label>
+        <caption>
+          <title>Luneta construída por Galileu Galilei em 1609 presente no Istituto e Museo di Storia della Scienza, em Florença. Fonte: [<xref ref-type="bibr" rid="B7">7</xref>].</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/e9d6c12676cb69ec18c16c256fa73b0c1ff08785.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/a2ab5d245bbb47191d3cd6cae791cb3e02db56fd.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Ao apontar o objeto para o céu, Galileu percebeu estranhos pontos brilhantes ao redor de Júpiter<sup><xref ref-type="fn" rid="footnote1">1</xref></sup> (ver <xref ref-type="fig" rid="F5">Figura 5</xref>). Instigado por sua curiosidade, estudou tais objetos que inicialmente o cientista achou serem “estrelas”. Assim, de janeiro a março de 1610, na Itália, Galilei observou Júpiter e suas “estrelas”, mais tarde ele viria a chamar de Planetas Mediceanos. Hoje, essas luas são conhecidas como luas galileanas, sendo elas Io, Europa, Ganimedes e Calisto [<xref ref-type="bibr" rid="B3">3</xref>].</p>
+      <fig id="F5" position="float">
+        <label>Figura 5</label>
+        <caption>
+          <title>Imagem de Júpiter realizada em 12 de fevereiro de 2019 pela espaço nave da NASA Juno. Créditos: NASA.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/776640f5c871f29bfdc48426eae91a144c7cbac7.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/38b7e38d707064efd35dcfee3566100a6edae110.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Tais descobertas e observações foram registradas por Galileu em seu livro intitulado <italic>Sidereus Nuncius</italic>, publicado em março de 1610. Ele fez diversas anotações de suas observações das luas (ver <xref ref-type="fig" rid="F6">Figura 6</xref>), onde relatou as posições das mesmas em relação a Júpiter. Ao analisar esses dados, é possível perceber uma relação (aparente, pois sabe-se que não é o que ocorre de fato) entre o movimento harmônico simples e o movimento circular uniforme. Essa relação acontece devido à posição do conjunto Júpiter e suas luas, que é observada da Terra, gerando a impressão da ocorrência de um sistema massa-mola entre o planeta e suas luas.</p>
+      <fig id="F6" position="float">
+        <label>Figura 6</label>
+        <caption>
+          <title>Diagrama de Galilei para a configuração de Júpiter e suas luas do dia 12 de janeiro de 1610. Fonte: [<xref ref-type="bibr" rid="B9">9</xref>].</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/1084ca3361ccf3821ba50694e2f564b4b3126445.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/8e59fe1544bb2570f15aad33285aa0ac5d375fdb.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Analisando a <xref ref-type="fig" rid="F6">Figura 6</xref> com o auxílio do <italic>Software CLEA</italic> (que será detalhado nas seções subsequentes) para simular o que Galileu observou em 12 de janeiro de 1610 ao apontar sua luneta para o céu, verifica-se que o asterisco maior, o primeiro da esquerda para a direita, simboliza a lua Ganimedes. Ao seu lado, o asterisco menor pode representar Io, Calisto ou até mesmo as duas luas juntas. O asterisco de tamanho médio, sendo o último ilustrado, representa a lua Europa. Utilizando o <italic>CLEA</italic>, podemos comparar as anotações de Galileu com a simulação do programa, como evidenciado na <xref ref-type="fig" rid="F7">Figura 7</xref>.</p>
+      <fig id="F7" position="float">
+        <label>Figura 7</label>
+        <caption>
+          <title>Simulação das luas de Júpiter, em azul temos Ganimedes, amarelo Calisto, lilás temos Io e em branco Europa, ilustrando as posições de acordo com a <xref ref-type="fig" rid="F6">Figura 6</xref>. Fonte: <italic>Software CLEA</italic>, [<xref ref-type="bibr" rid="B10">10</xref>].</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/28bc8a38bde87bdd3b5db7fac6dce1478b5c7877.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/601d5a8aff94968b491c3955a884ff241859f3c7.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>As descobertas de Galileu desempenharam um papel significativo ao desafiar as concepções do modelo geocêntrico, tornando-se fundamentais para o avanço da Astronomia. Além disso, essas descobertas forneceram dados observacionais cruciais para respaldar a teoria heliocêntrica de Copérnico [<xref ref-type="bibr" rid="B9">9</xref>].</p>
+      <p>Ao analisar as observações de Galileu, percebe-se que suas luas aparentam seguir um Movimento Harmônico Simples (MHS) descrito pela função periódica:</p>
+      <p>
+        <disp-formula id="DM12">
+          <label>(12)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mi>x</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mrow>
+                    <mml:mo stretchy="false">(</mml:mo>
+                    <mml:mi>t</mml:mi>
+                    <mml:mo stretchy="false">)</mml:mo>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mi>r</mml:mi>
+                  <mml:mo lspace="0.167em">⁢</mml:mo>
+                  <mml:mrow>
+                    <mml:mi>sin</mml:mi>
+                    <mml:mo>⁡</mml:mo>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:mrow>
+                        <mml:mrow>
+                          <mml:mi>ω</mml:mi>
+                          <mml:mo>⁢</mml:mo>
+                          <mml:mi>t</mml:mi>
+                        </mml:mrow>
+                        <mml:mo>+</mml:mo>
+                        <mml:msub>
+                          <mml:mi>ϕ</mml:mi>
+                          <mml:mn>0</mml:mn>
+                        </mml:msub>
+                      </mml:mrow>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>onde <italic>r</italic> representa a amplitude, ou seja, a maior distância que as luas podem se afastar de Júpiter. Além disso, <inline-formula id="ILM4"><mml:math display="inline"><mml:msub><mml:mi>ϕ</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inline-formula> representa a fase inicial e <inline-formula id="ILM5"><mml:math display="inline"><mml:mi>ω</mml:mi></mml:math></inline-formula> indica o período angular. Embora as luas não sigam um sistema massa-mola, é possível compreender a razão desse movimento aparente por meio do cálculo da equivalência entre o Movimento Harmônico Simples (MHS) e o Movimento Circular Uniforme (MCU). Essa equivalência será demonstrada na seção a seguir. Para obter informações mais detalhadas, consulte a referência [<xref ref-type="bibr" rid="B11">11</xref>].</p>
+      <sec id="S2.SS1">
+        <title>2.1. Equivalência entre o MHS e o MCU</title>
+        <p>Para melhor compreensão do movimento das luas Galileanas e do uso do programa <italic>CLEA</italic> é necessário e interessante revisar a demonstração da equivalência entre o Movimento Harmônico Simples e o Movimento Circular Uniforme.</p>
+        <p>Na <xref ref-type="fig" rid="F8">Figura 8</xref> representamos um Movimento Circular Uniforme onde a posição de C pode ser projetada no eixo x nos dando a posição de E, ou seja, a posição aparente da lua que veríamos a partir do planeta Terra com um telescópio. Logo usando trigonometria para o triângulo retângulo <inline-formula id="ILM6"><mml:math display="inline"><mml:mrow><mml:mi>J</mml:mi><mml:mi mathvariant="italic">Ê</mml:mi><mml:mi>C</mml:mi></mml:mrow></mml:math></inline-formula> podemos escrever:</p>
+        <p>
+          <disp-formula id="DM13">
+            <label>(13)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>cos</mml:mi>
+                    <mml:mo>⁡</mml:mo>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:mi>ϕ</mml:mi>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mi>x</mml:mi>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:mrow>
+                        <mml:mo stretchy="false">(</mml:mo>
+                        <mml:mi>t</mml:mi>
+                        <mml:mo stretchy="false">)</mml:mo>
+                      </mml:mrow>
+                    </mml:mrow>
+                    <mml:mi>r</mml:mi>
+                  </mml:mfrac>
+                </mml:mrow>
+                <mml:mo lspace="0em">.</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <fig id="F8" position="float">
+          <label>Figura 8</label>
+          <caption>
+            <title>Esquema da órbita circular para uma das luas de Júpiter, sendo J o planeta Júpiter, C a posição da lua e o ângulo <inline-formula id="ILM7"><mml:math display="inline"><mml:mi>ϕ</mml:mi></mml:math></inline-formula> formado pelos seguimentos <italic>r</italic> e <inline-formula id="ILM8"><mml:math display="inline"><mml:mrow><mml:mi>x</mml:mi><mml:mo>⁢</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>t</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow></mml:math></inline-formula>. Fonte: Acervo pessoal.</title>
+          </caption>
+          <alternatives>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/77077f4298abae5f4be655f966eeb7adbdcee95b.jpg"/>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/fc5684e3bea58b7f68877e1167af86d41fda8bde.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+          </alternatives>
+        </fig>
+        <p>Reorganizando a equação (<xref ref-type="disp-formula" rid="DM13">13</xref>):</p>
+        <p>
+          <disp-formula id="DM14">
+            <label>(14)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>x</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:mi>t</mml:mi>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                  <mml:mo>=</mml:mo>
+                  <mml:mrow>
+                    <mml:mi>r</mml:mi>
+                    <mml:mo lspace="0.167em">⁢</mml:mo>
+                    <mml:mrow>
+                      <mml:mi>cos</mml:mi>
+                      <mml:mo>⁡</mml:mo>
+                      <mml:mrow>
+                        <mml:mo stretchy="false">(</mml:mo>
+                        <mml:mi>ϕ</mml:mi>
+                        <mml:mo stretchy="false">)</mml:mo>
+                      </mml:mrow>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo lspace="0em">.</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>Usando a regra do seno da soma de dois ângulos para encontrar <inline-formula id="ILM9"><mml:math display="inline"><mml:mrow><mml:mi>cos</mml:mi><mml:mo>⁡</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>ϕ</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow></mml:math></inline-formula>, obtém-se:</p>
+        <p>
+          <disp-formula id="DM34">
+            <label/>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>sin</mml:mi>
+                    <mml:mo>⁡</mml:mo>
+                    <mml:mrow>
+                      <mml:mo>(</mml:mo>
+                      <mml:mrow>
+                        <mml:mi>ϕ</mml:mi>
+                        <mml:mo>+</mml:mo>
+                        <mml:mfrac>
+                          <mml:mi>π</mml:mi>
+                          <mml:mn>2</mml:mn>
+                        </mml:mfrac>
+                      </mml:mrow>
+                      <mml:mo>)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                  <mml:mo>=</mml:mo>
+                  <mml:mrow>
+                    <mml:mrow>
+                      <mml:mrow>
+                        <mml:mi>sin</mml:mi>
+                        <mml:mo>⁡</mml:mo>
+                        <mml:mrow>
+                          <mml:mo stretchy="false">(</mml:mo>
+                          <mml:mi>ϕ</mml:mi>
+                          <mml:mo stretchy="false">)</mml:mo>
+                        </mml:mrow>
+                      </mml:mrow>
+                      <mml:mo lspace="0.167em">⁢</mml:mo>
+                      <mml:mrow>
+                        <mml:mi>cos</mml:mi>
+                        <mml:mo>⁡</mml:mo>
+                        <mml:mrow>
+                          <mml:mo>(</mml:mo>
+                          <mml:mfrac>
+                            <mml:mi>π</mml:mi>
+                            <mml:mn>2</mml:mn>
+                          </mml:mfrac>
+                          <mml:mo>)</mml:mo>
+                        </mml:mrow>
+                      </mml:mrow>
+                    </mml:mrow>
+                    <mml:mo>+</mml:mo>
+                    <mml:mrow>
+                      <mml:mrow>
+                        <mml:mi>sin</mml:mi>
+                        <mml:mo>⁡</mml:mo>
+                        <mml:mrow>
+                          <mml:mo>(</mml:mo>
+                          <mml:mfrac>
+                            <mml:mi>π</mml:mi>
+                            <mml:mn>2</mml:mn>
+                          </mml:mfrac>
+                          <mml:mo>)</mml:mo>
+                        </mml:mrow>
+                      </mml:mrow>
+                      <mml:mo lspace="0.167em">⁢</mml:mo>
+                      <mml:mrow>
+                        <mml:mi>cos</mml:mi>
+                        <mml:mo>⁡</mml:mo>
+                        <mml:mrow>
+                          <mml:mo stretchy="false">(</mml:mo>
+                          <mml:mi>ϕ</mml:mi>
+                          <mml:mo stretchy="false">)</mml:mo>
+                        </mml:mrow>
+                      </mml:mrow>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo lspace="0em">.</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>Sabe-se que <inline-formula id="ILM10"><mml:math display="inline"><mml:mrow><mml:mrow><mml:mi>cos</mml:mi><mml:mo>⁡</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mfrac><mml:mi>π</mml:mi><mml:mn>2</mml:mn></mml:mfrac><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow><mml:mo>=</mml:mo><mml:mn>0</mml:mn></mml:mrow></mml:math></inline-formula> e <inline-formula id="ILM11"><mml:math display="inline"><mml:mrow><mml:mrow><mml:mi>sin</mml:mi><mml:mo>⁡</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mfrac><mml:mi>π</mml:mi><mml:mn>2</mml:mn></mml:mfrac><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow><mml:mo>=</mml:mo><mml:mn>1</mml:mn></mml:mrow></mml:math></inline-formula>, logo:</p>
+        <p>
+          <disp-formula id="DM15">
+            <label>(15)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>cos</mml:mi>
+                    <mml:mo>⁡</mml:mo>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:mi>ϕ</mml:mi>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                  <mml:mo>=</mml:mo>
+                  <mml:mrow>
+                    <mml:mi>sin</mml:mi>
+                    <mml:mo>⁡</mml:mo>
+                    <mml:mrow>
+                      <mml:mo>(</mml:mo>
+                      <mml:mrow>
+                        <mml:mi>ϕ</mml:mi>
+                        <mml:mo>+</mml:mo>
+                        <mml:mfrac>
+                          <mml:mi>π</mml:mi>
+                          <mml:mn>2</mml:mn>
+                        </mml:mfrac>
+                      </mml:mrow>
+                      <mml:mo>)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo>,</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>substituindo (<xref ref-type="disp-formula" rid="DM15">15</xref>) em (<xref ref-type="disp-formula" rid="DM14">14</xref>) pode-se obter:</p>
+        <p>
+          <disp-formula id="DM16">
+            <label>(16)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>x</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mrow>
+                      <mml:mo stretchy="false">(</mml:mo>
+                      <mml:mi>t</mml:mi>
+                      <mml:mo stretchy="false">)</mml:mo>
+                    </mml:mrow>
+                  </mml:mrow>
+                  <mml:mo>=</mml:mo>
+                  <mml:mrow>
+                    <mml:mi>r</mml:mi>
+                    <mml:mo lspace="0.167em">⁢</mml:mo>
+                    <mml:mrow>
+                      <mml:mi>sin</mml:mi>
+                      <mml:mo>⁡</mml:mo>
+                      <mml:mrow>
+                        <mml:mo>(</mml:mo>
+                        <mml:mrow>
+                          <mml:mi>ϕ</mml:mi>
+                          <mml:mo>+</mml:mo>
+                          <mml:mfrac>
+                            <mml:mi>π</mml:mi>
+                            <mml:mn>2</mml:mn>
+                          </mml:mfrac>
+                        </mml:mrow>
+                        <mml:mo>)</mml:mo>
+                      </mml:mrow>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo lspace="0em">.</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>Considerando que a velocidade angular é constante, o ângulo <inline-formula id="ILM12"><mml:math display="inline"><mml:mi>ϕ</mml:mi></mml:math></inline-formula> pode ser reescrito da seguinte forma:</p>
+        <p>
+          <disp-formula id="DM17">
+            <label>(17)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mi>ϕ</mml:mi>
+                  <mml:mo>=</mml:mo>
+                  <mml:mrow>
+                    <mml:mi>ω</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>t</mml:mi>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo lspace="0em">.</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>Sabemos que o ângulo <inline-formula id="ILM13"><mml:math display="inline"><mml:mfrac><mml:mi>π</mml:mi><mml:mn>2</mml:mn></mml:mfrac></mml:math></inline-formula> é um caso específico de uma fase inicial; nesse sentido, podemos escolhê-lo de forma arbitrária, geralmente representado por <inline-formula id="ILM14"><mml:math display="inline"><mml:msub><mml:mi>ϕ</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inline-formula>. Assim, substituindo a equação (<xref ref-type="disp-formula" rid="DM17">17</xref>) e o valor de <inline-formula id="ILM15"><mml:math display="inline"><mml:msub><mml:mi>ϕ</mml:mi><mml:mn>0</mml:mn></mml:msub></mml:math></inline-formula> em (<xref ref-type="disp-formula" rid="DM16">16</xref>), obtemos a equação (<xref ref-type="disp-formula" rid="DM12">12</xref>), que representa o Movimento Harmônico Simples (MHS).</p>
+        <p>Dessa forma, demonstramos que o MHS pode ser descrito como a projeção do Movimento Circular Uniforme (MCU) ao longo de um dado diâmetro da trajetória circular. Portanto, ao observar ømovimento oscilatório aparente de um satélite natural de Júpiter, como, por exemplo, Calisto, Galileu pôde inferir que Calisto realiza um movimento circular ao redor de Júpiter.</p>
+      </sec>
+      <sec id="S2.SS2">
+        <title>2.2. Simulando as luas de Júpiter com o <italic>CLEA</italic></title>
+        <p>O <italic>Project CLEA</italic> (Contemporary Laboratory in Astronomy) é um conjunto de programas para o sistema operacional <italic>Windows</italic>, desenvolvido pelo departamento de Física do <italic>Gettysburg College</italic> em parceria com a <italic>National Science Foundation</italic> (consulte a referência [<xref ref-type="bibr" rid="B10">10</xref>] para mais informações). O principal objetivo desse projeto é oferecer exercícios que utilizem a computação como ferramenta para o ensino de Astronomia a alunos do ensino médio.</p>
+        <p>Para baixar os programas, basta acessar o site oficial do <italic>Project CLEA</italic>, também disponível na referência [<xref ref-type="bibr" rid="B10">10</xref>], e seguir as instruções fornecidas. No site, os interessados encontrarão tutoriais, tanto para os alunos quanto para os professores. Cada tutorial oferece explicações detalhadas sobre o funcionamento do software, além de guiar passo a passo os objetivos de cada exercício proposto e realizável através do <italic>CLEA</italic>.</p>
+        <p>Uma das aplicações disponíveis no projeto é o programa intitulado <italic>The Revolutions of The Moons of Jupiter</italic>, o qual foi utilizado para o desenvolvimento deste trabalho. Esse programa possibilita a simulação e obtenção das posições das luas galileanas que orbitam o planeta Júpiter. As imagens geradas são reais e foram obtidas a partir da missão Voyager da <italic>NASA (National Aeronautics and Space Administration)</italic> em quatro níveis de <italic>zoom</italic>. Além disso, é utilizado um programa de efemérides que demonstra de forma precisa as posições das luas ao redor de Júpiter em qualquer data e momento específicos. Para uma melhor compreensão, consulte as <xref ref-type="fig" rid="F9">Figuras 9</xref> e <xref ref-type="fig" rid="F10">10</xref>.</p>
+        <fig id="F9" position="float">
+          <label>Figura 9</label>
+          <caption>
+            <title>Interface do <italic>Software CLEA</italic> com as posições das luas galileanas de Júpiter. Fonte: <italic>Sofware CLEA</italic>, [<xref ref-type="bibr" rid="B10">10</xref>].</title>
+          </caption>
+          <alternatives>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/6cceca3a5b27797191618678adbe10cb4b01c713.jpg"/>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/cb34bc8609c706bc5a631a1429745a748cff6ec0.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+          </alternatives>
+        </fig>
+        <fig id="F10" position="float">
+          <label>Figura 10</label>
+          <caption>
+            <title>Interface do <italic>Software CLEA</italic> com o gráfico de exemplo da lua Callisto obtido utilizando suas posições em relação a Júpiter. Fonte: <italic>Sofware CLEA</italic>, [<xref ref-type="bibr" rid="B10">10</xref>].</title>
+          </caption>
+          <alternatives>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/74eb79cc6d951c070ad4a40d7e8591da8876a575.jpg"/>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/eafb3b3510876dc809970602a33e9d87658fd23c.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+          </alternatives>
+        </fig>
+        <p>É viável armazenar as posições das luas de Júpiter no banco de dados do <italic>CLEA</italic>, através de um simples procedimento. Ao clicar sobre a lua desejada e, em seguida, selecionar a opção <italic>record</italic>, os dados são registrados para posterior construção de gráficos dentro do próprio <italic>CLEA</italic>. Por exemplo, a <xref ref-type="fig" rid="F10">Figura 10</xref> apresenta um gráfico gerado a partir de dados de posições da lua Calisto, permitindo a análise de seu movimento.</p>
+        <p>A facilidade de manuseio do <italic>Software</italic> é notável, pois apenas é necessário compreender as funcionalidades dos botões interativos disponíveis, realizando as ações desejadas com poucos cliques. Além disso, não é exigido nenhum conhecimento avançado de programação para operar o <italic>CLEA</italic>, tornando-o acessível e amigável para os estudantes do ensino médio.</p>
+        <p>O <italic>CLEA</italic> oferece utilidades significativas para obter o raio e os períodos orbitais de cada lua. Para determinar o raio, basta utilizar o valor do eixo <italic>y</italic> que corresponde ao ponto máximo situado no pico dos dados encontrados. Já para o período, é suficiente realizar a subtração entre dois picos sucessivos dos valores do eixo <italic>x</italic>, considerando sempre o resultado dessa subtração como positivo, conforme exemplificado nos dados da <xref ref-type="fig" rid="F10">Figura 10</xref>.</p>
+        <p>O programa possibilita uma visão geral das órbitas e permite a simulação do movimento das luas ao redor de Júpiter em função do tempo, entre outras funções ainda não exploradas pelos autores. Dessa forma, utilizamos o <italic>CLEA</italic> para coletar os dados das posições das luas galileanas e investigá-las de acordo com a abordagem deste artigo. É importante notar que o programa é em inglês.</p>
+        <p>O tempo é mostrado no eixo <italic>x</italic> usando Data Juliana (em inglês, <italic>Julian Date</italic>) como unidade de medida, que é uma forma de contar os dias de maneira contínua, começando desde um ponto chamado “Dia Juliano Zero”, definido em 1° de janeiro de 4713 a.C. Essa forma de contar os dias é amplamente usada na Astronomia para calcular eventos astronômicos. O interessante é que cada dia começa ao meio-dia e termina ao meio-dia do dia seguinte, abrangendo tanto o período da noite quanto o período do dia, o que é útil para a Astronomia. Além disso, facilita a obtenção de quantos dias se passaram, pois basta realizar uma subtração entre as datas.</p>
+        <p>Por outro lado, no eixo <italic>y</italic> estão os valores de distância da lua até Júpiter. Assim, o diâmetro de Júpiter (em inglês, <italic>Jupiter Diameter</italic>) é uma unidade de medida; portanto, as distâncias mostradas no gráfico são múltiplos desse valor.</p>
+        <p>Assim, para facilitar o aprendizado e o uso do <italic>CLEA</italic> adaptamos os dados e criamos um guia<sup><xref ref-type="fn" rid="footnote2">2</xref></sup>.</p>
+      </sec>
+      <sec id="S2.SS3">
+        <title>2.3. Terceira Lei de Kepler para as luas de Júpiter</title>
+        <p>Utilizando os dados fornecidos pelo <italic>Software CLEA</italic>, construímos gráficos para visualizar as posições das luas em relação a Júpiter em 30 dias diferentes. O <italic>software</italic> não fornece medidas de incerteza para os dados. Para incorporar incertezas na análise, seria viável calcular uma média dos valores obtidos ao simular diversos intervalos de tempo, porém, essa técnica não será utilizada pelos autores. Devido às unidades de medida não triviais no programa, foi necessário converter as distâncias de JD (Diâmetro de Júpiter) para quilômetros e o tempo, que é fornecido em Data Juliana, para dias.</p>
+        <p>Para aprimorar a visualização da trajetória das luas ao redor de Júpiter, foi realizado um ajuste utilizando a equação (<xref ref-type="disp-formula" rid="DM12">12</xref>). Esse ajuste foi feito utilizando o <italic>Software Scidavis</italic>, um programa de código livre para construir gráficos científicos. Os parâmetros da equação (<xref ref-type="disp-formula" rid="DM12">12</xref>) foram obtidos a partir da referência [<xref ref-type="bibr" rid="B9">9</xref>], e o <italic>Scidavis</italic> ajustou a curva de forma aproximada, gerando as curvas de ajuste nas <xref ref-type="fig" rid="F11">Figuras 11a</xref>, <xref ref-type="fig" rid="F11">11b</xref>, <xref ref-type="fig" rid="F11">11c</xref> e <xref ref-type="fig" rid="F11">11d</xref>, permitindo uma análise do comportamento dos dados coletados, evidenciando um movimento oscilatório aparente representado pela equação (<xref ref-type="disp-formula" rid="DM12">12</xref>).</p>
+        <fig id="F11" position="float">
+          <label>Figura 11</label>
+          <caption>
+            <title>Gráfico do movimento das quatro luas Galileanas de Júpiter. Fonte: Acervo pessoal.</title>
+          </caption>
+          <alternatives>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/f6c2a3b48cf1274cd8835f6c60504491556c807f.jpg"/>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/164255ca8821b9e4fb34aaa408aa76d2f7fca7fe.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+          </alternatives>
+        </fig>
+        <p>A partir da terceira lei de Kepler, é possível obter a massa do Planeta Júpiter usando os dados das luas galileanas em conjunto com os dados do <italic>Software CLEA</italic>. A massa de Júpiter <italic>M<sub>J</sub></italic> é isolada pela manipulação da terceira lei de Kepler, resultando na equação (<xref ref-type="disp-formula" rid="DM18">18</xref>) abaixo:</p>
+        <p>
+          <disp-formula id="DM18">
+            <label>(18)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>M</mml:mi>
+                    <mml:mi>J</mml:mi>
+                  </mml:msub>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mn>4</mml:mn>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:msup>
+                        <mml:mi>π</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msup>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:msup>
+                        <mml:mi>r</mml:mi>
+                        <mml:mn>3</mml:mn>
+                      </mml:msup>
+                    </mml:mrow>
+                    <mml:mrow>
+                      <mml:mi>G</mml:mi>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:msup>
+                        <mml:mi>P</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msup>
+                    </mml:mrow>
+                  </mml:mfrac>
+                </mml:mrow>
+                <mml:mo>,</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>onde <italic>G</italic> é a constante gravitacional, com o valor <inline-formula id="ILM16"><mml:math display="inline"><mml:mrow><mml:mi>G</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:mn>6,6743</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mrow><mml:mo>−</mml:mo><mml:mn>11</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula> m<sup>3</sup>/kg . s<sup>2</sup>, <italic>r</italic> representa a distância média entre a lua e o corpo que ela orbita, e <italic>P</italic> é o período orbital da lua.</p>
+        <p>Ao analisar os dados referentes à lua Io, apresentados na <xref ref-type="fig" rid="F11">Figura 11a</xref>, foi possível calcular o período orbital e o raio orbital de Io utilizando o software <italic>Scidavis</italic>. Nossos cálculos, seguindo uma convenção simplificada que não considera incertezas explicitamente, resultaram em um período orbital <italic>P<sub>Io</sub></italic> de 1,78 dias e um raio orbital <italic>r<sub>Io</sub></italic> de 430.645,6 km de 430.645,6 km, onde o penúltimo dígito de cada número é considerado o último algarismo significativo.</p>
+        <p>Para calcular a massa de Júpiter (<italic>M<sub>J</sub></italic>) a partir dos dados da lua Io, empregamos a equação (<xref ref-type="disp-formula" rid="DM18">18</xref>) que estabelece a relação entre a massa do planeta, o período orbital e o raio orbital da lua. Nota-se que a distância está expressa em quilômetros (km) e o período <italic>P</italic> em dias. Ao considerar as unidades de medida da constante gravitacional <italic>G</italic>, torna-se evidente a necessidade de converter a distância de quilômetros para metros e o período de dias para segundos, realizando os cálculos obtém-se a massa de Júpiter como sendo <inline-formula id="ILM17"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mi>J</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mrow><mml:mn>1,997</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>27</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula> kg.</p>
+        <p>O processo descrito pode ser aplicado igualmente às luas Europa, Ganimedes e Calisto. A partir dos dados de períodos e distâncias presentes na <xref ref-type="table" rid="T01">Tabela (1)</xref>, coletados dos gráficos da <xref ref-type="fig" rid="F11">Figura 11</xref>, e utilizando a equação (<xref ref-type="disp-formula" rid="DM18">18</xref>), é possível calcular para cada uma dessas luas. Primeiramente, os valores dos períodos e distâncias das luas são identificados na <xref ref-type="table" rid="T01">Tabela 1</xref>. Em seguida, inserimos os dados na equação (<xref ref-type="disp-formula" rid="DM18">18</xref>) individualmente para cada lua, resultando em diferentes valores estimados da massa de Júpiter: <inline-formula id="ILM18"><mml:math display="inline"><mml:mrow><mml:mn>1,702</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>27</mml:mn></mml:msup></mml:mrow></mml:math></inline-formula> kg correspondente a Europa, <inline-formula id="ILM19"><mml:math display="inline"><mml:mrow><mml:mn>1,774</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>27</mml:mn></mml:msup></mml:mrow></mml:math></inline-formula> kg associado a Ganimedes, e <inline-formula id="ILM20"><mml:math display="inline"><mml:mrow><mml:mn>1,760</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>27</mml:mn></mml:msup></mml:mrow></mml:math></inline-formula> kg relativo a Calisto.</p>
+        <table-wrap id="T01" position="float">
+          <label>Tabela 1</label>
+          <caption>
+            <title>Valores das massas obtidos através da terceira lei de Kepler (equação (<xref ref-type="disp-formula" rid="DM18">18</xref>)) usando período e raio das luas de Júpiter coletados com o <italic>Software CLEA</italic>.</title>
+          </caption>
+          <table cellpadding="5" cellspacing="5" frame="hsides" rules="groups">
+            <thead>
+              <tr>
+                <th align="left" valign="top">Lua</th>
+                <th align="center" valign="top">Período (Dias)</th>
+                <th align="center" valign="top">Raio (km)</th>
+                <th align="center" valign="top">Massa de Júpiter (kg)</th>
+                <th align="center" valign="top">Erro Percentual</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left">Io</td>
+                <td align="center">1,78</td>
+                <td align="center">430645,6</td>
+                <td align="center">
+                  <inline-formula id="ILM21">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">1,997</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">27</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM22">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">5,22</mml:mn>
+                        <mml:mo mathsize="90%">%</mml:mo>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">Europa</td>
+                <td align="center">3,56</td>
+                <td align="center">648764,8</td>
+                <td align="center">
+                  <inline-formula id="ILM23">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">1,702</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">27</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM24">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">10,30</mml:mn>
+                        <mml:mo mathsize="90%">%</mml:mo>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">Ganimedes</td>
+                <td align="center">7,18</td>
+                <td align="center">1048650</td>
+                <td align="center">
+                  <inline-formula id="ILM25">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">1,774</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">27</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM26">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">6,53</mml:mn>
+                        <mml:mo mathsize="90%">%</mml:mo>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">Calisto</td>
+                <td align="center">16,83</td>
+                <td align="center">1845624</td>
+                <td align="center">
+                  <inline-formula id="ILM27">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">1,760</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">27</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM28">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">7,27</mml:mn>
+                        <mml:mo mathsize="90%">%</mml:mo>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <p>Na <xref ref-type="table" rid="T01">Tabela 1</xref>, calculamos o erro percentual comparando nossos resultados com o valor da massa de Júpiter, fornecido pela NASA (Ref. [<xref ref-type="bibr" rid="B8">8</xref>]), que é de <inline-formula id="ILM29"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mrow><mml:mi>J</mml:mi><mml:mo>⁢</mml:mo><mml:mi>N</mml:mi><mml:mo>⁢</mml:mo><mml:mi>A</mml:mi><mml:mo>⁢</mml:mo><mml:mi>S</mml:mi><mml:mo>⁢</mml:mo><mml:mi>A</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mrow><mml:mn>1,898</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>27</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula> kg. Para isso, utilizamos a fórmula do desvio relativo (DR) ou erro percentual (EP), que é expressa como uma porcentagem e indica o quão distante o valor obtido está do valor de referência [<xref ref-type="bibr" rid="B12">12</xref>]. A fórmula para calcular o DR ou EP é:</p>
+        <p>
+          <disp-formula id="DM19">
+            <label>(19)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>D</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>R</mml:mi>
+                  </mml:mrow>
+                  <mml:mo>=</mml:mo>
+                  <mml:mrow>
+                    <mml:mrow>
+                      <mml:mo>|</mml:mo>
+                      <mml:mfrac>
+                        <mml:mrow>
+                          <mml:mrow>
+                            <mml:mo>⁢</mml:mo>
+                            <mml:mi>Valor medido</mml:mi>
+                          </mml:mrow>
+                          <mml:mo>−</mml:mo>
+                          <mml:mrow>
+                            <mml:mo>⁢</mml:mo>
+                            <mml:mi>Valor de referência</mml:mi>
+                          </mml:mrow>
+                        </mml:mrow>
+                        <mml:mrow>
+                          <mml:mi>Valor de referência</mml:mi>
+                        </mml:mrow>
+                      </mml:mfrac>
+                      <mml:mo rspace="0.055em">|</mml:mo>
+                    </mml:mrow>
+                    <mml:mo rspace="0.222em">×</mml:mo>
+                    <mml:mn>100</mml:mn>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo lspace="0em">.</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>A metodologia adotada neste artigo oferece uma avaliação quantitativa da precisão de nossos cálculos em comparação com o valor aceito pela comunidade científica. Dessa forma, nossa análise foca exclusivamente no Desvio Relativo (DR). Esta abordagem metodológica simplificada permite uma interpretação mais direta dos resultados, embora não contemple uma avaliação aprofundada das variações e potenciais erros inerentes aos métodos de medição e cálculo que empregamos.</p>
+        <p>Utilizando os dados da <xref ref-type="table" rid="T02">Tabela 2</xref> optamos por criar um gráfico (vide <xref ref-type="fig" rid="F12">Figura 12</xref>) que relaciona o período orbital ao quadrado (<inline-formula id="ILM30"><mml:math display="inline"><mml:msup><mml:mi>P</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:math></inline-formula>) em função do raio orbital ao cubo (<inline-formula id="ILM31"><mml:math display="inline"><mml:msup><mml:mi>r</mml:mi><mml:mn>3</mml:mn></mml:msup></mml:math></inline-formula>) para analisar o comportamento das luas em conformidade com a terceira lei de Kepler.</p>
+        <table-wrap id="T02" position="float">
+          <label>Tabela 2</label>
+          <caption>
+            <title>Dados das luas de Júpiter para a construção do gráfico. Fonte: [<xref ref-type="bibr" rid="B10">10</xref>].</title>
+          </caption>
+          <table cellpadding="5" cellspacing="5" frame="hsides" rules="groups">
+            <thead>
+              <tr>
+                <th align="left" valign="top">Lua</th>
+                <th align="center" valign="top">Período <inline-formula id="ILM32"><mml:math display="inline"><mml:mrow><mml:msup><mml:mi mathsize="90%">P</mml:mi><mml:mn mathsize="90%">2</mml:mn></mml:msup><mml:mo>⁢</mml:mo><mml:mrow><mml:mo maxsize="90%" minsize="90%">(</mml:mo><mml:msup><mml:mi mathsize="90%">s</mml:mi><mml:mn mathsize="90%">2</mml:mn></mml:msup><mml:mo maxsize="90%" minsize="90%">)</mml:mo></mml:mrow></mml:mrow></mml:math></inline-formula> </th>
+                <th align="center" valign="top">Raio Orbital <inline-formula id="ILM33"><mml:math display="inline"><mml:mrow><mml:msup><mml:mi mathsize="90%">r</mml:mi><mml:mn mathsize="90%">3</mml:mn></mml:msup><mml:mo>⁢</mml:mo><mml:mrow><mml:mo maxsize="90%" minsize="90%">(</mml:mo><mml:msup><mml:mi mathsize="90%">m</mml:mi><mml:mn mathsize="90%">3</mml:mn></mml:msup><mml:mo maxsize="90%" minsize="90%">)</mml:mo></mml:mrow></mml:mrow></mml:math></inline-formula> </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="left">Io</td>
+                <td align="center">
+                  <inline-formula id="ILM34">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">2,37</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM35">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">2,88</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">22</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">Europa</td>
+                <td align="center">
+                  <inline-formula id="ILM36">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">9,46</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM37">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">2,73</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">26</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">Ganimedes</td>
+                <td align="center">
+                  <inline-formula id="ILM38">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">3,85</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">11</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM39">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">1,15</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">27</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+              <tr>
+                <td align="left">Calisto</td>
+                <td align="center">
+                  <inline-formula id="ILM40">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">2,11</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">12</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+                <td align="center">
+                  <inline-formula id="ILM41">
+                    <mml:math display="inline">
+                      <mml:mrow>
+                        <mml:mn mathsize="90%">6,29</mml:mn>
+                        <mml:mo lspace="0.222em" mathsize="90%" rspace="0.222em">×</mml:mo>
+                        <mml:msup>
+                          <mml:mn mathsize="90%">10</mml:mn>
+                          <mml:mn mathsize="90%">27</mml:mn>
+                        </mml:msup>
+                      </mml:mrow>
+                    </mml:math>
+                  </inline-formula>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </table-wrap>
+        <fig id="F12" position="float">
+          <label>Figura 12</label>
+          <caption>
+            <title>Gráfico do <inline-formula id="ILM42"><mml:math display="inline"><mml:msup><mml:mi>P</mml:mi><mml:mn>2</mml:mn></mml:msup></mml:math></inline-formula> em função do <inline-formula id="ILM43"><mml:math display="inline"><mml:msup><mml:mi>r</mml:mi><mml:mn>3</mml:mn></mml:msup></mml:math></inline-formula> para as quatro luas Galileanas. Fonte: Acervo pessoal.</title>
+          </caption>
+          <alternatives>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/2196569d01f6a4baf3417046932b6d90b558d55e.jpg"/>
+            <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/f0a15505cb6f0f219d2740f8b2ccaec38312aa02.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+          </alternatives>
+        </fig>
+        <p>Dessa forma o coeficiente angular da reta de ajuste, representado por <inline-formula id="ILM44"><mml:math display="inline"><mml:msub><mml:mi>α</mml:mi><mml:mi>l</mml:mi></mml:msub></mml:math></inline-formula>, pode-se escrever da seguinte forma:</p>
+        <p>
+          <disp-formula id="DM20">
+            <label>(20)</label>
+            <mml:math display="block">
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:msub>
+                    <mml:mi>α</mml:mi>
+                    <mml:mi>l</mml:mi>
+                  </mml:msub>
+                  <mml:mo>=</mml:mo>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mn>4</mml:mn>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:msup>
+                        <mml:mi>π</mml:mi>
+                        <mml:mn>2</mml:mn>
+                      </mml:msup>
+                    </mml:mrow>
+                    <mml:mrow>
+                      <mml:mi>G</mml:mi>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:msub>
+                        <mml:mi>M</mml:mi>
+                        <mml:mi>J</mml:mi>
+                      </mml:msub>
+                    </mml:mrow>
+                  </mml:mfrac>
+                </mml:mrow>
+                <mml:mo>,</mml:mo>
+              </mml:mrow>
+            </mml:math>
+          </disp-formula>
+        </p>
+        <p>onde <inline-formula id="ILM45"><mml:math display="inline"><mml:msub><mml:mi>α</mml:mi><mml:mi>l</mml:mi></mml:msub></mml:math></inline-formula> é uma constante que depende exclusivamente da massa <italic>M<sub>J</sub></italic> do corpo orbitado, neste caso, Júpiter. Utilizando o valor de <inline-formula id="ILM46"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>α</mml:mi><mml:mi>l</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mrow><mml:mn>3,345</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mrow><mml:mo>−</mml:mo><mml:mn>16</mml:mn></mml:mrow></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula>, determinamos a massa de Júpiter como <inline-formula id="ILM47"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mi>J</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mrow><mml:mn>1,769</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>27</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula> kg <sup><xref ref-type="fn" rid="footnote3">3</xref></sup>. Ao calcular o erro percentual comparando esse valor com a massa de Júpiter do site da NASA, obtemos um desvio de 6,8%. Esta comparação quantifica a precisão de nossa estimativa em relação ao valor de referência.</p>
+      </sec>
+    </sec>
+    <sec id="S3">
+      <title>3. Terceira Lei de Kepler Para o Sistema Solar</title>
+      <p>Utilizando dados dos planetas do Sistema Solar, construímos um gráfico para verificar se os dados obedecem à terceira lei de Kepler. Como mencionado anteriormente, esta lei implica que, quanto maior a distância do planeta até o Sol, maior deve ser o seu período orbital. Portanto, espera-se que os dados sigam uma linha de ajuste linear em uma escala log-log. Como as órbitas dos planetas apresentam baixa excentricidade, podemos usar o raio orbital médio para os cálculos, conforme a equação (<xref ref-type="disp-formula" rid="DM1">1</xref>). Coletando dados do site da NASA, construímos a <xref ref-type="table" rid="T03">Tabela 3</xref>, e estes dados foram utilizados para construir o gráfico da <xref ref-type="fig" rid="F13">Figura 13</xref>.</p>
+      <table-wrap id="T03" position="float">
+        <label>Tabela 3</label>
+        <caption>
+          <title>Dados dos planetas do Sistema Solar. Fonte: [<xref ref-type="bibr" rid="B8">8</xref>].</title>
+        </caption>
+        <table cellpadding="5" cellspacing="5" frame="hsides" rules="groups">
+          <thead>
+            <tr>
+              <th align="left" valign="top">Planetas</th>
+              <th align="center" valign="top">Período (Anos)</th>
+              <th align="center" valign="top">Raio Orbital (UA)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left">Mercúrio</td>
+              <td align="center">0,240846</td>
+              <td align="center">0,387098</td>
+            </tr>
+            <tr>
+              <td align="left">Vênus</td>
+              <td align="center">0,615198</td>
+              <td align="center">0,723332</td>
+            </tr>
+            <tr>
+              <td align="left">Terra</td>
+              <td align="center">1,000000</td>
+              <td align="center">1,000000</td>
+            </tr>
+            <tr>
+              <td align="left">Marte</td>
+              <td align="center">1,88085</td>
+              <td align="center">1,523679</td>
+            </tr>
+            <tr>
+              <td align="left">Júpiter</td>
+              <td align="center">11,862</td>
+              <td align="center">5,2044</td>
+            </tr>
+            <tr>
+              <td align="left">Saturno</td>
+              <td align="center">29,4571</td>
+              <td align="center">9,5826</td>
+            </tr>
+            <tr>
+              <td align="left">Urano</td>
+              <td align="center">84,0205</td>
+              <td align="center">19,19126</td>
+            </tr>
+            <tr>
+              <td align="left">Netuno</td>
+              <td align="center">164,80</td>
+              <td align="center">30,07</td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
+      <fig id="F13" position="float">
+        <label>Figura 13</label>
+        <caption>
+          <title>Gráfico para o Sistema Solar. Fonte: Acervo pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/e828e261b13413c8f1f644f8b1b68bd7e237cb20.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/6d56ae3c4e2f1c1cb30598dae5994a99a42972b3.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>O uso do logaritmo natural (ln) para lidar com as potências na análise da terceira lei de Kepler, conforme expresso na equação (<xref ref-type="disp-formula" rid="DM1">1</xref>), permite transformar uma relação exponencial em uma linear. Isso facilita a interpretação gráfica e a comparação direta entre os diferentes corpos celestes. Aplicando a lei de Kepler, podemos então expressar a terceira lei como:</p>
+      <p>
+        <disp-formula id="DM21">
+          <label>(21)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mn>2</mml:mn>
+                  <mml:mo lspace="0.167em">⁢</mml:mo>
+                  <mml:mrow>
+                    <mml:mi>ln</mml:mi>
+                    <mml:mo lspace="0.167em">⁡</mml:mo>
+                    <mml:mi>P</mml:mi>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>ln</mml:mi>
+                    <mml:mo lspace="0.167em">⁡</mml:mo>
+                    <mml:mi>K</mml:mi>
+                  </mml:mrow>
+                  <mml:mo>+</mml:mo>
+                  <mml:mrow>
+                    <mml:mn>3</mml:mn>
+                    <mml:mo lspace="0.167em">⁢</mml:mo>
+                    <mml:mrow>
+                      <mml:mi>ln</mml:mi>
+                      <mml:mo lspace="0.167em">⁡</mml:mo>
+                      <mml:mi>r</mml:mi>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo stretchy="false">→</mml:mo>
+                <mml:mrow>
+                  <mml:mi>ln</mml:mi>
+                  <mml:mo lspace="0.167em">⁡</mml:mo>
+                  <mml:mi>P</mml:mi>
+                </mml:mrow>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mi>ln</mml:mi>
+                      <mml:mo lspace="0.167em">⁡</mml:mo>
+                      <mml:mi>K</mml:mi>
+                    </mml:mrow>
+                    <mml:mn>2</mml:mn>
+                  </mml:mfrac>
+                  <mml:mo>+</mml:mo>
+                  <mml:mrow>
+                    <mml:mfrac>
+                      <mml:mn>3</mml:mn>
+                      <mml:mn>2</mml:mn>
+                    </mml:mfrac>
+                    <mml:mo lspace="0.167em">⁢</mml:mo>
+                    <mml:mrow>
+                      <mml:mi>ln</mml:mi>
+                      <mml:mo lspace="0.167em">⁡</mml:mo>
+                      <mml:mi>r</mml:mi>
+                    </mml:mrow>
+                  </mml:mrow>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Sabemos que a equação (<xref ref-type="disp-formula" rid="DM21">21</xref>) representa uma equação de uma linha reta na forma <inline-formula id="ILM48"><mml:math display="inline"><mml:mrow><mml:mi>y</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:mrow><mml:mi>a</mml:mi><mml:mo>⁢</mml:mo><mml:mi>x</mml:mi></mml:mrow><mml:mo>+</mml:mo><mml:mi>b</mml:mi></mml:mrow></mml:mrow></mml:math></inline-formula> onde <italic>b</italic> é o coeficiente linear da reta, logo:</p>
+      <p>
+        <disp-formula id="DM22">
+          <label>(22)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mfrac>
+                  <mml:mrow>
+                    <mml:mi>ln</mml:mi>
+                    <mml:mo lspace="0.167em">⁡</mml:mo>
+                    <mml:mi>K</mml:mi>
+                  </mml:mrow>
+                  <mml:mn>2</mml:mn>
+                </mml:mfrac>
+                <mml:mo>=</mml:mo>
+                <mml:mi>b</mml:mi>
+                <mml:mo stretchy="false">→</mml:mo>
+                <mml:mrow>
+                  <mml:mi>ln</mml:mi>
+                  <mml:mo lspace="0.167em">⁡</mml:mo>
+                  <mml:mi>K</mml:mi>
+                </mml:mrow>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mn>2</mml:mn>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mi>b</mml:mi>
+                </mml:mrow>
+                <mml:mo stretchy="false">→</mml:mo>
+                <mml:mi>K</mml:mi>
+                <mml:mo>=</mml:mo>
+                <mml:msup>
+                  <mml:mi>e</mml:mi>
+                  <mml:mrow>
+                    <mml:mn>2</mml:mn>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>b</mml:mi>
+                  </mml:mrow>
+                </mml:msup>
+              </mml:mrow>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>porém, temos que a constante <italic>K</italic> pela terceira lei de Kepler vale:</p>
+      <p>
+        <disp-formula id="DM23">
+          <label>(23)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mi>K</mml:mi>
+                <mml:mo>=</mml:mo>
+                <mml:mfrac>
+                  <mml:mrow>
+                    <mml:mn>4</mml:mn>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msup>
+                      <mml:mi>π</mml:mi>
+                      <mml:mn>2</mml:mn>
+                    </mml:msup>
+                  </mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>G</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msub>
+                      <mml:mi>M</mml:mi>
+                      <mml:mi>S</mml:mi>
+                    </mml:msub>
+                  </mml:mrow>
+                </mml:mfrac>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Considerando <italic>M<sub>S</sub></italic> como a massa do Sol, substituímos a constante <italic>K</italic> por <inline-formula id="ILM49"><mml:math display="inline"><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mn>2</mml:mn><mml:mo>⁢</mml:mo><mml:mi>b</mml:mi></mml:mrow></mml:msup></mml:math></inline-formula> na equação (<xref ref-type="disp-formula" rid="DM23">23</xref>). De acordo com a Referência [<xref ref-type="bibr" rid="B8">8</xref>], a massa do Sol é <inline-formula id="ILM50"><mml:math display="inline"><mml:mrow><mml:mn>1,989</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>30</mml:mn></mml:msup></mml:mrow></mml:math></inline-formula> kg. Ao efetuar os cálculos, encontramos <inline-formula id="ILM51"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mi>S</mml:mi></mml:msub><mml:mo>=</mml:mo><mml:mrow><mml:mn>1,991</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>30</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula> kg, com um erro percentual associado de 0,11%. Assim, confirmamos a aplicabilidade da terceira lei de Kepler para o nosso Sistema Solar.</p>
+    </sec>
+    <sec id="S4">
+      <title>4. Terceira Lei de Kepler para Exoplanetas</title>
+      <p>No contexto dos exoplanetas, a terceira lei de Kepler é fundamental para entender as propriedades orbitais desses distantes mundos. Estudando o período orbital de um exoplaneta – o tempo necessário para completar uma órbita ao redor de sua estrela – e levando em conta a distância média entre eles, astrônomos conseguem extrair informações cruciais sobre o sistema planetário, incluindo a massa tanto da estrela quanto do exoplaneta.</p>
+      <p>Os primeiros corpos celestes conhecidos como exoplanetas foram descobertos em 1991. Esses objetos, que orbitam estrelas fora do nosso Sistema Solar, eram apenas algumas centenas até 2009. Nesse ano, a NASA lançou a Missão <italic>Kepler</italic>, marcando um aumento significativo na detecção desses planetas, conforme detalhado em [<xref ref-type="bibr" rid="B13">13</xref>]. Para maiores detalhes consulte também as referências [<xref ref-type="bibr" rid="B14">14</xref>] e [<xref ref-type="bibr" rid="B15">15</xref>].</p>
+      <p>Para avaliar a aplicação da terceira lei de Kepler aos exoplanetas, escolhemos o sistema da estrela TOI 700 como estudo de caso. Situada a pouco mais de 100 anos-luz de distância, na constelação de Dorado, TOI 700 é uma anã vermelha do tipo espectral M, conhecida por sua temperatura relativamente baixa. Esta escolha se justifica pelo fato de que, em 2020, a missão <italic>Transiting Exoplanet Survey Satellite (TESS)</italic> da NASA descobriu quatro exoplanetas orbitando TOI 700, destacando-a como um objeto de interesse (<italic>Transiting Exoplanet Survey Satellite Object of Interest</italic>).</p>
+      <p>Com base nos dados fornecidos pelo catálogo de exoplanetas da NASA, disponível em um simulador (Ref. [<xref ref-type="bibr" rid="B16">16</xref>]), é possível visualizar a configuração do sistema planetário de TOI 700. Exemplos dessas visualizações incluem simulações do sistema (<xref ref-type="fig" rid="F14">Figura 14</xref>) e dados utilizados para análises gráficas (<xref ref-type="table" rid="T04">Tabela 4</xref> e <xref ref-type="fig" rid="F15">Figura 15</xref>), enriquecendo nossa compreensão desses fascinantes mundos extrassolares.</p>
+      <fig id="F14" position="float">
+        <label>Figura 14</label>
+        <caption>
+          <title>Simulação do sistema exoplanetário da estrela TOI 700. Fonte: simulador online da NASA [<xref ref-type="bibr" rid="B16">16</xref>].</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/09e41e042e967569700e0007fc0ef1764822b141.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/996ff65182737e3a43097d673ee481c5f0e8123a.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <table-wrap id="T04" position="float">
+        <label>Tabela 4</label>
+        <caption>
+          <title>Dados dos exoplanetas da TOI 700. Fonte: [<xref ref-type="bibr" rid="B16">16</xref>].</title>
+        </caption>
+        <table cellpadding="5" cellspacing="5" frame="hsides" rules="groups">
+          <thead>
+            <tr>
+              <th align="left" valign="top">Exoplanetas</th>
+              <th align="center" valign="top">Período Orbital (Dias)</th>
+              <th align="center" valign="top">Raio Orbital (UA)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left">TOI 700b</td>
+              <td align="center">10</td>
+              <td align="center">0,0677</td>
+            </tr>
+            <tr>
+              <td align="left">TOI 700c</td>
+              <td align="center">16,1</td>
+              <td align="center">0,0929</td>
+            </tr>
+            <tr>
+              <td align="left">TOI 700e</td>
+              <td align="center">27,8</td>
+              <td align="center">0,1340</td>
+            </tr>
+            <tr>
+              <td align="left">TOI 700d</td>
+              <td align="center">37,4</td>
+              <td align="center">0,1633</td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
+      <fig id="F15" position="float">
+        <label>Figura 15</label>
+        <caption>
+          <title>Gráfico para os quatro exoplanetas que orbitam a estrela TOI 700. Fonte: Acervo pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/92fe581b4808c61d7d0069191efd490fada31180.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/6dbf78eb94fdbfc87efe10e89463604b28ada46f.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Assim como na seção 3, aqui também utilizamos a escala logarítmica para uma melhor apresentação dos dados, procedemos de maneira similar no estudo. Substituímos a constante <italic>K</italic> por <inline-formula id="ILM52"><mml:math display="inline"><mml:msup><mml:mi>e</mml:mi><mml:mrow><mml:mn>2</mml:mn><mml:mo>⁢</mml:mo><mml:mi>b</mml:mi></mml:mrow></mml:msup></mml:math></inline-formula> na equação (<xref ref-type="disp-formula" rid="DM23">23</xref>). Utilizando o valor do coeficiente linear <italic>b</italic>, extraído do gráfico como sendo 6, 335, podemos calcular a massa da estrela TOI 700 usando a seguinte metodologia:</p>
+      <p>
+        <disp-formula id="DM24">
+          <label>(24)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:msub>
+                  <mml:mi>M</mml:mi>
+                  <mml:mrow>
+                    <mml:mi>T</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>O</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>I</mml:mi>
+                  </mml:mrow>
+                </mml:msub>
+                <mml:mo>=</mml:mo>
+                <mml:mfrac>
+                  <mml:mrow>
+                    <mml:mn>4</mml:mn>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msup>
+                      <mml:mi>π</mml:mi>
+                      <mml:mn>2</mml:mn>
+                    </mml:msup>
+                  </mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>G</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msup>
+                      <mml:mi>e</mml:mi>
+                      <mml:mrow>
+                        <mml:mn>2</mml:mn>
+                        <mml:mo>⁢</mml:mo>
+                        <mml:mi>b</mml:mi>
+                      </mml:mrow>
+                    </mml:msup>
+                  </mml:mrow>
+                </mml:mfrac>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Ao calcular a massa da estrela TOI 700 conforme a equação (<xref ref-type="disp-formula" rid="DM24">24</xref>), obtemos um valor de <inline-formula id="ILM53"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mrow><mml:mi>T</mml:mi><mml:mo>⁢</mml:mo><mml:mi>O</mml:mi><mml:mo>⁢</mml:mo><mml:mi>I</mml:mi></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mrow><mml:mn>8,347</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>29</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula> kg. Este resultado se aproxima bastante do valor registrado no site da NASA, que é <inline-formula id="ILM54"><mml:math display="inline"><mml:mrow><mml:msub><mml:mi>M</mml:mi><mml:mrow><mml:mrow><mml:mi>T</mml:mi><mml:mo>⁢</mml:mo><mml:mi>O</mml:mi><mml:mo>⁢</mml:mo><mml:mi>I</mml:mi></mml:mrow><mml:mo>,</mml:mo><mml:mrow><mml:mi>n</mml:mi><mml:mo>⁢</mml:mo><mml:mi>a</mml:mi><mml:mo>⁢</mml:mo><mml:mi>s</mml:mi><mml:mo>⁢</mml:mo><mml:mi>a</mml:mi></mml:mrow></mml:mrow></mml:msub><mml:mo>=</mml:mo><mml:mrow><mml:mn>8,354</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>29</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula> kg (Ref. [<xref ref-type="bibr" rid="B16">16</xref>]). O erro percentual encontrado, de apenas 0,07%, é menor do que o observado para o nosso Sistema Solar e para as luas Galileanas de Júpiter. Vale ressaltar que os dados presentes no simulador de exoplanetas da NASA não apresenta incertezas para os valores, esse fato pode afetar no valor percentual do erro encontrado. Além disso, um dos motivos para esse erro menor pode ser atribuído à evolução das técnicas de observação e medição utilizadas em estudos de exoplanetas, que têm se tornado cada vez mais precisas, evidenciando a aplicabilidade desta lei a sistemas planetários distantes.</p>
+    </sec>
+    <sec id="S5">
+      <title>5. Terceira Lei de Kepler para Galáxias</title>
+      <p>Nesta seção, exploraremos a aplicação da terceira lei de Kepler para descrever o movimento estelar em torno do centro galáctico. As galáxias, de modo geral, são constituídas por estrelas, gases, poeira e, possivelmente, matéria escura. No início do século XX, esses corpos celestes eram denominados nebulosas, suscitando teorias que as consideravam “universos-ilhas”, seja isolados da nossa Via Láctea ou integrados a ela. No entanto, em 1923, essas nebulosas foram reconhecidas como galáxias distintas da Via Láctea pelo astrônomo norte-americano Edwin Powell Hubble. Hubble utilizou o método de Henrietta Leavitt, que correlaciona luminosidade e período das Cefeidas, para calcular a distância até M31, nossa galáxia vizinha, obtendo uma estimativa de cerca de 700 mil anos-luz. Esse valor indicou que tal objeto só poderia existir fora da Via Láctea, que possui um diâmetro de aproximadamente 105 mil anos-luz. Dessa maneira, Hubble demonstrou que a galáxia M31 era, de fato, um sistema independente [<xref ref-type="bibr" rid="B17">17</xref>].</p>
+      <p>Para compreender o comportamento dinâmico de uma galáxia, é essencial investigar o seu modelo físico. A modelagem dinâmica, embora viável com a teoria do potencial newtoniano, excede o escopo deste artigo. Para os interessados uma obra de referência nesse domínio é o livro “Galactic Dynamics”, escrito por James Binney e Scott Tremaine [<xref ref-type="bibr" rid="B18">18</xref>]. Em contrapartida, as ideias fundamentais da dinâmica galáctica podem ser entendidas por meio da teoria newtoniana básica, sem a necessidade de adentrar em conceitos mais complexos.</p>
+      <p>Em um primeiro cenário, consideramos uma esfera de raio <italic>R</italic> e massa <italic>M</italic>, juntamente com uma partícula de massa <italic>m</italic> situada a uma distância <italic>r</italic> do centro dessa esfera, a qual é composta por cascas esféricas homogêneas. Nesse contexto, pelo teorema das cascas de Newton, a massa da esfera pode ser tratada, para fins práticos, como se estivesse concentrada em uma partícula de massa <italic>M</italic> no centro da esfera. Isso nos possibilita calcular a velocidade da massa <italic>m</italic> devido à atração gravitacional. Em outras palavras, a partícula está em órbita em torno da esfera de massa <italic>M</italic>. Utilizando a segunda lei de Newton e relacionando com a força centrípeta da massa <italic>m</italic>, temos a expressão:</p>
+      <p>
+        <disp-formula id="DM25">
+          <label>(25)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mi>m</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mfrac>
+                    <mml:msup>
+                      <mml:mi>v</mml:mi>
+                      <mml:mn>2</mml:mn>
+                    </mml:msup>
+                    <mml:mi>r</mml:mi>
+                  </mml:mfrac>
+                </mml:mrow>
+                <mml:mo>=</mml:mo>
+                <mml:mfrac>
+                  <mml:mrow>
+                    <mml:mi>G</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>m</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>M</mml:mi>
+                  </mml:mrow>
+                  <mml:msup>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>2</mml:mn>
+                  </mml:msup>
+                </mml:mfrac>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>A equação <xref ref-type="disp-formula" rid="DM25">25</xref> estabelece uma conexão entre a velocidade <italic>v</italic> e o tamanho do raio <italic>r</italic> da órbita:</p>
+      <p>
+        <disp-formula id="DM26">
+          <label>(26)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mi>v</mml:mi>
+                <mml:mo>=</mml:mo>
+                <mml:msqrt>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mi>G</mml:mi>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:mi>M</mml:mi>
+                    </mml:mrow>
+                    <mml:mi>r</mml:mi>
+                  </mml:mfrac>
+                </mml:msqrt>
+              </mml:mrow>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>neste caso, ainda podemos generalizar para a situação em que a massa tenha uma distribuição dependente de <italic>r</italic>, ou seja, <inline-formula id="ILM55"><mml:math display="inline"><mml:mrow><mml:mi>M</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:mi>M</mml:mi><mml:mo>⁢</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>r</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow></mml:mrow></mml:math></inline-formula>. Assim, a partir da equação (<xref ref-type="disp-formula" rid="DM26">26</xref>), para <inline-formula id="ILM56"><mml:math display="inline"><mml:mrow><mml:mi>r</mml:mi><mml:mo>&gt;</mml:mo><mml:mi>R</mml:mi></mml:mrow></mml:math></inline-formula> e uma dependência <inline-formula id="ILM57"><mml:math display="inline"><mml:mrow><mml:mi>M</mml:mi><mml:mo>⁢</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>r</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow></mml:math></inline-formula>, podemos determinar a velocidade da partícula ainda com a fórmula anterior na forma:</p>
+      <p>
+        <disp-formula id="DM27">
+          <label>(27)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mi>v</mml:mi>
+                <mml:mo>=</mml:mo>
+                <mml:msqrt>
+                  <mml:mfrac>
+                    <mml:mrow>
+                      <mml:mi>G</mml:mi>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:mi>M</mml:mi>
+                      <mml:mo>⁢</mml:mo>
+                      <mml:mrow>
+                        <mml:mo stretchy="false">(</mml:mo>
+                        <mml:mi>r</mml:mi>
+                        <mml:mo stretchy="false">)</mml:mo>
+                      </mml:mrow>
+                    </mml:mrow>
+                    <mml:mi>r</mml:mi>
+                  </mml:mfrac>
+                </mml:msqrt>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Agora, abordaremos o segundo cenário em que uma partícula de massa <italic>m</italic> se desloca no interior de uma esfera maciça de raio <italic>R</italic>, ou seja, <inline-formula id="ILM58"><mml:math display="inline"><mml:mrow><mml:mi>r</mml:mi><mml:mo>&lt;</mml:mo><mml:mi>R</mml:mi></mml:mrow></mml:math></inline-formula>. Neste contexto, o volume ocupado dentro da esfera com raio <italic>r</italic> é representado pela fórmula <inline-formula id="ILM59"><mml:math display="inline"><mml:mrow><mml:mi>V</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:mfrac><mml:mn>4</mml:mn><mml:mn>3</mml:mn></mml:mfrac><mml:mo>⁢</mml:mo><mml:mi>π</mml:mi><mml:mo>⁢</mml:mo><mml:msup><mml:mi>r</mml:mi><mml:mn>3</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula>. Quando consideramos a esfera maciça, com um raio constante <italic>R</italic>, o volume é expresso por <inline-formula id="ILM60"><mml:math display="inline"><mml:mrow><mml:mi>V</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:mfrac><mml:mn>4</mml:mn><mml:mn>3</mml:mn></mml:mfrac><mml:mo>⁢</mml:mo><mml:mi>π</mml:mi><mml:mo>⁢</mml:mo><mml:msup><mml:mi>R</mml:mi><mml:mn>3</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula>. Com base nesses volumes, podemos deduzir que a densidade da esfera segue a relação expressa pela seguinte equação:</p>
+      <p>
+        <disp-formula id="DM28">
+          <label>(28)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mi>ρ</mml:mi>
+                <mml:mo>=</mml:mo>
+                <mml:mfrac>
+                  <mml:mi>M</mml:mi>
+                  <mml:mi>V</mml:mi>
+                </mml:mfrac>
+                <mml:mo>=</mml:mo>
+                <mml:mfrac>
+                  <mml:mi>M</mml:mi>
+                  <mml:mrow>
+                    <mml:mfrac>
+                      <mml:mn>4</mml:mn>
+                      <mml:mn>3</mml:mn>
+                    </mml:mfrac>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>π</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msup>
+                      <mml:mi>R</mml:mi>
+                      <mml:mn>3</mml:mn>
+                    </mml:msup>
+                  </mml:mrow>
+                </mml:mfrac>
+              </mml:mrow>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>então assumindo uma densidade <inline-formula id="ILM61"><mml:math display="inline"><mml:mi>ρ</mml:mi></mml:math></inline-formula> constante, a massa dentro de uma esfera de raio <italic>r</italic> é dada por:</p>
+      <p>
+        <disp-formula id="DM29">
+          <label>(29)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mi>M</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mrow>
+                    <mml:mo stretchy="false">(</mml:mo>
+                    <mml:mi>r</mml:mi>
+                    <mml:mo stretchy="false">)</mml:mo>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mi>ρ</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mfrac>
+                    <mml:mn>4</mml:mn>
+                    <mml:mn>3</mml:mn>
+                  </mml:mfrac>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mi>π</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:msup>
+                    <mml:mi>r</mml:mi>
+                    <mml:mn>3</mml:mn>
+                  </mml:msup>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Substituindo <inline-formula id="ILM62"><mml:math display="inline"><mml:mi>ρ</mml:mi></mml:math></inline-formula> temos:</p>
+      <p>
+        <disp-formula id="DM30">
+          <label>(30)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mrow>
+                  <mml:mi>M</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mrow>
+                    <mml:mo stretchy="false">(</mml:mo>
+                    <mml:mi>r</mml:mi>
+                    <mml:mo stretchy="false">)</mml:mo>
+                  </mml:mrow>
+                </mml:mrow>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:mi>M</mml:mi>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mfrac>
+                    <mml:msup>
+                      <mml:mi>r</mml:mi>
+                      <mml:mn>3</mml:mn>
+                    </mml:msup>
+                    <mml:msup>
+                      <mml:mi>R</mml:mi>
+                      <mml:mn>3</mml:mn>
+                    </mml:msup>
+                  </mml:mfrac>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo>,</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Ao substituir a equação (<xref ref-type="disp-formula" rid="DM30">30</xref>) em (<xref ref-type="disp-formula" rid="DM27">27</xref>), chegamos à seguinte expressão alternativa:</p>
+      <p>
+        <disp-formula id="DM31">
+          <label>(31)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:mi>v</mml:mi>
+                <mml:mo>=</mml:mo>
+                <mml:mrow>
+                  <mml:msqrt>
+                    <mml:mfrac>
+                      <mml:mrow>
+                        <mml:mi>G</mml:mi>
+                        <mml:mo>⁢</mml:mo>
+                        <mml:mi>M</mml:mi>
+                      </mml:mrow>
+                      <mml:msup>
+                        <mml:mi>R</mml:mi>
+                        <mml:mn>3</mml:mn>
+                      </mml:msup>
+                    </mml:mfrac>
+                  </mml:msqrt>
+                  <mml:mo>⁢</mml:mo>
+                  <mml:mi>r</mml:mi>
+                </mml:mrow>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>Agora podemos obter uma compreensão simplificada do movimento de uma estrela ao redor do centro de uma galáxia ao considerar ambos os cenários de forma conjunta:</p>
+      <p>
+        <disp-formula id="DM32">
+          <label>(32)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mi>v</mml:mi>
+              <mml:mo stretchy="false">(</mml:mo>
+              <mml:mi>r</mml:mi>
+              <mml:mo stretchy="false">)</mml:mo>
+              <mml:mo>=</mml:mo>
+              <mml:mrow>
+                <mml:mo>{</mml:mo>
+                <mml:mrow>
+                  <mml:mtable columnalign="left">
+                    <mml:mtr columnalign="left">
+                      <mml:mtd columnalign="left">
+                        <mml:mrow>
+                          <mml:msqrt>
+                            <mml:mrow>
+                              <mml:mfrac>
+                                <mml:mrow>
+                                  <mml:mi>G</mml:mi>
+                                  <mml:mi>M</mml:mi>
+                                </mml:mrow>
+                                <mml:mrow>
+                                  <mml:msup>
+                                    <mml:mi>R</mml:mi>
+                                    <mml:mn>3</mml:mn>
+                                  </mml:msup>
+                                </mml:mrow>
+                              </mml:mfrac>
+                            </mml:mrow>
+                          </mml:msqrt>
+                          <mml:mi>r</mml:mi>
+                          <mml:mo>,</mml:mo>
+                        </mml:mrow>
+                      </mml:mtd>
+                      <mml:mtd columnalign="left">
+                        <mml:mrow>
+                          <mml:mo>se</mml:mo>
+                          <mml:mi>r</mml:mi>
+                          <mml:mo>&lt;</mml:mo>
+                          <mml:mi>R</mml:mi>
+                          <mml:mo>.</mml:mo>
+                        </mml:mrow>
+                      </mml:mtd>
+                    </mml:mtr>
+                    <mml:mtr columnalign="left">
+                      <mml:mtd columnalign="left">
+                        <mml:mrow>
+                          <mml:msqrt>
+                            <mml:mrow>
+                              <mml:mfrac>
+                                <mml:mrow>
+                                  <mml:mi>G</mml:mi>
+                                  <mml:mi>M</mml:mi>
+                                </mml:mrow>
+                                <mml:mi>r</mml:mi>
+                              </mml:mfrac>
+                            </mml:mrow>
+                          </mml:msqrt>
+                          <mml:mo>,</mml:mo>
+                        </mml:mrow>
+                      </mml:mtd>
+                      <mml:mtd columnalign="left">
+                        <mml:mrow>
+                          <mml:mo>se</mml:mo>
+                          <mml:mi>r</mml:mi>
+                          <mml:mo>&gt;</mml:mo>
+                          <mml:mi>R</mml:mi>
+                          <mml:mo>.</mml:mo>
+                        </mml:mrow>
+                      </mml:mtd>
+                    </mml:mtr>
+                  </mml:mtable>
+                </mml:mrow>
+              </mml:mrow>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <p>A equação (<xref ref-type="disp-formula" rid="DM32">32</xref>) representa a velocidade de uma partícula de teste em um potencial gravitacional produzido por uma esfera dentro e fora dela. A construção de um gráfico para esta equação resulta na <xref ref-type="fig" rid="F16">Figura 16</xref>, que revela uma característica interessante do modelo: Isso significa que, perto do centro da galáxia (esfera) (quando <inline-formula id="ILM63"><mml:math display="inline"><mml:mrow><mml:mi>r</mml:mi><mml:mo>&lt;</mml:mo><mml:mi>R</mml:mi></mml:mrow></mml:math></inline-formula>),</p>
+      <fig id="F16" position="float">
+        <label>Figura 16</label>
+        <caption>
+          <title>Comportamento da função (<xref ref-type="disp-formula" rid="DM32">32</xref>), Fazendo as constantes igual a 1. Fonte: Acervo Pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/fa8eceb76b19aeaca017e70e6cc6b1c10cb5ef98.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/326f47d2e1787e42953b83669649e11a2837d248.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>espera-se que a velocidade orbital cresça à medida que o raio aumenta, um fenômeno que diverge da terceira lei de Kepler e se assemelha ao observado em curvas de rotação para raios menores. Já para órbitas com <inline-formula id="ILM64"><mml:math display="inline"><mml:mrow><mml:mi>r</mml:mi><mml:mo>&gt;</mml:mo><mml:mi>R</mml:mi></mml:mrow></mml:math></inline-formula>, esse aumento de velocidade se inverte, e a velocidade começa a diminuir conforme o raio aumenta, uma vez que a massa dentro desse raio permanece constante (<inline-formula id="ILM65"><mml:math display="inline"><mml:mrow><mml:mrow><mml:mi>M</mml:mi><mml:mo>⁢</mml:mo><mml:mrow><mml:mo stretchy="false">(</mml:mo><mml:mi>r</mml:mi><mml:mo stretchy="false">)</mml:mo></mml:mrow></mml:mrow><mml:mo>=</mml:mo><mml:mi>M</mml:mi></mml:mrow></mml:math></inline-formula>), alinhando-se com as previsões da terceira lei de Kepler, conforme demonstrado pela equação (<xref ref-type="disp-formula" rid="DM26">26</xref>).</p>
+      <p>Contudo, observações realizadas ao longo do século XX, destacando-se os trabalhos de Vera Rubin, demonstraram que a velocidade das estrelas não diminui conforme se distanciam do centro da galáxia, mas sim tende a estabilizar-se, formando um perfil quase plano. Esse fenômeno foi constatado por meio das chamadas curvas de rotação, que são essencialmente gráficos que relacionam a velocidade com a distância ao centro galáctico, seja de estrelas ou de grandes massas de hidrogênio.</p>
+      <p>A título de ilustração, na <xref ref-type="fig" rid="F17">Figura 17</xref>, apresentamos as curvas de rotação para duas galáxias notáveis: M31 e a Via Láctea. Observa-se que objetos próximos ao centro exibem velocidades crescentes à medida que se afastam do centro, até que estas atingem valores quase constantes, mesmo a distâncias consideráveis do núcleo galáctico.</p>
+      <fig id="F17" position="float">
+        <label>Figura 17</label>
+        <caption>
+          <title>Curvas de rotação utilizando dados da M31 e da Via Láctea das referências [<xref ref-type="bibr" rid="B19">19</xref>, <xref ref-type="bibr" rid="B20">20</xref>]. Fonte acervo pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/2ba475650f15d410018bae203e346919a89499a2.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/168bfe24f4311adda94370fe9f2ae3b7cce81b4e.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Este fenômeno observado nas curvas de rotação das galáxias aponta para a influência de um halo de matéria escura circundando as galáxias. A matéria escura, uma entidade teórica que não interage com a luz, pode ser a chave para entender por que as estrelas sustentam velocidades elevadas mesmo distantes do centro galáctico, um comportamento que desafia as expectativas baseadas na matéria visível. A análise das curvas de rotação também exige que levemos em conta distribuições de matéria com formas específicas. Por exemplo, o núcleo das galáxias espirais tende a uma configuração elíptica compacta, enquanto o disco galáctico assemelha-se a uma esfera achatada. Essas características, juntamente com o halo de matéria escura, desempenham papéis significativos na dinâmica galáctica.</p>
+      <p>É fundamental destacar que a matéria escura parece não seguir a lei da gravitação universal de Newton da mesma forma que a matéria visível. Por consequência, a terceira lei de Kepler, que se baseia na gravitação newtoniana, não se aplica de maneira direta às galáxias quando consideramos o efeito da matéria escura. Essa discrepância entre as previsões teóricas e as observações astronômicas desafia nossa compreensão da dinâmica das galáxias, indicando a necessidade de modelos mais abrangentes que integrem tanto a matéria visível quanto a escura para explicar o movimento das estrelas em torno dos centros galácticos.</p>
+      <p>No entanto, é possível ainda aplicar de forma aproximada a terceira lei de Kepler para o caso do buraco negro central da Via Láctea, conhecido como Sagittarius A*, o qual é pronunciado como “Sagittarius A-estrela” ou simplesmente “Sgr A*”. Este objeto é uma fonte astronômica de rádio notavelmente brilhante e incrivelmente compacta localizada no centro da Via Láctea, nas proximidades da fronteira das constelações de Sagitário e Escorpião [<xref ref-type="bibr" rid="B21">21</xref>].</p>
+      <p>Em um artigo publicado em 31 de outubro de 2018, foi anunciada uma descoberta de grande importância: evidências conclusivas de que Sagittarius A* é, de fato, um buraco negro. Utilizando técnicas avançadas de interferometria gravitacional e combinando a capacidade de quatro telescópios do <italic>Very Large Telescope (VLT)</italic>, os astrônomos conseguiram criar um telescópio virtual com um impressionante diâmetro de 130 metros. Nessa observação, eles detectaram aglomerados de gás movendo-se a cerca de 30% da velocidade da luz. Próximo ao buraco negro, puderam observar a emissão de elétrons altamente energéticos, criando três chamas brilhantes distintas [<xref ref-type="bibr" rid="B22">22</xref>].</p>
+      <p>Em maio de 2022, o programa <italic>Event Horizon Telescope</italic>, validou a presença de Sagittarius A* (Sgr A*), ao divulgar um conjunto de imagens coloridas. Esse feito notável foi alcançado por meio da colaboração de radiotelescópios de diversas partes do mundo, que operaram em conjunto, criando uma rede virtual com o mesmo diâmetro da Terra. Essa conquista representou a segunda imagem de um buraco negro capturada pela tecnologia humana, a primeira delas referente ao buraco negro na galáxia M87, divulgada em 2019 [<xref ref-type="bibr" rid="B23">23</xref>].</p>
+      <p>Para verificar a terceira lei de Kepler, utilizaremos os dados da <xref ref-type="table" rid="T05">Tabela 5</xref> referentes às denominadas estrelas <italic>S</italic>, que se localizam na região central da Via Láctea e integram o ambiente conhecido como Núcleo Galáctico. Estas estrelas orbitam em torno de Sagittarius A* e possuem órbitas elípticas, sendo cruciais para confirmar Sagittarius A* como um buraco negro supermassivo. Agora, empregando a mesma metodologia utilizada nos casos anteriores, vamos verificar a aplicabilidade da terceira lei de Kepler.</p>
+      <table-wrap id="T05" position="float">
+        <label>Tabela 5</label>
+        <caption>
+          <title>Dados das Estrelas <italic>S</italic> em relação a Sagittarius A*. Fonte: [<xref ref-type="bibr" rid="B24">24</xref>, <xref ref-type="bibr" rid="B25">25</xref>].</title>
+        </caption>
+        <table cellpadding="5" cellspacing="5" frame="hsides" rules="groups">
+          <thead>
+            <tr>
+              <th align="left" valign="top">Estrela</th>
+              <th align="center" valign="top">Distância Média (UA) até Sagittarius A*</th>
+              <th align="center" valign="top">Período de translação (Anos)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="left">S1</td>
+              <td align="center">3300</td>
+              <td align="center">94.1</td>
+            </tr>
+            <tr>
+              <td align="left">S2</td>
+              <td align="center">980</td>
+              <td align="center">15.24</td>
+            </tr>
+            <tr>
+              <td align="left">S8</td>
+              <td align="center">2630</td>
+              <td align="center">67.2</td>
+            </tr>
+            <tr>
+              <td align="left">S12</td>
+              <td align="center">2290</td>
+              <td align="center">54.4</td>
+            </tr>
+            <tr>
+              <td align="left">S13</td>
+              <td align="center">1750</td>
+              <td align="center">36</td>
+            </tr>
+            <tr>
+              <td align="left">S14</td>
+              <td align="center">1800</td>
+              <td align="center">38</td>
+            </tr>
+          </tbody>
+        </table>
+      </table-wrap>
+      <p>Empregando o mesmo método utilizado na Seção 3, optamos por aplicar logaritmos aos dados apresentados na <xref ref-type="table" rid="T05">Tabela 5</xref>. Essa técnica permitiu a observação detalhada na <xref ref-type="fig" rid="F18">Figura 18</xref> e a determinação do valor do coeficiente linear <italic>b</italic> como <inline-formula id="ILM66"><mml:math display="inline"><mml:mrow><mml:mo>−</mml:mo><mml:mn>7,62</mml:mn></mml:mrow></mml:math></inline-formula>. Com base nesse valor, recorremos à seguinte equação para calcular a massa de Sagittarius A* (<italic>M<sub>SA</sub></italic>):</p>
+      <p>
+        <disp-formula id="DM33">
+          <label>(33)</label>
+          <mml:math display="block">
+            <mml:mrow>
+              <mml:mrow>
+                <mml:msub>
+                  <mml:mi>M</mml:mi>
+                  <mml:mrow>
+                    <mml:mi>S</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:mi>A</mml:mi>
+                  </mml:mrow>
+                </mml:msub>
+                <mml:mo>=</mml:mo>
+                <mml:mfrac>
+                  <mml:mrow>
+                    <mml:mn>4</mml:mn>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msup>
+                      <mml:mi>π</mml:mi>
+                      <mml:mn>2</mml:mn>
+                    </mml:msup>
+                  </mml:mrow>
+                  <mml:mrow>
+                    <mml:mi>G</mml:mi>
+                    <mml:mo>⁢</mml:mo>
+                    <mml:msup>
+                      <mml:mi>e</mml:mi>
+                      <mml:mrow>
+                        <mml:mn>2</mml:mn>
+                        <mml:mo>⁢</mml:mo>
+                        <mml:mi>b</mml:mi>
+                      </mml:mrow>
+                    </mml:msup>
+                  </mml:mrow>
+                </mml:mfrac>
+              </mml:mrow>
+              <mml:mo lspace="0em">.</mml:mo>
+            </mml:mrow>
+          </mml:math>
+        </disp-formula>
+      </p>
+      <fig id="F18" position="float">
+        <label>Figura 18</label>
+        <caption>
+          <title>Comportamento das Estrelas <italic>S</italic> segundo a Terceira Lei de Kepler, cores utilizadas apenas para fins ilustrativos. Fonte: Acerto pessoal.</title>
+        </caption>
+        <alternatives>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/b92b86ef30e7c4c4b62ea2ef58c8986c1c412dbc.jpg"/>
+          <graphic xlink:href="https://minio.scielo.br/documentstore/1806-9126/QTvss3J7XSVTTHT6snCpCcz/7362513af213b991150233c5a4d219ab050effef.jpg" specific-use="scielo-web" content-type="scielo-267x140"/>
+        </alternatives>
+      </fig>
+      <p>Este cálculo nos forneceu uma estimativa para <italic>M<sub>SA</sub></italic> de <inline-formula id="ILM67"><mml:math display="inline"><mml:mrow><mml:mn>8,29</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>36</mml:mn></mml:msup></mml:mrow></mml:math></inline-formula> kg. Comparando este resultado com o valor documentado por [<xref ref-type="bibr" rid="B26">26</xref>] de <inline-formula id="ILM68"><mml:math display="inline"><mml:mrow><mml:mi>M</mml:mi><mml:mo>=</mml:mo><mml:mrow><mml:mn>8,57</mml:mn><mml:mo lspace="0.222em" rspace="0.222em">×</mml:mo><mml:msup><mml:mn>10</mml:mn><mml:mn>36</mml:mn></mml:msup></mml:mrow></mml:mrow></mml:math></inline-formula>, identificamos um erro associado de somente <inline-formula id="ILM69"><mml:math display="inline"><mml:mrow><mml:mn>3,4</mml:mn><mml:mo>%</mml:mo></mml:mrow></mml:math></inline-formula>. Tal margem de erro, sendo similar àquela encontrada em estudos anteriores, reforça a ideia de que a interação entre Sagittarius A* e as estrelas <italic>S</italic> exibe uma dinâmica que se alinha à previsão da terceira lei de Kepler. A <xref ref-type="fig" rid="F18">Figura 18</xref> nos proporciona uma clara visualização dessa congruência.</p>
+      <p>Para maior transparência e facilitação da reprodução dos resultados, todos os códigos empregados na análise estão disponíveis na referência [<xref ref-type="bibr" rid="B27">27</xref>].</p>
+    </sec>
+    <sec id="S6">
+      <title>6. Conclusão</title>
+      <p>Ao aplicarmos a terceira lei de Kepler em diferentes sistemas astronômicos, como as Luas Galileanas, o Sistema Solar e o sistema TOI700, notamos uma notável concordância entre os dados observados e a predição da terceira lei de Kepler. Este estudo evidência que nos sistemas astronômicos em que a Lei da Gravitação de Newton é aplicável, a terceira lei de Kepler também é válida, o que ressalta a dependência da terceira lei de Kepler com a lei de Newton.</p>
+      <p>No entanto, ao tentarmos estender a aplicação da terceira lei de Kepler para galáxias, percebemos que sua utilização se torna inviável devido à complexidade das distribuições de matéria dentro das galáxias e à potencial presença de matéria escura. Neste cenário, a Lei da Gravitação de Newton revela-se inadequada, uma vez que sugere a presença de mais matéria. A matéria escura é considerada uma forma hipotética de matéria que não interage através de forças eletromagnéticas, tornando-a invisível, ainda que possa exercer influência gravitacional significativa.</p>
+      <p>Por outro lado, o movimento das estrelas <italic>S</italic> ao redor do centro de nossa galáxia, Sagittarius A*, configura um sistema ainda compacto, com um centro gravitacional bem definido, apresentando semelhanças com, por exemplo, o nosso Sistema Solar. Assim, conforme esperado, a terceira lei de Kepler pode ser aplicada. Contudo, é relevante salientar que dados astrométricos recentes dessas estrelas podem ser utilizados para estabelecer limites sobre a massa de partículas hipotéticas de matéria escura. Para mais detalhes, consulte [<xref ref-type="bibr" rid="B28">28</xref>].</p>
+      <p>Este artigo visa oferecer uma contribuição tanto para estudantes quanto para professores do ensino médio e superior interessados em aprofundar seus conhecimentos sobre a terceira lei de Kepler. Além disso, pretende servir como um recurso de estudo para disciplinas introdutórias de física e Astronomia. Ao explorar a aplicação dessa lei em diversos cenários, buscamos proporcionar uma compreensão abrangente de seu comportamento em diferentes escalas de distâncias, bem como suas limitações e dependência com a Lei Universal da Gravitação de Newton.</p>
+    </sec>
+  </body>
+  <back>
+    <ack>
+      <title>Agradecimentos</title>
+      <p>C.C.P. gostaria de expressar sua gratidão à FAPES pelo apoio financeiro parcial concedido a esta pesquisa, por meio de uma bolsa de extensão. Da mesma forma, A.M.V.T. agradece à UFES e à FAPES pelo financiamento do projeto de extensão “Clube de Astronomia de Sooretama”, contexto no qual este trabalho teve início.</p>
+    </ack>
+    <fn-group>
+      <fn fn-type="supported-by" id="footnote1">
+        <label>1</label>
+        <p>O planeta possui um diâmetro de <inline-formula id="ILM70"><mml:math display="inline"><mml:mn>139.822</mml:mn></mml:math></inline-formula> km, sendo, portanto, o maior planeta do Sistema Solar [<xref ref-type="bibr" rid="B8">8</xref>].</p>
+      </fn>
+      <fn fn-type="supported-by" id="footnote2">
+        <label>2</label>
+        <p>Disponível, em português, no link: <ext-link ext-link-type="uri" xlink:href="https://online.fliphtml5.com/ivbtp/xwdk/">https://online.fliphtml5.com/ivbtp/xwdk/</ext-link>.</p>
+      </fn>
+      <fn fn-type="supported-by" id="footnote3">
+        <label>3</label>
+        <p>Mesmo desconsiderando as barras de erro que poderiam ser originárias das fontes, e assim evitando a propagação de erros, o dígito mais à direita pode tratado como não significativo. Esta abordagem é aplicada consistentemente ao longo de todo o artigo.</p>
+      </fn>
+    </fn-group>
+    <ref-list>
+      <ref id="B1">
+        <label>[1]</label>
+        <mixed-citation>[1] M.F.O. Saraiva, K. Oliveira Filho e A. Machado, <italic>Aula 5: O movimento dos planetas</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="http://ww w.if.ufrgs.br/~fatima/fis2010/Aula5-141.pdf">http://ww w.if.ufrgs.br/~fatima/fis2010/Aula5-141.pdf</ext-link> </mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Saraiva</surname>
+              <given-names>M.F.O</given-names>
+            </name>
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>K.</given-names>
+              <suffix>Filho</suffix>
+            </name>
+            <name>
+              <surname>Machado</surname>
+              <given-names>A.</given-names>
+            </name>
+          </person-group>
+          <source>Aula 5: O movimento dos planetas</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="http://ww w.if.ufrgs.br/~fatima/fis2010/Aula5-141.pdf">http://ww w.if.ufrgs.br/~fatima/fis2010/Aula5-141.pdf</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B2">
+        <label>[2]</label>
+        <mixed-citation>[2] A.M. Velásquez-Toribio e M. Oliveira, Revista Brasileira de Ensino de Física <bold>42</bold>, e20190293 (2020).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Velásquez-Toribio</surname>
+              <given-names>A.M.</given-names>
+            </name>
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>M.</given-names>
+            </name>
+          </person-group>
+          <article-title>Revista Brasileira de Ensino de Física</article-title>
+          <volume>42</volume>
+          <elocation-id>e20190293</elocation-id>
+          <year>2020</year>
+        </element-citation>
+      </ref>
+      <ref id="B3">
+        <label>[3]</label>
+        <mixed-citation>[3] M.F.O. Saraiva, K. Oliveira Filho e A. Machado, <italic>Aula 6: Movimento dos planetas – as leis de Kepler</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.if.ufrgs.br/~fatima/fis2010/Aula6-132.pdf">http://www.if.ufrgs.br/~fatima/fis2010/Aula6-132.pdf</ext-link> </mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Saraiva</surname>
+              <given-names>M.F.O.</given-names>
+            </name>
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>K.</given-names>
+              <suffix>Filho</suffix>
+            </name>
+            <name>
+              <surname>Machado</surname>
+              <given-names>A.</given-names>
+            </name>
+          </person-group>
+          <source>Aula 6: Movimento dos planetas – as leis de Kepler</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.if.ufrgs.br/~fatima/fis2010/Aula6-132.pdf">http://www.if.ufrgs.br/~fatima/fis2010/Aula6-132.pdf</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B4">
+        <label>[4]</label>
+        <mixed-citation>[4] O. Gingerich, Vistas in Astronomy <bold>18</bold>, 595 (1975).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gingerich</surname>
+              <given-names>O.</given-names>
+            </name>
+          </person-group>
+          <source>Vistas in Astronomy</source>
+          <volume>18</volume>
+          <fpage>595</fpage>
+          <year>1975</year>
+        </element-citation>
+      </ref>
+      <ref id="B5">
+        <label>[5]</label>
+        <mixed-citation>[5] M.F.O. Saraiva, K. Oliveira Filho e A. Machado, <italic>Aula 7: Newton e as generalizações das leis de Kepler – Gravitação</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.if.ufrgs.br/~fatima/fis2010/Aula7-132.pdf">http://www.if.ufrgs.br/~fatima/fis2010/Aula7-132.pdf</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Saraiva</surname>
+              <given-names>M.F.O.</given-names>
+            </name>
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>K.</given-names>
+              <suffix>Filho</suffix>
+            </name>
+            <name>
+              <surname>Machado</surname>
+              <given-names>A.</given-names>
+            </name>
+          </person-group>
+          <source>Aula 7: Newton e as generalizações das leis de Kepler – Gravitação</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.if.ufrgs.br/~fatima/fis2010/Aula7-132.pdf">http://www.if.ufrgs.br/~fatima/fis2010/Aula7-132.pdf</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B6">
+        <label>[6]</label>
+        <mixed-citation>[6] H.M. Nussenzveig, <italic>Curso de física básica: Mecânica</italic> (Blucher, São Paulo, 2013), v. 1.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Nussenzveig</surname>
+              <given-names>H.M.</given-names>
+            </name>
+          </person-group>
+          <source>Curso de física básica: Mecânica</source>
+          <publisher-loc>Blucher</publisher-loc>
+          <publisher-name>São Paulo</publisher-name>
+          <year>2013</year>
+          <volume>1</volume>
+        </element-citation>
+      </ref>
+      <ref id="B7">
+        <label>[7]</label>
+        <mixed-citation>[7] L. G. Diniz, <italic>Galileu Galilei- O mensageiro das estrelas</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="https://www.sbfisica.org.br/v1/portalpion/index.php/artigos/26-galileu-galilei-o-mensageiro-d as-estrelas">https://www.sbfisica.org.br/v1/portalpion/index.php/artigos/26-galileu-galilei-o-mensageiro-d as-estrelas</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Diniz</surname>
+              <given-names>L. G.</given-names>
+            </name>
+          </person-group>
+          <source>Galileu Galilei- O mensageiro das estrelas</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="https://www.sbfisica.org.br/v1/portalpion/index.php/artigos/26-galileu-galilei-o-mensageiro-d as-estrelas">https://www.sbfisica.org.br/v1/portalpion/index.php/artigos/26-galileu-galilei-o-mensageiro-d as-estrelas</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B8">
+        <label>[8]</label>
+        <mixed-citation>[8] NASA, <italic>Planets: Jupiter</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="https://solarsys tem.nasa.gov/planets/jupiter/overview/">https://solarsys tem.nasa.gov/planets/jupiter/overview/</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <collab>NASA, Planets: Jupiter</collab>
+          </person-group>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="https://solarsys tem.nasa.gov/planets/jupiter/overview/">https://solarsys tem.nasa.gov/planets/jupiter/overview/</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B9">
+        <label>[9]</label>
+        <mixed-citation>[9] R.R. Cuzinatto, E.M. Morais e C.N. Souza, Revista Brasileira de Ensino de Física <bold>36</bold>, 3306 (2014).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Cuzinatto</surname>
+              <given-names>R.R.</given-names>
+            </name>
+            <name>
+              <surname>Morais</surname>
+              <given-names>E.M.</given-names>
+            </name>
+            <name>
+              <surname>Souza</surname>
+              <given-names>C.N.</given-names>
+            </name>
+          </person-group>
+          <article-title>Revista Brasileira de Ensino de Física</article-title>
+          <volume>36</volume>
+          <fpage>3306</fpage>
+          <year>2014</year>
+        </element-citation>
+      </ref>
+      <ref id="B10">
+        <label>[10]</label>
+        <mixed-citation>[10] Gettysburg College, <italic>Contemporary Laboratory Experien- ces in Astronomy</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="http://public.gettysburg.edu/~marschal/clea/CLEAhome.html">http://public.gettysburg.edu/~marschal/clea/CLEAhome.html</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <collab>Gettysburg College, Contemporary Laboratory Experiences in Astronomy</collab>
+          </person-group>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="http://public.gettysburg.edu/~marschal/clea/CLEAhome.html">http://public.gettysburg.edu/~marschal/clea/CLEAhome.html</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B11">
+        <label>[11]</label>
+        <mixed-citation>[11] H.D. Young e R.A. Freedman, <italic>Termodinâmica e ondas</italic> (Pearson Universidades, São Paulo, 2015), v. 2, 14 ed.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Young</surname>
+              <given-names>H.D.</given-names>
+            </name>
+            <name>
+              <surname>Freedman</surname>
+              <given-names>R.A.</given-names>
+            </name>
+          </person-group>
+          <source>Termodinâmica e ondas</source>
+          <publisher-name>Pearson Universidades</publisher-name>
+          <publisher-loc>São Paulo</publisher-loc>
+          <year>2015</year>
+          <volume>2</volume>
+          <edition>14 ed</edition>
+        </element-citation>
+      </ref>
+      <ref id="B12">
+        <label>[12]</label>
+        <mixed-citation>[12] J.H. Vuolo, <italic>Fundamento da Teoria dos Erros</italic> (Edgard Blücher, São Paulo, 1996).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vuolo</surname>
+              <given-names>J.H.</given-names>
+            </name>
+          </person-group>
+          <source>Fundamento da Teoria dos Erros</source>
+          <publisher-name>Edgard Blücher</publisher-name>
+          <publisher-loc>São Paulo</publisher-loc>
+          <year>1996</year>
+        </element-citation>
+      </ref>
+      <ref id="B13">
+        <label>[13]</label>
+        <mixed-citation>[13] I.L. Feitosa Filho, <italic>Análise das distribuições de exoplanetas no espaço de parâmetros físicos e orbitais</italic>. Dissertação de Mestrado, Universidade de São Paulo, São Paulo (2019).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Feitosa</surname>
+              <given-names>I.L.</given-names>
+              <suffix>Filho</suffix>
+            </name>
+          </person-group>
+          <source>Análise das distribuições de exoplanetas no espaço de parâmetros físicos e orbitais</source>
+          <comment>Dissertação de Mestrado</comment>
+          <publisher-name>Universidade de São Paulo</publisher-name>
+          <publisher-loc>São Paulo</publisher-loc>
+          <year>2019</year>
+        </element-citation>
+      </ref>
+      <ref id="B14">
+        <label>[14]</label>
+        <mixed-citation>[14] B.B. Siffert, <italic>A procura por exoplanetas habitáveis</italic>, Cadernos de Astronomia <bold>3</bold>, 4 (2022).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Siffert</surname>
+              <given-names>B.B.</given-names>
+            </name>
+          </person-group>
+          <source>A procura por exoplanetas habitáveis</source>
+          <publisher-name>Cadernos de Astronomia</publisher-name>
+          <volume>3</volume>
+          <fpage>4</fpage>
+          <year>2022</year>
+        </element-citation>
+      </ref>
+      <ref id="B15">
+        <label>[15]</label>
+        <mixed-citation>[15] A. Gould, T. Komatsu, E. Devore, P. Harman e D. Koch, <italic>Kepler’s third law and NASA’s Kepler mission</italic>, The Physics Teacher <bold>53</bold>, 201 (2015).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gould</surname>
+              <given-names>A.</given-names>
+            </name>
+            <name>
+              <surname>Komatsu</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Devore</surname>
+              <given-names>E.</given-names>
+            </name>
+            <name>
+              <surname>Harman</surname>
+              <given-names>P.</given-names>
+            </name>
+            <name>
+              <surname>Koch</surname>
+              <given-names>D.</given-names>
+            </name>
+          </person-group>
+          <source>Kepler’s third law and NASA’s Kepler mission</source>
+          <publisher-name>The Physics Teacher</publisher-name>
+          <volume>53</volume>
+          <fpage>201</fpage>
+          <year>2015</year>
+        </element-citation>
+      </ref>
+      <ref id="B16">
+        <label>[16]</label>
+        <mixed-citation>[16] NASA, <italic>Exoplanet Catalog</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="https://exop lanets.nasa.gov/exoplanet-catalog/7658/toi-700-d/">https://exop lanets.nasa.gov/exoplanet-catalog/7658/toi-700-d/</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <collab>NASA</collab>
+          </person-group>
+          <source>Exoplanet Catalog</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="https://exop lanets.nasa.gov/exoplanet-catalog/7658/toi-700-d/">https://exop lanets.nasa.gov/exoplanet-catalog/7658/toi-700-d/</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B17">
+        <label>[17]</label>
+        <mixed-citation>[17] M.G. Pastoriza, <italic>Galáxias – morfologia</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.if.ufrgs.br/~mgp/notas/ast_extragal/Galaxias_morfologia.pdf">http://www.if.ufrgs.br/~mgp/notas/ast_extragal/Galaxias_morfologia.pdf</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Pastoriza</surname>
+              <given-names>M.G.</given-names>
+            </name>
+          </person-group>
+          <source>Galáxias – morfologia</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.if.ufrgs.br/~mgp/notas/ast_extragal/Galaxias_morfologia.pdf">http://www.if.ufrgs.br/~mgp/notas/ast_extragal/Galaxias_morfologia.pdf</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B18">
+        <label>[18]</label>
+        <mixed-citation>[18] J. Binney e S. Tremaine, <italic>Galactic dynamics</italic> (Princeton University Press, Princeton, 2008). DOI: https://doi.org/10.1590/1806-9126-RBEF-2023-0329 Revista Brasileira de Ensino de Física, vol. 46, e20230329, 2024 e20230329-14 A Terceira Lei de Kepler em diferente escalas: de luas até galáxias</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Binney</surname>
+              <given-names>J.</given-names>
+            </name>
+            <name>
+              <surname>Tremaine</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>Galactic dynamics</source>
+          <publisher-name>Princeton University Press</publisher-name>
+          <publisher-loc>Princeton</publisher-loc>
+          <year>2008</year>
+        </element-citation>
+      </ref>
+      <ref id="B19">
+        <label>[19]</label>
+        <mixed-citation>[19] Y. Sofue, disponível em: <ext-link ext-link-type="uri" xlink:href="https://www.ioa.s.u-tokyo.ac.jp/~sofue/htdocs/2015m31/tabm31.dat">https://www.ioa.s.u-tokyo.ac.jp/~sofue/htdocs/2015m31/tabm31.dat</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sofue</surname>
+              <given-names>Y.</given-names>
+            </name>
+          </person-group>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="https://www.ioa.s.u-tokyo.ac.jp/~sofue/htdocs/2015m31/tabm31.dat">https://www.ioa.s.u-tokyo.ac.jp/~sofue/htdocs/2015m31/tabm31.dat</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B20">
+        <label>[20]</label>
+        <mixed-citation>[20] Y. Sofue, disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.ioa.s.u-tokyo.ac.jp/~sofue/RC99/0224.dat">http://www.ioa.s.u-tokyo.ac.jp/~sofue/RC99/0224.dat</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Sofue</surname>
+              <given-names>Y.</given-names>
+            </name>
+          </person-group>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="http://www.ioa.s.u-tokyo.ac.jp/~sofue/RC99/0224.dat">http://www.ioa.s.u-tokyo.ac.jp/~sofue/RC99/0224.dat</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B21">
+        <label>[21]</label>
+        <mixed-citation>[21] M. Henderson, <italic>Astronomers confirm black hole at the heart of the Milky Way</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="https://www.thetimes.co.uk/article/astronomers-confirm-black-hole-at-the-heart-of-the-milky-way-m0vtxv52v26">https://www.thetimes.co.uk/article/astronomers-confirm-black-hole-at-the-heart-of-the-milky-way-m0vtxv52v26</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Henderson</surname>
+              <given-names>M.</given-names>
+            </name>
+          </person-group>
+          <source>Astronomers confirm black hole at the heart of the Milky Way</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="https://www.thetimes.co.uk/article/astronomers-confirm-black-hole-at-the-heart-of-the-milky-way-m0vtxv52v26">https://www.thetimes.co.uk/article/astronomers-confirm-black-hole-at-the-heart-of-the-milky-way-m0vtxv52v26</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B22">
+        <label>[22]</label>
+        <mixed-citation>[22] R. Abuter, A. Amorim, M. Bauböck, J.P. Berger, H. Bonnet, W. Brandner, Y. Clénet, V. Coudé du Foresto e P.T. Zeeuw, <italic>Astronomy and Astrophysics</italic> <bold>618</bold>, L10 (2018).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Abuter</surname>
+              <given-names>R.</given-names>
+            </name>
+            <name>
+              <surname>Amorim</surname>
+              <given-names>A.</given-names>
+            </name>
+            <name>
+              <surname>Bauböck</surname>
+              <given-names>M.</given-names>
+            </name>
+            <name>
+              <surname>Berger</surname>
+              <given-names>J.P.</given-names>
+            </name>
+            <name>
+              <surname>Bonnet</surname>
+              <given-names>H.</given-names>
+            </name>
+            <name>
+              <surname>Brandner</surname>
+              <given-names>W.</given-names>
+            </name>
+            <name>
+              <surname>Clénet</surname>
+              <given-names>Y.</given-names>
+            </name>
+            <name>
+              <surname>Coudé du Foresto</surname>
+              <given-names>V.</given-names>
+            </name>
+            <name>
+              <surname>Zeeuw</surname>
+              <given-names>P.T.</given-names>
+            </name>
+          </person-group>
+          <source>Astronomy and Astrophysics</source>
+          <volume>618</volume>
+          <fpage>L10</fpage>
+          <year>2018</year>
+        </element-citation>
+      </ref>
+      <ref id="B23">
+        <label>[23]</label>
+        <mixed-citation>[23] V.H. Guariento, <italic>Sagittarius A*: O que se sabe do buraco negro no centro da Via Láctea</italic>, disponível em: <ext-link ext-link-type="uri" xlink:href="https://guarientoportal.com/sagittarius-a-buraco-negro">https://guarientoportal.com/sagittarius-a-buraco-negro</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Guariento</surname>
+              <given-names>V.H.</given-names>
+            </name>
+          </person-group>
+          <source>Sagittarius A*: O que se sabe do buraco negro no centro da Via Láctea</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="https://guarientoportal.com/sagittarius-a-buraco-negro">https://guarientoportal.com/sagittarius-a-buraco-negro</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B24">
+        <label>[24]</label>
+        <mixed-citation>[24] A.M. Ghez, S. Salim, S.D. Hornstein, A. Tanner, J.R. Lu, M. Morris, E.E. Becklin e G. Duchêne, <italic>The Astrophysical Journal</italic> <bold>620</bold>, 744 (2005).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Ghez</surname>
+              <given-names>A.M.</given-names>
+            </name>
+            <name>
+              <surname>Salim</surname>
+              <given-names>S.</given-names>
+            </name>
+            <name>
+              <surname>Hornstein</surname>
+              <given-names>S.D.</given-names>
+            </name>
+            <name>
+              <surname>Tanner</surname>
+              <given-names>A.</given-names>
+            </name>
+            <name>
+              <surname>Lu</surname>
+              <given-names>J.R.</given-names>
+            </name>
+            <name>
+              <surname>Morris</surname>
+              <given-names>M.</given-names>
+            </name>
+            <name>
+              <surname>Becklin</surname>
+              <given-names>E.E.</given-names>
+            </name>
+            <name>
+              <surname>Duchêne</surname>
+              <given-names>G.</given-names>
+            </name>
+          </person-group>
+          <source>The Astrophysical Journal</source>
+          <volume>620</volume>
+          <fpage>744</fpage>
+          <year>2005</year>
+        </element-citation>
+      </ref>
+      <ref id="B25">
+        <label>[25]</label>
+        <mixed-citation>[25] F. Eisenhauer, R. Genzel, T. Alexander, R. Abu- ter, T. Paumard, T. Ott, A. Gilbert, S. Gillessen, M. Horrobni e S. Trippe, <italic>The Astrophysical Journal</italic> <bold>628</bold>, 246 (2005).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Eisenhauer</surname>
+              <given-names>F.</given-names>
+            </name>
+            <name>
+              <surname>Genzel</surname>
+              <given-names>R.</given-names>
+            </name>
+            <name>
+              <surname>Alexander</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Abuter</surname>
+              <given-names>R.</given-names>
+            </name>
+            <name>
+              <surname>Paumard</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Ott</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Gilbert</surname>
+              <given-names>A.</given-names>
+            </name>
+            <name>
+              <surname>Gillessen</surname>
+              <given-names>S.</given-names>
+            </name>
+            <name>
+              <surname>Horrobni</surname>
+              <given-names>M.</given-names>
+            </name>
+            <name>
+              <surname>Trippe</surname>
+              <given-names>S.</given-names>
+            </name>
+          </person-group>
+          <source>The Astrophysical Journal</source>
+          <volume>628</volume>
+          <fpage>246</fpage>
+          <year>2005</year>
+        </element-citation>
+      </ref>
+      <ref id="B26">
+        <label>[26]</label>
+        <mixed-citation>[26] S. Gillessen, F. Eisenhauer, S. Trippe, T. Alexander, R. Genzel, F. Martins e T. Ott, <italic>The Astrophysical Journal</italic> <bold>692</bold>, 1075 (2009).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Gillessen</surname>
+              <given-names>S.</given-names>
+            </name>
+            <name>
+              <surname>Eisenhauer</surname>
+              <given-names>F.</given-names>
+            </name>
+            <name>
+              <surname>Trippe</surname>
+              <given-names>S.</given-names>
+            </name>
+            <name>
+              <surname>Alexander</surname>
+              <given-names>T.</given-names>
+            </name>
+            <name>
+              <surname>Genzel</surname>
+              <given-names>R.</given-names>
+            </name>
+            <name>
+              <surname>Martins</surname>
+              <given-names>F.</given-names>
+            </name>
+            <name>
+              <surname>Ott</surname>
+              <given-names>T.</given-names>
+            </name>
+          </person-group>
+          <source>The Astrophysical Journal</source>
+          <volume>692</volume>
+          <fpage>1075</fpage>
+          <year>2009</year>
+        </element-citation>
+      </ref>
+      <ref id="B27">
+        <label>[27]</label>
+        <mixed-citation>[27] C.C. Pereira, <italic>Códigos para os cálculos e gráficos</italic>, dispo- nível em: <ext-link ext-link-type="uri" xlink:href="https://colab.research.google.com/drive/1LF4-cvsWb1PsWhTvLJ9xYaLt8DKpzmmi?usp=sharing">https://colab.research.google.com/drive/1LF4-cvsWb1PsWhTvLJ9xYaLt8DKpzmmi?usp=sharing</ext-link>.</mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Pereira</surname>
+              <given-names>C.C.</given-names>
+            </name>
+          </person-group>
+          <source>Códigos para os cálculos e gráficos</source>
+          <comment>disponível em: <ext-link ext-link-type="uri" xlink:href="https://colab.research.google.com/drive/1LF4-cvsWb1PsWhTvLJ9xYaLt8DKpzmmi?usp=sharing">https://colab.research.google.com/drive/1LF4-cvsWb1PsWhTvLJ9xYaLt8DKpzmmi?usp=sharing</ext-link> </comment>
+        </element-citation>
+      </ref>
+      <ref id="B28">
+        <label>[28]</label>
+        <mixed-citation>[28] GRAVITY Collaboration, Monthly Notices of the Royal Astronomical Society <bold>524</bold>, 1075 (2023).</mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <collab>GRAVITY Collaboration</collab>
+          </person-group>
+          <article-title>Monthly Notices of the Royal Astronomical Society</article-title>
+          <volume>524</volume>
+          <fpage>1075</fpage>
+          <year>2023</year>
+        </element-citation>
+      </ref>
+    </ref-list>
+  </back>
+</article>

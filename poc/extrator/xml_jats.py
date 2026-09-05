@@ -119,7 +119,8 @@ def nome_base_sps(rev: Optional[dict], model: dict) -> Optional[str]:
     return "-".join(p for p in partes if p)
 
 
-def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[dict]] = None, notas_rid: Optional[dict] = None, sem_nota: Optional[list] = None):
+def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[dict]] = None, notas_rid: Optional[dict] = None,
+               sem_nota: Optional[list] = None, tabelas: Optional[List[dict]] = None, equacoes: Optional[List[dict]] = None):
     """Preenche <p> com texto e <xref> para referencias (bibr), figuras (fig) e notas de rodape (fn).
     As chamadas de nota chegam embutidas no texto como "[^3]" (ver leitura.texto_marcado); cada uma vira
     <xref ref-type="fn" rid="fnN"><sup>3</sup></xref>. Sem nota correspondente, sai so <sup>3</sup> e o rotulo vai para sem_nota."""
@@ -150,6 +151,18 @@ def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[di
         for m in re.finditer(r"\b(Fig(?:ura|\.)|Figure)\s*" + re.escape(f["numero"]) + r"(?!\d)", texto):
             if not any(a < m.end() and m.start() < b for a, b, _, _ in marcas):
                 marcas.append((m.start(), m.end(), f["_rid"], "fig"))
+    for t in tabelas or []:
+        if not t.get("numero") or not t.get("_rid"):
+            continue
+        for m in re.finditer(r"\b(Tabelas?|Tables?|Quadros?|Cuadros?)\.?\s*" + re.escape(t["numero"]) + r"(?!\d)", texto, re.I):
+            if not any(a < m.end() and m.start() < b for a, b, _, _ in marcas):
+                marcas.append((m.start(), m.end(), t["_rid"], "table"))
+    for e in equacoes or []:
+        if not e.get("numero") or not e.get("_rid"):
+            continue
+        for m in re.finditer(r"\b(equa[çc][ãa]o|equation|eq\.?|f[óo]rmula)\s*\(?" + re.escape(e["numero"]) + r"\)?(?!\d)", texto, re.I):
+            if not any(a < m.end() and m.start() < b for a, b, _, _ in marcas):
+                marcas.append((m.start(), m.end(), e["_rid"], "disp-formula"))
     marcas.sort()
     cursor, ultimo = 0, None
     for ini, fim, rid, tipo in marcas:
@@ -267,7 +280,7 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
             res.aviso(f"Título traduzido sem idioma detectado, omitido: '{t['texto'][:50]}…'")
 
     # ---- contribs e affs
-    cg = _sub(am, "contrib-group")
+    cg = _sub(am, "contrib-group") if model.get("autores") else None
     autores = model.get("autores", [])
     if not autores:
         res.bloqueia("Nenhum autor (C01).")
@@ -425,14 +438,34 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         else:
             res.bloqueia(f"Resumo em '{r['idioma']}' sem palavras-chave (A13).")
 
+    # ---- tabelas e equacoes que vao para o XML
+    tabs_xml = []
+    for t in model.get("tabelas", []):
+        if not t.get("celulas"):
+            continue  # legenda sem grade reconhecida: fica no aviso T01, nao entra no XML
+        t = dict(t)
+        t["_rid"] = f"t{len(tabs_xml) + 1}"
+        if t.get("qualidade") == "baixa" and t.get("arquivo"):
+            t["_href"] = f"{res.nome_base}-gt{len(tabs_xml) + 1:02d}.tif"
+            res.imagens.append((t["arquivo"], t["_href"]))
+        tabs_xml.append(t)
+    eqs_xml = []
+    for e in model.get("equacoes", []):
+        if not e.get("arquivo"):
+            continue  # sem recorte nao ha o que emitir
+        e = dict(e)
+        e["_rid"] = f"e{len(eqs_xml) + 1:02d}"
+        e["_href"] = f"{res.nome_base}-e{len(eqs_xml) + 1:02d}.tif"
+        res.imagens.append((e["arquivo"], e["_href"]))
+        eqs_xml.append(e)
+
     # ---- counts
     figs = [f for f in model.get("figuras", []) if f["tipo"] == "fig"]
-    tabs = [f for f in model.get("figuras", []) if f["tipo"] == "table"]
     counts = _sub(am, "counts")
-    # os contadores refletem o que EXISTE no XML; figuras/tabelas ainda nao sao emitidas (ver aviso F01)
+    # os contadores refletem o que EXISTE no XML
     _sub(counts, "fig-count", count=str(len(figs_xml)))
-    _sub(counts, "table-count", count="0")
-    _sub(counts, "equation-count", count="0")
+    _sub(counts, "table-count", count=str(len(tabs_xml)))
+    _sub(counts, "equation-count", count=str(len(eqs_xml)))
     _sub(counts, "ref-count", count=str(len(model.get("referencias", []))))
     if model.get("fpage") and model.get("lpage"):
         _sub(counts, "page-count", count=str(int(model["lpage"]) - int(model["fpage"]) + 1))
@@ -447,6 +480,41 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     for n in fns:
         notas_rid.setdefault(str(n.get("rotulo") or ""), []).append(n["id"])
     chamadas_sem_nota: list = []
+
+    def _emite_tabela(pai_el, t):
+        tw = _sub(pai_el, "table-wrap", id=t["_rid"])
+        if t.get("rotulo"):
+            _sub(tw, "label", t["rotulo"])
+        if t.get("legenda"):
+            _sub(_sub(tw, "caption"), "title", t["legenda"])
+        if t.get("_href"):  # grade incerta: a tabela vai como imagem, para nao entregar coluna trocada
+            _sub(tw, "graphic", xlink_href=t["_href"])
+            if t.get("fonte"):
+                _sub(_sub(tw, "table-wrap-foot"), "p", "Fonte: " + t["fonte"])
+            return
+        tab = _sub(tw, "table")
+        celulas = t.get("celulas") or []
+        n_cab = min(int(t.get("linhas_cabecalho") or 0), max(len(celulas) - 1, 0))
+        n_col = int(t.get("colunas") or (max((len(l) for l in celulas), default=1)))
+        if n_cab:
+            thead = _sub(tab, "thead")
+            for linha in celulas[:n_cab]:
+                tr = _sub(thead, "tr")
+                for k in range(n_col):
+                    _sub(tr, "th", (linha[k] if k < len(linha) else "") or "")
+        tbody = _sub(tab, "tbody")
+        for linha in celulas[n_cab:]:
+            tr = _sub(tbody, "tr")
+            for k in range(n_col):
+                _sub(tr, "td", (linha[k] if k < len(linha) else "") or "")
+        if t.get("fonte"):
+            _sub(_sub(tw, "table-wrap-foot"), "p", "Fonte: " + t["fonte"])
+
+    def _emite_equacao(pai_el, e):
+        df = _sub(pai_el, "disp-formula", id=e["_rid"])
+        if e.get("rotulo"):
+            _sub(df, "label", e["rotulo"])
+        _sub(df, "graphic", xlink_href=e["_href"])
 
     def _emite_fig(pai_el, f):
         fig = _sub(pai_el, "fig", id=f["_rid"])
@@ -466,15 +534,29 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         titulo = s.get("titulo_completo") or (f"{s['numero']} {s['titulo']}" if s.get("numero") else s["titulo"])
         _sub(sec, "title", titulo)
         figs_secao = [f for f in figs_xml if f.get("secao_indice") == si]
+        tabs_secao = [t for t in tabs_xml if t.get("secao_indice") == si]
+        eqs_secao = [e for e in eqs_xml if e.get("secao_indice") == si]
         pars = s.get("paragrafos", [])
         for k, par in enumerate(pars):
             for f in figs_secao:
                 if (f.get("pos_paragrafo") or 0) == k:
                     _emite_fig(sec, f)
-            _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml, notas_rid, chamadas_sem_nota)
+            for t in tabs_secao:
+                if (t.get("pos_paragrafo") or 0) == k:
+                    _emite_tabela(sec, t)
+            for e in eqs_secao:
+                if (e.get("pos_paragrafo") or 0) == k:
+                    _emite_equacao(sec, e)
+            _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml, notas_rid, chamadas_sem_nota, tabs_xml, eqs_xml)
         for f in figs_secao:
             if (f.get("pos_paragrafo") or 0) >= len(pars):
                 _emite_fig(sec, f)
+        for t in tabs_secao:
+            if (t.get("pos_paragrafo") or 0) >= len(pars):
+                _emite_tabela(sec, t)
+        for e in eqs_secao:
+            if (e.get("pos_paragrafo") or 0) >= len(pars):
+                _emite_equacao(sec, e)
         pilha.append((nivel, sec))
     if not model.get("secoes"):
         res.bloqueia("Corpo do texto sem seções (S01).")
@@ -485,6 +567,21 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         if not f.get("chamada_no_texto"):
             res.aviso(f"{f['rotulo']} não é citada no texto (F01).")
 
+    for t in tabs_xml:
+        if not t.get("chamada_no_texto"):
+            res.aviso(f"{t.get('rotulo') or 'Tabela sem rótulo'} não é citada no texto (T01).")
+    sem_grade = [t.get("rotulo") for t in model.get("tabelas", []) if not t.get("celulas")]
+    if sem_grade:
+        res.aviso(f"Tabela(s) com legenda mas sem grade reconhecida no PDF, fora do XML: {', '.join(x or '?' for x in sem_grade)} (T01).")
+    if eqs_xml:
+        res.aviso(f"{len(eqs_xml)} equação(ões) em <disp-formula> como imagem: o PDF não guarda MathML. "
+                  f"Para MathML é preciso o DOCX ou o LaTeX original (E01).")
+        numeros = [int(e["numero"]) for e in eqs_xml if (e.get("numero") or "").isdigit()]
+        if numeros:
+            faltando = sorted(set(range(min(numeros), max(numeros) + 1)) - set(numeros))
+            if faltando:
+                res.aviso(f"Numeração de equações com saltos: {', '.join(str(n) for n in faltando)} não saiu separada; "
+                          f"confira se ficou dentro do recorte de outra equação (E01).")
     if chamadas_sem_nota:
         res.aviso(f"Chamada(s) de nota no texto sem nota de rodapé correspondente (ficaram como sobrescrito): {', '.join(sorted(set(chamadas_sem_nota), key=lambda x: (len(x), x)))} (N01).")
 

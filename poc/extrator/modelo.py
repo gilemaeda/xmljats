@@ -99,6 +99,44 @@ class Figura:
 
 
 @dataclass
+class Tabela:
+    """Tabela detectada no PDF: grade de celulas + legenda casada pelo rotulo."""
+    numero: Optional[str] = None            # "1" em "Tabela 1"
+    rotulo: str = ""                        # "Tabela 1"
+    legenda: str = ""
+    fonte: Optional[str] = None             # "Fonte: ..."
+    pagina: int = 1
+    celulas: List[List[str]] = field(default_factory=list)
+    linhas_cabecalho: int = 0
+    colunas: int = 0
+    chamada_no_texto: bool = False
+    secao_indice: Optional[int] = None
+    pos_paragrafo: Optional[int] = None
+    bbox: List[float] = field(default_factory=list)
+    qualidade: str = "alta"                 # alta (grade com linhas) | media | baixa (colunas incertas -> vai como imagem)
+    arquivo: Optional[str] = None           # tabNN.png quando a grade nao e confiavel
+    largura: Optional[int] = None
+    altura: Optional[int] = None
+
+
+@dataclass
+class Equacao:
+    """Equacao destacada: sai do PDF como imagem recortada (PDF nao tem MathML)."""
+    numero: Optional[str] = None            # "12" em "(12)"
+    rotulo: Optional[str] = None            # "(12)"
+    texto: str = ""                         # texto bruto, para conferencia
+    pagina: int = 1
+    numerada: bool = False
+    chamada_no_texto: bool = False
+    secao_indice: Optional[int] = None
+    pos_paragrafo: Optional[int] = None
+    arquivo: Optional[str] = None           # eq01.png gravado pelo extrator
+    largura: Optional[int] = None
+    altura: Optional[int] = None
+    bbox: List[float] = field(default_factory=list)
+
+
+@dataclass
 class Referencia:
     texto: str
     tipo: str = "other"
@@ -154,6 +192,8 @@ class ArticleModel:
     citacoes: List[Citacao] = field(default_factory=list)
     notas: List[Nota] = field(default_factory=list)
     figuras: List[Figura] = field(default_factory=list)
+    tabelas: List[Tabela] = field(default_factory=list)
+    equacoes: List[Equacao] = field(default_factory=list)
     referencias: List[Referencia] = field(default_factory=list)
     estilo_referencias: Optional[str] = None
     cabecalhos: List[str] = field(default_factory=list)

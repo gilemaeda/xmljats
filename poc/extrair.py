@@ -58,6 +58,26 @@ def extrai(caminho: str, pasta_imagens: str = None):
             os.makedirs(pasta_imagens, exist_ok=True)
             with open(os.path.join(pasta_imagens, f.arquivo), "wb") as fh:
                 fh.write(im["dados"])
+    # imagens de tabelas cuja grade nao e confiavel (tabNN.png)
+    brutas_tab = {(g["pagina"], tuple(g["bbox"])): g for g in doc.tabelas}
+    for k, t in enumerate(model.tabelas, start=1):
+        g = brutas_tab.get((t.pagina, tuple(t.bbox))) if t.bbox else None
+        if not g or not g.get("png"):
+            continue
+        t.arquivo, t.largura, t.altura = f"tab{k:02d}.png", g.get("largura"), g.get("altura")
+        if pasta_imagens:
+            os.makedirs(pasta_imagens, exist_ok=True)
+            with open(os.path.join(pasta_imagens, t.arquivo), "wb") as fh:
+                fh.write(g["png"])
+    # imagens das equacoes recortadas do PDF (eqNN.png)
+    for k, (eq, bruta) in enumerate(zip(model.equacoes, doc.equacoes), start=1):
+        if not bruta.get("png"):
+            continue
+        eq.arquivo = f"eq{k:02d}.png"
+        if pasta_imagens:
+            os.makedirs(pasta_imagens, exist_ok=True)
+            with open(os.path.join(pasta_imagens, eq.arquivo), "wb") as fh:
+                fh.write(bruta["png"])
     usadas = {f.imagem_indice for f in model.figuras if f.imagem_indice is not None}
     soltas = len([i for i in range(len(doc.imagens)) if i not in usadas])
     if soltas:
@@ -87,6 +107,15 @@ def resumo_md(m: ArticleModel) -> str:
     L += ["", "## Resumos"]
     for r in m.resumos:
         L.append(f"- [{r.rotulo} → {r.idioma}] {len(r.texto.split())} palavras · palavras-chave ({r.rotulo_palavras}): {r.palavras_chave}")
+    if m.tabelas:
+        L += ["", f"## Tabelas ({len(m.tabelas)})"]
+        for t in m.tabelas:
+            L.append(f"- p.{t.pagina} {t.rotulo or '(sem rótulo)'} · {len(t.celulas)}x{t.colunas} células · cabeçalho {t.linhas_cabecalho} linha(s) · "
+                     f"{'chamada no texto' if t.chamada_no_texto else 'sem chamada'} · {t.legenda[:70]}")
+    if m.equacoes:
+        L += ["", f"## Equações ({len(m.equacoes)})"]
+        for e in m.equacoes:
+            L.append(f"- p.{e.pagina} {e.rotulo or '(sem número)'} · {'imagem ' + str(e.arquivo) if e.arquivo else 'sem recorte'} · {e.texto[:70]}")
     L += ["", f"## Seções ({len(m.secoes)})"]
     for s in m.secoes:
         L.append(f"- p.{s.pagina} nível {s.nivel} [{s.sec_type or '-'}] {s.numero or ''} {s.titulo} · {len(s.paragrafos)} parágrafos")

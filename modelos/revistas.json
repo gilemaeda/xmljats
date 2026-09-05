@@ -66,6 +66,32 @@
       "modo_publicacao": "continua",
       "licenca_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
       "_fonte": "PDF; acrônimo: confirmar"
+    },
+    {
+      "acronimo": "rbef",
+      "titulo": "Revista Brasileira de Ensino de Física",
+      "abrev": "Rev. Bras. Ensino Fís.",
+      "issn_epub": "1806-9126",
+      "issn_ppub": "1806-1117",
+      "editora": "Sociedade Brasileira de Física",
+      "doi_prefixo": "10.1590/1806-9126-RBEF",
+      "na_scielo": true,
+      "modo_publicacao": "continua",
+      "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
+      "_fonte": "XML oficial SciELO dos artigos baixados em 05/09/2026"
+    },
+    {
+      "acronimo": "rsp",
+      "titulo": "Revista de Saúde Pública",
+      "abrev": "Rev. Saúde Pública",
+      "issn_epub": "1518-8787",
+      "issn_ppub": "0034-8910",
+      "editora": "Faculdade de Saúde Pública da Universidade de São Paulo",
+      "doi_prefixo": "10.11606/s1518-8787",
+      "na_scielo": true,
+      "modo_publicacao": "continua",
+      "licenca_url": "https://creativecommons.org/licenses/by/4.0/",
+      "_fonte": "XML oficial SciELO dos artigos baixados em 05/09/2026"
     }
   ]
 }

@@ -3,7 +3,7 @@ Contas de usuário e sessão do xmljats.
 
 Armazenamento: XMLJATS_DATA/usuarios.json (lista de {id, email, nome, papel, senha, criado_em}); a senha guarda só o
 hash PBKDF2-HMAC-SHA256 com sal. Sessão: cookie "xmljats_sessao" assinado com HMAC-SHA256 (segredo em APP_SEGREDO ou,
-na falta, gerado uma vez em XMLJATS_DATA/segredo.txt). Papéis: "admin" (gerencia usuários e revistas) e "operador".
+na falta, gerado uma vez em XMLJATS_DATA/segredo.txt). Papéis: "admin" (gerencia usuários e revistas), "operador" (vê todos os documentos) e "cliente" (vê só os seus).
 
 Bootstrap: sem usuários cadastrados e com APP_SENHA definida, o primeiro acesso cria o admin "admin" com essa senha.
 Sem usuários e sem APP_SENHA (desenvolvimento local), o app roda sem login como "local".
@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import List, Optional
 
 RE_EMAIL = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$|^[a-z0-9_.-]{3,32}$")  # e-mail ou login simples (ex.: admin)
-PAPEIS = ("admin", "operador")
+PAPEIS = ("admin", "operador", "cliente")
 COOKIE = "xmljats_sessao"
 DURACAO_SESSAO = 12 * 3600  # 12 horas
 

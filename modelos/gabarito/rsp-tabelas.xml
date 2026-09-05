@@ -1,0 +1,3293 @@
+<!DOCTYPE article PUBLIC "-//NLM//DTD JATS (Z39.96) Journal Publishing DTD v1.1 20151215//EN" "https://jats.nlm.nih.gov/publishing/1.1/JATS-journalpublishing1.dtd">
+<article xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:xlink="http://www.w3.org/1999/xlink" article-type="research-article" dtd-version="1.1" specific-use="sps-1.9" xml:lang="en">
+  <front>
+    <journal-meta>
+      <journal-id journal-id-type="nlm-ta">Rev Saude Publica</journal-id>
+      <journal-id journal-id-type="publisher-id">rsp</journal-id>
+      <journal-title-group>
+        <journal-title>Revista de Saúde Pública</journal-title>
+        <abbrev-journal-title abbrev-type="publisher">Rev. Saúde Pública</abbrev-journal-title>
+      </journal-title-group>
+      <issn pub-type="ppub">0034-8910</issn>
+      <issn pub-type="epub">1518-8787</issn>
+      <publisher>
+        <publisher-name>Faculdade de Saúde Pública da Universidade de São Paulo</publisher-name>
+      </publisher>
+    </journal-meta>
+    <article-meta>
+      <article-id specific-use="scielo-v3" pub-id-type="publisher-id">pysCqfC5nrvG8MvCyf46YTs</article-id>
+      <article-id specific-use="scielo-v2" pub-id-type="publisher-id">S0034-89102024000100229</article-id>
+      <article-id pub-id-type="other">00229</article-id>
+      <article-id pub-id-type="doi">10.11606/s1518-8787.2024058005986</article-id>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Original Article</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Access to medicines, the Unified Health System, and intersectional injustices</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-0069-5434</contrib-id>
+          <name>
+            <surname>Mujica</surname>
+            <given-names>Elba Marina Miotto</given-names>
+          </name>
+          <role>Data collection, analysis, and interpretation</role>
+          <role>Drafting or revising the manuscript</role>
+          <role>Approval of the final version</role>
+          <role>Public responsibility for the content of the article</role>
+          <xref ref-type="aff" rid="aff1">
+            <sup>I</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-1816-0745</contrib-id>
+          <name>
+            <surname>Bastos</surname>
+            <given-names>João Luiz</given-names>
+          </name>
+          <role>Conception and planning of the study</role>
+          <role>Data collection, analysis, and interpretation</role>
+          <role>Drafting or revising the manuscript</role>
+          <role>Approval of the final version</role>
+          <role>Public responsibility for the content of the article</role>
+          <xref ref-type="aff" rid="aff1">
+            <sup>I</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2">
+            <sup>II</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0001-7792-4824</contrib-id>
+          <name>
+            <surname>Boing</surname>
+            <given-names>Alexandra Crispim</given-names>
+          </name>
+          <role>Data collection, analysis, and interpretation</role>
+          <role>Drafting or revising the manuscript</role>
+          <role>Approval of the final version</role>
+          <role>Public responsibility for the content of the article</role>
+          <xref ref-type="aff" rid="aff1">
+            <sup>I</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1">
+        <label>I</label>
+        <institution content-type="orgname">Universidade Federal de Santa Catarina</institution>
+        <institution content-type="orgdiv1">Programa de Pós-Graduação em Saúde Coletiva</institution>
+        <addr-line>
+          <named-content content-type="city">Florianópolis</named-content>
+          <named-content content-type="state">SC</named-content>
+        </addr-line>
+        <country country="BR">Brasil</country>
+        <institution content-type="original"> Universidade Federal de Santa Catarina. Programa de Pós-Graduação em Saúde Coletiva. Florianópolis, SC, Brasil</institution>
+      </aff>
+      <aff id="aff2">
+        <label>II</label>
+        <institution content-type="orgname">Simon Fraser University</institution>
+        <institution content-type="orgdiv1">Faculty of Health Sciences</institution>
+        <addr-line>
+          <named-content content-type="city">Burnaby</named-content>
+          <named-content content-type="state">BC</named-content>
+        </addr-line>
+        <country country="CA">Canada</country>
+        <institution content-type="original">Simon Fraser University. Faculty of Health Sciences. Burnaby, BC, Canada</institution>
+      </aff>
+      <author-notes>
+        <corresp id="c01"> Correspondence: João Luiz Bastos Simon Fraser University Faculty of Health Sciences 8888 University Drive V5A1S6 Burnaby, BC, Canada E-mail: <email>jbastos@sfu.ca</email> </corresp>
+        <fn fn-type="conflict">
+          <p>Conflict of Interest: The authors declare no conflict of interest.</p>
+        </fn>
+      </author-notes>
+      <pub-date publication-format="electronic" date-type="pub">
+        <day>09</day>
+        <month>08</month>
+        <year>2024</year>
+      </pub-date>
+      <pub-date date-type="collection" publication-format="electronic">
+        <year>2024</year>
+      </pub-date>
+      <volume>58</volume>
+      <elocation-id>34</elocation-id>
+      <history>
+        <date date-type="received">
+          <day>27</day>
+          <month>11</month>
+          <year>2023</year>
+        </date>
+        <date date-type="accepted">
+          <day>28</day>
+          <month>02</month>
+          <year>2024</year>
+        </date>
+      </history>
+      <permissions>
+        <license license-type="open-access" xlink:href="https://creativecommons.org/licenses/by/4.0/" xml:lang="en">
+          <license-p> This is an Open Access article distributed under the terms of the Creative Commons Attribution License, which permits unrestricted use, distribution, and reproduction in any medium, provided the original work is properly cited. </license-p>
+        </license>
+      </permissions>
+      <abstract>
+        <title>ABSTRACT</title>
+        <sec>
+          <title>OBJECTIVE</title>
+          <p> To estimate the prevalence of general and public access to prescription drugs in the Brazilian population aged 15 or older in 2019, and to identify inequities in access, according to intersections of gender, color/race, socioeconomic level, and territory.</p>
+        </sec>
+        <sec>
+          <title>METHODS</title>
+          <p> We analyzed data from the 2019 National Health Survey with respondents aged 15 years or older who had been prescribed a medication in a healthcare service in the two weeks prior to the interview (n = 19,819). The outcome variable was access to medicines, subdivided into general access (public, private and mixed), public access (via the Unified Health System - SUS) for those treated by the SUS, and public access (via the SUS) for those not treated by the SUS. The study’s independent variables were used to represent axes of marginalization: gender, color/race, socioeconomic level, and territory. The prevalence of general and public access in the different groups analyzed was calculated and the association of the outcomes with the aforementioned axes was estimated with odds ratios (OR) using logistic regression models.</p>
+        </sec>
+        <sec>
+          <title>RESULTS</title>
+          <p> There was a high prevalence of general access (84.9%), when all sources of access were considered, favoring more privileged segments of the population, such as men, white, and those of high socioeconomic status. When only the medicines prescribed in the SUS were considered, there was a low prevalence (30.4% access) that otherwise benefited marginalized population segments, such as women, black, and people from low socioeconomic backgrounds.</p>
+        </sec>
+        <sec>
+          <title>CONCLUSIONS</title>
+          <p> Access to medicines through the SUS proves to be an instrument for combating intersectional inequities, lending credence to the idea that the SUS is an efficient public policy for promoting social justice.</p>
+        </sec>
+      </abstract>
+      <kwd-group xml:lang="en">
+        <kwd>Accessibility to Health Services</kwd>
+        <kwd>Unified Health System</kwd>
+        <kwd>Intersectional Framework</kwd>
+      </kwd-group>
+      <funding-group>
+        <award-group>
+          <funding-source>CNPq</funding-source>
+          <award-id>303775/2021-1</award-id>
+        </award-group>
+      </funding-group>
+      <counts>
+        <fig-count count="0"/>
+        <table-count count="10"/>
+        <equation-count count="0"/>
+        <ref-count count="40"/>
+      </counts>
+    </article-meta>
+  </front>
+  <body>
+    <sec sec-type="intro">
+      <title>INTRODUCTION</title>
+      <p>Access to medicines is fundamental to safeguarding the right to health, and has been recognized as an essential human right. This principle was included in the targets of the Millennium Development Goals and remains a central element in the 2030 Agenda for sustainable development, established by the United Nations (UN)<sup><xref ref-type="bibr" rid="B1">1</xref></sup>. On the global stage, injustices in access to medicines continue to be evident. Despite the efforts of the World Health Organization (WHO) to achieve the goal of universal health coverage, which includes access to medicines, there are still significant variations in access to medicines between countries. Medicines are completely absent from primary care in approximately 30% of 25 countries surveyed by the WHO<sup><xref ref-type="bibr" rid="B4">4</xref></sup>.</p>
+      <p>In Brazil, the Brazilian Health Reform movement and the subsequent establishment of the Unified Health System (SUS) transformed access to medicines. Initially limited to product availability, the perspective shifted strategically within the National Health Policy, emphasizing integrality. The National Medicines Policy (PNM) was approved based on the need to provide Pharmaceutical Assistance (AF) as a guiding policy for the formulation of sectoral policies. Referrals from the 1<sup>st</sup> National Conference on Medicines and Pharmaceutical Services in 2003 resulted in the approval of the National Policy on Pharmaceutical Services (PNAF), through a resolution of the National Health Council. These policies established free access to essential medicines as a right for Brazilian citizens and made pharmaceutical services a public health policy in the country<sup><xref ref-type="bibr" rid="B5">5</xref></sup>. However, there are still different forms of organization and financing for access to medicines in the country: provision by the public health network (through the SUS), by the private sector through health plans, or by direct payment and mixed financing through the Popular Pharmacy Program<sup><xref ref-type="bibr" rid="B8">8</xref></sup>. In other universal health systems, such as those in the United Kingdom, Australia and Canada, co-payment is the main form of access to medicines, where part of the cost of the medicine is subsidized by the health system and the other part comes from direct payment by the user. Free access only occurs in specific situations and varies according to age and income or is based on specific health needs<sup><xref ref-type="bibr" rid="B9">9</xref></sup>.</p>
+      <p>Brazilian studies carried out since the 2000s have shown an increase in the prevalence of access to medicines, when all sources of access are considered. However, there are still significant inequities in access according to socioeconomic status and place of residence, as well as other axes of marginalization<sup><xref ref-type="bibr" rid="B10">10</xref></sup>. The studies carried out so far show that access to free medicines favors poorer people<sup><xref ref-type="bibr" rid="B13">13</xref></sup>, those with less schooling and those of black color/race<sup><xref ref-type="bibr" rid="B12">12</xref></sup>. In addition, studies have sought to assess specific populations, limiting themselves to the analysis of a single axis of marginalization and disregarding the interrelationships between multiple systems of oppression<sup><xref ref-type="bibr" rid="B17">17</xref>,<xref ref-type="bibr" rid="B18">18</xref></sup>. In health inequities research, an intersectionality approach has been highlighted. Conceived mainly in the wake of the U.S. black feminist movement of the 1980s, intersectionality has been used to explain how the experiences of individuals and groups are shaped by the intertwining and overlapping of multiple axes of marginalization and oppression, such as gender, race, and class, producing complex forms of oppression for some and privilege for others<sup><xref ref-type="bibr" rid="B19">19</xref></sup>.</p>
+      <p>Population-based studies on inequities in access to medicines are still scarce in Brazil<sup><xref ref-type="bibr" rid="B11">11</xref>,<xref ref-type="bibr" rid="B14">14</xref></sup>. This is concerning, particularly after 2016, when fiscal austerity measures were adopted and health policies were subjected to major underfunding, both of which have implications for social injustices and the worsening of health indicators<sup><xref ref-type="bibr" rid="B22">22</xref></sup>. In this scenario, an intersectional perspective can be valuable for identifying population segments lying at the intersections of multiple axes of oppression<sup><xref ref-type="bibr" rid="B25">25</xref>,<xref ref-type="bibr" rid="B26">26</xref></sup> and for expanding knowledge about inequities in access to medicines in Brazil. In addition, there is a lack of population studies on the subject, both at national and international levels, using an intersectional perspective. With this in mind, the aim of the present study was to estimate the prevalence of general access and public access to prescription drugs in the Brazilian population aged 15 and over in 2019 and to identify inequities in access, according to the intersections of gender, color/race, socioeconomic status, and territory.</p>
+    </sec>
+    <sec sec-type="methods">
+      <title>METHODS</title>
+      <p>This study analyzed data from the 2019 National Health Survey (PNS), carried out by the Brazilian Institute of Geography and Statistics (IBGE) in partnership with the Ministry of Health (MS). The sampling frame included three stages of selection: Primary Sampling Units, represented by census tracts or a set of tracts, obtained from the IBGE Master Sample; households, selected by simple random sampling; and residents aged 15 or older, selected by simple random sampling, based on the list of residents obtained at the time of the interview<sup><xref ref-type="bibr" rid="B27">27</xref>,<xref ref-type="bibr" rid="B28">28</xref></sup>. In all, the PNS fieldworkers visited 108,525 households throughout Brazil and carried out 94,114 interviews, with a non-response rate of 6.4%. The questionnaire consisted of 26 modules, divided into three sections, which applied to the households, all residents, and a selected resident within each household. The first two sections were answered by a resident aged 18 or older who could provide information on the socio-economic and health conditions of all residents. Data collection took place between August 2019 and March 2020. The data obtained from the 2019 PNS are available on the IBGE website. The 2019 PNS was approved by the National Research Ethics Committee (Conep), under protocol no. 3.529.376<sup><xref ref-type="bibr" rid="B27">27</xref>,<xref ref-type="bibr" rid="B28">28</xref></sup>.</p>
+      <p>The analytical sample included only respondents aged 15 or older, living in private households in Brazil, who sought health care and were attended to in the two weeks prior to the interview, with the prescription of some medication during that visit. The outcome variable of this study was access to medicines. Three outcomes were assessed according to the source of the medication and the origin of care, which resulted in the prescription of the medication: general access, which considered all sources of medication (i.e., public, private and mixed) and origins of care (private care and SUS); public access, which considered only the SUS as a source of the medication, subdivided into those who obtained care from the SUS and those who did not.</p>
+      <p>To measure general access, we used the question: “Were you able to get the medicines you were prescribed?”. The possible answers were: “Yes, all”; “Yes, some”; and “No, none”. Access to medicines was characterized as a dichotomous variable, with the first response option being considered total access and the others, lack of total access. Public access for those served or not by the SUS was estimated using the question: “Were any of the medicines obtained from a public health service?”. In the same way, the response option “Yes, all” was considered total access and the response options “Yes, some” and “No, none”, lack of access. To determine the origin of the care provided, we used the question: “Was the care provided by the SUS?”, whose response options were “Yes”, “No”, and “Don’t know/Don’t remember”.</p>
+      <p>The independent variables were used to represent specific axes of marginalization. Gender, categorized dichotomously as “Male” or “Female”; color/race, collected according to the standard categories proposed by the IBGE, dichotomized as “White” and “Black”, with the “Black” and “Brown” categories included in the latter. Due to the small sample size, the “Yellow” and “Indigenous” categories were not considered in this study; socioeconomic level, operationalized by schooling, classified as “Low” (eight years of study or less) and “High” (more than eight years of study); and territory, operationalized by the macro-region of residence in the country (north, northeast, southeast, south, and midwest). Eight groups formed by the intersections of gender, color/race, and socioeconomic status were analyzed: white men of high socioeconomic status; white men of low socioeconomic status; black men of high socioeconomic status; black men of low socioeconomic status; white women of high socioeconomic status; white women of low socioeconomic status; black women of high socioeconomic status; and black women of low socioeconomic status. Subsequently, each intersectional group was analyzed according to the macro-region of residence.</p>
+      <p>A descriptive analysis of the sample was carried out, where the relative frequencies of the outcomes were estimated, accompanied by their 95% confidence intervals (95%CI), according to the axes of marginalization and intersectional groups. To test the association between the outcomes and the independent variables, three logistic regression models were run. Model 1 estimated the effect of each of the explanatory variables on the outcomes. Model 2 included adjustment between the variables gender, color/race, socioeconomic status, and territory. Model 3 was adjusted for intersectional groups and territory. The estimates of the regression coefficients, represented as odds ratios (OR), were also calculated with their 95%CI. Statistical analyses were carried out using Stata software, version 15.1, taking into account the weights and the complex sampling structure.</p>
+    </sec>
+    <sec sec-type="results">
+      <title>RESULTS</title>
+      <p>The analytic sample consisted of 19,819 respondents aged 15 years or older. To analyze general access, data from all these respondents were taken into consideration. More than half had received care from the SUS, of which around 80% provided valid information on the outcome. On the other hand, less than half of the respondents had not been treated by the SUS and, among these, more than 80% provided valid information on access to medicines. In other words, for the last two outcomes, there were approximately 20% and 14%, respectively, of interviewees who answered the question about whether they were able to obtain the prescribed medicines but did not answer whether any of them were obtained from public health services.</p>
+      <p><xref ref-type="table" rid="t1">Table 1</xref> shows the description of the sample for the three outcomes, which was mostly made up of women living in the Southeast region. For the general access outcome, participants of black color/race and high socioeconomic status and, in the intersectional group, white women of high socioeconomic status were the most frequent participants. In the case of public access for those served by the SUS, most respondents were people of black color/race, low socioeconomic status and from the intersectional group of black women of low socioeconomic status. In the case of public access for those not served by the SUS, most respondents were white with a high socioeconomic status and at the intersection between white women and high socioeconomic status.</p>
+      <p>
+        <table-wrap id="t1">
+          <label>Table 1</label>
+          <caption>
+            <title>Description of the sample according to gender, color/race, socioeconomic status, territory, intersectional group, and access to prescription drugs. National Health Survey, Brazil, 2019.</title>
+          </caption>
+          <table frame="hsides" rules="groups">
+            <colgroup>
+              <col/>
+              <col/>
+              <col/>
+              <col/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" rowspan="3">Variable</th>
+                <th>General access</th>
+                <th>Public access for SUS patients</th>
+                <th>Public access for those not covered by the SUS</th>
+              </tr>
+              <tr>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+              </tr>
+              <tr>
+                <th>n (%)</th>
+                <th>n (%)</th>
+                <th>n (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4">Gender</td>
+              </tr>
+              <tr>
+                <td>Man</td>
+                <td align="center">6,985 (35.8)</td>
+                <td align="center">3,526 (35.2)</td>
+                <td align="center">2,261 (36.5)</td>
+              </tr>
+              <tr>
+                <td>Woman</td>
+                <td align="center">12,834 (64.2)</td>
+                <td align="center">6,463 (64.8)</td>
+                <td align="center">4,024 (63.5)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Color/race</td>
+              </tr>
+              <tr>
+                <td>White</td>
+                <td align="center">7,851 (47.4)</td>
+                <td align="center">3,252 (40.4)</td>
+                <td align="center">3,290 (59.1)</td>
+              </tr>
+              <tr>
+                <td>Black</td>
+                <td align="center">11,968 (52.6)</td>
+                <td align="center">6,737 (59.6)</td>
+                <td align="center">2,995 (40.9)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Socioeconomic status</td>
+              </tr>
+              <tr>
+                <td>High</td>
+                <td align="center">10,160 (52.6)</td>
+                <td align="center">4,015 (41.0)</td>
+                <td align="center">4,471 (71.0)</td>
+              </tr>
+              <tr>
+                <td>Low</td>
+                <td align="center">9,659 (47.4)</td>
+                <td align="center">5,974 (59.0)</td>
+                <td align="center">1,814 (29.0)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Region</td>
+              </tr>
+              <tr>
+                <td>South</td>
+                <td align="center">2,685 (15.6)</td>
+                <td align="center">1,274 (15.8)</td>
+                <td align="center">917 (14.3)</td>
+              </tr>
+              <tr>
+                <td>Southeast</td>
+                <td align="center">4,783 (47.2)</td>
+                <td align="center">2,037 (42.4)</td>
+                <td align="center">1,883 (54.0)</td>
+              </tr>
+              <tr>
+                <td>Midwest</td>
+                <td align="center">2,220 (7.0)</td>
+                <td align="center">970 (6.8)</td>
+                <td align="center">839 (7.2)</td>
+              </tr>
+              <tr>
+                <td>Northeast</td>
+                <td align="center">6,617 (23.9)</td>
+                <td align="center">3,672 (27.7)</td>
+                <td align="center">1,811 (19.7)</td>
+              </tr>
+              <tr>
+                <td>North</td>
+                <td align="center">3,514 (6.3)</td>
+                <td align="center">2,036 (7.3)</td>
+                <td align="center">835 (4.8)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Intersectional group</td>
+              </tr>
+              <tr>
+                <td>Men, white, high socioeconomic status</td>
+                <td align="center">1,574 (10.0)</td>
+                <td align="center">446 (6.2)</td>
+                <td align="center">877 (15.9)</td>
+              </tr>
+              <tr>
+                <td>Men, white, low socioeconomic status</td>
+                <td align="center">1,249 (7.2)</td>
+                <td align="center">733 (8.3)</td>
+                <td align="center">294 (5.4)</td>
+              </tr>
+              <tr>
+                <td>Men, black, high socioeconomic status</td>
+                <td align="center">1,770 (8.1)</td>
+                <td align="center">778 (7.0)</td>
+                <td align="center">686 (9.6)</td>
+              </tr>
+              <tr>
+                <td>Men, black, low socioeconomic status</td>
+                <td align="center">2,392 (10.5)</td>
+                <td align="center">1,569 (13.7)</td>
+                <td align="center">404 (5.6)</td>
+              </tr>
+              <tr>
+                <td>Women, white, high socioeconomic status</td>
+                <td align="center">2,932 (17.7)</td>
+                <td align="center">904 (11.6)</td>
+                <td align="center">1,604 (27.5)</td>
+              </tr>
+              <tr>
+                <td>Women, white, low socioeconomic status</td>
+                <td align="center">2,096 (12.6)</td>
+                <td align="center">1,169 (14.3)</td>
+                <td align="center">515 (10.3)</td>
+              </tr>
+              <tr>
+                <td>Women, black, high socioeconomic status</td>
+                <td align="center">3,884 (16.8)</td>
+                <td align="center">1,887 (16.3)</td>
+                <td align="center">1,304 (18.0)</td>
+              </tr>
+              <tr>
+                <td>Women, black, low socioeconomic status</td>
+                <td align="center">3,922 (17.1)</td>
+                <td align="center">2,503 (22.6)</td>
+                <td align="center">601 (7.7)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Access to prescription medicines</td>
+              </tr>
+              <tr>
+                <td>No</td>
+                <td align="center">3,139 (15.1)</td>
+                <td align="center">6,906 (69.6)</td>
+                <td align="center">6,124 (97.0)</td>
+              </tr>
+              <tr>
+                <td>Yes</td>
+                <td align="center">16,680 (84.9)</td>
+                <td align="center">3,083 (30.4)</td>
+                <td align="center">161 (3.0)</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td align="center">19,819</td>
+                <td align="center">9,989</td>
+                <td align="center">6,285</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="TFN1">
+              <p>SUS: Unified Health System; CI: confidence interval.</p>
+            </fn>
+            <attrib>Source: Elaborate by the authors based on data analysis from PNS, 2019.</attrib>
+          </table-wrap-foot>
+        </table-wrap>
+      </p>
+      <p>The prevalence of general access found in this study was 84.9% (<xref ref-type="table" rid="t2">Table 2</xref>). When only access to medicines in the SUS was considered, with prescriptions originating in the system itself, the prevalence observed was 30.4%. The prevalence of public access among those whose prescriptions originated outside the SUS was 3.0%. Men, participants who reported being white, of high socioeconomic status, and living in the South had a higher prevalence of general access. When analyzing access to medicines in the public sector for prescriptions originating in the SUS, higher prevalence rates were observed among men, respondents of black color/race, respondents of low socioeconomic status, and residents of the southeast region. Regarding public access to medicines for prescriptions originating outside the SUS, the prevalence among men and women was similar, while higher prevalence rates were observed among respondents of black color/race, respondents with low socioeconomic status, and residents of the northeast region.</p>
+      <p>
+        <table-wrap id="t2">
+          <label>Table 2</label>
+          <caption>
+            <title>Prevalence of general (public, private, and mixed) and public access (via SUS) to prescription drugs among respondents treated or not by the SUS, according to gender, color/race, socioeconomic status, territory, and intersectional group. National Health Survey, Brazil, 2019.</title>
+          </caption>
+          <table frame="hsides" rules="groups">
+            <colgroup>
+              <col/>
+              <col/>
+              <col/>
+              <col/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" rowspan="3">Variable</th>
+                <th>Prevalence of general access</th>
+                <th>Prevalence of public access to SUS services</th>
+                <th>Prevalence of public access for those not covered by the SUS</th>
+              </tr>
+              <tr>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+              </tr>
+              <tr>
+                <th>% (95%CI)</th>
+                <th>% (95%CI)</th>
+                <th>% (95%CI)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4">Gender</td>
+              </tr>
+              <tr>
+                <td>Man</td>
+                <td align="center">86.8 (85.5–88.0)</td>
+                <td align="center">30.7 (28.2–33.3)</td>
+                <td align="center">3.0 (2.1–4.5)</td>
+              </tr>
+              <tr>
+                <td>Woman</td>
+                <td align="center">83.8 (82.7–84.8)</td>
+                <td align="center">30.2 (28.3–32.2)</td>
+                <td align="center">3.0 (2.2–4.0)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Color/race</td>
+              </tr>
+              <tr>
+                <td>White</td>
+                <td align="center">86.6 (85.2–87.8)</td>
+                <td align="center">29.5 (26.9–32.1)</td>
+                <td align="center">2.5 (1.8–3.4)</td>
+              </tr>
+              <tr>
+                <td>Black</td>
+                <td align="center">83.3 (82.1–84.5)</td>
+                <td align="center">31.0 (29.0–33.0)</td>
+                <td align="center">3.8 (2.7–5.4)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Socioeconomic status</td>
+              </tr>
+              <tr>
+                <td>High</td>
+                <td align="center">86.6 (85.4–87.7)</td>
+                <td align="center">28.6 (26.3–31.1)</td>
+                <td align="center">2.3 (1.6–3.1)</td>
+              </tr>
+              <tr>
+                <td>Low</td>
+                <td align="center">83.0 (81.7–84.2)</td>
+                <td align="center">31.6 (29.5–33.7)</td>
+                <td align="center">4.8 (3.3–7.1)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Region</td>
+              </tr>
+              <tr>
+                <td>South</td>
+                <td align="center">86.1 (84.1–87.9)</td>
+                <td align="center">31.6 (28.2–35.3)</td>
+                <td align="center">3.1 (1.8–5.3)</td>
+              </tr>
+              <tr>
+                <td>Southeast</td>
+                <td align="center">85.7 (84.1–87.2)</td>
+                <td align="center">33.6 (30.6–36.7)</td>
+                <td align="center">2.8 (1.9–3.9)</td>
+              </tr>
+              <tr>
+                <td>Midwest</td>
+                <td align="center">85.5 (83.3–87.5)</td>
+                <td align="center">26.3 (22.6–30.3)</td>
+                <td align="center">1.8 (0.9–3.4)</td>
+              </tr>
+              <tr>
+                <td>Northeast</td>
+                <td align="center">83.3 (81.8–84.7)</td>
+                <td align="center">26.5 (24.4–28.6)</td>
+                <td align="center">4.2 (2.4–7.2)</td>
+              </tr>
+              <tr>
+                <td>North</td>
+                <td align="center">80.5 (78.1–82.7)</td>
+                <td align="center">27.7 (24.8–30.9)</td>
+                <td align="center">2.5 (1.4–4.5)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Intersectional group</td>
+              </tr>
+              <tr>
+                <td>Men, white, high socioeconomic status</td>
+                <td align="center">90.2 (87.7–92.2)</td>
+                <td align="center">30.8 (23.8–38.8)</td>
+                <td align="center">2.0 (1.0–4.0)</td>
+              </tr>
+              <tr>
+                <td>Men, white, low socioeconomic status</td>
+                <td align="center">85.0 (81.8–87.7)</td>
+                <td align="center">30.6 (25.7–36.1)</td>
+                <td align="center">4.0 (1.8–8.9)</td>
+              </tr>
+              <tr>
+                <td>Men, black, high socioeconomic status</td>
+                <td align="center">87.6 (84.9–89.9)</td>
+                <td align="center">28.3 (23.5–33.6)</td>
+                <td align="center">3.0 (1.3–6.6)</td>
+              </tr>
+              <tr>
+                <td>Men, black, low socioeconomic status</td>
+                <td align="center">84.1 (81.7–86.3)</td>
+                <td align="center">31.9 (28.4–35.6)</td>
+                <td align="center">5.1 (2.1–12.2)</td>
+              </tr>
+              <tr>
+                <td>Women, white, high socioeconomic status</td>
+                <td align="center">87.0 (84.9–88.9)</td>
+                <td align="center">26.8 (22.3–31.8)</td>
+                <td align="center">1.4 (0.9–2.2)</td>
+              </tr>
+              <tr>
+                <td>Women, white, low socioeconomic status</td>
+                <td align="center">84.0 (81.6–86.2)</td>
+                <td align="center">30.4 (26.4–34.6)</td>
+                <td align="center">5.2 (3.2–8.5)</td>
+              </tr>
+              <tr>
+                <td>Women, black, high socioeconomic status</td>
+                <td align="center">83.5 (81.5–85.4)</td>
+                <td align="center">29.3 (26.2–32.6)</td>
+                <td align="center">3.5 (2.0–6.0)</td>
+              </tr>
+              <tr>
+                <td>Women, black, low socioeconomic status</td>
+                <td align="center">80.6 (78.5–82.6)</td>
+                <td align="center">32.5 (29.1–36.0)</td>
+                <td align="center">4.7 (2.3–9.1)</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td align="center">84.9 (84.0–85.7)</td>
+                <td align="center">30.4 (28.8–32.0)</td>
+                <td align="center">3.0 (2.3–3.9)</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="TFN2">
+              <p>SUS: Unified Health System.</p>
+            </fn>
+            <attrib>Source: Elaborate by the authors based on data analysis from PNS, 2019.</attrib>
+          </table-wrap-foot>
+        </table-wrap>
+      </p>
+      <p>White men of high socioeconomic status had the highest prevalence of general access, while black women of low socioeconomic status had the highest prevalence of public access among those treated at the SUS. The highest prevalence of public access among those treated outside the SUS was observed among white women of low socioeconomic status. The prevalence of the outcomes among each intersectional group, stratified by macro-region, was also analyzed. However, the estimates found were accompanied by low precision, as observed by the wide confidence intervals<sup><xref ref-type="fn" rid="fna">a</xref></sup>.</p>
+      <p>Based on the analysis of the logistic regression models, <xref ref-type="table" rid="t3">Table 3</xref> shows that the OR for prevalence of general access was lower for women, black respondents, those with low socioeconomic status (Models 1 and 2) and residents of the northern region (Models 1, 2, and 3). Both in the bivariate analysis (Model 1) and in the adjusted analysis (Model 3), all intersectional groups, except for black men of high socioeconomic status, had lower ORs for prevalence of general access compared to white men of high socioeconomic status.</p>
+      <p>
+        <table-wrap id="t3">
+          <label>Table 3</label>
+          <caption>
+            <title>Odds ratios from logistic regression models for general access (public, private, and mixed) to prescription drugs according to exposure variables. National Health Survey, Brazil, 2019.</title>
+          </caption>
+          <table frame="hsides" rules="groups">
+            <colgroup>
+              <col/>
+              <col/>
+              <col/>
+              <col/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" rowspan="3">Variable</th>
+                <th>Model 1</th>
+                <th>Model 2</th>
+                <th>Model 3</th>
+              </tr>
+              <tr>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+              </tr>
+              <tr>
+                <th>OR (95%CI)</th>
+                <th>OR (95%CI)</th>
+                <th>OR (95%CI)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4">Gender</td>
+              </tr>
+              <tr>
+                <td>Man</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Woman</td>
+                <td align="center">0.79 (0.70–0.89)</td>
+                <td align="center">0.78 (0.69–0.89)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Color/race</td>
+              </tr>
+              <tr>
+                <td>White</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Black</td>
+                <td align="center">0.78 (0.68–0.89)</td>
+                <td align="center">0.83 (0.72–0.96)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Socioeconomic status</td>
+              </tr>
+              <tr>
+                <td>High</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Low</td>
+                <td align="center">0.75 (0.66–0.86)</td>
+                <td align="center">0.77 (0.68–0.87)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Region</td>
+              </tr>
+              <tr>
+                <td>South</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+              </tr>
+              <tr>
+                <td>Southeast</td>
+                <td align="center">0.97 (0.79–1.19)</td>
+                <td align="center">0.98 (0.80–1.21)</td>
+                <td align="center">0.98 (0.80–1.20)</td>
+              </tr>
+              <tr>
+                <td>Midwest</td>
+                <td align="center">0.95 (0.76–1.20)</td>
+                <td align="center">1.01 (0.79–1.29)</td>
+                <td align="center">1.01 (0.79–1.29)</td>
+              </tr>
+              <tr>
+                <td>Northeast</td>
+                <td align="center">0.81 (0.67–0.98)</td>
+                <td align="center">0.89 (0.73–1.09)</td>
+                <td align="center">0.89 (0.73–1.09)</td>
+              </tr>
+              <tr>
+                <td>North</td>
+                <td align="center">0.67 (0.54–0.83)</td>
+                <td align="center">0.73 (0.58–0.92)</td>
+                <td align="center">0.73 (0.58–0.92)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Intersectional group</td>
+              </tr>
+              <tr>
+                <td>Men, white, high socioeconomic status</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+                <td align="center">1.00</td>
+              </tr>
+              <tr>
+                <td>Men, white, low socioeconomic status</td>
+                <td align="center">0.62 (0.44–0.87)</td>
+                <td align="center">-</td>
+                <td align="center">0.62 (0.44–0.87)</td>
+              </tr>
+              <tr>
+                <td>Men, black, high socioeconomic status</td>
+                <td align="center">0.77 (0.55–1.08)</td>
+                <td align="center">-</td>
+                <td align="center">0.80 (0.57–1.14)</td>
+              </tr>
+              <tr>
+                <td>Men, black, low socioeconomic status</td>
+                <td align="center">0.58 (0.43–0.79)</td>
+                <td align="center">-</td>
+                <td align="center">0.60 (0.44–0.83)</td>
+              </tr>
+              <tr>
+                <td>Women, white, high socioeconomic status</td>
+                <td align="center">0.73 (0.55–0.98)</td>
+                <td align="center">-</td>
+                <td align="center">0.73 (0.55–0.98)</td>
+              </tr>
+              <tr>
+                <td>Women, white, low socioeconomic status</td>
+                <td align="center">0.57 (0.42–0.77)</td>
+                <td align="center">-</td>
+                <td align="center">0.58 (0.43–0.78)</td>
+              </tr>
+              <tr>
+                <td>Women, black, high socioeconomic status</td>
+                <td align="center">0.55 (0.42–0.73)</td>
+                <td align="center">-</td>
+                <td align="center">0.58 (0.44–0.77)</td>
+              </tr>
+              <tr>
+                <td>Women, black, low socioeconomic status</td>
+                <td align="center">0.45 (0.34–0.60)</td>
+                <td align="center">-</td>
+                <td align="center">0.48 (0.35–0.64)</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="TFN3">
+              <p>OR: Odds ratio; CI: confidence interval.</p>
+            </fn>
+            <attrib>Source: Elaborate by the authors based on data analysis from PNS, 2019.</attrib>
+          </table-wrap-foot>
+        </table-wrap>
+      </p>
+      <p>Regarding public access to the SUS (<xref ref-type="table" rid="t4">Table 4</xref>), interviewees from lower socioeconomic backgrounds had a higher OR for the prevalence of the outcome when compared to those from higher socioeconomic backgrounds (Model 2). Bivariate analysis indicated that residents of the northeast region had a lower OR for the prevalence of this type of access compared to residents of the south (Model 1). In the adjusted analysis, there was also a lower OR for this type of access among residents of the midwest and north regions (Models 2 and 3). Regarding the analysis of intersectional groups, no intersectional inequities were observed for this outcome in any of the models.</p>
+      <p>
+        <table-wrap id="t4">
+          <label>Table 4</label>
+          <caption>
+            <title>Odds ratios from logistic regression models for public access (via SUS) to medicines prescribed in the SUS according to exposure variables. National Health Survey, Brazil, 2019.</title>
+          </caption>
+          <table frame="hsides" rules="groups">
+            <colgroup>
+              <col/>
+              <col/>
+              <col/>
+              <col/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" rowspan="3">Variable</th>
+                <th>Model 1</th>
+                <th>Model 2</th>
+                <th>Model 3</th>
+              </tr>
+              <tr>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+              </tr>
+              <tr>
+                <th>OR (95%CI)</th>
+                <th>OR (95%CI)</th>
+                <th>OR (95%CI)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4">Gender</td>
+              </tr>
+              <tr>
+                <td>Man</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Woman</td>
+                <td align="center">0.98 (0.84–1.13)</td>
+                <td align="center">0.99 (0.85–1.15)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Color/race</td>
+              </tr>
+              <tr>
+                <td>White</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Black</td>
+                <td align="center">1.07 (0.92–1.26)</td>
+                <td align="center">1.17 (0.99–1.38)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Socioeconomic status</td>
+              </tr>
+              <tr>
+                <td>High</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Low</td>
+                <td align="center">1.15 (0.99–1.33)</td>
+                <td align="center">1.17 (1.01–1.36)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Territory</td>
+              </tr>
+              <tr>
+                <td>South</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+              </tr>
+              <tr>
+                <td>South East</td>
+                <td align="center">1.09 (0.88–1.35)</td>
+                <td align="center">1.07 (0.86–1.34)</td>
+                <td align="center">1.08 (0.87–1.34)</td>
+              </tr>
+              <tr>
+                <td>Midwest</td>
+                <td align="center">0.77 (0.59–1.00)</td>
+                <td align="center">0.73 (0.56–0.96)</td>
+                <td align="center">0.73 (0.56–0.96)</td>
+              </tr>
+              <tr>
+                <td>North East</td>
+                <td align="center">0.78 (0.64–0.95)</td>
+                <td align="center">0.72 (0.59–0.89)</td>
+                <td align="center">0.72 (0.59–0.89)</td>
+              </tr>
+              <tr>
+                <td>North</td>
+                <td align="center">0.83 (0.66–1.04)</td>
+                <td align="center">0.78 (0.61–0.99)</td>
+                <td align="center">0.78 (0.61–0.99)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Intersectional group</td>
+              </tr>
+              <tr>
+                <td>Men, white, high socioeconomic status</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+                <td align="center">1.00</td>
+              </tr>
+              <tr>
+                <td>Men, white, low socioeconomic status</td>
+                <td align="center">0.99 (0.65–1.52)</td>
+                <td align="center">-</td>
+                <td align="center">1.03 (0.68–1.58)</td>
+              </tr>
+              <tr>
+                <td>Men, black, high socioeconomic status</td>
+                <td align="center">0.88 (0.58–1.36)</td>
+                <td align="center">-</td>
+                <td align="center">0.96 (0.63–1.48)</td>
+              </tr>
+              <tr>
+                <td>Men, black, low socioeconomic status</td>
+                <td align="center">1.05 (0.71–1.55)</td>
+                <td align="center">-</td>
+                <td align="center">1.19 (0.80–1.75)</td>
+              </tr>
+              <tr>
+                <td>Women, white, high socioeconomic status</td>
+                <td align="center">0.82 (0.54–1.25)</td>
+                <td align="center">-</td>
+                <td align="center">0.83 (0.54–1.26)</td>
+              </tr>
+              <tr>
+                <td>Women, white, low socioeconomic status</td>
+                <td align="center">0.98 (0.65–1.48)</td>
+                <td align="center">-</td>
+                <td align="center">1.01 (0.67–1.52)</td>
+              </tr>
+              <tr>
+                <td>Women, black, high socioeconomic status</td>
+                <td align="center">0.93 (0.63–1.37)</td>
+                <td align="center">-</td>
+                <td align="center">1.05 (0.71–1.53)</td>
+              </tr>
+              <tr>
+                <td>Women, black, low socioeconomic status</td>
+                <td align="center">1.08 (0.73–1.60)</td>
+                <td align="center">-</td>
+                <td align="center">1.22 (0.83–1.81)</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="TFN4">
+              <p>OR: Odds ratio; SUS: Unified Health System; CI: confidence interval.</p>
+            </fn>
+            <attrib>Source: Elaborate by the authors based on data analysis from PNS, 2019.</attrib>
+          </table-wrap-foot>
+        </table-wrap>
+      </p>
+      <p>Regarding public access for those treated outside the SUS (<xref ref-type="table" rid="t5">Table 5</xref>), a higher OR for prevalence of the outcome was also found among respondents from low socioeconomic backgrounds, when compared to those from high socioeconomic backgrounds (Models 1 and 2). In both the bivariate (Model 1) and the adjusted analysis (Model 3), the intersectional group of white women of low socioeconomic status had higher ORs for the prevalence of this type of access compared to white men of high socioeconomic status. However, these findings were accompanied by wide confidence intervals, due to the small sample size in relation to the other outcomes. A fourth model - not shown in the tables - tested the interaction between region and intersectional groups for the three outcomes. However, no significant interaction was identified.</p>
+      <p>
+        <table-wrap id="t5">
+          <label>Table 5</label>
+          <caption>
+            <title>Odds ratios from logistic regression models for public access (via SUS) to medicines prescribed outside the SUS according to exposure variables. National Health Survey, Brazil, 2019.</title>
+          </caption>
+          <table frame="hsides" rules="groups">
+            <colgroup>
+              <col/>
+              <col/>
+              <col/>
+              <col/>
+            </colgroup>
+            <thead>
+              <tr>
+                <th align="left" rowspan="3">Variable</th>
+                <th>Model 1</th>
+                <th>Model 2</th>
+                <th>Model 3</th>
+              </tr>
+              <tr>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+                <th>
+                  <hr/>
+                </th>
+              </tr>
+              <tr>
+                <th>OR (95%CI)</th>
+                <th>OR (95%CI)</th>
+                <th>OR (95%CI)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4">Gender</td>
+              </tr>
+              <tr>
+                <td>Man</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Woman</td>
+                <td align="center">0.98 (0.62–1.55)</td>
+                <td align="center">1.01 (0.63–1.62)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Color/race</td>
+              </tr>
+              <tr>
+                <td>White</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Black</td>
+                <td align="center">1.57 (0.98–2.50)</td>
+                <td align="center">1.51 (0.89–2.56)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Socioeconomic status</td>
+              </tr>
+              <tr>
+                <td>High</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td>Low</td>
+                <td align="center">2.18 (1.29–3.67)</td>
+                <td align="center">2.10 (1.24–3.56)</td>
+                <td align="center">-</td>
+              </tr>
+              <tr>
+                <td colspan="4">Region</td>
+              </tr>
+              <tr>
+                <td>South</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+                <td align="center">1.00</td>
+              </tr>
+              <tr>
+                <td>Southeast</td>
+                <td align="center">0.88 (0.46–1.70)</td>
+                <td align="center">0.81 (0.43–1.52)</td>
+                <td align="center">0.81 (0.43–1.54)</td>
+              </tr>
+              <tr>
+                <td>Midwest</td>
+                <td align="center">0.56 (0.24–1.33)</td>
+                <td align="center">0.48 (0.20–1.14)</td>
+                <td align="center">0.49 (0.20–1.16)</td>
+              </tr>
+              <tr>
+                <td>Northeast</td>
+                <td align="center">1.35 (0.61–3.01)</td>
+                <td align="center">1.07 (0.46–2.49)</td>
+                <td align="center">1.09 (0.47–2.52)</td>
+              </tr>
+              <tr>
+                <td>North</td>
+                <td align="center">0.79 (0.35–1.79)</td>
+                <td align="center">0.60 (0.25–1.41)</td>
+                <td align="center">0.62 (0.26–1.45)</td>
+              </tr>
+              <tr>
+                <td colspan="4">Intersectional group</td>
+              </tr>
+              <tr>
+                <td>Men, white, high socioeconomic status</td>
+                <td align="center">1.00</td>
+                <td align="center">-</td>
+                <td align="center">1.00</td>
+              </tr>
+              <tr>
+                <td>Men, white, low socioeconomic status</td>
+                <td align="center">2.03 (0.68–6.08)</td>
+                <td align="center">-</td>
+                <td align="center">2.04 (0.68–6.12)</td>
+              </tr>
+              <tr>
+                <td>Men, black, high socioeconomic status</td>
+                <td align="center">1.50 (0.51–4.44)</td>
+                <td align="center">-</td>
+                <td align="center">1.50 (0.49–4.57)</td>
+              </tr>
+              <tr>
+                <td>Men, black, low socioeconomic status</td>
+                <td align="center">2.63 (0.82–8.49)</td>
+                <td align="center">-</td>
+                <td align="center">2.63 (0.89–7.75)</td>
+              </tr>
+              <tr>
+                <td>Women, white, high socioeconomic status</td>
+                <td align="center">0.68 (0.31–1.50)</td>
+                <td align="center">-</td>
+                <td align="center">0.69 (0.31–1.51)</td>
+              </tr>
+              <tr>
+                <td>Women, white, low socioeconomic status</td>
+                <td align="center">2.67 (1.12–6.36)</td>
+                <td align="center">-</td>
+                <td align="center">2.64 (1.12–6.25)</td>
+              </tr>
+              <tr>
+                <td>Women, black, high socioeconomic status</td>
+                <td align="center">1.74 (0.71–4.27)</td>
+                <td align="center">-</td>
+                <td align="center">1.77 (0.71–4.41)</td>
+              </tr>
+              <tr>
+                <td>Women, black, low socioeconomic status</td>
+                <td align="center">2.37 (0.84–6.67)</td>
+                <td align="center">-</td>
+                <td align="center">2.37 (0.81–6.98)</td>
+              </tr>
+            </tbody>
+          </table>
+          <table-wrap-foot>
+            <fn id="TFN5">
+              <p>OR: Odds ratio; SUS: Unified Health System; CI: confidence interval.</p>
+            </fn>
+            <attrib>Source: Elaborate by the authors based on data analysis from PNS, 2019.</attrib>
+          </table-wrap-foot>
+        </table-wrap>
+      </p>
+    </sec>
+    <sec sec-type="discussion">
+      <title>DISCUSSION</title>
+      <p>Echoing other population-based studies, the prevalence of general access to prescription drugs was high when considering any type of source (public, private, and mixed)<sup><xref ref-type="bibr" rid="B12">12</xref>,<xref ref-type="bibr" rid="B14">14</xref></sup>. There was a higher prevalence of general access among more privileged population segments, such as white men of high socioeconomic status. When considering only access to medicines in the public system from prescriptions originating in the system itself, the prevalence is low but the scenario is reversed with a higher prevalence of access among people of black color/race and low socioeconomic status. There was even a higher prevalence of public access for black women from low socioeconomic backgrounds. These findings suggest that the SUS is an important source of access for those who are unable to obtain medicines outside the public system<sup><xref ref-type="bibr" rid="B29">29</xref></sup>. The co-payment modality, which is adopted by other universal health systems as the main way of obtaining medicines, is considered a hindrance to access. Higher co-payments are associated with a reduction in the volume of medicines dispensed, especially among the poorest, which leads to discontinuation of treatment, compromising the effectiveness of the healthcare provided<sup><xref ref-type="bibr" rid="B9">9</xref></sup>. Our findings corroborate other studies which indicate that the free provision of medicines reduces inequities in access<sup><xref ref-type="bibr" rid="B11">11</xref>,<xref ref-type="bibr" rid="B13">13</xref>,<xref ref-type="bibr" rid="B14">14</xref>,<xref ref-type="bibr" rid="B15">15</xref>,<xref ref-type="bibr" rid="B16">16</xref>,<xref ref-type="bibr" rid="B24">24</xref></sup>, also pointing out that access to medicines through the SUS is an important instrument for combating intersectional inequities.</p>
+      <p>Despite this, the low prevalence of access identified for obtaining prescription drugs from the SUS is concerning. In an analysis of data obtained from the 2008 National Household Sample Survey, Boing et al.<sup><xref ref-type="bibr" rid="B11">11</xref></sup> identified a prevalence of public access of 45.3%, while in the 2013 PNS, the percentage identified was 31.6%<sup><xref ref-type="bibr" rid="B23">23</xref></sup>. As for the territory, represented by the country’s macro-regions, the analysis of the 2019 PNS showed that regional inequities in public access to medicines persist. Drummond et al.<sup><xref ref-type="bibr" rid="B14">14</xref></sup>, when analyzing the 2013 PNS, also identified a higher prevalence of access to prescription drugs in more developed regions with a higher population density. These findings indicate that, despite the progress made with the implementation of medicines and AF policies in the country, the provision of medicines by the public health system still remains a major challenge<sup><xref ref-type="bibr" rid="B30">30</xref></sup>.</p>
+      <p>In addition, the simultaneous presence of a universal public system in Brazil and a growing process of privatization of access to healthcare, further intensified by public underfunding of healthcare, are also worrying<sup><xref ref-type="bibr" rid="B31">31</xref></sup>. In this study, a significant portion of the population who did not have their needs met by the SUS tried to obtain the prescribed medicines through the public health system. For them, the prevalence of access to prescribed medicines was even lower. In addition to the well-known weaknesses in the structuring of pharmaceutical services in the country, such as the availability of medicines in SUS pharmacies<sup><xref ref-type="bibr" rid="B12">12</xref></sup>, there is the lack of knowledge among prescribers in the private sector of the essential medicines lists, reference lists that should guide the supply, prescription and dispensing of medicines in the SUS, and the lack of adherence to these lists on the part of prescribers in the public sector. When observing the demands for access to medicines through the courts in different Brazilian states, it can be seen that the majority of prescriptions originate outside the SUS and in approximately 75% of cases there is a therapeutic alternative to the prescribed medicine available through the SUS<sup><xref ref-type="bibr" rid="B34">34</xref>,<xref ref-type="bibr" rid="B35">35</xref></sup>.</p>
+      <p>Unlike general access, public access was not marked by significant intersectional inequities. In the models tested for public access to the SUS, no significant differences were identified between the intersectional groups examined. Access gaps between intersectional groups for general access (90.2% to 80.6%) are greater when compared to gaps in public access for those treated by the SUS (32.5% to 26.8%). This suggests that the differences in access observed between population segments are minimized when the medication is prescribed and obtained from the public health system. Monteiro et al.<sup><xref ref-type="bibr" rid="B36">36</xref></sup>, when evaluating the Generic Medicines Policy, also found that there was no statistically significant difference in the use of generic medicines in the population of the city of São Paulo according to age, sex, and schooling.</p>
+      <p>The intersectional analysis used helped identify the most invisible population groups. In addition, it was possible to observe that, while women had approximately 20% lower OR of general access, white women of high socioeconomic status had 27% lower OR and black women of low socioeconomic status had 55% lower OR when compared to white men of high socioeconomic status. The study by Katrein et al.<sup><xref ref-type="bibr" rid="B17">17</xref></sup>, when analyzing the prevalence of access to medicines for the treatment of chronic diseases, had already indicated a situation of greater vulnerability among those with a greater number of diseases and those who are poorer.</p>
+      <p>Although there are important challenges in using an intersectional perspective in epidemiological studies<sup><xref ref-type="bibr" rid="B37">37</xref></sup>, this approach stands out as the strength of this study. There are no other studies in the literature following an intersectionality perspective that are comparable to this one. The studies carried out so far, which have demonstrated the existence of inequalities in access to medicines in Brazil<sup><xref ref-type="bibr" rid="B17">17</xref>,<xref ref-type="bibr" rid="B18">18</xref>,<xref ref-type="bibr" rid="B24">24</xref></sup>, have assumed that variables, such as gender, color/race, and schooling are independent from one another.</p>
+      <p>Recent reviews have shown that the variables that characterize social positions can be operationalized in different ways<sup><xref ref-type="bibr" rid="B25">25</xref>,<xref ref-type="bibr" rid="B26">26</xref></sup>. In this study, as in most of those analyzed in the aforementioned reviews, intersectionality was operationalized using an exclusively intercategorical approach, based on the combination of categories of interest. However, comparisons between groups alone can provide a limited view of health inequities. In addition to disregarding intracategorical heterogeneity, this type of analysis focuses on social categories at the individual level, without considering the effect of broader social contexts<sup><xref ref-type="bibr" rid="B38">38</xref></sup>.</p>
+      <p>In addition, one of the limitations of the study was that it only included people who had been seen by a health service in the last two weeks prior to the interview. Considering that access to prescription drugs is directly related to access to health care, people who do not reach health services are excluded. It was observed that black people and those from lower socioeconomic backgrounds are more likely to report difficulty in accessing health services<sup><xref ref-type="bibr" rid="B39">39</xref></sup>. Furthermore, a possible memory bias can be assumed due to the recall period and self-report on the outcomes analyzed. However, a study comparing different recall periods identified little bias in the prevalence rates observed, and it is recommended that 14 days be used as the recall period to allow comparisons between studies<sup><xref ref-type="bibr" rid="B40">40</xref></sup>.</p>
+      <p>We conclude that the prevalence of general access to prescription drugs is higher for population segments with higher social status, while public access, which is still very small, favors those with lower social status, even when considering the intersection of multiple axes of marginalization. We therefore suggest that the SUS is a powerful means to promote social justice in access to medicines.</p>
+    </sec>
+  </body>
+  <back>
+    <ref-list>
+      <title>REFERENCES</title>
+      <ref id="B1">
+        <label>1</label>
+        <mixed-citation>1. Organização das Nações Unidas. Objetivos de desenvolvimento do milênio. New York: Organização das Nações Unidas; 2000 [cited 2024 Mar 25]. Available from: <ext-link ext-link-type="uri" xlink:href="https://www.un.org/millenniumgoals/bkgd.shtml">https://www.un.org/millenniumgoals/bkgd.shtml</ext-link> </mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Organização das Nações Unidas</collab>
+          </person-group>
+          <source>Objetivos de desenvolvimento do milênio</source>
+          <publisher-loc>New York</publisher-loc>
+          <publisher-name>Organização das Nações Unidas</publisher-name>
+          <year>2000</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <ext-link ext-link-type="uri" xlink:href="https://www.un.org/millenniumgoals/bkgd.shtml">https://www.un.org/millenniumgoals/bkgd.shtml</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B2">
+        <label>2</label>
+        <mixed-citation>2. Hunt P, Khosla R. Acesso a medicamentos como um direito humano. Sur Rev Int Direitos Human. 2008 Jun;5(8):100-21. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1806-64452008000100006">https://doi.org/10.1590/S1806-64452008000100006</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Hunt</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Khosla</surname>
+              <given-names>R</given-names>
+            </name>
+          </person-group>
+          <article-title>Acesso a medicamentos como um direito humano</article-title>
+          <source>Sur Rev Int Direitos Human</source>
+          <year>2008</year>
+          <month>06</month>
+          <volume>5</volume>
+          <issue>8</issue>
+          <fpage>100</fpage>
+          <lpage>121</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S1806-64452008000100006">https://doi.org/10.1590/S1806-64452008000100006</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B3">
+        <label>3</label>
+        <mixed-citation>3. Organização das Nações Unidas. Transformando o nosso mundo: a Agenda 2030 para o Desenvolvimento Sustentável. New York: Organização das Nações Unidas; 2015 [cited 2024 Mar 25]. Available from: <ext-link ext-link-type="uri" xlink:href="https://brasil.un.org/sites/default/files/2020-09/agenda2030-pt-br.pdf">https://brasil.un.org/sites/default/files/2020-09/agenda2030-pt-br.pdf</ext-link> </mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Organização das Nações Unidas</collab>
+          </person-group>
+          <source>Transformando o nosso mundo: a Agenda 2030 para o Desenvolvimento Sustentável</source>
+          <publisher-loc>New York</publisher-loc>
+          <publisher-name>Organização das Nações Unidas</publisher-name>
+          <year>2015</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://brasil.un.org/sites/default/files/2020-09/agenda2030-pt-br.pdf">https://brasil.un.org/sites/default/files/2020-09/agenda2030-pt-br.pdf</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B4">
+        <label>4</label>
+        <mixed-citation>4. Organização Mundial da Saúde. World health statistics 2021: monitoring health for the SDGs, sustainable development goals. Geneva: World Health Organization, 2021 [cited 2024 Mar 25]. Available from: <ext-link ext-link-type="uri" xlink:href="https://apps.who.int/iris/handle/10665/342703">https://apps.who.int/iris/handle/10665/342703</ext-link> </mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Organização Mundial da Saúde</collab>
+          </person-group>
+          <source>World health statistics 2021: monitoring health for the SDGs, sustainable development goals</source>
+          <publisher-loc>Geneva</publisher-loc>
+          <publisher-name>World Health Organization</publisher-name>
+          <year>2021</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://apps.who.int/iris/handle/10665/342703">https://apps.who.int/iris/handle/10665/342703</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B5">
+        <label>5</label>
+        <mixed-citation>5. Ministério da Saúde (BR). Portaria n° 3.916, de 30 de outubro de 1998. Aprova a Política Nacional de Medicamentos. 1998 [cited 2024 Mar 25]. Available from: <ext-link ext-link-type="uri" xlink:href="http://bvsms.saude.gov.br/bvs/saudelegis/gm/1998/prt3916_30_10_1998.html">http://bvsms.saude.gov.br/bvs/saudelegis/gm/1998/prt3916_30_10_1998.html</ext-link> </mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <collab>Ministério da Saúde (BR)</collab>
+          </person-group>
+          <source>Portaria n° 3.916, de 30 de outubro de 1998. Aprova a Política Nacional de Medicamentos</source>
+          <year>1998</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="http://bvsms.saude.gov.br/bvs/saudelegis/gm/1998/prt3916_30_10_1998.html">http://bvsms.saude.gov.br/bvs/saudelegis/gm/1998/prt3916_30_10_1998.html</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B6">
+        <label>6</label>
+        <mixed-citation>6. Ministério da Saúde 9BR). Conselho Nacional de Saúde. Resolução nº 338, de 6 de maio de 2004. Aprova a Política Nacional de Assistência Farmacêutica. 2004 [cited 2024 Mar 25]. Available from: <ext-link ext-link-type="uri" xlink:href="http://bvsms.saude.gov.br/bvs/saudelegis/cns/2004/res0338_06_05_2004.html">http://bvsms.saude.gov.br/bvs/saudelegis/cns/2004/res0338_06_05_2004.html</ext-link> </mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Ministério da Saúde 9BR)</collab>
+            <collab>Conselho Nacional de Saúde</collab>
+          </person-group>
+          <source>Resolução nº 338, de 6 de maio de 2004. Aprova a Política Nacional de Assistência Farmacêutica</source>
+          <year>2004</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <ext-link ext-link-type="uri" xlink:href="http://bvsms.saude.gov.br/bvs/saudelegis/cns/2004/res0338_06_05_2004.html">http://bvsms.saude.gov.br/bvs/saudelegis/cns/2004/res0338_06_05_2004.html</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B7">
+        <label>7</label>
+        <mixed-citation>7. Ministério da Saúde (BR). Conselho Nacional de Saúde. 1ª Conferência Nacional de Medicamentos e Assistência Farmacêutica: relatório final: efetivando o acesso, a qualidade e a humanização na assistência farmacêutica, com controle social. Brasília, DF: Ministério da Saúde, 2005.</mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Ministério da Saúde (BR)</collab>
+            <collab>Conselho Nacional de Saúde</collab>
+          </person-group>
+          <source>1ª Conferência Nacional de Medicamentos e Assistência Farmacêutica: relatório final: efetivando o acesso, a qualidade e a humanização na assistência farmacêutica, com controle social</source>
+          <publisher-loc>Brasília, DF</publisher-loc>
+          <publisher-name>Ministério da Saúde</publisher-name>
+          <year>2005</year>
+        </element-citation>
+      </ref>
+      <ref id="B8">
+        <label>8</label>
+        <mixed-citation>8. Oliveira MA, Bermudez JA, Osório-de-Castro CG. Assistência farmacêutica e acesso a medicamentos. Rio de Janeiro: Editora FIOCRUZ; 2007.</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Bermudez</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Osório-de-Castro</surname>
+              <given-names>CG</given-names>
+            </name>
+          </person-group>
+          <source>Assistência farmacêutica e acesso a medicamentos</source>
+          <publisher-loc>Rio de Janeiro</publisher-loc>
+          <publisher-name>Editora FIOCRUZ</publisher-name>
+          <year>2007</year>
+        </element-citation>
+      </ref>
+      <ref id="B9">
+        <label>9</label>
+        <mixed-citation>9. Oliveira LC, Nascimento MA, Lima IM. O acesso a medicamentos em sistemas universais de saúde - perspectivas e desafios. Saude Debate. 2019;43(spe5):286-98. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0103-11042019s523">https://doi.org/10.1590/0103-11042019s523</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>LC</given-names>
+            </name>
+            <name>
+              <surname>Nascimento</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Lima</surname>
+              <given-names>IM</given-names>
+            </name>
+          </person-group>
+          <article-title>O acesso a medicamentos em sistemas universais de saúde - perspectivas e desafios</article-title>
+          <source>Saude Debate</source>
+          <year>2019</year>
+          <volume>43</volume>
+          <issue>spe5</issue>
+          <fpage>286</fpage>
+          <lpage>298</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0103-11042019s523">https://doi.org/10.1590/0103-11042019s523</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B10">
+        <label>10</label>
+        <mixed-citation>10. Paniz VM, Fassa AG, Facchini LA, Bertoldi AD, Piccini RX, Tomasi E, et al. Acesso a medicamentos de uso contínuo em adultos e idosos nas regiões Sul e Nordeste do Brasil. Cad Saude Publica. 2008 Feb;24(2):267-80. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2008000200005">https://doi.org/10.1590/S0102-311X2008000200005</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Paniz</surname>
+              <given-names>VM</given-names>
+            </name>
+            <name>
+              <surname>Fassa</surname>
+              <given-names>AG</given-names>
+            </name>
+            <name>
+              <surname>Facchini</surname>
+              <given-names>LA</given-names>
+            </name>
+            <name>
+              <surname>Bertoldi</surname>
+              <given-names>AD</given-names>
+            </name>
+            <name>
+              <surname>Piccini</surname>
+              <given-names>RX</given-names>
+            </name>
+            <name>
+              <surname>Tomasi</surname>
+              <given-names>E</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Acesso a medicamentos de uso contínuo em adultos e idosos nas regiões Sul e Nordeste do Brasil</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2008</year>
+          <month>02</month>
+          <volume>24</volume>
+          <issue>2</issue>
+          <fpage>267</fpage>
+          <lpage>280</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2008000200005">https://doi.org/10.1590/S0102-311X2008000200005</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B11">
+        <label>11</label>
+        <mixed-citation>11. Boing AC, Bertoldi AD, Boing AF, Bastos JL, Peres KG. Acesso a medicamentos no setor público: análise de usuários do Sistema Único de Saúde no Brasil. Cad Saude Publica. 2013 Apr;29(4):691-701. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2013000800007">https://doi.org/10.1590/S0102-311X2013000800007</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Boing</surname>
+              <given-names>AC</given-names>
+            </name>
+            <name>
+              <surname>Bertoldi</surname>
+              <given-names>AD</given-names>
+            </name>
+            <name>
+              <surname>Boing</surname>
+              <given-names>AF</given-names>
+            </name>
+            <name>
+              <surname>Bastos</surname>
+              <given-names>JL</given-names>
+            </name>
+            <name>
+              <surname>Peres</surname>
+              <given-names>KG</given-names>
+            </name>
+          </person-group>
+          <article-title>Acesso a medicamentos no setor público: análise de usuários do Sistema Único de Saúde no Brasil</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2013</year>
+          <month>04</month>
+          <volume>29</volume>
+          <issue>4</issue>
+          <fpage>691</fpage>
+          <lpage>701</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0102-311X2013000800007">https://doi.org/10.1590/S0102-311X2013000800007</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B12">
+        <label>12</label>
+        <mixed-citation>12. Oliveira MA, Luiza VL, Tavares NU, Mengue SS, Arrais PS, Farias MR, et al. Acesso a medicamentos para doenças crônicas no Brasil: uma abordagem multidimensional. Rev Saude Publica. 2016 Dec 12;50. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1518-8787.2016050006161">https://doi.org/10.1590/s1518-8787.2016050006161</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Luiza</surname>
+              <given-names>VL</given-names>
+            </name>
+            <name>
+              <surname>Tavares</surname>
+              <given-names>NU</given-names>
+            </name>
+            <name>
+              <surname>Mengue</surname>
+              <given-names>SS</given-names>
+            </name>
+            <name>
+              <surname>Arrais</surname>
+              <given-names>PS</given-names>
+            </name>
+            <name>
+              <surname>Farias</surname>
+              <given-names>MR</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Acesso a medicamentos para doenças crônicas no Brasil: uma abordagem multidimensional</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2016</year>
+          <month>12</month>
+          <day>12</day>
+          <volume>50</volume>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1518-8787.2016050006161">https://doi.org/10.1590/s1518-8787.2016050006161</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B13">
+        <label>13</label>
+        <mixed-citation>13. Tavares NU, Luiza VL, Oliveira MA, Costa KS, Mengue SS, Arrais PS, et al. Free access to medicines for the treatment of chronic diseases in Brazil. Rev Saude Publica. 2016;50(suppl 2). <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1518-8787.2016050006118">https://doi.org/10.1590/s1518-8787.2016050006118</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Tavares</surname>
+              <given-names>NU</given-names>
+            </name>
+            <name>
+              <surname>Luiza</surname>
+              <given-names>VL</given-names>
+            </name>
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Costa</surname>
+              <given-names>KS</given-names>
+            </name>
+            <name>
+              <surname>Mengue</surname>
+              <given-names>SS</given-names>
+            </name>
+            <name>
+              <surname>Arrais</surname>
+              <given-names>PS</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Free access to medicines for the treatment of chronic diseases in Brazil</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2016</year>
+          <volume>50</volume>
+          <supplement>suppl 2</supplement>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1518-8787.2016050006118">https://doi.org/10.1590/s1518-8787.2016050006118</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B14">
+        <label>14</label>
+        <mixed-citation>14. Drummond ED, Simões TC, Andrade FB. Acesso da população brasileira adulta a medicamentos prescritos. Rev Bras Epidemiol. 2018;21(0):e180007. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-549720180007">https://doi.org/10.1590/1980-549720180007</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Drummond</surname>
+              <given-names>ED</given-names>
+            </name>
+            <name>
+              <surname>Simões</surname>
+              <given-names>TC</given-names>
+            </name>
+            <name>
+              <surname>Andrade</surname>
+              <given-names>FB</given-names>
+            </name>
+          </person-group>
+          <article-title>Acesso da população brasileira adulta a medicamentos prescritos</article-title>
+          <source>Rev Bras Epidemiol</source>
+          <year>2018</year>
+          <volume>21</volume>
+          <issue>0</issue>
+          <elocation-id>e180007</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-549720180007">https://doi.org/10.1590/1980-549720180007</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B15">
+        <label>15</label>
+        <mixed-citation>15. Drummond ED, Simões TC, Andrade FB. Mudanças no acesso gratuito a medicamentos prescritos no sistema público de saúde no Brasil. Cad Saude Colet. 2022 Mar;30(1):56-67. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1414-462x202230010172">https://doi.org/10.1590/1414-462x202230010172</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Drummond</surname>
+              <given-names>ED</given-names>
+            </name>
+            <name>
+              <surname>Simões</surname>
+              <given-names>TC</given-names>
+            </name>
+            <name>
+              <surname>Andrade</surname>
+              <given-names>FB</given-names>
+            </name>
+          </person-group>
+          <article-title>Mudanças no acesso gratuito a medicamentos prescritos no sistema público de saúde no Brasil</article-title>
+          <source>Cad Saude Colet</source>
+          <year>2022</year>
+          <month>03</month>
+          <volume>30</volume>
+          <issue>1</issue>
+          <fpage>56</fpage>
+          <lpage>67</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1414-462x202230010172">https://doi.org/10.1590/1414-462x202230010172</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B16">
+        <label>16</label>
+        <mixed-citation>16. Moraes RM, Santos MA, Vieira FS, Almeida RT. Cobertura de políticas públicas e acesso a medicamentos no Brasil. Rev Saude Publica. 2022 Jun;56:58. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.11606/s1518-8787.2022056003898">https://doi.org/10.11606/s1518-8787.2022056003898</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Moraes</surname>
+              <given-names>RM</given-names>
+            </name>
+            <name>
+              <surname>Santos</surname>
+              <given-names>MA</given-names>
+            </name>
+            <name>
+              <surname>Vieira</surname>
+              <given-names>FS</given-names>
+            </name>
+            <name>
+              <surname>Almeida</surname>
+              <given-names>RT</given-names>
+            </name>
+          </person-group>
+          <article-title>Cobertura de políticas públicas e acesso a medicamentos no Brasil</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2022</year>
+          <month>06</month>
+          <volume>56</volume>
+          <size units="pages">58</size>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.11606/s1518-8787.2022056003898">https://doi.org/10.11606/s1518-8787.2022056003898</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B17">
+        <label>17</label>
+        <mixed-citation>17. Katrein F, Tejada CA, Restrepo-Méndez MC, Bertoldi AD. Desigualdade no acesso a medicamentos para doenças crônicas em mulheres brasileiras. Cad Saude Publica. 2015 Jul;31(7):1416-26. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311X00083614">https://doi.org/10.1590/0102-311X00083614</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Katrein</surname>
+              <given-names>F</given-names>
+            </name>
+            <name>
+              <surname>Tejada</surname>
+              <given-names>CA</given-names>
+            </name>
+            <name>
+              <surname>Restrepo-Méndez</surname>
+              <given-names>MC</given-names>
+            </name>
+            <name>
+              <surname>Bertoldi</surname>
+              <given-names>AD</given-names>
+            </name>
+          </person-group>
+          <article-title>Desigualdade no acesso a medicamentos para doenças crônicas em mulheres brasileiras</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2015</year>
+          <month>07</month>
+          <volume>31</volume>
+          <issue>7</issue>
+          <fpage>1416</fpage>
+          <lpage>1426</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311X00083614">https://doi.org/10.1590/0102-311X00083614</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B18">
+        <label>18</label>
+        <mixed-citation>18. Fernandes CS, Lima MG, Barros MB. Problemas emocionais e uso de medicamentos psicotrópicos: uma abordagem da desigualdade racial. Cien Saude Colet. 2020 May;25(5):1677-88. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1413-81232020255.33362019">https://doi.org/10.1590/1413-81232020255.33362019</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Fernandes</surname>
+              <given-names>CS</given-names>
+            </name>
+            <name>
+              <surname>Lima</surname>
+              <given-names>MG</given-names>
+            </name>
+            <name>
+              <surname>Barros</surname>
+              <given-names>MB</given-names>
+            </name>
+          </person-group>
+          <article-title>Problemas emocionais e uso de medicamentos psicotrópicos: uma abordagem da desigualdade racial</article-title>
+          <source>Cien Saude Colet</source>
+          <year>2020</year>
+          <month>05</month>
+          <volume>25</volume>
+          <issue>5</issue>
+          <fpage>1677</fpage>
+          <lpage>1688</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1413-81232020255.33362019">https://doi.org/10.1590/1413-81232020255.33362019</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B19">
+        <label>19</label>
+        <mixed-citation>19. Crenshaw K. Demarginalizing the intersection of race and sex: a black feminist critique of antidiscrimination doctrine, feminist theory and antiracist politics. Univ Chic Leg Forum. 1989 [cited 2024 Mar 25]; 1989(1):139-67. Available from: <ext-link ext-link-type="uri" xlink:href="https://chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=1052&amp;context=uclf">https://chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=1052&amp;context=uclf</ext-link> </mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Crenshaw</surname>
+              <given-names>K</given-names>
+            </name>
+          </person-group>
+          <article-title>Demarginalizing the intersection of race and sex: a black feminist critique of antidiscrimination doctrine, feminist theory and antiracist politics</article-title>
+          <source>Univ Chic Leg Forum</source>
+          <year>1989</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <volume>1989</volume>
+          <issue>1</issue>
+          <fpage>139</fpage>
+          <lpage>167</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=1052&amp;context=uclf">https://chicagounbound.uchicago.edu/cgi/viewcontent.cgi?article=1052&amp;context=uclf</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B20">
+        <label>20</label>
+        <mixed-citation>20. Zinn MB, Dill BT. Theorizing difference from multiracial feminism. Fem Stud. 1996;22(2):321. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2307/3178416">https://doi.org/10.2307/3178416</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Zinn</surname>
+              <given-names>MB</given-names>
+            </name>
+            <name>
+              <surname>Dill</surname>
+              <given-names>BT</given-names>
+            </name>
+          </person-group>
+          <article-title>Theorizing difference from multiracial feminism</article-title>
+          <source>Fem Stud</source>
+          <year>1996</year>
+          <volume>22</volume>
+          <issue>2</issue>
+          <fpage>321</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.2307/3178416">https://doi.org/10.2307/3178416</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B21">
+        <label>21</label>
+        <mixed-citation>21. Collins PH. Black feminist thought: knowledge, consciousness, and the politics of empowerment. 2000 [cited 2024 Mar 25]. Available from: <ext-link ext-link-type="uri" xlink:href="https://uniteyouthdublin.files.wordpress.com/2015/01/black-feminist-though-by-patricia-hill-collins.pdf">https://uniteyouthdublin.files.wordpress.com/2015/01/black-feminist-though-by-patricia-hill-collins.pdf</ext-link> </mixed-citation>
+        <element-citation publication-type="webpage">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Collins</surname>
+              <given-names>PH</given-names>
+            </name>
+          </person-group>
+          <source>Black feminist thought: knowledge, consciousness, and the politics of empowerment</source>
+          <year>2000</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <ext-link ext-link-type="uri" xlink:href="https://uniteyouthdublin.files.wordpress.com/2015/01/black-feminist-though-by-patricia-hill-collins.pdf">https://uniteyouthdublin.files.wordpress.com/2015/01/black-feminist-though-by-patricia-hill-collins.pdf</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B22">
+        <label>22</label>
+        <mixed-citation>22. Vieira FS, Benevides RP. Os impactos do novo regime fiscal para o financiamento do Sistema Único de Saúde e para a efetivação do direito à saúde no Brasil. Brasília, DF: Instituto de Pesquisa Econômica Aplicada; 2016. (Nota técnica v. 28).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vieira</surname>
+              <given-names>FS</given-names>
+            </name>
+            <name>
+              <surname>Benevides</surname>
+              <given-names>RP</given-names>
+            </name>
+          </person-group>
+          <source>Os impactos do novo regime fiscal para o financiamento do Sistema Único de Saúde e para a efetivação do direito à saúde no Brasil</source>
+          <publisher-loc>Brasília, DF</publisher-loc>
+          <publisher-name>Instituto de Pesquisa Econômica Aplicada</publisher-name>
+          <year>2016</year>
+          <comment>Nota técnica v. 28</comment>
+        </element-citation>
+      </ref>
+      <ref id="B23">
+        <label>23</label>
+        <mixed-citation>23. Rasella D, Basu S, Hone T, Paes-Sousa R, Ocké-Reis CO, Millett C. Child morbidity and mortality associated with alternative policy responses to the economic crisis in Brazil: a nationwide microsimulation study. PLOS Medicine. 2018 May 22;15(5):e1002570. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pmed.1002570">https://doi.org/10.1371/journal.pmed.1002570</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Rasella</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Basu</surname>
+              <given-names>S</given-names>
+            </name>
+            <name>
+              <surname>Hone</surname>
+              <given-names>T</given-names>
+            </name>
+            <name>
+              <surname>Paes-Sousa</surname>
+              <given-names>R</given-names>
+            </name>
+            <name>
+              <surname>Ocké-Reis</surname>
+              <given-names>CO</given-names>
+            </name>
+            <name>
+              <surname>Millett</surname>
+              <given-names>C</given-names>
+            </name>
+          </person-group>
+          <article-title>Child morbidity and mortality associated with alternative policy responses to the economic crisis in Brazil: a nationwide microsimulation study</article-title>
+          <source>PLOS Medicine</source>
+          <year>2018</year>
+          <month>05</month>
+          <day>22</day>
+          <volume>15</volume>
+          <issue>5</issue>
+          <fpage>e1002570</fpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1371/journal.pmed.1002570">https://doi.org/10.1371/journal.pmed.1002570</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B24">
+        <label>24</label>
+        <mixed-citation>24. Boing AC, Andrade FB, Bertoldi AD, Peres KG A, Massuda A, Boing AF. Prevalências e desigualdades no acesso aos medicamentos por usuários do Sistema Único de Saúde no Brasil em 2013 e 2019. Cad Saude Publica. 2022 Jun;38(6):e00114721. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311xpt114721">https://doi.org/10.1590/0102-311xpt114721</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Boing</surname>
+              <given-names>AC</given-names>
+            </name>
+            <name>
+              <surname>Andrade</surname>
+              <given-names>FB</given-names>
+            </name>
+            <name>
+              <surname>Bertoldi</surname>
+              <given-names>AD</given-names>
+            </name>
+            <name>
+              <surname>Peres</surname>
+              <given-names>KG A</given-names>
+            </name>
+            <name>
+              <surname>Massuda</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Boing</surname>
+              <given-names>AF</given-names>
+            </name>
+          </person-group>
+          <article-title>Prevalências e desigualdades no acesso aos medicamentos por usuários do Sistema Único de Saúde no Brasil em 2013 e 2019</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2022</year>
+          <month>06</month>
+          <volume>38</volume>
+          <issue>6</issue>
+          <elocation-id>e00114721</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311xpt114721">https://doi.org/10.1590/0102-311xpt114721</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B25">
+        <label>25</label>
+        <mixed-citation>25. Bauer GR, Churchill SM, Mahendran M, Walwyn C, Lizotte D, Villa-Rueda AA. Intersectionality in quantitative research: a systematic review of its emergence and applications of theory and methods. SSM Popul Health. 2021 Apr;14:100798. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ssmph.2021.100798">https://doi.org/10.1016/j.ssmph.2021.100798</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Bauer</surname>
+              <given-names>GR</given-names>
+            </name>
+            <name>
+              <surname>Churchill</surname>
+              <given-names>SM</given-names>
+            </name>
+            <name>
+              <surname>Mahendran</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Walwyn</surname>
+              <given-names>C</given-names>
+            </name>
+            <name>
+              <surname>Lizotte</surname>
+              <given-names>D</given-names>
+            </name>
+            <name>
+              <surname>Villa-Rueda</surname>
+              <given-names>AA</given-names>
+            </name>
+          </person-group>
+          <article-title>Intersectionality in quantitative research: a systematic review of its emergence and applications of theory and methods</article-title>
+          <source>SSM Popul Health</source>
+          <year>2021</year>
+          <month>04</month>
+          <volume>14</volume>
+          <size units="pages">100798</size>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.ssmph.2021.100798">https://doi.org/10.1016/j.ssmph.2021.100798</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B26">
+        <label>26</label>
+        <mixed-citation>26. Harari L, Lee C. Intersectionality in quantitative health disparities research: A systematic review of challenges and limitations in empirical studies. Soc Sci Med. 2021 May;277:113876. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.socscimed.2021.113876">https://doi.org/10.1016/j.socscimed.2021.113876</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Harari</surname>
+              <given-names>L</given-names>
+            </name>
+            <name>
+              <surname>Lee</surname>
+              <given-names>C</given-names>
+            </name>
+          </person-group>
+          <article-title>Intersectionality in quantitative health disparities research: A systematic review of challenges and limitations in empirical studies</article-title>
+          <source>Soc Sci Med</source>
+          <year>2021</year>
+          <month>05</month>
+          <volume>277</volume>
+          <size units="pages">113876</size>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.socscimed.2021.113876">https://doi.org/10.1016/j.socscimed.2021.113876</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B27">
+        <label>27</label>
+        <mixed-citation>27. Instituto Brasileiro de Geografia e Estatística. Pesquisa nacional de saúde 2019: informações sobre domicílios, acesso e utilização dos serviços de saúde. Rio de Janeiro: IBGE; 2020.</mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Instituto Brasileiro de Geografia e Estatística</collab>
+          </person-group>
+          <source>Pesquisa nacional de saúde 2019: informações sobre domicílios, acesso e utilização dos serviços de saúde</source>
+          <publisher-loc>Rio de Janeiro</publisher-loc>
+          <publisher-name>IBGE</publisher-name>
+          <year>2020</year>
+        </element-citation>
+      </ref>
+      <ref id="B28">
+        <label>28</label>
+        <mixed-citation>28. Stopa SR, Szwarcwald CL, Oliveira MM, Gouvea EC, Vieira ML, Freitas MP, et al. Pesquisa Nacional de Saúde 2019: histórico, métodos e perspectivas. Epidemiol Serv Saude. 2020 Oct;29(5):e2020315. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1679-49742020000500004">https://doi.org/10.1590/s1679-49742020000500004</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Stopa</surname>
+              <given-names>SR</given-names>
+            </name>
+            <name>
+              <surname>Szwarcwald</surname>
+              <given-names>CL</given-names>
+            </name>
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>MM</given-names>
+            </name>
+            <name>
+              <surname>Gouvea</surname>
+              <given-names>EC</given-names>
+            </name>
+            <name>
+              <surname>Vieira</surname>
+              <given-names>ML</given-names>
+            </name>
+            <name>
+              <surname>Freitas</surname>
+              <given-names>MP</given-names>
+            </name>
+            <etal>et al</etal>
+          </person-group>
+          <article-title>Pesquisa Nacional de Saúde 2019: histórico, métodos e perspectivas</article-title>
+          <source>Epidemiol Serv Saude</source>
+          <year>2020</year>
+          <month>10</month>
+          <volume>29</volume>
+          <issue>5</issue>
+          <elocation-id>e2020315</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/s1679-49742020000500004">https://doi.org/10.1590/s1679-49742020000500004</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B29">
+        <label>29</label>
+        <mixed-citation>29. Boing AC, Bertoldi AD, Peres KG. Desigualdades socioeconômicas nos gastos e comprometimento da renda com medicamentos no Sul do Brasil. Rev Saude Publica. 2011 Oct;45(5):897-905. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0034-89102011005000054">https://doi.org/10.1590/S0034-89102011005000054</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Boing</surname>
+              <given-names>AC</given-names>
+            </name>
+            <name>
+              <surname>Bertoldi</surname>
+              <given-names>AD</given-names>
+            </name>
+            <name>
+              <surname>Peres</surname>
+              <given-names>KG</given-names>
+            </name>
+          </person-group>
+          <article-title>Desigualdades socioeconômicas nos gastos e comprometimento da renda com medicamentos no Sul do Brasil</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2011</year>
+          <month>10</month>
+          <volume>45</volume>
+          <issue>5</issue>
+          <fpage>897</fpage>
+          <lpage>905</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0034-89102011005000054">https://doi.org/10.1590/S0034-89102011005000054</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B30">
+        <label>30</label>
+        <mixed-citation>30. Organização Mundial da Saúde. WHO medicines strategy 2004-2007: countries at the core. Geneva: World Health Organization; 2004 [cited 2024 Mar 25]. Available from: <ext-link ext-link-type="uri" xlink:href="https://apps.who.int/iris/handle/10665/84307">https://apps.who.int/iris/handle/10665/84307</ext-link> </mixed-citation>
+        <element-citation publication-type="report">
+          <person-group person-group-type="author">
+            <collab>Organização Mundial da Saúde</collab>
+          </person-group>
+          <source>WHO medicines strategy 2004-2007: countries at the core</source>
+          <publisher-loc>Geneva</publisher-loc>
+          <publisher-name>World Health Organization</publisher-name>
+          <year>2004</year>
+          <date-in-citation content-type="cited-date">cited 2024 Mar 25</date-in-citation>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://apps.who.int/iris/handle/10665/84307">https://apps.who.int/iris/handle/10665/84307</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B31">
+        <label>31</label>
+        <mixed-citation>31. Vieira FS. Health financing in Brazil and the goals of the 2030 Agenda: high risk of failure. Rev Saude Publica. 2020 Dec;54:127. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.11606/s1518-8787.2020054002414">https://doi.org/10.11606/s1518-8787.2020054002414</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vieira</surname>
+              <given-names>FS</given-names>
+            </name>
+          </person-group>
+          <article-title>Health financing in Brazil and the goals of the 2030 Agenda: high risk of failure</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2020</year>
+          <month>12</month>
+          <volume>54</volume>
+          <size units="pages">127</size>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.11606/s1518-8787.2020054002414">https://doi.org/10.11606/s1518-8787.2020054002414</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B32">
+        <label>32</label>
+        <mixed-citation>32. Machado HS, Melo EA, Paula LG. Medicina de família e comunidade na saúde suplementar do Brasil: implicações para o Sistema Único de Saúde e para os médicos. Cad Saude Publica. 2019 Oct;35(11):e00068419. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311x00068419">https://doi.org/10.1590/0102-311x00068419</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Machado</surname>
+              <given-names>HS</given-names>
+            </name>
+            <name>
+              <surname>Melo</surname>
+              <given-names>EA</given-names>
+            </name>
+            <name>
+              <surname>Paula</surname>
+              <given-names>LG</given-names>
+            </name>
+          </person-group>
+          <article-title>Medicina de família e comunidade na saúde suplementar do Brasil: implicações para o Sistema Único de Saúde e para os médicos</article-title>
+          <source>Cad Saude Publica</source>
+          <year>2019</year>
+          <month>10</month>
+          <volume>35</volume>
+          <issue>11</issue>
+          <elocation-id>e00068419</elocation-id>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/0102-311x00068419">https://doi.org/10.1590/0102-311x00068419</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B33">
+        <label>33</label>
+        <mixed-citation>33. Andrietta LS, Monte-Cardoso A, Sestelo JA, Scheffer MC, Bahia L. Empresas de Planos de Saúde no Brasil: crise sanitária e estratégias de expansão. Textos para Discussão no 51. Rio de Janeiro: Fundação Oswaldo Cruz; 2021. (Textos para discussão, v. 51).</mixed-citation>
+        <element-citation publication-type="book">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Andrietta</surname>
+              <given-names>LS</given-names>
+            </name>
+            <name>
+              <surname>Monte-Cardoso</surname>
+              <given-names>A</given-names>
+            </name>
+            <name>
+              <surname>Sestelo</surname>
+              <given-names>JA</given-names>
+            </name>
+            <name>
+              <surname>Scheffer</surname>
+              <given-names>MC</given-names>
+            </name>
+            <name>
+              <surname>Bahia</surname>
+              <given-names>L</given-names>
+            </name>
+          </person-group>
+          <source>Empresas de Planos de Saúde no Brasil: crise sanitária e estratégias de expansão. Textos para Discussão no 51</source>
+          <publisher-loc>Rio de Janeiro</publisher-loc>
+          <publisher-name>Fundação Oswaldo Cruz</publisher-name>
+          <year>2021</year>
+          <comment>Textos para discussão, v. 51</comment>
+        </element-citation>
+      </ref>
+      <ref id="B34">
+        <label>34</label>
+        <mixed-citation>34. Vieira FS, Zucchi P. Distorções causadas pelas ações judiciais à política de medicamentos no Brazil. Rev Saude Publica. 2007 Apr;41(2):214-22. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0034-89102007000200007">https://doi.org/10.1590/S0034-89102007000200007</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Vieira</surname>
+              <given-names>FS</given-names>
+            </name>
+            <name>
+              <surname>Zucchi</surname>
+              <given-names>P</given-names>
+            </name>
+          </person-group>
+          <article-title>Distorções causadas pelas ações judiciais à política de medicamentos no Brazil</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2007</year>
+          <month>04</month>
+          <volume>41</volume>
+          <issue>2</issue>
+          <fpage>214</fpage>
+          <lpage>222</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/S0034-89102007000200007">https://doi.org/10.1590/S0034-89102007000200007</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B35">
+        <label>35</label>
+        <mixed-citation>35. Oliveira YM, Braga BS, Farias AD, Pereira SP, Ferreira MA. Judicialização de medicamentos: efetivação de direitos ou ruptura das políticas públicas? Rev Saude Publica. 2020;54:130. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.11606/s1518-8787.2020054002301">https://doi.org/10.11606/s1518-8787.2020054002301</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Oliveira</surname>
+              <given-names>YM</given-names>
+            </name>
+            <name>
+              <surname>Braga</surname>
+              <given-names>BS</given-names>
+            </name>
+            <name>
+              <surname>Farias</surname>
+              <given-names>AD</given-names>
+            </name>
+            <name>
+              <surname>Pereira</surname>
+              <given-names>SP</given-names>
+            </name>
+            <name>
+              <surname>Ferreira</surname>
+              <given-names>MA</given-names>
+            </name>
+          </person-group>
+          <article-title>Judicialização de medicamentos: efetivação de direitos ou ruptura das políticas públicas?</article-title>
+          <source>Rev Saude Publica</source>
+          <year>2020</year>
+          <volume>54</volume>
+          <size units="pages">130</size>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.11606/s1518-8787.2020054002301">https://doi.org/10.11606/s1518-8787.2020054002301</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B36">
+        <label>36</label>
+        <mixed-citation>36. Monteiro CN, Gianini RJ, Segri NJ, Goldbaum M, Barros MB, Cesar CL. Utilização de medicamentos genéricos no município de São Paulo em 2003: estudo de base populacional. Epidemiol Serv Saude. 2016;25(2):251-8. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5123/S1679-49742016000200004">https://doi.org/10.5123/S1679-49742016000200004</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Monteiro</surname>
+              <given-names>CN</given-names>
+            </name>
+            <name>
+              <surname>Gianini</surname>
+              <given-names>RJ</given-names>
+            </name>
+            <name>
+              <surname>Segri</surname>
+              <given-names>NJ</given-names>
+            </name>
+            <name>
+              <surname>Goldbaum</surname>
+              <given-names>M</given-names>
+            </name>
+            <name>
+              <surname>Barros</surname>
+              <given-names>MB</given-names>
+            </name>
+            <name>
+              <surname>Cesar</surname>
+              <given-names>CL</given-names>
+            </name>
+          </person-group>
+          <article-title>Utilização de medicamentos genéricos no município de São Paulo em 2003: estudo de base populacional</article-title>
+          <source>Epidemiol Serv Saude</source>
+          <year>2016</year>
+          <volume>25</volume>
+          <issue>2</issue>
+          <fpage>251</fpage>
+          <lpage>258</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.5123/S1679-49742016000200004">https://doi.org/10.5123/S1679-49742016000200004</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+      <ref id="B37">
+        <label>37</label>
+        <mixed-citation>37. Bauer GR. Incorporating intersectionality theory into population health research methodology: challenges and the potential to advance health equity. Soc Sci Med. 2014 Jun;110:10-7. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.socscimed.2014.03.022">https://doi.org/10.1016/j.socscimed.2014.03.022</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Bauer</surname>
+              <given-names>GR</given-names>
+            </name>
+          </person-group>
+          <article-title>Incorporating intersectionality theory into population health research methodology: challenges and the potential to advance health equity</article-title>
+          <source>Soc Sci Med</source>
+          <year>2014</year>
+          <month>06</month>
+          <volume>110</volume>
+          <fpage>10</fpage>
+          <lpage>17</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1016/j.socscimed.2014.03.022">https://doi.org/10.1016/j.socscimed.2014.03.022</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B38">
+        <label>38</label>
+        <mixed-citation>38. Homan P, Brown TH, King B. Structural Intersectionality as a new direction for health disparities research. J Health Soc Behav. 2021 Sep;62(3):350-70. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/00221465211032947">https://doi.org/10.1177/00221465211032947</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Homan</surname>
+              <given-names>P</given-names>
+            </name>
+            <name>
+              <surname>Brown</surname>
+              <given-names>TH</given-names>
+            </name>
+            <name>
+              <surname>King</surname>
+              <given-names>B</given-names>
+            </name>
+          </person-group>
+          <article-title>Structural Intersectionality as a new direction for health disparities research</article-title>
+          <source>J Health Soc Behav</source>
+          <year>2021</year>
+          <month>09</month>
+          <volume>62</volume>
+          <issue>3</issue>
+          <fpage>350</fpage>
+          <lpage>370</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/00221465211032947">https://doi.org/10.1177/00221465211032947</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B39">
+        <label>39</label>
+        <mixed-citation>39. Constante HM, Bastos JL. Mapping the margins in health services research: how does race intersect with gender and socioeconomic status to shape difficulty accessing healthcare among unequal Brazilian States? Int J Health Serv. 2021 Apr;51(2):155-66. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/0020731420979808">https://doi.org/10.1177/0020731420979808</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Constante</surname>
+              <given-names>HM</given-names>
+            </name>
+            <name>
+              <surname>Bastos</surname>
+              <given-names>JL</given-names>
+            </name>
+          </person-group>
+          <article-title>Mapping the margins in health services research: how does race intersect with gender and socioeconomic status to shape difficulty accessing healthcare among unequal Brazilian States?</article-title>
+          <source>Int J Health Serv</source>
+          <year>2021</year>
+          <month>04</month>
+          <volume>51</volume>
+          <issue>2</issue>
+          <fpage>155</fpage>
+          <lpage>166</lpage>
+          <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1177/0020731420979808">https://doi.org/10.1177/0020731420979808</ext-link>
+        </element-citation>
+      </ref>
+      <ref id="B40">
+        <label>40</label>
+        <mixed-citation>40. Moraes CG, Mengue SS, Pizzol TD. Agreement between different recall periods in drug utilization studies. Rev Bras Epidemiol. 2017;20(2):324-34. <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-5497201700020012">https://doi.org/10.1590/1980-5497201700020012</ext-link> </mixed-citation>
+        <element-citation publication-type="journal">
+          <person-group person-group-type="author">
+            <name>
+              <surname>Moraes</surname>
+              <given-names>CG</given-names>
+            </name>
+            <name>
+              <surname>Mengue</surname>
+              <given-names>SS</given-names>
+            </name>
+            <name>
+              <surname>Pizzol</surname>
+              <given-names>TD</given-names>
+            </name>
+          </person-group>
+          <article-title>Agreement between different recall periods in drug utilization studies</article-title>
+          <source>Rev Bras Epidemiol</source>
+          <year>2017</year>
+          <volume>20</volume>
+          <issue>2</issue>
+          <fpage>324</fpage>
+          <lpage>334</lpage>
+          <comment>
+            <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.1590/1980-5497201700020012">https://doi.org/10.1590/1980-5497201700020012</ext-link>
+          </comment>
+        </element-citation>
+      </ref>
+    </ref-list>
+    <fn-group>
+      <fn fn-type="supplementary-material" id="fna">
+        <label>a</label>
+        <p> Supplementary Material available at: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.7910/DVN/I0CL2L">https://doi.org/10.7910/DVN/I0CL2L</ext-link> </p>
+      </fn>
+    </fn-group>
+    <fn-group>
+      <fn fn-type="financial-disclosure">
+        <p>Funding: National Council for Scientific and Technological Development (CNPq - process 303775/2021-1 - research productivity grant for JLB).</p>
+      </fn>
+    </fn-group>
+  </back>
+  <sub-article article-type="translation" id="TRpt" xml:lang="pt">
+    <front-stub>
+      <article-categories>
+        <subj-group subj-group-type="heading">
+          <subject>Artigo Original</subject>
+        </subj-group>
+      </article-categories>
+      <title-group>
+        <article-title>Acesso a medicamentos, o Sistema Único de Saúde e as injustiças interseccionais</article-title>
+      </title-group>
+      <contrib-group>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-0069-5434</contrib-id>
+          <name>
+            <surname>Mujica</surname>
+            <given-names>Elba Marina Miotto</given-names>
+          </name>
+          <role>Coleta, análise e interpretação dos dados</role>
+          <role>Elaboração ou revisão do manuscrito</role>
+          <role>Aprovação da versão final</role>
+          <role>Responsabilidade pública pelo conteúdo do artigo</role>
+          <xref ref-type="aff" rid="aff1002">
+            <sup>I</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0002-1816-0745</contrib-id>
+          <name>
+            <surname>Bastos</surname>
+            <given-names>João Luiz</given-names>
+          </name>
+          <role>Concepção e planejamento do estudo</role>
+          <role>Coleta, análise e interpretação dos dados</role>
+          <role>Elaboração ou revisão do manuscrito</role>
+          <role>Aprovação da versão final</role>
+          <role>Responsabilidade pública pelo conteúdo do artigo</role>
+          <xref ref-type="aff" rid="aff1002">
+            <sup>I</sup>
+          </xref>
+          <xref ref-type="aff" rid="aff2002">
+            <sup>II</sup>
+          </xref>
+        </contrib>
+        <contrib contrib-type="author">
+          <contrib-id contrib-id-type="orcid">0000-0001-7792-4824</contrib-id>
+          <name>
+            <surname>Boing</surname>
+            <given-names>Alexandra Crispim</given-names>
+          </name>
+          <role>Coleta, análise e interpretação dos dados</role>
+          <role>Elaboração ou revisão do manuscrito</role>
+          <role>Aprovação da versão final</role>
+          <role>Responsabilidade pública pelo conteúdo do artigo</role>
+          <xref ref-type="aff" rid="aff1002">
+            <sup>I</sup>
+          </xref>
+        </contrib>
+      </contrib-group>
+      <aff id="aff1002">
+        <label>I</label>
+        <country country="BR">Brasil</country>
+        <institution content-type="original"> Universidade Federal de Santa Catarina. Programa de Pós-Graduação em Saúde Coletiva. Florianópolis, SC, Brasil</institution>
+      </aff>
+      <aff id="aff2002">
+        <label>II</label>
+        <country country="CA">Canada</country>
+        <institution content-type="original"> Simon Fraser University. Faculty of Health Sciences. Burnaby, BC, Canada</institution>
+      </aff>
+      <author-notes>
+        <corresp id="c01002"> Correspondência: João Luiz Bastos Simon Fraser University Faculty of Health Sciences 8888 University Drive V5A1S6 Burnaby, BC, Canada E-mail: jbastos@sfu.ca </corresp>
+        <fn fn-type="conflict">
+          <p>Conflito de Interesses: Os autores declaram não haver conflito de interesses.</p>
+        </fn>
+      </author-notes>
+      <abstract>
+        <title>RESUMO</title>
+        <sec>
+          <title>OBJETIVO</title>
+          <p> Estimar as prevalências de acesso geral e público a medicamentos prescritos na população brasileira com 15 anos ou mais de idade em 2019 e identificar iniquidades de acesso, conforme intersecções de gênero, cor/raça, nível socioeconômico e território.</p>
+        </sec>
+        <sec>
+          <title>MÉTODOS</title>
+          <p> Foram analisados dados da Pesquisa Nacional de Saúde de 2019 com respondentes de 15 anos ou mais que tiveram prescrição de algum medicamento em atendimento de saúde realizado nas duas semanas anteriores à entrevista (n = 19.819). A variável de desfecho foi o acesso a medicamentos, subdividido em acesso geral (público, privado e misto), acesso público (via Sistema Único de Saúde – SUS) dos atendidos no SUS e acesso público (via SUS) dos não atendidos no SUS. As variáveis independentes do estudo foram utilizadas para representar eixos de marginalização: gênero, cor/raça, nível socioeconômico e território. Foram calculadas as prevalências de acesso geral e acesso público nos diferentes grupos analisados e a associação dos desfechos com os eixos mencionados foi estimada com <italic>odds ratios</italic> (OR) por meio de modelos de regressão logística.</p>
+        </sec>
+        <sec>
+          <title>RESULTADOS</title>
+          <p> Foi observada alta prevalência de acesso geral (84,9%), quando consideradas todas as fontes de obtenção, favorecendo segmentos populacionais de maior privilégio, como homens, brancos e de alto nível socioeconômico. Quando considerada apenas a obtenção no SUS dos medicamentos prescritos no próprio sistema, verificou-se uma baixa prevalência (30,4% de acesso), invertendo o acesso em benefício dos segmentos populacionais multiplamente marginalizados, como mulheres negras de baixo nível socioeconômico.</p>
+        </sec>
+        <sec>
+          <title>CONCLUSÕES</title>
+          <p> O acesso a medicamentos por meio do SUS demonstra ser um instrumento de combate às iniquidades interseccionais, evidenciando que o SUS é uma política pública eficiente na promoção da justiça social.</p>
+        </sec>
+      </abstract>
+      <kwd-group xml:lang="pt">
+        <kwd>Acessibilidade aos Serviços de Saúde</kwd>
+        <kwd>Sistema Único de Saúde</kwd>
+        <kwd>Enquadramento Interseccional</kwd>
+      </kwd-group>
+    </front-stub>
+    <body>
+      <sec sec-type="intro">
+        <title>INTRODUÇÃO</title>
+        <p>O acesso a medicamentos é fundamental para a garantia do direito à saúde e tem sido reconhecido como um direito humano essencial. Esse princípio foi incluído nas metas dos Objetivos de Desenvolvimento do Milênio e permanece um elemento central na Agenda 2030 para o desenvolvimento sustentável, estabelecida pela Organização das Nações Unidas (ONU)<sup><xref ref-type="bibr" rid="B1">1</xref></sup>. No cenário mundial, as injustiças no acesso a medicamentos continuam a ser evidentes. Apesar dos esforços da Organização Mundial da Saúde (OMS) para o alcance da meta da cobertura universal de saúde, ainda se observam variações expressivas no acesso a medicamentos entre os países. Em aproximadamente 30% de 25 países pesquisados pela OMS, os medicamentos estão completamente ausentes no âmbito da atenção primária<sup><xref ref-type="bibr" rid="B4">4</xref></sup>.</p>
+        <p>No contexto brasileiro, com o movimento da Reforma Sanitária Brasileira e a consequente criação do Sistema Único de Saúde (SUS), o acesso a medicamentos passou de uma perspectiva limitada à disponibilidade do produto para um enfoque estratégico dentro da Política Nacional de Saúde na perspectiva da integralidade. A Política Nacional de Medicamentos (PNM) foi aprovada a partir da necessidade de garantir a Assistência Farmacêutica (AF) como política norteadora para formulação de políticas setoriais. Encaminhamentos da 1ª Conferência Nacional de Medicamentos e Assistência Farmacêutica de 2003 resultaram na aprovação da Política Nacional de Assistência Farmacêutica (Pnaf), por meio de uma resolução do Conselho Nacional de Saúde. Essas políticas estabeleceram o acesso gratuito a medicamentos essenciais como direito dos cidadãos brasileiros e efetivaram a AF como política pública de saúde<sup><xref ref-type="bibr" rid="B5">5</xref></sup>. Contudo, ainda existem diferentes formas de organização e financiamento para o acesso a medicamentos no país: fornecimento pela rede pública de saúde (por meio do SUS), pelo setor privado, através dos planos de saúde ou por pagamento direto e financiamento misto por meio do Programa Farmácia Popular<sup><xref ref-type="bibr" rid="B8">8</xref></sup>. Em outros sistemas universais de saúde, como os do Reino Unido, da Austrália e do Canadá, o copagamento é adotado como principal forma de acesso a medicamentos, em que parte do custo é subsidiado pelo sistema de saúde e a outra parte advém do desembolso direto do usuário. O acesso gratuito ocorre apenas em situações específicas e varia conforme a idade e a renda ou é baseado em necessidades de saúde específicas<sup><xref ref-type="bibr" rid="B9">9</xref></sup>.</p>
+        <p>Estudos brasileiros, realizados a partir dos anos 2000, evidenciaram um aumento na prevalência de acesso a medicamentos, quando consideradas todas as fontes de acesso. No entanto, ainda são identificadas importantes iniquidades de acesso entre segmentos da população, conforme condição socioeconômica e região de residência, além de outros eixos de marginalização<sup><xref ref-type="bibr" rid="B10">10</xref></sup>. Os estudos até então realizados evidenciam que o acesso a medicamentos de forma gratuita favorece pessoas mais pobres<sup><xref ref-type="bibr" rid="B13">13</xref></sup>, de menor escolaridade e de cor/raça preta<sup><xref ref-type="bibr" rid="B12">12</xref></sup>. Ademais, observam-se estudos que buscaram avaliar populações específicas, limitando-se à análise de um único eixo de marginalização e desconsiderando a inter-relação entre múltiplos sistemas de opressão<sup><xref ref-type="bibr" rid="B17">17</xref>,<xref ref-type="bibr" rid="B18">18</xref></sup>. Em pesquisas sobre iniquidades em saúde, tem-se destacado a abordagem da interseccionalidade. Concebida principalmente no bojo do movimento feminista negro dos anos 1980 nos Estados Unidos, a interseccionalidade tem sido acionada para explicar como as experiências de indivíduos e grupos são moldadas pelo entrelaçamento e pela sobreposição de múltiplos eixos de marginalização e opressão, como gênero, raça e classe, produzindo formas complexas de opressão para uns e de privilégio para outros<sup><xref ref-type="bibr" rid="B19">19</xref></sup>.</p>
+        <p>Estudos de base populacional sobre iniquidades no acesso a medicamentos ainda são escassos no Brasil<sup><xref ref-type="bibr" rid="B11">11</xref>,<xref ref-type="bibr" rid="B14">14</xref></sup>. Isso se torna ainda mais preocupante ao se considerar o contexto do país após 2016, com a adoção de medidas de austeridade fiscal e a consequente intensificação do subfinanciamento das políticas de saúde, que tem como implicações o agravamento das injustiças sociais e a piora de indicadores de saúde<sup><xref ref-type="bibr" rid="B22">22</xref></sup>. Nesse cenário, uma perspectiva interseccional pode ser valiosa para identificar segmentos populacionais que são multiplamente marginalizados<sup><xref ref-type="bibr" rid="B25">25</xref>,<xref ref-type="bibr" rid="B26">26</xref></sup>e para ampliar o conhecimento acerca das iniquidades no acesso aos medicamentos no Brasil. Além disso, destaca-se a ausência de estudos populacionais sobre o tema, tanto nacionais quanto internacionais, utilizando uma perspectiva interseccional. Com isso, o objetivo deste estudo foi de estimar as prevalências de acesso geral e acesso público a medicamentos prescritos na população brasileira com 15 anos ou mais de idade em 2019 e identificar iniquidades no acesso, conforme as intersecções de gênero, cor/raça, nível socioeconômico e território.</p>
+      </sec>
+      <sec sec-type="methods">
+        <title>MÉTODOS</title>
+        <p>No presente estudo, foram analisados dados da Pesquisa Nacional de Saúde (PNS) de 2019, realizada pelo Instituto Brasileiro de Geografia e Estatística (IBGE) em parceria com o Ministério da Saúde (MS). O plano amostral empregado foi por conglomerado, em três estágios de seleção: unidade primária de amostragem, representada pelos setores censitários ou conjunto de setores, obtida da Amostra Mestra do IBGE; domicílio, selecionado por amostragem aleatória simples; e morador com 15 anos ou mais de idade, selecionado por amostragem aleatória simples, com base na lista de moradores obtida no momento da entrevista<sup><xref ref-type="bibr" rid="B27">27</xref>,<xref ref-type="bibr" rid="B28">28</xref></sup>. Ao todo, os agentes de coleta da PNS visitaram 108.525 domicílios em todo o território brasileiro, tendo realizado 94.114 entrevistas, com taxa de não resposta de 6,4%. O questionário foi composto por 26 módulos, divididos em três seções: domiciliar, de todos os moradores e do morador selecionado. As duas primeiras seções foram respondidas por um morador de idade igual ou superior a 18 anos, que sabia informar sobre a situação socioeconômica e de saúde dos demais coabitantes. A coleta de dados ocorreu entre agosto de 2019 e março de 2020. Os dados obtidos na PNS 2019 são de domínio público, disponibilizados no <italic>website</italic> do IBGE. A PNS 2019 foi aprovada pela Comissão Nacional de Ética em Pesquisa (Conep), sob parecer nº 3.529.376<sup><xref ref-type="bibr" rid="B27">27</xref>,<xref ref-type="bibr" rid="B28">28</xref></sup>.</p>
+        <p>Na análise, foram incluídos apenas os respondentes de 15 anos ou mais, residentes em domicílios particulares do território brasileiro, que procuraram atendimento de saúde e foram atendidos nas duas semanas anteriores à entrevista, com a prescrição de algum medicamento nesse atendimento. A variável de desfecho deste estudo foi o acesso a medicamentos, considerando-se a obtenção dos medicamentos como medida de acesso. Foram avaliados três desfechos de acordo com a fonte de obtenção do medicamento e a origem do atendimento, que resultou na prescrição do medicamento: acesso geral, em que se considerou todas as fontes de obtenção (público, privado e misto) e origens do atendimento (rede privada e SUS); acesso público, na qual se considerou apenas a rede pública como fonte de obtenção do medicamento, subdivido entre aqueles que tiveram o atendimento realizado no SUS e os que não foram atendidos no SUS.</p>
+        <p>Para mensurar o acesso geral, foi utilizada a pergunta: “Conseguiu obter os medicamentos receitados?”. As possíveis respostas eram: “Sim, todos”; “Sim, alguns”; e “Não, nenhum”. Caracterizou-se o acesso a medicamentos como uma variável dicotômica, sendo a primeira opção de resposta considerada como acesso total e as demais, ausência de acesso total. O acesso público daqueles atendidos ou não no SUS foi estimado por meio da pergunta: “Algum dos medicamentos foi obtido em serviço público de saúde?”. Da mesma forma, a resposta “Sim, todos” foi considerada como acesso total e as respostas “Sim, alguns” e “Não, nenhum”, ausência de acesso. Para diferenciar a origem do atendimento realizado, foram utilizadas as respostas à pergunta: “O atendimento foi feito pelo SUS?”, cujas respostas eram “Sim”, “Não” e “Não sabe/Não lembra”.</p>
+        <p>As variáveis independentes foram utilizadas para representar eixos de marginalização específicos. Gênero, categorizado de forma dicotômica em “Homem” ou “Mulher”; cor/raça, coletada de acordo com as categorias padronizadas pelo IBGE, sendo dicotomizada em “Branca” e “Negra”, com as categorias “Preta” e “Parda” incluídas nessa última. Devido ao pequeno tamanho amostral, as categorias “Amarela” e “Indígena” não foram consideradas neste estudo; nível socioeconômico, operacionalizado pela escolaridade, classificado em “Baixo” (oito anos de estudo ou menos) e “Alto” (mais de oito anos de estudo); e território, operacionalizado pela macrorregião de residência no país (Norte, Nordeste, Sudeste, Sul e Centro-Oeste). Foram analisados oito grupos formados pelas intersecções de gênero, cor/raça e nível socioeconômico: homens brancos de alto nível socioeconômico; homens brancos de baixo nível socioeconômico; homens negros de alto nível socioeconômico; homens negros de baixo nível socioeconômico; mulheres brancas de alto nível socioeconômico; mulheres brancas de baixo nível socioeconômico; mulheres negras de alto nível socioeconômico; e mulheres negras de baixo nível socioeconômico. Posteriormente, cada grupo interseccional foi analisado segundo a macrorregião da residência.</p>
+        <p>Foi realizada a análise descritiva da amostra, tendo sido apresentadas as frequências relativas dos desfechos, acompanhadas de seus intervalos de confiança de 95% (IC95%), nas diferentes categorias dos eixos de marginalização e nos grupos interseccionais. Para testar a associação dos desfechos com as demais variáveis, foram analisados três modelos de regressão logística. No Modelo 1, foi estimado o efeito de cada uma das variáveis explicativas sobre os desfechos. O Modelo 2 incluiu o ajuste entre as variáveis gênero, cor/raça, nível socioeconômico e território. O Modelo 3 foi ajustado para os grupos interseccionais e o território. As estimativas dos coeficientes de regressão, representadas como <italic>odds ratio</italic> (OR), também foram calculadas com seus IC95%. As análises estatísticas foram realizadas no <italic>software</italic> Stata, versão 15.1, considerando os pesos e a estrutura amostral complexa.</p>
+      </sec>
+      <sec sec-type="results">
+        <title>RESULTADOS</title>
+        <p>Foram considerados 19.819 entrevistados com idade maior ou igual a 15 anos. Para análise do acesso geral, as respostas de todos esses respondentes foram apreciadas. Do total, mais da metade teve atendimento realizado pelo SUS, sendo que, desses, cerca de 80% apresentaram informação válida quanto ao desfecho. Por sua vez, menos da metade dos respondentes não realizaram atendimento pelo SUS e, desses, mais de 80% apresentaram informação válida sobre o acesso a medicamentos. Ou seja, para os dois últimos desfechos, houve aproximadamente 20% e 14%, respectivamente, de entrevistados que responderam à pergunta sobre se conseguiram obter os medicamentos receitados, mas não responderam se algum deles foi obtido em serviço público de saúde.</p>
+        <p>A <xref ref-type="table" rid="t1002">Tabela 1</xref> apresenta a descrição da amostra para os três desfechos, que foi composta majoritariamente por mulheres residentes da região Sudeste. Para o desfecho de acesso geral, participantes de cor/raça negra, de alto nível socioeconômico e, do grupo interseccional, mulheres brancas de alto nível socioeconômico representaram a maioria dos participantes. No caso do acesso público dos atendidos no SUS, a maioria dos respondentes foi composta por pessoas de cor/raça negra, de baixo nível socioeconômico e do grupo interseccional de mulheres negras de baixo nível socioeconômico. Para o acesso público dos não atendidos no SUS, a maioria dos respondentes foi de pessoas de cor/raça branca, de alto nível socioeconômico e, do grupo interseccional, de mulheres brancas de alto nível socioeconômico.</p>
+        <p>
+          <table-wrap id="t1002">
+            <label>Tabela 1</label>
+            <caption>
+              <title>Descrição da amostra de acordo com gênero, cor/raça, nível socioeconômico, território, grupo interseccional e acesso aos medicamentos prescritos. Pesquisa Nacional de Saúde, Brasil, 2019.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left" rowspan="3">Variável</th>
+                  <th>Acesso geral</th>
+                  <th>Acesso público dos atendidos no SUS</th>
+                  <th>Acesso público dos não atendidos no SUS</th>
+                </tr>
+                <tr>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                </tr>
+                <tr>
+                  <th>n (%)</th>
+                  <th>n (%)</th>
+                  <th>n (%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4">Gênero</td>
+                </tr>
+                <tr>
+                  <td>Homem</td>
+                  <td align="center">6.985 (35,8)</td>
+                  <td align="center">3.526 (35,2)</td>
+                  <td align="center">2.261 (36,5)</td>
+                </tr>
+                <tr>
+                  <td>Mulher</td>
+                  <td align="center">12.834 (64,2)</td>
+                  <td align="center">6.463 (64,8)</td>
+                  <td align="center">4.024 (63,5)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Cor/raça</td>
+                </tr>
+                <tr>
+                  <td>Branca</td>
+                  <td align="center">7.851 (47,4)</td>
+                  <td align="center">3.252 (40,4)</td>
+                  <td align="center">3.290 (59,1)</td>
+                </tr>
+                <tr>
+                  <td>Negra</td>
+                  <td align="center">11.968 (52,6)</td>
+                  <td align="center">6.737 (59,6)</td>
+                  <td align="center">2.995 (40,9)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Nível socioeconômico</td>
+                </tr>
+                <tr>
+                  <td>Alto</td>
+                  <td align="center">10.160 (52,6)</td>
+                  <td align="center">4.015 (41,0)</td>
+                  <td align="center">4.471 (71,0)</td>
+                </tr>
+                <tr>
+                  <td>Baixo</td>
+                  <td align="center">9.659 (47,4)</td>
+                  <td align="center">5.974 (59,0)</td>
+                  <td align="center">1.814 (29,0)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Território</td>
+                </tr>
+                <tr>
+                  <td>Sul</td>
+                  <td align="center">2.685 (15,6)</td>
+                  <td align="center">1.274 (15,8)</td>
+                  <td align="center">917 (14,3)</td>
+                </tr>
+                <tr>
+                  <td>Sudeste</td>
+                  <td align="center">4.783 (47,2)</td>
+                  <td align="center">2.037 (42,4)</td>
+                  <td align="center">1.883 (54,0)</td>
+                </tr>
+                <tr>
+                  <td>Centro-Oeste</td>
+                  <td align="center">2.220 (7,0)</td>
+                  <td align="center">970 (6,8)</td>
+                  <td align="center">839 (7,2)</td>
+                </tr>
+                <tr>
+                  <td>Nordeste</td>
+                  <td align="center">6.617 (23,9)</td>
+                  <td align="center">3.672 (27,7)</td>
+                  <td align="center">1.811 (19,7)</td>
+                </tr>
+                <tr>
+                  <td>Norte</td>
+                  <td align="center">3.514 (6,3)</td>
+                  <td align="center">2.036 (7,3)</td>
+                  <td align="center">835 (4,8)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Grupo interseccional</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, alto nível socioeconômico</td>
+                  <td align="center">1.574 (10,0)</td>
+                  <td align="center">446 (6,2)</td>
+                  <td align="center">877 (15,9)</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, baixo nível socioeconômico</td>
+                  <td align="center">1.249 (7,2)</td>
+                  <td align="center">733 (8,3)</td>
+                  <td align="center">294 (5,4)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, alto nível socioeconômico</td>
+                  <td align="center">1.770 (8,1)</td>
+                  <td align="center">778 (7,0)</td>
+                  <td align="center">686 (9,6)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, baixo nível socioeconômico</td>
+                  <td align="center">2.392 (10,5)</td>
+                  <td align="center">1.569 (13,7)</td>
+                  <td align="center">404 (5,6)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, alto nível socioeconômico</td>
+                  <td align="center">2.932 (17,7)</td>
+                  <td align="center">904 (11,6)</td>
+                  <td align="center">1.604 (27,5)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, baixo nível socioeconômico</td>
+                  <td align="center">2.096 (12,6)</td>
+                  <td align="center">1.169 (14,3)</td>
+                  <td align="center">515 (10,3)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, alto nível socioeconômico</td>
+                  <td align="center">3.884 (16,8)</td>
+                  <td align="center">1.887 (16,3)</td>
+                  <td align="center">1.304 (18,0)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, baixo nível socioeconômico</td>
+                  <td align="center">3.922 (17,1)</td>
+                  <td align="center">2.503 (22,6)</td>
+                  <td align="center">601 (7,7)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Acesso aos medicamentos prescritos</td>
+                </tr>
+                <tr>
+                  <td>Não</td>
+                  <td align="center">3.139 (15,1)</td>
+                  <td align="center">6.906 (69,6)</td>
+                  <td align="center">6.124 (97,0)</td>
+                </tr>
+                <tr>
+                  <td>Sim</td>
+                  <td align="center">16.680 (84,9)</td>
+                  <td align="center">3.083 (30,4)</td>
+                  <td align="center">161 (3,0)</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td align="center">19.819</td>
+                  <td align="center">9.989</td>
+                  <td align="center">6.285</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN1002">
+                <p>SUS: Sistema Único de Saúde.</p>
+              </fn>
+              <attrib>Fonte: Elaborado pelos autores com base na análise de dados da PNS, 2019.</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+        <p>A prevalência de acesso geral encontrada neste estudo foi de 84,9% (<xref ref-type="table" rid="t2002">Tabela 2</xref>). Quando se considerou apenas o acesso a medicamentos no SUS com prescrições originadas no próprio sistema, a prevalência observada foi de 30,4%. Já a prevalência de acesso público entre aqueles que tiveram prescrições originadas fora do SUS foi de 3,0%. Homens, participantes que referiram cor/raça branca, de alto nível socioeconômico e residentes da região Sul tiveram maiores prevalências de acesso geral. Quando analisado o acesso a medicamentos no setor público de prescrições originadas no SUS, maiores prevalências foram observadas em homens, respondentes de cor/raça negra, entrevistados de baixo nível socioeconômico e residentes da região Sudeste. No acesso público a medicamentos de prescrições originadas fora do SUS, a prevalência do desfecho entre homens e mulheres foi a mesma, enquanto maiores prevalências foram observadas em respondentes de cor/raça negra, entrevistados de baixo nível socioeconômico e residentes da região Nordeste.</p>
+        <p>
+          <table-wrap id="t2002">
+            <label>Tabela 2</label>
+            <caption>
+              <title>Prevalências observadas de acesso geral (público, privado e misto) e acesso público (via SUS) a medicamentos prescritos de respondentes atendidos ou não no SUS, de acordo com gênero, cor/raça, nível socioeconômico, território e grupo interseccional. Pesquisa Nacional de Saúde, Brasil, 2019.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left" rowspan="3">Variável</th>
+                  <th>Prevalência de acesso geral</th>
+                  <th>Prevalência de acesso público dos atendidos no SUS</th>
+                  <th>Prevalência de acesso público dos não atendidos no SUS</th>
+                </tr>
+                <tr>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                </tr>
+                <tr>
+                  <th>% (IC95%)</th>
+                  <th>% (IC95%)</th>
+                  <th>% (IC95%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4">Gênero</td>
+                </tr>
+                <tr>
+                  <td>Homem</td>
+                  <td align="center">86,8 (85,5–88,0)</td>
+                  <td align="center">30,7 (28,2–33,3)</td>
+                  <td align="center">3,0 (2,1–4,5)</td>
+                </tr>
+                <tr>
+                  <td>Mulher</td>
+                  <td align="center">83,8 (82,7–84,8)</td>
+                  <td align="center">30,2 (28,3–32,2)</td>
+                  <td align="center">3,0 (2,2–4,0)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Cor/raça</td>
+                </tr>
+                <tr>
+                  <td>Branca</td>
+                  <td align="center">86,6 (85,2–87,8)</td>
+                  <td align="center">29,5 (26,9–32,1)</td>
+                  <td align="center">2,5 (1,8–3,4)</td>
+                </tr>
+                <tr>
+                  <td>Negra</td>
+                  <td align="center">83,3 (82,1–84,5)</td>
+                  <td align="center">31,0 (29,0–33,0)</td>
+                  <td align="center">3,8 (2,7–5,4)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Nível socioeconômico</td>
+                </tr>
+                <tr>
+                  <td>Alto</td>
+                  <td align="center">86,6 (85,4–87,7)</td>
+                  <td align="center">28,6 (26,3–31,1)</td>
+                  <td align="center">2,3 (1,6–3,1)</td>
+                </tr>
+                <tr>
+                  <td>Baixo</td>
+                  <td align="center">83,0 (81,7–84,2)</td>
+                  <td align="center">31,6 (29,5–33,7)</td>
+                  <td align="center">4,8 (3,3–7,1)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Território</td>
+                </tr>
+                <tr>
+                  <td>Sul</td>
+                  <td align="center">86,1 (84,1–87,9)</td>
+                  <td align="center">31,6 (28,2–35,3)</td>
+                  <td align="center">3,1 (1,8–5,3)</td>
+                </tr>
+                <tr>
+                  <td>Sudeste</td>
+                  <td align="center">85,7 (84,1–87,2)</td>
+                  <td align="center">33,6 (30,6–36,7)</td>
+                  <td align="center">2,8 (1,9–3,9)</td>
+                </tr>
+                <tr>
+                  <td>Centro-Oeste</td>
+                  <td align="center">85,5 (83,3–87,5)</td>
+                  <td align="center">26,3 (22,6–30,3)</td>
+                  <td align="center">1,8 (0,9–3,4)</td>
+                </tr>
+                <tr>
+                  <td>Nordeste</td>
+                  <td align="center">83,3 (81,8–84,7)</td>
+                  <td align="center">26,5 (24,4–28,6)</td>
+                  <td align="center">4,2 (2,4–7,2)</td>
+                </tr>
+                <tr>
+                  <td>Norte</td>
+                  <td align="center">80,5 (78,1–82,7)</td>
+                  <td align="center">27,7 (24,8–30,9)</td>
+                  <td align="center">2,5 (1,4–4,5)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Grupo interseccional</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, alto nível socioeconômico</td>
+                  <td align="center">90,2 (87,7–92,2)</td>
+                  <td align="center">30,8 (23,8–38,8)</td>
+                  <td align="center">2,0 (1,0–4,0)</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, baixo nível socioeconômico</td>
+                  <td align="center">85,0 (81,8–87,7)</td>
+                  <td align="center">30,6 (25,7–36,1)</td>
+                  <td align="center">4,0 (1,8–8,9)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, alto nível socioeconômico</td>
+                  <td align="center">87,6 (84,9–89,9)</td>
+                  <td align="center">28,3 (23,5–33,6)</td>
+                  <td align="center">3,0 (1,3–6,6)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, baixo nível socioeconômico</td>
+                  <td align="center">84,1 (81,7–86,3)</td>
+                  <td align="center">31,9 (28,4–35,6)</td>
+                  <td align="center">5,1 (2,1–12,2)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, alto nível socioeconômico</td>
+                  <td align="center">87,0 (84,9–88,9)</td>
+                  <td align="center">26,8 (22,3–31,8)</td>
+                  <td align="center">1,4 (0,9–2,2)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, baixo nível socioeconômico</td>
+                  <td align="center">84,0 (81,6–86,2)</td>
+                  <td align="center">30,4 (26,4–34,6)</td>
+                  <td align="center">5,2 (3,2–8,5)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, alto nível socioeconômico</td>
+                  <td align="center">83,5 (81,5–85,4)</td>
+                  <td align="center">29,3 (26,2–32,6)</td>
+                  <td align="center">3,5 (2,0–6,0)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, baixo nível socioeconômico</td>
+                  <td align="center">80,6 (78,5–82,6)</td>
+                  <td align="center">32,5 (29,1–36,0)</td>
+                  <td align="center">4,7 (2,3–9,1)</td>
+                </tr>
+                <tr>
+                  <td>Total</td>
+                  <td align="center">84,9 (84,0–85,7)</td>
+                  <td align="center">30,4 (28,8–32,0)</td>
+                  <td align="center">3,0 (2,3–3,9)</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN2002">
+                <p>SUS: Sistema Único de Saúde. IC: intervalo de confiança.</p>
+              </fn>
+              <attrib>Fonte: Elaborado pelos autores com base na análise de dados da PNS, 2019.</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+        <p>Homens brancos de alto nível socioeconômico tiveram a maior prevalência de acesso geral, enquanto mulheres negras de baixo nível socioeconômico tiveram a maior prevalência de acesso público dos atendidos no SUS. A maior prevalência de acesso público dos atendidos fora do SUS foi observada entre as mulheres brancas de baixo nível socioeconômico. A análise das prevalências dos desfechos de cada grupo interseccional, estratificado por macrorregião, também foi realizada. No entanto, as estimativas encontradas foram acompanhadas de baixa precisão, observada pelos amplos intervalos de confiança<sup><xref ref-type="fn" rid="fna002">a</xref></sup>.</p>
+        <p>A partir das análises nos modelos de regressão logística, observa-se na <xref ref-type="table" rid="t3002">Tabela 3</xref> que o OR de prevalência de acesso geral foi menor para as mulheres, respondentes de cor/raça negra, para aqueles de baixo nível socioeconômico (Modelos 1 e 2) e residentes da região Norte do país (Modelos 1, 2 e 3). Ao analisar os grupos interseccionais, verificou-se que, tanto na análise bivariada (Modelo 1), quanto na análise ajustada (Modelo 3), todos os grupos interseccionais, exceto homens negros de alto nível socioeconômico, tiveram menores OR de prevalência de acesso geral em relação aos homens brancos de alto nível socioeconômico.</p>
+        <p>
+          <table-wrap id="t3002">
+            <label>Tabela 3</label>
+            <caption>
+              <title><italic>Odds ratios</italic> estimadas nos modelos de regressão logística para o acesso geral (público, privado e misto) a medicamentos prescritos de acordo com as variáveis de exposição. Pesquisa Nacional de Saúde, Brasil, 2019.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left" rowspan="3">Variável</th>
+                  <th>Modelo 1</th>
+                  <th>Modelo 2</th>
+                  <th>Modelo 3</th>
+                </tr>
+                <tr>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                </tr>
+                <tr>
+                  <th>OR (IC95%)</th>
+                  <th>OR (IC95%)</th>
+                  <th>OR (IC95%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4">Gênero</td>
+                </tr>
+                <tr>
+                  <td>Homem</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Mulher</td>
+                  <td align="center">0,79 (0,70–0,89)</td>
+                  <td align="center">0,78 (0,69–0,89)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Cor/raça</td>
+                </tr>
+                <tr>
+                  <td>Branca</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Negra</td>
+                  <td align="center">0,78 (0,68–0,89)</td>
+                  <td align="center">0,83 (0,72–0,96)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Nível socioeconômico</td>
+                </tr>
+                <tr>
+                  <td>Alto</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Baixo</td>
+                  <td align="center">0,75 (0,66–0,86)</td>
+                  <td align="center">0,77 (0,68–0,87)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Território</td>
+                </tr>
+                <tr>
+                  <td>Sul</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                </tr>
+                <tr>
+                  <td>Sudeste</td>
+                  <td align="center">0,97 (0,79–1,19)</td>
+                  <td align="center">0,98 (0,80–1,21)</td>
+                  <td align="center">0,98 (0,80–1,20)</td>
+                </tr>
+                <tr>
+                  <td>Centro-Oeste</td>
+                  <td align="center">0,95 (0,76–1,20)</td>
+                  <td align="center">1,01 (0,79–1,29)</td>
+                  <td align="center">1,01 (0,79–1,29)</td>
+                </tr>
+                <tr>
+                  <td>Nordeste</td>
+                  <td align="center">0,81 (0,67–0,98)</td>
+                  <td align="center">0,89 (0,73–1,09)</td>
+                  <td align="center">0,89 (0,73–1,09)</td>
+                </tr>
+                <tr>
+                  <td>Norte</td>
+                  <td align="center">0,67 (0,54–0,83)</td>
+                  <td align="center">0,73 (0,58–0,92)</td>
+                  <td align="center">0,73 (0,58–0,92)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Grupo interseccional</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, alto nível socioeconômico</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                  <td align="center">1,00</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, baixo nível socioeconômico</td>
+                  <td align="center">0,62 (0,44–0,87)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,62 (0,44–0,87)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, alto nível socioeconômico</td>
+                  <td align="center">0,77 (0,55–1,08)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,80 (0,57–1,14)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, baixo nível socioeconômico</td>
+                  <td align="center">0,58 (0,43–0,79)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,60 (0,44–0,83)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, alto nível socioeconômico</td>
+                  <td align="center">0,73 (0,55–0,98)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,73 (0,55–0,98)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, baixo nível socioeconômico</td>
+                  <td align="center">0,57 (0,42–0,77)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,58 (0,43–0,78)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, alto nível socioeconômico</td>
+                  <td align="center">0,55 (0,42–0,73)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,58 (0,44–0,77)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, baixo nível socioeconômico</td>
+                  <td align="center">0,45 (0,34–0,60)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,48 (0,35–0,64)</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN3002">
+                <p>OR: <italic>Odds ratio</italic>; IC: intervalo de confiança.</p>
+              </fn>
+              <attrib>Fonte: Elaborado pelos autores com base na análise de dados da PNS, 2019.</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+        <p>Quanto ao acesso público dos atendidos no SUS (<xref ref-type="table" rid="t4002">Tabela 4</xref>), entrevistados de baixo nível socioeconômico apresentaram maior OR de prevalência do desfecho quando comparado aos de alto nível socioeconômico (Modelo 2). A análise bivariada indicou que residentes da região Nordeste tiveram menor OR de prevalência desse tipo de acesso em relação aos moradores da região Sul (Modelo 1). Na análise ajustada, observou-se menor OR desse acesso também para os moradores das regiões Centro-Oeste e Norte (Modelos 2 e 3). Com relação à análise dos grupos interseccionais, não foram observadas iniquidades interseccionais para esse desfecho em nenhum dos modelos.</p>
+        <p>
+          <table-wrap id="t4002">
+            <label>Tabela 4</label>
+            <caption>
+              <title><italic>Odds ratios</italic> estimadas nos modelos de regressão logística para o acesso público (via SUS) a medicamentos prescritos no SUS de acordo com as variáveis de exposição. Pesquisa Nacional de Saúde, Brasil, 2019.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left" rowspan="3">Variável</th>
+                  <th>Modelo 1</th>
+                  <th>Modelo 2</th>
+                  <th>Modelo 3</th>
+                </tr>
+                <tr>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                </tr>
+                <tr>
+                  <th>OR (IC95%)</th>
+                  <th>OR (IC95%)</th>
+                  <th>OR (IC95%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4">Gênero</td>
+                </tr>
+                <tr>
+                  <td>Homem</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Mulher</td>
+                  <td align="center">0,98 (0,84–1,13)</td>
+                  <td align="center">0,99 (0,85–1,15)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Cor/raça</td>
+                </tr>
+                <tr>
+                  <td>Branca</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Negra</td>
+                  <td align="center">1,07 (0,92–1,26)</td>
+                  <td align="center">1,17 (0,99–1,38)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Nível socioeconômico</td>
+                </tr>
+                <tr>
+                  <td>Alto</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Baixo</td>
+                  <td align="center">1,15 (0,99–1,33)</td>
+                  <td align="center">1,17 (1,01–1,36)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Território</td>
+                </tr>
+                <tr>
+                  <td>Sul</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                </tr>
+                <tr>
+                  <td>Sudeste</td>
+                  <td align="center">1,09 (0,88–1,35)</td>
+                  <td align="center">1,07 (0,86–1,34)</td>
+                  <td align="center">1,08 (0,87–1,34)</td>
+                </tr>
+                <tr>
+                  <td>Centro-Oeste</td>
+                  <td align="center">0,77 (0,59–1,00)</td>
+                  <td align="center">0,73 (0,56–0,96)</td>
+                  <td align="center">0,73 (0,56–0,96)</td>
+                </tr>
+                <tr>
+                  <td>Nordeste</td>
+                  <td align="center">0,78 (0,64–0,95)</td>
+                  <td align="center">0,72 (0,59–0,89)</td>
+                  <td align="center">0,72 (0,59–0,89)</td>
+                </tr>
+                <tr>
+                  <td>Norte</td>
+                  <td align="center">0,83 (0,66–1,04)</td>
+                  <td align="center">0,78 (0,61–0,99)</td>
+                  <td align="center">0,78 (0,61–0,99)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Grupo interseccional</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, alto nível socioeconômico</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                  <td align="center">1,00</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, baixo nível socioeconômico</td>
+                  <td align="center">0,99 (0,65–1,52)</td>
+                  <td align="center">-</td>
+                  <td align="center">1,03 (0,68–1,58)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, alto nível socioeconômico</td>
+                  <td align="center">0,88 (0,58–1,36)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,96 (0,63–1,48)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, baixo nível socioeconômico</td>
+                  <td align="center">1,05 (0,71–1,55)</td>
+                  <td align="center">-</td>
+                  <td align="center">1,19 (0,80–1,75)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, alto nível socioeconômico</td>
+                  <td align="center">0,82 (0,54–1,25)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,83 (0,54–1,26)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, baixo nível socioeconômico</td>
+                  <td align="center">0,98 (0,65–1,48)</td>
+                  <td align="center">-</td>
+                  <td align="center">1,01 (0,67–1,52)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, alto nível socioeconômico</td>
+                  <td align="center">0,93 (0,63–1,37)</td>
+                  <td align="center">-</td>
+                  <td align="center">1,05 (0,71–1,53)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, baixo nível socioeconômico</td>
+                  <td align="center">1,08 (0,73–1,60)</td>
+                  <td align="center">-</td>
+                  <td align="center">1,22 (0,83–1,81)</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN4002">
+                <p>OR: <italic>Odds ratio</italic>; IC: intervalo de confiança. SUS: Sistema Único de Saúde.</p>
+              </fn>
+              <attrib>Fonte: Elaborado pelos autores com base na análise de dados da PNS, 2019.</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+        <p>Em relação ao acesso público dos atendidos fora do SUS (<xref ref-type="table" rid="t5002">Tabela 5</xref>), maior OR de prevalência do desfecho também foi encontrado entre respondentes de baixo nível socioeconômico, quando comparado aos de alto nível socioeconômico (Modelo 1 e 2). Tanto na análise bivariada (Modelo 1), quanto na análise ajustada (Modelo 3), o grupo interseccional de mulheres brancas de baixo nível socioeconômico teve maiores OR de prevalência desse tipo de acesso em relação aos homens brancos de alto nível socioeconômico. No entanto, os achados mencionados foram acompanhados de intervalos de confiança amplos, devido ao tamanho amostral reduzido em relação aos outros desfechos. Um quarto modelo – não apresentado nas tabelas – foi estimado para testar a interação entre as variáveis território e grupos interseccionais para os três desfechos. Contudo, nenhuma interação expressiva foi identificada.</p>
+        <p>
+          <table-wrap id="t5002">
+            <label>Tabela 5</label>
+            <caption>
+              <title><italic>Odds ratios</italic> estimadas nos modelos de regressão logística para o acesso público (via SUS) a medicamentos prescritos fora do SUS de acordo com as variáveis de exposição. Pesquisa Nacional de Saúde, Brasil, 2019.</title>
+            </caption>
+            <table frame="hsides" rules="groups">
+              <colgroup>
+                <col/>
+                <col/>
+                <col/>
+                <col/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th align="left" rowspan="3">Variável</th>
+                  <th>Modelo 1</th>
+                  <th>Modelo 2</th>
+                  <th>Modelo 3</th>
+                </tr>
+                <tr>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                  <th>
+                    <hr/>
+                  </th>
+                </tr>
+                <tr>
+                  <th>OR (IC95%)</th>
+                  <th>OR (IC95%)</th>
+                  <th>OR (IC95%)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="4">Gênero</td>
+                </tr>
+                <tr>
+                  <td>Homem</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Mulher</td>
+                  <td align="center">0,98 (0,62–1,55)</td>
+                  <td align="center">1,01 (0,63–1,62)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Cor/raça</td>
+                </tr>
+                <tr>
+                  <td>Branca</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Negra</td>
+                  <td align="center">1,57 (0,98–2,50)</td>
+                  <td align="center">1,51 (0,89–2,56)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Nível socioeconômico</td>
+                </tr>
+                <tr>
+                  <td>Alto</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td>Baixo</td>
+                  <td align="center">2,18 (1,29–3,67)</td>
+                  <td align="center">2,10 (1,24–3,56)</td>
+                  <td align="center">-</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Território</td>
+                </tr>
+                <tr>
+                  <td>Sul</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                  <td align="center">1,00</td>
+                </tr>
+                <tr>
+                  <td>Sudeste</td>
+                  <td align="center">0,88 (0,46–1,70)</td>
+                  <td align="center">0,81 (0,43–1,52)</td>
+                  <td align="center">0,81 (0,43–1,54)</td>
+                </tr>
+                <tr>
+                  <td>Centro-Oeste</td>
+                  <td align="center">0,56 (0,24–1,33)</td>
+                  <td align="center">0,48 (0,20–1,14)</td>
+                  <td align="center">0,49 (0,20–1,16)</td>
+                </tr>
+                <tr>
+                  <td>Nordeste</td>
+                  <td align="center">1,35 (0,61–3,01)</td>
+                  <td align="center">1,07 (0,46–2,49)</td>
+                  <td align="center">1,09 (0,47–2,52)</td>
+                </tr>
+                <tr>
+                  <td>Norte</td>
+                  <td align="center">0,79 (0,35–1,79)</td>
+                  <td align="center">0,60 (0,25–1,41)</td>
+                  <td align="center">0,62 (0,26–1,45)</td>
+                </tr>
+                <tr>
+                  <td colspan="4">Grupo interseccional</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, alto nível socioeconômico</td>
+                  <td align="center">1,00</td>
+                  <td align="center">-</td>
+                  <td align="center">1,00</td>
+                </tr>
+                <tr>
+                  <td>Homens, brancos, baixo nível socioeconômico</td>
+                  <td align="center">2,03 (0,68–6,08)</td>
+                  <td align="center">-</td>
+                  <td align="center">2,04 (0,68–6,12)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, alto nível socioeconômico</td>
+                  <td align="center">1,50 (0,51–4,44)</td>
+                  <td align="center">-</td>
+                  <td align="center">1,50 (0,49–4,57)</td>
+                </tr>
+                <tr>
+                  <td>Homens, negros, baixo nível socioeconômico</td>
+                  <td align="center">2,63 (0,82–8,49)</td>
+                  <td align="center">-</td>
+                  <td align="center">2,63 (0,89–7,75)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, alto nível socioeconômico</td>
+                  <td align="center">0,68 (0,31–1,50)</td>
+                  <td align="center">-</td>
+                  <td align="center">0,69 (0,31–1,51)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, brancas, baixo nível socioeconômico</td>
+                  <td align="center">2,67 (1,12–6,36)</td>
+                  <td align="center">-</td>
+                  <td align="center">2,64 (1,12–6,25)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, alto nível socioeconômico</td>
+                  <td align="center">1,74 (0,71–4,27)</td>
+                  <td align="center">-</td>
+                  <td align="center">1,77 (0,71–4,41)</td>
+                </tr>
+                <tr>
+                  <td>Mulheres, negras, baixo nível socioeconômico</td>
+                  <td align="center">2,37 (0,84–6,67)</td>
+                  <td align="center">-</td>
+                  <td align="center">2,37 (0,81–6,98)</td>
+                </tr>
+              </tbody>
+            </table>
+            <table-wrap-foot>
+              <fn id="TFN5002">
+                <p>OR: <italic>Odds ratio</italic>; IC: intervalo de confiança. SUS: Sistema Único de Saúde.</p>
+              </fn>
+              <attrib>Fonte: Elaborado pelos autores com base na análise de dados da PNS, 2019.</attrib>
+            </table-wrap-foot>
+          </table-wrap>
+        </p>
+      </sec>
+      <sec sec-type="discussion">
+        <title>DISCUSSÃO</title>
+        <p>Ecoando outros estudos de base populacional, a prevalência de acesso geral a medicamentos prescritos encontrada foi alta, quando considerado qualquer tipo de fonte de obtenção (público, privado e misto)<sup><xref ref-type="bibr" rid="B12">12</xref>,<xref ref-type="bibr" rid="B14">14</xref></sup>. Verificou-se maior prevalência de acesso geral em segmentos populacionais de maior privilégio, como homens brancos de alto nível socioeconômico. Quando se considera apenas o acesso a medicamentos no sistema público de prescrições originadas no próprio sistema, a prevalência é baixa, mas o cenário é revertido para maior prevalência de acesso entre pessoas de cor/raça negra e de baixo nível socioeconômico. Inclusive, observou-se maior prevalência de acesso público dos atendidos no SUS para mulheres negras de baixo nível socioeconômico. Isso indica que o SUS é uma importante fonte de acesso para aqueles que não conseguem obter os medicamentos fora do sistema público<sup><xref ref-type="bibr" rid="B29">29</xref></sup>. A modalidade de copagamento, que é adotada por outros sistemas universais de saúde como principal forma de obtenção de medicamentos, é considerada um dificultador do acesso. Maiores valores de copagamento estão associados a uma redução no volume de dispensação de medicamentos, principalmente para os mais pobres, o que leva à descontinuação do tratamento, comprometendo a eficácia dos cuidados de saúde prestados<sup><xref ref-type="bibr" rid="B9">9</xref></sup>. Nossos achados corroboram outros estudos que indicam que a provisão gratuita de medicamentos diminui as iniquidades de acesso<sup><xref ref-type="bibr" rid="B11">11</xref>,<xref ref-type="bibr" rid="B13">13</xref>,<xref ref-type="bibr" rid="B14">14</xref>,<xref ref-type="bibr" rid="B15">15</xref>,<xref ref-type="bibr" rid="B16">16</xref>,<xref ref-type="bibr" rid="B24">24</xref></sup>, apontando ainda que o acesso a medicamentos por meio do SUS é um importante instrumento de combate às iniquidades interseccionais.</p>
+        <p>Apesar disso, a baixa prevalência de acesso identificada para a obtenção no SUS de medicamentos prescritos no próprio sistema é preocupante, principalmente pelos indicativos de queda nos últimos anos. Na análise dos dados obtidos a partir da Pesquisa Nacional por Amostra de Domicílios de 2008, Boing et al.<sup><xref ref-type="bibr" rid="B11">11</xref></sup> identificaram prevalência de acesso público de 45,3%, enquanto que, na PNS de 2013, o percentual identificado foi de 31,6%<sup><xref ref-type="bibr" rid="B23">23</xref></sup>. Quanto ao território, representado pelas macrorregiões do país, a análise dos da PNS de 2019 evidenciou que as iniquidades regionais de acesso público a medicamentos persistem. Drummond et al.<sup><xref ref-type="bibr" rid="B14">14</xref></sup>, ao analisarem a PNS de 2013, também identificaram maiores prevalências de acesso a medicamentos prescritos nas regiões mais desenvolvidas e com maior densidade populacional. Esses achados apontam que, apesar dos avanços obtidos com a implementação de políticas de medicamentos e de AF no país, a provisão de medicamentos pelo sistema público de saúde ainda permanece como um desafio importante<sup><xref ref-type="bibr" rid="B30">30</xref></sup>.</p>
+        <p>Além disso, a presença simultânea de um sistema público universal no Brasil e um crescente processo de privatização do acesso aos cuidados de saúde, intensificado ainda pelo subfinanciamento público da saúde, também são preocupantes<sup><xref ref-type="bibr" rid="B31">31</xref></sup>. Neste estudo, observou-se que uma parcela significativa da população que não teve suas necessidades supridas pelo SUS tentou obter os medicamentos prescritos por meio do sistema público de saúde. Para ela, a prevalência de acesso aos medicamentos prescritos foi ainda mais baixa. Além das já conhecidas fragilidades na estruturação dos serviços farmacêuticos no país, como a disponibilidade dos medicamentos nas farmácias do SUS<sup><xref ref-type="bibr" rid="B12">12</xref></sup>, tem-se o desconhecimento dos prescritores do setor privado das relações de medicamentos essenciais, listas de referência que devem nortear a oferta, a prescrição e a dispensação de medicamentos no SUS, e a não adesão a essas listas por parte dos prescritores do setor público. Ao observar as demandas de acesso a medicamentos pela via judicial em diferentes estados brasileiros, verifica-se que a maior parte das prescrições são originadas fora do SUS e em aproximadamente 75% dos casos há alternativa terapêutica ao medicamento prescrito disponível pelo SUS<sup><xref ref-type="bibr" rid="B34">34</xref>,<xref ref-type="bibr" rid="B35">35</xref></sup>.</p>
+        <p>Diferentemente do acesso geral, o acesso público não foi marcado por iniquidades interseccionais de expressiva magnitude. Nos modelos testados para o acesso público dos atendidos no SUS, não foram identificadas diferenças significativas entre os grupos interseccionais. Observa-se que a amplitude dessa medida entre os grupos interseccionais para o acesso geral (90,2% a 80,6%) é maior quando comparada ao acesso público dos atendidos no SUS (32,5% a 26,8%). Isso sugere que as diferenças de acesso observadas entre os segmentos populacionais são minimizadas quando o medicamento é prescrito e obtido no sistema público de saúde. Monteiro et al.<sup><xref ref-type="bibr" rid="B36">36</xref></sup>, ao avaliarem a Política de Medicamentos Genéricos, também observaram não haver diferença estatisticamente significativa na utilização de medicamentos genéricos na população da cidade de São Paulo de acordo com idade, sexo e escolaridade.</p>
+        <p>A análise interseccional empregada favoreceu a identificação de grupos populacionais mais invisibilizados. Além disso, permitiu observar que, enquanto as mulheres tiveram OR de acesso geral aproximadamente 20% menor, as mulheres brancas de alto nível socioeconômico tiveram OR 27% menor e as mulheres negras de baixo nível socioeconômico, OR 55% menor, quando comparadas aos homens brancos de alto nível socioeconômico. A pesquisa de Katrein et al.<sup><xref ref-type="bibr" rid="B17">17</xref></sup>, ao analisar a prevalência de acesso a medicamentos para o tratamento de doenças crônicas, já havia indicado situação de maior vulnerabilidade entre as que têm maior número de doenças e as que são mais pobres.</p>
+        <p>Ainda que importantes desafios estejam colocados no emprego de uma perspectiva interseccional em estudos epidemiológicos<sup><xref ref-type="bibr" rid="B37">37</xref></sup>, destaca-se tal abordagem como ponto forte deste estudo. Inexistem na literatura outros trabalhos na perspectiva da interseccionalidade que sejam comparáveis a este. Os estudos até então realizados, que demonstraram a existência de iniquidades no acesso a medicamentos no Brasil<sup><xref ref-type="bibr" rid="B17">17</xref>,<xref ref-type="bibr" rid="B18">18</xref>,<xref ref-type="bibr" rid="B24">24</xref></sup>, trabalharam as variáveis como gênero, cor/raça e escolaridade de forma independente e consideraram que cada uma delas tem um efeito isolado.</p>
+        <p>Recentes revisões demonstraram que a operacionalização das variáveis que caracterizam as posições sociais pode ocorrer de diferentes formas<sup><xref ref-type="bibr" rid="B25">25</xref>,<xref ref-type="bibr" rid="B26">26</xref></sup>. Neste estudo, assim como na maior parte daqueles analisados nas revisões mencionadas, operacionalizou-se a interseccionalidade utilizando-se uma abordagem exclusivamente intercategórica, a partir da combinação de categorias de interesse. No entanto, as comparações entre grupos, por si só, podem fornecer uma visão limitada das iniquidades em saúde. Além de desconsiderar a heterogeneidade intracategórica, esse tipo de análise focaliza as categorias sociais de nível individual, sem considerar o efeito de contextos sociais mais amplos<sup><xref ref-type="bibr" rid="B38">38</xref></sup>.</p>
+        <p>Dentre as limitações do estudo, destaca-se também a inclusão de somente pessoas atendidas por serviço de saúde nas duas últimas semanas anteriores à entrevista. Considerando que o acesso a medicamentos prescritos está diretamente relacionado com o acesso aos cuidados em saúde, são excluídas as pessoas que não chegam aos serviços de saúde. Observou-se que pessoas negras e de baixo nível socioeconômico possuem maiores chances de relatar dificuldade de acesso aos serviços de saúde<sup><xref ref-type="bibr" rid="B39">39</xref></sup>. Ademais, pode-se assumir um possível viés de memória em decorrência do período recordatório e autorrelato sobre os desfechos analisados. No entanto, estudo que comparou períodos recordatórios diferentes identificou pouco viés nas prevalências observadas, recomendando-se a adoção de 14 dias como período recordatório para permitir comparações entre estudos<sup><xref ref-type="bibr" rid="B40">40</xref></sup>.</p>
+        <p>Conclui-se que a prevalência de acesso geral a medicamentos prescritos é maior para os segmentos populacionais de <italic>status</italic> social mais alto, enquanto o acesso público, que ainda é muito pequeno, favorece os de <italic>status</italic> social mais baixo, inclusive, ao se considerar a intersecção de múltiplos eixos de marginalização. Evidenciou-se, portanto, que o acesso a medicamentos pelo SUS está relacionado com menores iniquidades sociais.</p>
+      </sec>
+    </body>
+    <back>
+      <fn-group>
+        <fn fn-type="supplementary-material" id="fna002">
+          <label>a</label>
+          <p> Material Suplementar disponível em: <ext-link ext-link-type="uri" xlink:href="https://doi.org/10.7910/DVN/I0CL2L">https://doi.org/10.7910/DVN/I0CL2L</ext-link> </p>
+        </fn>
+      </fn-group>
+      <fn-group>
+        <fn fn-type="financial-disclosure">
+          <p>Financiamento: Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq - processo 303775/2021-1 - bolsa de produtividade em pesquisa para JLB).</p>
+        </fn>
+      </fn-group>
+    </back>
+  </sub-article>
+</article>

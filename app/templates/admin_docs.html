@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% set ativo = 'admin-docs' %}
+{% block titulo %}Todos os documentos · xmljats{% endblock %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Administração</p>
+    <h1 style="margin-top:4px">Todos os documentos</h1>
+    <p class="lead">De todas as contas. A etapa pode ser alterada aqui mesmo.</p>
+  </div>
+  <div class="acoes"><a class="btn" href="/admin">Visão geral</a></div>
+</div>
+
+<form class="card filtros" method="get" action="/admin/documentos">
+  <div class="field larga">
+    <label for="f-revista">Revista</label>
+    <select id="f-revista" name="revista">
+      <option value="">Todas</option>
+      {% for r in revistas %}<option value="{{ r.acronimo }}" {% if filtros.revista == r.acronimo %}selected{% endif %}>{{ r.titulo }} ({{ r.acronimo }})</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label for="f-etapa">Etapa</label>
+    <select id="f-etapa" name="etapa">
+      <option value="">Todas</option>
+      {% for cod, rotulo in etapas %}<option value="{{ cod }}" {% if filtros.etapa == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label for="f-situacao">Situação</label>
+    <select id="f-situacao" name="situacao">
+      <option value="">Todas</option>
+      <option value="pronto" {% if filtros.situacao == 'pronto' %}selected{% endif %}>Pronto</option>
+      <option value="bloqueado" {% if filtros.situacao == 'bloqueado' %}selected{% endif %}>Com bloqueantes</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="f-dono">Conta</label>
+    <select id="f-dono" name="dono">
+      <option value="">Todas</option>
+      {% for u in usuarios %}<option value="{{ u.id }}" {% if filtros.dono == u.id %}selected{% endif %}>{{ u.nome }}</option>{% endfor %}
+    </select>
+  </div>
+  <button class="btn" type="submit">Filtrar</button>
+  {% if filtro_ativo %}<a class="btn quiet" href="/admin/documentos">Limpar</a>{% endif %}
+</form>
+
+<section class="card">
+  <header class="cardhead"><h2>Lista</h2><span class="muted small">{{ docs|length }} documento(s)</span></header>
+  {% if docs %}
+  <div class="tblwrap"><table class="tbl">
+    <thead><tr><th>Atualizado</th><th>Artigo</th><th>Revista</th><th>Conta</th><th>Situação</th><th>Etapa</th><th></th></tr></thead>
+    <tbody>
+    {% for d in docs %}
+      <tr>
+        <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
+        <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.nome_base }}</div></td>
+        <td>{{ d.revista or '—' }}</td>
+        <td class="small">{{ d.criado_por or '—' }}</td>
+        <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
+        <td>
+          <form method="post" action="/doc/{{ d.id }}/etapa" class="row" style="gap:6px;flex-wrap:nowrap">
+            <input type="hidden" name="voltar" value="/admin/documentos{{ query }}">
+            <select name="etapa" class="mini" aria-label="Etapa">
+              {% for cod, rotulo in etapas %}<option value="{{ cod }}" {% if d.etapa == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}
+            </select>
+            <button class="btn small" type="submit">Salvar</button>
+          </form>
+        </td>
+        <td style="text-align:right"><a class="btn small" href="/doc/{{ d.id }}">Abrir</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento{% if filtro_ativo %} neste filtro{% endif %}.</div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block titulo %}Criar conta · xmljats{% endblock %}
+{% block conteudo %}
+<div class="auth">
+  <div class="card auth-card">
+    <div class="auth-side">
+      <div>
+        <p class="eyebrow" style="color:inherit;opacity:.8">xmljats</p>
+        <h2 style="margin-top:6px">Crie sua conta e valide o primeiro artigo em minutos.</h2>
+        <p style="margin-top:12px">Cada conta vê apenas os próprios documentos. Nada é publicado: os arquivos ficam guardados para você baixar o XML e o pacote.</p>
+      </div>
+      <ul>
+        <li>Envio de PDF (DOCX na próxima fase)</li>
+        <li>Validação no packtools, o validador oficial</li>
+        <li>Revisão campo a campo, com o original ao lado</li>
+        <li>Pacote com XML, PDF e imagens no nome da SPS</li>
+      </ul>
+    </div>
+    <form class="auth-form" method="post" action="/registrar">
+      <div>
+        <p class="eyebrow">Nova conta</p>
+        <h1 style="font-size:23px;margin-top:4px">Criar conta</h1>
+      </div>
+      {% if erro %}<div class="msg block">{{ erro }}</div>{% endif %}
+      <div class="field">
+        <label for="nome">Nome</label>
+        <input id="nome" name="nome" type="text" autocomplete="name" required autofocus value="{{ form.nome if form else '' }}">
+      </div>
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" autocomplete="email" required value="{{ form.email if form else '' }}">
+      </div>
+      <div class="grid2" style="gap:var(--s-3)">
+        <div class="field">
+          <label for="senha">Senha</label>
+          <div class="senha-wrap">
+            <input id="senha" name="senha" type="password" autocomplete="new-password" minlength="8" required>
+            <button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button>
+          </div>
+          <span class="hint">Mínimo de 8 caracteres.</span>
+        </div>
+        <div class="field">
+          <label for="senha2">Repita a senha</label>
+          <div class="senha-wrap">
+            <input id="senha2" name="senha2" type="password" autocomplete="new-password" minlength="8" required>
+            <button class="olho" type="button" aria-label="Mostrar senha" aria-pressed="false"></button>
+          </div>
+        </div>
+      </div>
+      <button class="btn primary" type="submit" style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Criar conta</button>
+      <p class="small muted" style="text-align:center">Já tem conta? <a href="/entrar">Entrar</a></p>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% set ativo = 'admin' %}
+{% block titulo %}Administração · xmljats{% endblock %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Administração</p>
+    <h1 style="margin-top:4px">Visão geral</h1>
+    <p class="lead">Números do sistema inteiro: documentos de todas as contas, onde eles emperram e quem está usando.</p>
+  </div>
+  <div class="acoes">
+    <a class="btn" href="/admin/documentos">Todos os documentos</a>
+    <a class="btn" href="/usuarios">Usuários</a>
+    <a class="btn primary" href="/revistas/nova"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nova revista</a>
+  </div>
+</div>
+
+<div class="kpis">
+  <div class="card kpi"><span class="ico"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></span><div><div class="v">{{ total }}</div><div class="k">documentos</div></div></div>
+  <div class="card kpi"><span class="ico ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg></span><div><div class="v">{{ prontos }}</div><div class="k">prontos para entrega</div></div></div>
+  <div class="card kpi"><span class="ico info"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 5.5a3.4 3.4 0 010 5"/></svg></span><div><div class="v">{{ usuarios|length }}</div><div class="k">contas ({{ por_papel.admin }} admin · {{ por_papel.operador }} oper. · {{ por_papel.cliente }} cliente)</div></div></div>
+  <div class="card kpi"><span class="ico warn"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5"/></svg></span><div><div class="v">{{ revistas|length }}</div><div class="k">revistas cadastradas</div></div></div>
+</div>
+
+<div class="review" style="grid-template-columns:1fr 1fr">
+  <section class="card pad stack">
+    <h2>Documentos por etapa</h2>
+    <div class="bars">
+      {% set maxe = (por_etapa.values()|list|max) if por_etapa else 1 %}
+      {% for cod, rotulo in etapas %}
+      <div class="b"><span class="t">{{ rotulo }}</span><span class="g"><i style="width:{{ (100 * por_etapa.get(cod, 0) / maxe)|round|int if maxe else 0 }}%"></i></span><span class="n">{{ por_etapa.get(cod, 0) }}</span></div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="card pad stack">
+    <h2>Documentos por revista</h2>
+    {% if por_revista %}
+    <div class="bars">
+      {% set maxr = por_revista[0][1] %}
+      {% for nome, n in por_revista %}
+      <div class="b"><span class="t">{{ nome }}</span><span class="g"><i style="width:{{ (100 * n / maxr)|round|int }}%"></i></span><span class="n">{{ n }}</span></div>
+      {% endfor %}
+    </div>
+    {% else %}<p class="muted small">Nenhum documento ainda.</p>{% endif %}
+  </section>
+
+  <section class="card pad stack">
+    <h2>Bloqueantes mais frequentes</h2>
+    <p class="small muted" style="margin-top:-6px">Onde os artigos param. Cada código é uma regra do catálogo.</p>
+    {% if bloqueantes %}
+    <div class="bars">
+      {% set maxb = bloqueantes[0][1] %}
+      {% for cod, n in bloqueantes %}
+      <div class="b"><span class="t"><code class="rule" style="margin:0">{{ cod }}</code> {{ {
+        'A01': 'DOI', 'A02': 'Order', 'A03': 'Tipo de artigo', 'A04': 'Seção', 'A05': 'Título', 'A08': 'Fascículo',
+        'A09': 'Data de publicação', 'A12': 'Resumo', 'A13': 'Palavras-chave', 'C01': 'Autores', 'C02': 'ORCID',
+        'C03': 'Afiliação do autor', 'C05': 'Afiliação', 'C07': 'Correspondência', 'H01': 'Histórico',
+        'L01': 'Licença', 'J01': 'Revista', 'J03': 'Revista', 'J05': 'Revista', 'R01': 'Referências', 'S01': 'Seções'}.get(cod, '') }}</span>
+        <span class="g"><i style="width:{{ (100 * n / maxb)|round|int }}%"></i></span><span class="n">{{ n }}</span></div>
+      {% endfor %}
+    </div>
+    {% else %}<p class="muted small">Nenhum bloqueante registrado.</p>{% endif %}
+  </section>
+
+  <section class="card">
+    <header class="cardhead"><h2>Últimos documentos</h2><a class="btn small" href="/admin/documentos">Ver todos</a></header>
+    {% if recentes %}
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Quando</th><th>Artigo</th><th>Conta</th><th>Situação</th></tr></thead>
+      <tbody>
+        {% for d in recentes %}
+        <tr>
+          <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)[:16].replace('T',' ') }}</td>
+          <td><a href="/doc/{{ d.id }}">{{ (d.titulo or d.arquivo_original)[:60] }}</a><div class="small muted mono">{{ d.revista or '—' }}</div></td>
+          <td class="small">{{ d.criado_por or '—' }}</td>
+          <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}<div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento ainda.</div>{% endif %}
+  </section>
+</div>
+{% endblock %}
