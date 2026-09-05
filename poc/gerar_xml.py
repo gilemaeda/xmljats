@@ -85,7 +85,15 @@ def valida_packtools(caminho):
             return dtd_ok, None, erros + [f"XMLValidator.parse falhou: {e1}; sem DOCTYPE: {e2}"], "; ".join(detalhe)
     try:
         sps_ok, sps_err = xv.validate_style()
-        erros += [f"SPS [{getattr(e, 'label', '')}]: {getattr(e, 'message', e)} (linha {getattr(e, 'line', '?')})" for e in sps_err]
+        sem_doctype = any("sem DOCTYPE" in x for x in detalhe)
+        msgs = []
+        for e in sps_err:
+            m = str(getattr(e, "message", e))
+            if sem_doctype and "DOCTYPE" in m:
+                continue  # o DOCTYPE foi retirado de proposito; o DTD e validado a parte
+            msgs.append(f"SPS [{getattr(e, 'label', '')}]: {m} (linha {getattr(e, 'line', '?')})")
+        erros += msgs
+        sps_ok = len(msgs) == 0
         detalhe.append(f"sps_version={getattr(xv, 'sps_version', '?')}")
     except Exception as e:  # noqa: BLE001
         erros.append(f"validate_style() falhou: {e}")

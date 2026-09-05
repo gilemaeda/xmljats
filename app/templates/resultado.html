@@ -12,13 +12,17 @@
       <span class="chip warn">{{ (r.avisos_gerador|length) + (r.avisos_extrator|length) }} avisos</span>
       <span class="chip {{ 'ok' if r.dtd_ok else 'crit' }}">DTD {{ 'válido' if r.dtd_ok else 'inválido' }}</span>
       <span class="chip {{ 'ok' if r.sps_ok else 'crit' }}">Schematron SPS {{ 'ok' if r.sps_ok else (r.packtools|length ~ ' erros') }}</span>
-      <span class="small faint">{{ r.criado_em[:16].replace('T',' ') }}</span>
+      {% if r.editados %}<span class="chip warn">{{ r.editados }} campos editados</span>{% endif %}
+      <span class="small faint">{{ (r.atualizado_em or r.criado_em)[:16].replace('T',' ') }}</span>
     </div>
   </div>
   <div class="row">
+    <form method="post" action="/doc/{{ r.id }}/reprocessar" style="display:inline"><button class="btn" type="submit" title="Reextrai do PDF; mantém as edições">Reprocessar</button></form>
     <a class="btn" href="/doc/{{ r.id }}/resumo.md">Resumo da extração</a>
     <a class="btn" href="/doc/{{ r.id }}/modelo.json">Modelo (JSON)</a>
-    <a class="btn primary" href="/doc/{{ r.id }}/xml">Baixar {{ r.nome_base }}.xml</a>
+    <a class="btn" href="/doc/{{ r.id }}/xml">XML</a>
+    <a class="btn" href="/doc/{{ r.id }}/pacote.zip">Pacote .zip</a>
+    <a class="btn primary" href="/doc/{{ r.id }}/editar">Revisar e editar</a>
   </div>
 </div>
 
@@ -36,7 +40,7 @@
   <div class="stack" style="gap:16px">
     <div class="group">
       <header><span class="chip crit">Bloqueantes</span><span class="n">{{ r.bloqueantes|length }}</span><span class="small muted">impedem a entrega do XML</span></header>
-      {% for b in r.bloqueantes %}<div class="finding crit"><span class="stripe"></span><div class="body">{{ b }}</div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">Nenhum bloqueante.</div></div>{% endfor %}
+      {% for b in r.bloqueantes %}<div class="finding crit"><span class="stripe"></span><div class="body">{{ b }} <a class="small" href="/doc/{{ r.id }}/editar">corrigir</a></div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">Nenhum bloqueante.</div></div>{% endfor %}
     </div>
     <div class="group">
       <header><span class="chip warn">Erros do packtools</span><span class="n">{{ r.packtools|length }}</span><span class="small muted">validador oficial da SciELO · {{ r.packtools_detalhe }}</span></header>
@@ -51,7 +55,7 @@
 
   <aside class="stack">
     <div class="card pad stack" style="gap:8px">
-      <h3>O que foi extraído</h3>
+      <h3>O que vai para o XML</h3>
       <p class="small"><b>DOI</b> <span class="mono">{{ r.extracao.doi or '—' }}</span></p>
       <p class="small"><b>Idioma</b> {{ r.extracao.idioma or '—' }} · <b>Seção</b> {{ r.extracao.heading or '—' }} · <b>v.</b> {{ r.extracao.volume or '—' }} <b>n.</b> {{ r.extracao.numero or '—' }} · {{ r.extracao.elocation or '' }}</p>
       <p class="small"><b>Datas</b> recebido {{ r.extracao.datas.recebido or '—' }} · aceito {{ r.extracao.datas.aceito or '—' }} · publicado {{ r.extracao.datas.publicado or '—' }}</p>

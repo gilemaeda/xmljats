@@ -70,3 +70,26 @@ table.tbl td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-ali
 table.tbl tr:last-child td{border-bottom:0}
 .tblwrap{overflow-x:auto}
 @media (max-width:900px){.hero,.findings,.grid2{grid-template-columns:1fr}.extract{grid-template-columns:repeat(2,1fr)}}
+
+/* formulario de revisao */
+.field textarea{width:100%;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);padding:7px 9px;border-radius:4px;min-height:70px;resize:vertical;font:inherit}
+.field.is-block input,.field.is-block select,.field.is-block textarea{border-color:var(--crit)}
+.field.is-edit input,.field.is-edit select,.field.is-edit textarea{border-color:var(--warn)}
+.msg{border-left:3px solid;padding:6px 9px;border-radius:0 4px 4px 0;font-size:12.5px;line-height:1.4}
+.msg.block{border-color:var(--crit);background:var(--crit-bg);color:var(--crit-ink)}
+.msg.warn{border-color:var(--warn);background:var(--warn-bg);color:var(--warn-ink)}
+.msg.auto{border-color:var(--ok);background:var(--ok-bg);color:var(--ok-ink)}
+.msg.note{border-color:var(--info);background:var(--info-bg);color:var(--info-ink)}
+.fs{border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);margin-bottom:16px}
+.fs>header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--surface-2);border-radius:var(--radius) var(--radius) 0 0}
+.fs>.in{padding:16px;display:flex;flex-direction:column;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 18px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 18px}
+.grid5{display:grid;grid-template-columns:repeat(5,1fr);gap:14px 18px}
+.bloco{border:1px solid var(--border);border-radius:5px;padding:12px;display:flex;flex-direction:column;gap:12px}
+.actionbar{position:sticky;bottom:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);margin-top:16px;z-index:10}
+.prov{font-size:11px;color:var(--faint)}
+.review{display:grid;grid-template-columns:3fr 2fr;gap:18px;align-items:start}
+.orig{position:sticky;top:76px}
+.orig pre{margin:0;white-space:pre-wrap;font-family:Georgia,"Times New Roman",serif;font-size:12.5px;line-height:1.5;max-height:75vh;overflow:auto;padding:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius)}
+@media (max-width:900px){.grid3,.grid4,.grid5,.review{grid-template-columns:1fr}.orig{position:static}}
