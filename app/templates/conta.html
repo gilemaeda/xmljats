@@ -10,6 +10,15 @@
     <p class="lead">Seus dados de acesso e o que você já enviou. Horários no {{ FUSO }}.</p>
   </div>
 </div>
+{% if pendente %}
+<div class="msg warn" style="margin-bottom:var(--s-4)">
+  Seu e-mail ainda não foi confirmado, e o envio de arquivos fica bloqueado até isso. Procure a mensagem de confirmação em
+  <b>{{ usuario.email }}</b> ou peça outra pelo botão abaixo.
+  <form method="post" action="/conta/confirmar" style="margin-top:8px"><button class="btn small" type="submit">Reenviar e-mail de confirmação</button></form>
+</div>
+{% elif exige_confirmacao and usuario.email_confirmado %}
+<div class="msg auto" style="margin-bottom:var(--s-4)">E-mail confirmado.</div>
+{% endif %}
 {% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
 {% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
 {% if sem_conta %}
@@ -29,6 +38,11 @@
 <div class="review" style="grid-template-columns:1fr 1fr">
   <form class="card pad stack" method="post" action="/conta/dados">
     <div><h2>Meus dados</h2><p class="small muted" style="margin-top:4px">Nome e e-mail que aparecem no sistema.</p></div>
+    <div class="row" style="gap:14px">
+      {% if usuario.avatar %}<img class="avatar" src="/avatar/{{ usuario.avatar }}" alt="Sua foto" style="width:64px;height:64px;object-fit:cover">
+      {% else %}<span class="avatar" style="width:64px;height:64px;font-size:26px">{{ (usuario.nome or 'x')[:1]|upper }}</span>{% endif %}
+      <div class="small muted">Foto de perfil<br>PNG ou JPG, recortada em quadrado.</div>
+    </div>
     <div class="field"><label for="nome">Nome</label><input id="nome" name="nome" value="{{ usuario.nome }}" {% if sem_conta %}disabled{% endif %} required></div>
     <div class="field"><label for="email">E-mail</label><input id="email" name="email" value="{{ usuario.email }}" {% if sem_conta %}disabled{% endif %} required></div>
     <dl class="kv">
@@ -37,6 +51,19 @@
       {% if usuario.atividade and usuario.atividade.ultimo_login %}<dt>Última entrada</dt><dd>{{ usuario.atividade.ultimo_login|quando }}{% if usuario.atividade.ip %} · <span class="mono">{{ usuario.atividade.ip }}</span>{% endif %}</dd>{% endif %}
     </dl>
     <button class="btn primary" type="submit" {% if sem_conta %}disabled{% endif %}><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Salvar dados</button>
+  </form>
+
+  <form class="card pad stack" method="post" action="/conta/foto" enctype="multipart/form-data">
+    <div><h2>Foto de perfil</h2><p class="small muted" style="margin-top:4px">Aparece no menu e nas telas de administração.</p></div>
+    <div class="field">
+      <label for="foto">Imagem</label>
+      <input id="foto" name="foto" type="file" accept="image/png,image/jpeg,image/webp" {% if sem_conta %}disabled{% endif %} required>
+      <span class="hint">Até 5 MB. É recortada no centro e reduzida para 256 pixels.</span>
+    </div>
+    <div class="row">
+      <button class="btn primary" type="submit" {% if sem_conta %}disabled{% endif %}><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>Enviar foto</button>
+      {% if usuario.avatar %}<button class="btn" type="submit" formaction="/conta/foto/remover" formnovalidate>Remover foto</button>{% endif %}
+    </div>
   </form>
 
   <form class="card pad stack" method="post" action="/conta/senha">

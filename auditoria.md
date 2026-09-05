@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-05
 
-Gerada por `python ops/auditoria.py` (app 0.8.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.9.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 32 de 32 verificações passaram.
+- **Site:** 39 de 39 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -68,6 +68,13 @@ Gerada por `python ops/auditoria.py` (app 0.8.0). Cada número vem de uma mediç
 - ok — painel administrativo mostra contas, uso e filtro por conta
 - ok — admin edita nome e e-mail de um usuário
 - ok — cadastro de revista tem área e estilo de referências
+- ok — administração é ambiente próprio: admin não usa o validador
+- ok — menu alterna entre lateral e topo
+- ok — correio tem as cinco caixas
+- ok — configuração do Resend com chave mascarada
+- ok — mensagem sem envio configurado fica na caixa de saída
+- ok — webhook do correio exige segredo
+- ok — foto de perfil e confirmação de e-mail na conta
 - ok — sair encerra a sessão
 
 ## 5. O que o validador oficial ainda aponta
@@ -100,6 +107,9 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Tela 6 · Pacote | pronto | verificação "pacote .zip disponível" |
 | Tela 7 · Admin interno | pronto (métricas por etapa, revista e bloqueante) | verificação "admin vê visão geral com métricas" |
 | Contas e papéis | pronto (admin, operador, cliente) | verificações de isolamento entre contas |
+| Confirmação de conta por e-mail | pronto (Resend, ligável em Configurações) | verificações de correio e confirmação |
+| Correio do sistema (entrada, saída, enviados, rascunhos, lixeira) | pronto | verificação "correio tem as cinco caixas" |
+| Foto de perfil e menu lateral/topo | pronto | verificações de conta e de menu |
 | Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |
 | Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |
 | Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |

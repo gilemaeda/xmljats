@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% set ativo = 'correio' %}
+{% block titulo %}Correio · xmljats{% endblock %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Sistema</p>
+    <h1 style="margin-top:4px">Correio</h1>
+    <p class="lead">Mensagens que o sistema envia e recebe pelo Resend: confirmação de conta, avisos e o que você escrever daqui. Horários no {{ FUSO }}.</p>
+  </div>
+  <div class="acoes">
+    {% if contagens.saida %}<form method="post" action="/admin/correio/reenviar"><button class="btn" type="submit"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 01-14.9 4M4 12a8 8 0 0114.9-4"/><path d="M20 4v4h-4M4 20v-4h4"/></svg>Tentar enviar a caixa de saída ({{ contagens.saida }})</button></form>{% endif %}
+    <a class="btn" href="/admin/config">Configurar envio</a>
+  </div>
+</div>
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+{% if not cfg.pronto_para_enviar %}
+<div class="msg warn" style="margin-bottom:var(--s-4)">
+  O envio ainda não está configurado: falta {{ cfg.pendencias|join(', ') }}. As mensagens ficam na caixa de saída até isso ser resolvido em <a href="/admin/config">Configurações</a>.
+</div>
+{% endif %}
+
+<div class="correio">
+  <nav class="card caixas" aria-label="Caixas">
+    {% for cod, rotulo in CAIXAS %}
+    <a href="/admin/correio?caixa={{ cod }}" class="{% if caixa == cod %}active{% endif %}">
+      {% if cod == 'entrada' %}<svg viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M5 5h14l2 8v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4z"/></svg>
+      {% elif cod == 'saida' %}<svg viewBox="0 0 24 24"><path d="M12 19V5m0 0l-5 5m5-5l5 5"/></svg>
+      {% elif cod == 'enviados' %}<svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>
+      {% elif cod == 'rascunhos' %}<svg viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg>
+      {% else %}<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V5h6v2M6 7l1 13h10l1-13"/></svg>{% endif %}
+      {{ rotulo }}{% if contagens.get(cod) %}<span class="n">{{ contagens[cod] }}</span>{% endif %}
+    </a>
+    {% endfor %}
+  </nav>
+
+  <div class="stack">
+    <section class="card">
+      <header class="cardhead">
+        <h2>{{ ROTULO_CAIXA.get(caixa, caixa) }}</h2>
+        <form class="row" method="get" action="/admin/correio" style="gap:6px;flex-wrap:nowrap">
+          <input type="hidden" name="caixa" value="{{ caixa }}">
+          <input class="mini" name="busca" value="{{ busca }}" placeholder="Buscar" aria-label="Buscar">
+          <button class="btn small" type="submit">Buscar</button>
+        </form>
+      </header>
+      {% if mensagens %}
+      <div class="msgs">
+        {% for m in mensagens %}
+        <a class="item {% if not m.lida %}nao-lida{% endif %}" href="/admin/correio?caixa={{ caixa }}&aberta={{ m.id }}">
+          <span class="as">{{ m.assunto }}</span>
+          <span class="qd">{{ m.em|quando }}</span>
+          <span class="pv">{% if caixa == 'entrada' %}de {{ m.de or '—' }}{% else %}para {{ m.para|join(', ') }}{% endif %} · {{ (m.texto or '')[:90] }}
+            {% if m.estado and m.estado not in ('rascunho', 'recebida') %}<span class="chip {{ 'ok' if m.estado in ('enviado','delivered','entregue') else ('warn' if m.estado != 'falhou' else 'crit') }}">{{ m.estado }}</span>{% endif %}</span>
+        </a>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+        Nenhuma mensagem em {{ ROTULO_CAIXA.get(caixa, caixa)|lower }}{% if busca %} para "{{ busca }}"{% endif %}.
+      </div>
+      {% endif %}
+    </section>
+
+    {% if aberta %}
+    <section class="card pad stack">
+      <div class="row between">
+        <div>
+          <h2>{{ aberta.assunto }}</h2>
+          <p class="small muted" style="margin-top:4px">
+            {% if aberta.de %}De {{ aberta.de }} · {% endif %}Para {{ aberta.para|join(', ') }} · {{ aberta.em|quando }}
+            {% if aberta.tipo and aberta.tipo != 'manual' %}<span class="chip neutral" style="margin-left:6px">{{ aberta.tipo }}</span>{% endif %}
+          </p>
+        </div>
+        <div class="row" style="gap:6px">
+          {% if aberta.caixa in ('saida', 'rascunhos') %}
+          <form method="post" action="/admin/correio/{{ aberta.id }}/enviar"><button class="btn small primary" type="submit">Enviar agora</button></form>
+          {% endif %}
+          {% if aberta.caixa != 'lixeira' %}
+          <form method="post" action="/admin/correio/{{ aberta.id }}/mover"><input type="hidden" name="caixa" value="lixeira"><button class="btn small" type="submit">Mover para lixeira</button></form>
+          {% else %}
+          <form method="post" action="/admin/correio/{{ aberta.id }}/apagar" onsubmit="return confirm('Apagar esta mensagem de vez?')"><button class="btn small danger" type="submit">Apagar</button></form>
+          {% endif %}
+        </div>
+      </div>
+      {% if aberta.erro %}<div class="msg block">{{ aberta.erro }}</div>{% endif %}
+      <div class="msg-corpo">{{ aberta.texto or '(sem texto)' }}</div>
+      {% if aberta.historico %}
+      <details>
+        <summary class="small muted" style="cursor:pointer">Histórico ({{ aberta.historico|length }})</summary>
+        <div class="trilha" style="margin-top:8px">
+          {% for h in aberta.historico|reverse %}<div>{{ h.quando|quando }} · {{ h.evento }}{% if h.por %} · {{ h.por }}{% endif %}</div>{% endfor %}
+        </div>
+      </details>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    <form class="card pad stack" method="post" action="/admin/correio/nova">
+      <h2>Nova mensagem</h2>
+      <div class="grid2">
+        <div class="field"><label for="para">Para</label><input id="para" name="para" placeholder="alguem@exemplo.org, outro@exemplo.org" required>
+          <span class="hint">Separe vários endereços por vírgula.</span></div>
+        <div class="field"><label for="assunto">Assunto</label><input id="assunto" name="assunto" required></div>
+      </div>
+      <div class="field"><label for="texto">Mensagem</label><textarea id="texto" name="texto" rows="6" required></textarea></div>
+      <div class="row">
+        <button class="btn primary" type="submit" name="acao" value="enviar"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Enviar</button>
+        <button class="btn" type="submit" name="acao" value="rascunho">Salvar rascunho</button>
+        {% if not cfg.pronto_para_enviar %}<span class="small muted">Sem configuração de envio, a mensagem fica na caixa de saída.</span>{% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

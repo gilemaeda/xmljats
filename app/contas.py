@@ -111,7 +111,7 @@ class Contas:
         if any(u["email"] == email for u in usuarios):
             raise ValueError(f"Já existe usuário com o e-mail {email}.")
         u = {"id": secrets.token_hex(6), "email": email, "nome": nome, "papel": papel, "senha": self.hash_senha(senha),
-             "criado_em": agora_iso(), "atividade": {}}
+             "criado_em": agora_iso(), "atividade": {}, "email_confirmado": False, "avatar": None}
         usuarios.append(u)
         self._grava(usuarios)
         return self._publico(u)
@@ -156,6 +156,7 @@ class Contas:
                 if any(x["email"] == email and x["id"] != uid for x in usuarios):
                     raise ValueError(f"Já existe usuário com o e-mail {email}.")
                 u["email"] = email
+                u["email_confirmado"] = False  # endereço novo precisa ser confirmado de novo
 
         if not nome and not email:
             raise ValueError("Nada para alterar.")
@@ -182,6 +183,30 @@ class Contas:
         if self._carrega() or not senha_inicial:
             return None
         return self.cria("admin", "Administrador", senha_inicial, "admin")
+
+    # ------------------------------------------------------------ confirmacao de e-mail e foto
+    def define_token_confirmacao(self, uid: str, token: str):
+        return self._altera(uid, lambda u, _: u.update(token_confirmacao=token, token_em=agora_iso()))
+
+    def confirma_por_token(self, token: str) -> Optional[dict]:
+        """Marca o e-mail como confirmado e queima o token. Devolve o usuário ou None."""
+        if not token:
+            return None
+        usuarios = self._carrega()
+        for u in usuarios:
+            if u.get("token_confirmacao") and hmac.compare_digest(u["token_confirmacao"], token):
+                u["email_confirmado"] = True
+                u["confirmado_em"] = agora_iso()
+                u.pop("token_confirmacao", None)
+                self._grava(usuarios)
+                return self._publico(u)
+        return None
+
+    def define_confirmado(self, uid: str, confirmado: bool = True):
+        return self._altera(uid, lambda u, _: u.update(email_confirmado=bool(confirmado)))
+
+    def define_avatar(self, uid: str, arquivo: Optional[str]):
+        return self._altera(uid, lambda u, _: u.update(avatar=arquivo))
 
     # ------------------------------------------------------------ atividade
     def registra_acesso(self, uid: str, ip: Optional[str], navegador: Optional[str], rota: Optional[str] = None):

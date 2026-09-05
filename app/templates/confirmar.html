@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block titulo %}{{ 'E-mail confirmado' if confirmado else 'Link inválido' }} · xmljats{% endblock %}
+{% block conteudo %}
+<div class="auth">
+  <div class="card pad stack" style="width:min(520px,100%);gap:var(--s-4);text-align:center;align-items:center">
+    <span class="status-ico {{ 'ok' if confirmado else 'crit' }}" style="width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:var(--brand-ink);background:var(--{{ 'ok' if confirmado else 'crit' }})">
+      {% if confirmado %}<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg>
+      {% else %}<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>{% endif %}
+    </span>
+    {% if confirmado %}
+    <h1 style="font-size:22px">E-mail confirmado</h1>
+    <p class="muted">Tudo certo{% if nome %}, {{ nome }}{% endif %}. Sua conta já pode enviar arquivos.</p>
+    {% else %}
+    <h1 style="font-size:22px">Link inválido ou já usado</h1>
+    <p class="muted">Esse link de confirmação não vale mais. Entre na sua conta e peça um novo em Minha conta.</p>
+    {% endif %}
+    <a class="btn primary" href="/entrar">Ir para o login</a>
+  </div>
+</div>
+{% endblock %}

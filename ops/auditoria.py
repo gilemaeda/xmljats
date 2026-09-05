@@ -126,6 +126,14 @@ def roda_site():
     check("painel administrativo mostra contas, uso e filtro por conta", all(x in c.get("/admin").text for x in ("Contas e uso", "Validações por dia", "Filtrar")))
     check("admin edita nome e e-mail de um usuário", c.post("/usuarios/" + json.load(io.open(os.path.join(tmp, "usuarios.json"), encoding="utf-8"))["usuarios"][0]["id"] + "/dados", data={"nome": "Administrador", "email": "admin"}).status_code == 303)
     check("cadastro de revista tem área e estilo de referências", all(x in c.get("/revistas/nova").text for x in ("Área do conhecimento", "Estilo das referências")))
+    check("administração é ambiente próprio: admin não usa o validador", c.get("/").headers.get("location") == "/admin")
+    check("menu alterna entre lateral e topo", all(x in c.get("/admin").text for x in ('data-menu="lado"', 'data-menu="topo"', 'class="barra-topo"')))
+    check("correio tem as cinco caixas", all(c.get(f"/admin/correio?caixa={cx}").status_code == 200 for cx in ("entrada", "saida", "enviados", "rascunhos", "lixeira")))
+    check("configuração do Resend com chave mascarada", "Chave da API" in c.get("/admin/config").text)
+    check("mensagem sem envio configurado fica na caixa de saída",
+          c.post("/admin/correio/nova", data={"para": "a@b.org", "assunto": "t", "texto": "t", "acao": "enviar"}).headers.get("location", "").find("saida") > 0)
+    check("webhook do correio exige segredo", c.post("/webhook/resend", json={"type": "email.delivered"}).status_code == 403)
+    check("foto de perfil e confirmação de e-mail na conta", all(x in c.get("/conta").text for x in ("Foto de perfil", "Trocar senha")))
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)
@@ -195,6 +203,9 @@ def main():
           "| Tela 6 · Pacote | pronto | verificação \"pacote .zip disponível\" |",
           "| Tela 7 · Admin interno | pronto (métricas por etapa, revista e bloqueante) | verificação \"admin vê visão geral com métricas\" |",
           "| Contas e papéis | pronto (admin, operador, cliente) | verificações de isolamento entre contas |",
+          "| Confirmação de conta por e-mail | pronto (Resend, ligável em Configurações) | verificações de correio e confirmação |",
+          "| Correio do sistema (entrada, saída, enviados, rascunhos, lixeira) | pronto | verificação \"correio tem as cinco caixas\" |",
+          "| Foto de perfil e menu lateral/topo | pronto | verificações de conta e de menu |",
           "| Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |",
           "| Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |",
           "| Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |",

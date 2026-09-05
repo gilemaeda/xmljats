@@ -52,6 +52,7 @@ sys.path.insert(0, str(RAIZ / "app"))
 
 from contas import COOKIE, PAPEIS, ROTULO_PAPEL, Contas  # noqa: E402  (app/contas.py)
 import tempo  # noqa: E402  (app/tempo.py: tudo no horário de Brasília)
+from correio import CAIXAS, ROTULO_CAIXA, Correio, corpo_confirmacao, token_confirmacao  # noqa: E402
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -62,8 +63,11 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.8.1"
+VERSAO_APP = "0.9.0"
 CONTAS = Contas(DATA)
+CORREIO = Correio(DATA)
+AVATARES = DATA / "avatares"
+AVATARES.mkdir(parents=True, exist_ok=True)
 
 # etapas do artigo no fluxo de entrega a SciELO (anotadas a mao no painel)
 # papel "cliente" vê só os próprios documentos; "operador" vê todos; "admin" também administra
@@ -92,6 +96,18 @@ templates.env.filters["quando_dia"] = lambda v: tempo.formata(v, com_hora=False)
 templates.env.filters["ha_quanto"] = tempo.ha_quanto
 templates.env.filters["online"] = tempo.online
 templates.env.tests["online"] = tempo.online
+templates.env.globals["ROTULO_CAIXA"] = ROTULO_CAIXA
+templates.env.globals["CAIXAS"] = CAIXAS
+
+
+def _nao_lidas():
+    try:
+        return CORREIO.contagens().get("nao_lidas", 0)
+    except Exception:  # noqa: BLE001
+        return 0
+
+
+templates.env.globals["nao_lidas"] = _nao_lidas
 
 
 def _filtro_regra(texto):
@@ -157,6 +173,28 @@ def autentica(request: Request, cred: Optional[HTTPBasicCredentials] = Depends(s
         return LOCAL
     destino = request.url.path + (("?" + request.url.query) if request.url.query else "")
     raise HTTPException(status_code=303, headers={"Location": "/entrar?proximo=" + urllib.parse.quote(destino, safe="")})
+
+
+def confirmacao_pendente(usuario: dict) -> bool:
+    """Conta que ainda não confirmou o e-mail, quando o sistema exige confirmação."""
+    if usuario.get("id") in ("local", "api") or usuario.get("papel") == "admin":
+        return False
+    c = CORREIO.config()
+    return bool(c.get("exigir_confirmacao")) and not usuario.get("email_confirmado")
+
+
+def envia_confirmacao(usuario: dict, por: str = "sistema", request: Optional[Request] = None) -> Optional[dict]:
+    """Gera o token, monta o link e manda o e-mail de confirmação. Sem Resend configurado, devolve None."""
+    c = CORREIO.config()
+    if not (c.get("resend_chave") and c.get("remetente_email")):
+        return None
+    token = token_confirmacao()
+    CONTAS.define_token_confirmacao(usuario["id"], token)
+    # sem endereço configurado, usa o host da própria requisição (assim o link nunca sai quebrado)
+    base = (c.get("url_base") or "").rstrip("/") or (str(request.base_url).rstrip("/") if request else "")
+    link = f"{base}/confirmar?token={token}"
+    texto, html = corpo_confirmacao(usuario["nome"], link)
+    return CORREIO.envia_novo(usuario["email"], "Confirme seu e-mail no xmljats", texto, html, tipo="confirmacao", por=por)
 
 
 def exige_admin(usuario: dict = Depends(autentica)) -> dict:
@@ -556,6 +594,8 @@ def saude():
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request, usuario: dict = Depends(autentica)):
+    if usuario.get("papel") == "admin":
+        return RedirectResponse(url="/admin", status_code=303)  # o admin é ambiente de administração, não de envio
     meus = lista_docs(0, usuario)
     return templates.TemplateResponse(request, "index.html", {"revistas": carrega_revistas(), "docs": meus[:8], "total_docs": len(meus), "usuario": usuario})
 
@@ -565,6 +605,8 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
     nome = arquivo.filename or "arquivo"
     if not nome.lower().endswith(".pdf"):
         raise HTTPException(400, "Por enquanto só PDF. O caminho DOCX vem na próxima fase.")
+    if confirmacao_pendente(usuario):
+        raise HTTPException(403, "Confirme seu e-mail antes de enviar arquivos. Veja o link em Minha conta.")
     conteudo = await arquivo.read()
     if len(conteudo) > MAX_MB * 1024 * 1024:
         raise HTTPException(413, f"Arquivo maior que {MAX_MB} MB.")
@@ -801,6 +843,8 @@ def revista_remover(acronimo: str, usuario: dict = Depends(exige_admin)):
 
 @app.get("/painel", response_class=HTMLResponse)
 def painel(request: Request, usuario: dict = Depends(autentica), revista: str = "", etapa: str = "", situacao: str = ""):
+    if usuario.get("papel") == "admin":
+        return RedirectResponse(url="/admin/documentos", status_code=303)
     docs = lista_docs(0, usuario)
     if revista:
         docs = [d for d in docs if d.get("revista") == revista]
@@ -863,6 +907,10 @@ async def registrar(request: Request):
         return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": str(e), "form": form}, status_code=400)
     ip, navegador = de_onde(request)
     CONTAS.registra_login(u["id"], ip, navegador)
+    try:
+        envia_confirmacao(u, por="registro", request=request)
+    except Exception:  # noqa: BLE001  (falha de e-mail não pode impedir o cadastro)
+        pass
     resp = RedirectResponse(url="/", status_code=303)
     resp.set_cookie(COOKIE, CONTAS.assina_sessao(u["id"]), httponly=True, samesite="lax", secure=request.url.scheme == "https", max_age=12 * 3600, path="/")
     return resp
@@ -871,8 +919,11 @@ async def registrar(request: Request):
 @app.get("/conta", response_class=HTMLResponse)
 def conta(request: Request, usuario: dict = Depends(autentica), mensagem: str = "", erro: str = ""):
     meus = lista_docs(0, usuario)
-    return templates.TemplateResponse(request, "conta.html", {"usuario": usuario, "mensagem": mensagem, "erro": erro,
-                                                              "docs": meus, "total_docs": len(meus)})
+    completo = CONTAS.por_id(usuario["id"]) or usuario
+    return templates.TemplateResponse(request, "conta.html", {"usuario": completo, "mensagem": mensagem, "erro": erro,
+                                                              "docs": meus, "total_docs": len(meus),
+                                                              "exige_confirmacao": CORREIO.config().get("exigir_confirmacao"),
+                                                              "pendente": confirmacao_pendente(completo)})
 
 
 @app.post("/conta/senha")
@@ -902,6 +953,182 @@ async def conta_dados(request: Request, usuario: dict = Depends(autentica)):
     except ValueError as e:
         return RedirectResponse(url="/conta?erro=" + urllib.parse.quote(str(e)), status_code=303)
     return RedirectResponse(url="/conta?mensagem=" + urllib.parse.quote("Dados atualizados."), status_code=303)
+
+
+@app.get("/confirmar", response_class=HTMLResponse)
+def confirmar(request: Request, token: str = ""):
+    u = CONTAS.confirma_por_token(token)
+    return templates.TemplateResponse(request, "confirmar.html", {"usuario": None, "confirmado": bool(u), "nome": u["nome"] if u else ""},
+                                      status_code=200 if u else 400)
+
+
+@app.post("/conta/confirmar")
+def conta_reenvia_confirmacao(request: Request, usuario: dict = Depends(autentica)):
+    if usuario["id"] in ("local", "api"):
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("Esta sessão não tem conta própria."), status_code=303)
+    m = envia_confirmacao(usuario, por=usuario["nome"], request=request)
+    if not m:
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote(
+            "O envio de e-mail ainda não está configurado no sistema. Peça a um administrador."), status_code=303)
+    if m.get("caixa") != "enviados":
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("Não foi possível enviar: " + (m.get("erro") or "")), status_code=303)
+    return RedirectResponse(url="/conta?mensagem=" + urllib.parse.quote("Enviamos um novo e-mail de confirmação."), status_code=303)
+
+
+@app.post("/conta/foto")
+async def conta_foto(request: Request, foto: UploadFile = File(...), usuario: dict = Depends(autentica)):
+    """Foto de perfil: imagem pequena, convertida para PNG quadrado de 256 px."""
+    if usuario["id"] in ("local", "api"):
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("Esta sessão não tem conta própria."), status_code=303)
+    dados = await foto.read()
+    if len(dados) > 5 * 1024 * 1024:
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("A imagem precisa ter menos de 5 MB."), status_code=303)
+    try:
+        from PIL import Image
+        with Image.open(io.BytesIO(dados)) as im:
+            im = im.convert("RGB")
+            lado = min(im.size)
+            esq, topo = (im.width - lado) // 2, (im.height - lado) // 2
+            im = im.crop((esq, topo, esq + lado, topo + lado)).resize((256, 256))
+            nome = f"{usuario['id']}.png"
+            im.save(AVATARES / nome, format="PNG")
+    except Exception:  # noqa: BLE001
+        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("Não consegui ler essa imagem. Use PNG ou JPG."), status_code=303)
+    CONTAS.define_avatar(usuario["id"], nome)
+    return RedirectResponse(url="/conta?mensagem=" + urllib.parse.quote("Foto atualizada."), status_code=303)
+
+
+@app.post("/conta/foto/remover")
+def conta_foto_remover(usuario: dict = Depends(autentica)):
+    if usuario["id"] not in ("local", "api"):
+        arq = AVATARES / f"{usuario['id']}.png"
+        if arq.exists():
+            arq.unlink()
+        CONTAS.define_avatar(usuario["id"], None)
+    return RedirectResponse(url="/conta?mensagem=" + urllib.parse.quote("Foto removida."), status_code=303)
+
+
+@app.get("/avatar/{nome}")
+def avatar(nome: str, usuario: dict = Depends(autentica)):
+    if not re.fullmatch(r"[0-9a-f]{6,32}\.png", nome):
+        raise HTTPException(404)
+    caminho = AVATARES / nome
+    if not caminho.exists():
+        raise HTTPException(404)
+    return FileResponse(str(caminho), media_type="image/png", headers={"Cache-Control": "private, max-age=300"})
+
+
+# ---------------------------------------------------------------- correio (administração)
+
+@app.get("/admin/correio", response_class=HTMLResponse)
+def correio_caixa(request: Request, usuario: dict = Depends(exige_admin), caixa: str = "entrada", busca: str = "",
+                  mensagem: str = "", erro: str = "", aberta: str = ""):
+    if caixa not in ROTULO_CAIXA:
+        caixa = "entrada"
+    msgs = CORREIO.lista(caixa, busca)
+    atual = CORREIO.por_id(aberta) if aberta else None
+    if atual and not atual.get("lida"):
+        CORREIO.marca_lida(atual["id"])
+        atual = CORREIO.por_id(aberta)
+    return templates.TemplateResponse(request, "correio.html", {
+        "usuario": usuario, "caixa": caixa, "mensagens": msgs, "contagens": CORREIO.contagens(),
+        "aberta": atual, "busca": busca, "mensagem": mensagem, "erro": erro, "cfg": CORREIO.config_publica()})
+
+
+@app.post("/admin/correio/nova")
+async def correio_nova(request: Request, usuario: dict = Depends(exige_admin)):
+    form = await request.form()
+    acao = str(form.get("acao") or "enviar")
+    try:
+        m = CORREIO.cria(str(form.get("para") or ""), str(form.get("assunto") or ""), str(form.get("texto") or ""),
+                         caixa="rascunhos" if acao == "rascunho" else "saida", por=usuario["nome"])
+    except ValueError as e:
+        return RedirectResponse(url="/admin/correio?caixa=rascunhos&erro=" + urllib.parse.quote(str(e)), status_code=303)
+    if acao == "rascunho":
+        return RedirectResponse(url="/admin/correio?caixa=rascunhos&mensagem=" + urllib.parse.quote("Rascunho salvo."), status_code=303)
+    r = CORREIO.envia(m["id"], por=usuario["nome"])
+    if r.get("caixa") == "enviados":
+        return RedirectResponse(url="/admin/correio?caixa=enviados&mensagem=" + urllib.parse.quote("Mensagem enviada."), status_code=303)
+    return RedirectResponse(url="/admin/correio?caixa=saida&erro=" + urllib.parse.quote(r.get("erro") or "Não foi possível enviar."), status_code=303)
+
+
+@app.post("/admin/correio/{mid}/enviar")
+def correio_envia(mid: str, usuario: dict = Depends(exige_admin)):
+    r = CORREIO.envia(mid, por=usuario["nome"])
+    if r.get("caixa") == "enviados":
+        return RedirectResponse(url="/admin/correio?caixa=enviados&mensagem=" + urllib.parse.quote("Mensagem enviada."), status_code=303)
+    return RedirectResponse(url="/admin/correio?caixa=saida&erro=" + urllib.parse.quote(r.get("erro") or "Não foi possível enviar."), status_code=303)
+
+
+@app.post("/admin/correio/{mid}/mover")
+async def correio_move(request: Request, mid: str, usuario: dict = Depends(exige_admin)):
+    form = await request.form()
+    destino = str(form.get("caixa") or "lixeira")
+    try:
+        CORREIO.move(mid, destino)
+    except ValueError as e:
+        return RedirectResponse(url="/admin/correio?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url=f"/admin/correio?caixa={destino}&mensagem=" + urllib.parse.quote("Mensagem movida."), status_code=303)
+
+
+@app.post("/admin/correio/{mid}/apagar")
+def correio_apaga(mid: str, usuario: dict = Depends(exige_admin)):
+    CORREIO.apaga(mid)
+    return RedirectResponse(url="/admin/correio?caixa=lixeira&mensagem=" + urllib.parse.quote("Mensagem apagada."), status_code=303)
+
+
+@app.post("/admin/correio/reenviar")
+def correio_reenvia(usuario: dict = Depends(exige_admin)):
+    n = CORREIO.reenvia_pendentes(por=usuario["nome"])
+    return RedirectResponse(url="/admin/correio?caixa=enviados&mensagem=" + urllib.parse.quote(f"{n} mensagem(ns) enviada(s)."), status_code=303)
+
+
+# ---------------------------------------------------------------- configurações do sistema
+
+@app.get("/admin/config", response_class=HTMLResponse)
+def config_sistema(request: Request, usuario: dict = Depends(exige_admin), mensagem: str = "", erro: str = ""):
+    return templates.TemplateResponse(request, "config.html", {
+        "usuario": usuario, "cfg": CORREIO.config_publica(), "mensagem": mensagem, "erro": erro,
+        "webhook": (CORREIO.config().get("url_base") or "") + "/webhook/resend"})
+
+
+@app.post("/admin/config")
+async def config_salva(request: Request, usuario: dict = Depends(exige_admin)):
+    form = dict((await request.form()).items())
+    try:
+        CORREIO.salva_config({**form, "exigir_confirmacao": form.get("exigir_confirmacao") == "on",
+                              "remover_chave": form.get("remover_chave") == "on"})
+    except ValueError as e:
+        return RedirectResponse(url="/admin/config?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/admin/config?mensagem=" + urllib.parse.quote("Configuração salva."), status_code=303)
+
+
+@app.post("/admin/config/testar")
+async def config_testa(request: Request, usuario: dict = Depends(exige_admin)):
+    form = await request.form()
+    destino = str(form.get("destino") or usuario.get("email") or "")
+    m = CORREIO.envia_novo(destino, "Teste de envio do xmljats",
+                           "Se você recebeu esta mensagem, o envio pelo Resend está funcionando.",
+                           "<p>Se você recebeu esta mensagem, o envio pelo <b>Resend</b> está funcionando.</p>",
+                           tipo="teste", por=usuario["nome"])
+    if m.get("caixa") == "enviados":
+        return RedirectResponse(url="/admin/config?mensagem=" + urllib.parse.quote(f"Mensagem de teste enviada para {destino}."), status_code=303)
+    return RedirectResponse(url="/admin/config?erro=" + urllib.parse.quote("Falhou: " + (m.get("erro") or "sem detalhe")), status_code=303)
+
+
+@app.post("/webhook/resend")
+async def webhook_resend(request: Request):
+    """Eventos do Resend (entregue, aberto, devolvido) e e-mails recebidos. Protegido pelo segredo da configuração."""
+    cfg = CORREIO.config()
+    segredo = cfg.get("webhook_segredo")
+    enviado = request.query_params.get("k") or request.headers.get("x-webhook-segredo")
+    if not segredo or not enviado or not secrets.compare_digest(str(enviado), str(segredo)):
+        raise HTTPException(403, "Segredo do webhook não confere.")
+    try:
+        dados = await request.json()
+    except Exception:  # noqa: BLE001
+        raise HTTPException(400, "Corpo inválido.")
+    return {"ok": True, "resultado": CORREIO.registra_evento(dados)}
 
 
 @app.get("/ajuda", response_class=HTMLResponse)

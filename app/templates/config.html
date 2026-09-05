@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% set ativo = 'config' %}
+{% block titulo %}Configurações · xmljats{% endblock %}
+{% block conteudo %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Sistema</p>
+    <h1 style="margin-top:4px">Configurações</h1>
+    <p class="lead">Envio de e-mail pelo Resend e confirmação de conta. A chave da API fica só no servidor e nunca é mostrada por inteiro.</p>
+  </div>
+  <div class="acoes"><a class="btn" href="/admin/correio">Ir para o correio</a></div>
+</div>
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+
+<div class="review" style="grid-template-columns:3fr 2fr">
+  <div class="stack">
+    <form class="card pad stack" method="post" action="/admin/config">
+      <div class="row between">
+        <h2>Resend</h2>
+        {% if cfg.pronto_para_enviar %}<span class="chip ok">pronto para enviar</span>{% else %}<span class="chip warn">falta configurar</span>{% endif %}
+      </div>
+      {% if cfg.pendencias %}<div class="msg warn">Falta: {{ cfg.pendencias|join('; ') }}.</div>{% endif %}
+      <div class="field">
+        <label for="resend_chave">Chave da API</label>
+        <div class="senha-wrap">
+          <input id="resend_chave" name="resend_chave" type="password" autocomplete="off"
+                 placeholder="{{ cfg.resend_chave_mascarada or 're_...' }}">
+          <button class="olho" type="button" aria-label="Mostrar chave" aria-pressed="false"></button>
+        </div>
+        <span class="hint">{% if cfg.tem_chave %}Já existe uma chave salva ({{ cfg.resend_chave_mascarada }}). Deixe em branco para manter.{% else %}Crie em resend.com → API Keys, com permissão de envio.{% endif %}</span>
+      </div>
+      {% if cfg.tem_chave %}<label class="check"><input type="checkbox" name="remover_chave"> Remover a chave salva</label>{% endif %}
+      <div class="grid2">
+        <div class="field">
+          <label for="remetente_email">E-mail remetente</label>
+          <input id="remetente_email" name="remetente_email" type="email" value="{{ cfg.remetente_email }}" placeholder="nao-responda@seudominio.com.br">
+          <span class="hint">Precisa ser de um domínio verificado no Resend.</span>
+        </div>
+        <div class="field">
+          <label for="remetente_nome">Nome que aparece</label>
+          <input id="remetente_nome" name="remetente_nome" value="{{ cfg.remetente_nome }}" placeholder="xmljats">
+        </div>
+      </div>
+      <div class="field">
+        <label for="url_base">Endereço público do site</label>
+        <input id="url_base" name="url_base" value="{{ cfg.url_base }}" placeholder="https://xmljats.seudominio.com.br">
+        <span class="hint">Usado para montar o link de confirmação enviado por e-mail.</span>
+      </div>
+      <label class="check"><input type="checkbox" name="exigir_confirmacao" {% if cfg.exigir_confirmacao %}checked{% endif %}>
+        Exigir confirmação de e-mail antes de enviar arquivos</label>
+      <span class="hint" style="margin-top:-8px">Só pode ser ligado com a chave e o remetente preenchidos. Administradores nunca ficam bloqueados.</span>
+      <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Salvar configuração</button>
+    </form>
+
+    <form class="card pad stack" method="post" action="/admin/config/testar">
+      <h2>Testar envio</h2>
+      <p class="small muted" style="margin-top:-6px">Manda uma mensagem curta pelo Resend e registra o resultado no correio.</p>
+      <div class="field">
+        <label for="destino">Enviar para</label>
+        <input id="destino" name="destino" type="email" value="{{ usuario.email if '@' in (usuario.email or '') else '' }}" required>
+      </div>
+      <button class="btn" type="submit" {% if not cfg.pronto_para_enviar %}disabled{% endif %}><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Enviar teste</button>
+      {% if not cfg.pronto_para_enviar %}<span class="small muted">Configure a chave e o remetente primeiro.</span>{% endif %}
+    </form>
+  </div>
+
+  <aside class="stack">
+    <div class="card pad stack" style="gap:10px">
+      <h3>Como ligar o Resend</h3>
+      <ol class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+        <li>Crie a conta em <span class="mono">resend.com</span>.</li>
+        <li>Adicione seu domínio e publique os registros DNS que ele indicar (SPF, DKIM). Sem domínio verificado o Resend só entrega para o seu próprio e-mail.</li>
+        <li>Gere uma API Key e cole no campo ao lado.</li>
+        <li>Use um remetente do domínio verificado, por exemplo <span class="mono">nao-responda@seudominio.com.br</span>.</li>
+        <li>Clique em <b>Enviar teste</b> e confira a caixa de entrada.</li>
+      </ol>
+    </div>
+    <div class="card pad stack" style="gap:10px">
+      <h3>Webhook</h3>
+      <p class="small muted">Para registrar entrega, abertura e devolução, e para receber mensagens na caixa de entrada, cadastre este endereço no Resend:</p>
+      <pre class="xmlprev">{{ webhook or '(defina antes o endereço público do site)' }}{% if cfg.tem_chave %}?k=SEGREDO{% endif %}</pre>
+      <p class="small muted">O segredo fica no servidor. Peça-o a quem administra a máquina ou abra o arquivo de configuração em <span class="mono">XMLJATS_DATA/config.json</span>.</p>
+    </div>
+    <div class="card pad stack" style="gap:10px">
+      <h3>Onde isso é guardado</h3>
+      <p class="small muted">Em <span class="mono">XMLJATS_DATA/config.json</span>, no volume do servidor. Não vai para o repositório e não aparece em nenhuma tela por inteiro.</p>
+    </div>
+  </aside>
+</div>
+{% endblock %}
