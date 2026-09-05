@@ -230,7 +230,7 @@ Pendências conhecidas: extração de imagens; equações; CRediT; separação d
 
 ### 6.2 O que o XML gerado ainda não tem
 
-`fig`/`graphic` e tabelas (as legendas existem no modelo, as imagens não são extraídas), equações, chamadas `xref` para notas de rodapé dentro do texto, CRediT em `role`, e os campos completos de `element-citation` (hoje: autores, ano, fonte, volume/número/páginas por heurística, DOI e URL). Tudo isso é trabalho de código, não de IA, menos a normalização de afiliações em prosa.
+tabelas e equações (figuras já saem com `fig`/`graphic`, imagens em TIFF no pacote e `xref` no texto, desde 05/09), chamadas `xref` para notas de rodapé dentro do texto, CRediT em `role`, e os campos completos de `element-citation` (hoje: autores, ano, fonte, volume/número/páginas por heurística, DOI e URL). Tudo isso é trabalho de código, não de IA, menos a normalização de afiliações em prosa.
 
 ### 6.3 Ambiente
 

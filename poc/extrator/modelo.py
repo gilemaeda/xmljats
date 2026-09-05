@@ -88,6 +88,14 @@ class Figura:
     fonte: Optional[str] = None
     pagina: int = 1
     chamada_no_texto: bool = False
+    numero: Optional[str] = None          # "1" em "Figura 1"
+    secao_indice: Optional[int] = None    # indice da secao em model.secoes onde a legenda apareceu
+    pos_paragrafo: Optional[int] = None   # numero de paragrafos da secao antes da legenda
+    imagem_indice: Optional[int] = None   # indice em Documento.imagens
+    arquivo: Optional[str] = None         # nome do arquivo salvo (ex.: fig01.jpeg)
+    ext: Optional[str] = None
+    largura: Optional[int] = None
+    altura: Optional[int] = None
 
 
 @dataclass

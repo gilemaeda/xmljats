@@ -80,6 +80,19 @@
       <hr class="sep">
       {% for res in r.extracao.resumos %}<p class="small"><span class="chip neutral" style="margin-right:6px">{{ res.idioma or '?' }}</span>{{ res.rotulo }} · {{ res.palavras }} palavras · {{ res.palavras_chave|join('; ') }}</p>{% endfor %}
     </div>
+    {% if r.figuras %}
+    <div class="card pad stack" style="gap:10px">
+      <h3>Figuras <span class="muted" style="font-weight:400">({{ r.figuras|length }})</span></h3>
+      <div class="figs">
+      {% for f in r.figuras %}
+        <figure class="figcard">
+          {% if f.arquivo %}<a href="/doc/{{ r.id }}/img/{{ f.arquivo }}" target="_blank"><img src="/doc/{{ r.id }}/img/{{ f.arquivo }}" alt="{{ f.rotulo }}" loading="lazy"></a>{% else %}<div class="noimg">sem imagem</div>{% endif %}
+          <figcaption><b>{{ f.rotulo }}</b> {{ (f.legenda or '')[:70] }}<br><span class="mono faint">{{ f.href or 'não vai para o pacote' }}</span>{% if not f.chamada %} <span class="chip warn">sem chamada</span>{% endif %}</figcaption>
+        </figure>
+      {% endfor %}
+      </div>
+    </div>
+    {% endif %}
     <div class="card pad stack" style="gap:6px">
       <h3>Seções <span class="muted" style="font-weight:400">({{ r.extracao.secoes|length }})</span></h3>
       {% for s in r.extracao.secoes %}<p class="small" style="padding-left:{{ (s.nivel - 1) * 14 }}px">{{ s.titulo }} <span class="faint">· {{ s.paragrafos }} §</span></p>{% endfor %}

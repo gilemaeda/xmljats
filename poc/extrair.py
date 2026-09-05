@@ -18,7 +18,7 @@ from extrator.leitura import ler_pdf  # noqa: E402
 from extrator.modelo import ArticleModel  # noqa: E402
 
 
-def extrai(caminho: str):
+def extrai(caminho: str, pasta_imagens: str = None):
     doc = ler_pdf(caminho)
     model = ArticleModel(
         arquivo=os.path.basename(caminho), paginas=doc.paginas,
@@ -46,6 +46,22 @@ def extrai(caminho: str):
     else:
         model.tipo_artigo = "research-article"
     model.marca("tipo_artigo", "inferido (heading/título); confirmar")
+    # imagens das figuras: grava arquivos provisorios (o nome SPS <base>-gfNN vem no gerador/pacote)
+    n = 0
+    for f in model.figuras:
+        if f.imagem_indice is None:
+            continue
+        im = doc.imagens[f.imagem_indice]
+        n += 1
+        f.arquivo = f"fig{n:02d}.{im['ext']}"
+        if pasta_imagens and im.get("dados"):
+            os.makedirs(pasta_imagens, exist_ok=True)
+            with open(os.path.join(pasta_imagens, f.arquivo), "wb") as fh:
+                fh.write(im["dados"])
+    usadas = {f.imagem_indice for f in model.figuras if f.imagem_indice is not None}
+    soltas = len([i for i in range(len(doc.imagens)) if i not in usadas])
+    if soltas:
+        model.aviso(f"{soltas} imagem(ns) no PDF sem legenda 'Figura N' associada; não entram no XML (F01).")
     model.proveniencia["_indices"] = {"primeira_secao": i_sec, "referencias": i_ref, "paragrafos": len(doc.paragrafos), "notas": len(doc.notas), "laterais": len(doc.laterais), "margens": len(doc.margens)}
     return doc, model
 
@@ -108,7 +124,7 @@ def main(args):
     for p in paths:
         nome = os.path.splitext(os.path.basename(p))[0]
         try:
-            doc, model = extrai(p)
+            doc, model = extrai(p, pasta_imagens=os.path.join("poc", "saida", "img", nome))
         except Exception:  # noqa: BLE001
             print(f"### {nome}: ERRO\n{traceback.format_exc()}")
             continue

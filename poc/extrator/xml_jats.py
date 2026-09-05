@@ -47,6 +47,7 @@ class Resultado:
         self.bloqueantes: List[str] = []
         self.xml: Optional[bytes] = None
         self.nome_base: Optional[str] = None
+        self.imagens: List[tuple] = []  # (arquivo de origem do extrator, nome SPS no pacote)
 
     def aviso(self, m):
         self.avisos.append(m)
@@ -116,9 +117,9 @@ def nome_base_sps(rev: Optional[dict], model: dict) -> Optional[str]:
     return "-".join(p for p in partes if p)
 
 
-def _xref_bibr(p_el, texto: str, citacoes: List[dict]):
-    """Preenche <p> com texto e <xref ref-type="bibr"> nas citacoes ligadas a referencias."""
-    marcas: List[Tuple[int, int, str]] = []
+def _xref_bibr(p_el, texto: str, citacoes: List[dict], figuras: Optional[List[dict]] = None):
+    """Preenche <p> com texto e <xref> para referencias (bibr) e figuras (fig)."""
+    marcas: List[Tuple[int, int, str, str]] = []
     for c in citacoes:
         if c.get("ref_index") is None:
             continue
@@ -126,19 +127,25 @@ def _xref_bibr(p_el, texto: str, citacoes: List[dict]):
         pos = texto.find(alvo)
         while pos >= 0:
             fim = pos + len(alvo)
-            if not any(a < fim and pos < b for a, b, _ in marcas):
-                marcas.append((pos, fim, f"B{c['ref_index'] + 1}"))
+            if not any(a < fim and pos < b for a, b, _, _ in marcas):
+                marcas.append((pos, fim, f"B{c['ref_index'] + 1}", "bibr"))
                 break
             pos = texto.find(alvo, fim)
+    for f in figuras or []:
+        if not f.get("numero") or not f.get("_rid"):
+            continue
+        for m in re.finditer(r"\b(Fig(?:ura|\.)|Figure)\s*" + re.escape(f["numero"]) + r"(?!\d)", texto):
+            if not any(a < m.end() and m.start() < b for a, b, _, _ in marcas):
+                marcas.append((m.start(), m.end(), f["_rid"], "fig"))
     marcas.sort()
     cursor, ultimo = 0, None
-    for ini, fim, rid in marcas:
+    for ini, fim, rid, tipo in marcas:
         trecho = texto[cursor:ini]
         if ultimo is None:
             p_el.text = (p_el.text or "") + trecho
         else:
             ultimo.tail = (ultimo.tail or "") + trecho
-        ultimo = _sub(p_el, "xref", texto[ini:fim], ref_type="bibr", rid=rid)
+        ultimo = _sub(p_el, "xref", texto[ini:fim], ref_type=tipo, rid=rid)
         cursor = fim
     resto = texto[cursor:]
     if ultimo is None:
@@ -215,6 +222,16 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     res = Resultado()
     v = VERSOES[versao]
     lang = model.get("idioma") or "pt"
+    res.nome_base = nome_base_sps(rev, model) or "artigo"
+    # figuras com imagem: numeracao SPS <base>-gfNN e id f<N>
+    figs_xml = []
+    for f in model.get("figuras", []):
+        if f["tipo"] == "fig" and f.get("arquivo"):
+            f = dict(f)
+            f["_rid"] = f"f{len(figs_xml) + 1}"
+            f["_href"] = f"{res.nome_base}-gf{len(figs_xml) + 1:02d}.tif"
+            figs_xml.append(f)
+            res.imagens.append((f["arquivo"], f["_href"]))
     art = etree.Element("article", nsmap=NSMAP)
     art.set("article-type", model.get("tipo_artigo") or "research-article")
     art.set("dtd-version", v["dtd"])
@@ -440,7 +457,7 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     tabs = [f for f in model.get("figuras", []) if f["tipo"] == "table"]
     counts = _sub(am, "counts")
     # os contadores refletem o que EXISTE no XML; figuras/tabelas ainda nao sao emitidas (ver aviso F01)
-    _sub(counts, "fig-count", count="0")
+    _sub(counts, "fig-count", count=str(len(figs_xml)))
     _sub(counts, "table-count", count="0")
     _sub(counts, "equation-count", count="0")
     _sub(counts, "ref-count", count=str(len(model.get("referencias", []))))
@@ -451,7 +468,17 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
     body = _sub(art, "body")
     citacoes = model.get("citacoes", [])
     pilha = []  # (nivel, elemento)
-    for s in model.get("secoes", []):
+
+    def _emite_fig(pai_el, f):
+        fig = _sub(pai_el, "fig", id=f["_rid"])
+        _sub(fig, "label", f["rotulo"])
+        if f.get("legenda"):
+            _sub(_sub(fig, "caption"), "title", f["legenda"])
+        if f.get("fonte"):
+            _sub(fig, "attrib", "Fonte: " + f["fonte"])
+        _sub(fig, "graphic", xlink_href=f["_href"])
+
+    for si, s in enumerate(model.get("secoes", [])):
         nivel = s.get("nivel") or 1
         while pilha and pilha[-1][0] >= nivel:
             pilha.pop()
@@ -459,13 +486,25 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
         sec = _sub(pai, "sec", sec_type=s.get("sec_type"))
         titulo = s.get("titulo_completo") or (f"{s['numero']} {s['titulo']}" if s.get("numero") else s["titulo"])
         _sub(sec, "title", titulo)
-        for par in s.get("paragrafos", []):
-            _xref_bibr(_sub(sec, "p"), par, citacoes)
+        figs_secao = [f for f in figs_xml if f.get("secao_indice") == si]
+        pars = s.get("paragrafos", [])
+        for k, par in enumerate(pars):
+            for f in figs_secao:
+                if (f.get("pos_paragrafo") or 0) == k:
+                    _emite_fig(sec, f)
+            _xref_bibr(_sub(sec, "p"), par, citacoes, figs_xml)
+        for f in figs_secao:
+            if (f.get("pos_paragrafo") or 0) >= len(pars):
+                _emite_fig(sec, f)
         pilha.append((nivel, sec))
     if not model.get("secoes"):
         res.bloqueia("Corpo do texto sem seções (S01).")
-    if figs:
-        res.aviso(f"{len(figs)} figura(s) com legenda, mas imagens ainda não são extraídas: fig/graphic não gerados (F01).")
+    sem_imagem = [f["rotulo"] for f in figs if not f.get("arquivo")]
+    if sem_imagem:
+        res.aviso(f"Figura(s) sem imagem no PDF, omitidas do XML: {', '.join(sem_imagem)} (F01).")
+    for f in figs_xml:
+        if not f.get("chamada_no_texto"):
+            res.aviso(f"{f['rotulo']} não é citada no texto (F01).")
 
     # ---- back
     back = _sub(art, "back")
@@ -510,7 +549,6 @@ def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok:
 
     if res.bloqueantes and not rascunho_ok:
         return res
-    res.nome_base = nome_base_sps(rev, model)
     corpo = etree.tostring(art, pretty_print=True, encoding="unicode")
     res.xml = ('<?xml version="1.0" encoding="UTF-8"?>\n' + v["doctype"] + "\n" + corpo).encode("utf-8")
     return res

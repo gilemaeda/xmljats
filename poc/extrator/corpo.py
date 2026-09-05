@@ -127,7 +127,7 @@ def extrai_corpo(doc: Documento, model: ArticleModel, i_sec: Optional[int], i_re
         if atual is None:
             continue
         if RE_FIG.match(t) or RE_FONTE.match(t):
-            _registra_figura(model, p, t)
+            _registra_figura(model, p, t, doc, atual)
             continue
         # continuacao de paragrafo entre paginas
         if atual.paragrafos and ultimo_par_texto is not None and not ultimo_par_texto.rstrip().endswith((".", "!", "?", ":", "”", "\"", ")")) and t[:1].islower():
@@ -143,11 +143,23 @@ def extrai_corpo(doc: Documento, model: ArticleModel, i_sec: Optional[int], i_re
     _back_matter(doc, model, i_ref)
 
 
-def _registra_figura(model: ArticleModel, p: Paragrafo, t: str):
+def _registra_figura(model: ArticleModel, p: Paragrafo, t: str, doc: Documento, atual: Secao):
     m = RE_FIG.match(t)
     if m:
         tipo = "table" if re.match(r"tabela|table|quadro", m.group(1), re.I) else "fig"
-        model.figuras.append(Figura(tipo=tipo, rotulo=f"{m.group(1)} {m.group(2)}", legenda=m.group(3).strip(), pagina=p.pagina))
+        f = Figura(tipo=tipo, rotulo=f"{m.group(1)} {m.group(2)}", legenda=m.group(3).strip(" -:"), pagina=p.pagina,
+                   numero=m.group(2), secao_indice=len(model.secoes) - 1, pos_paragrafo=len(atual.paragrafos))
+        if tipo == "fig":
+            usados = {x.imagem_indice for x in model.figuras if x.imagem_indice is not None}
+            cands = [(i, im) for i, im in enumerate(doc.imagens) if im["pagina"] == p.pagina and i not in usados]
+            # a legenda costuma ficar logo abaixo da imagem; senao, a imagem mais proxima abaixo da legenda
+            acima = [(p.y0 - im["bbox"][3], i) for i, im in cands if im["bbox"][3] <= p.y0 + 6]
+            abaixo = [(im["bbox"][1] - p.y1, i) for i, im in cands if im["bbox"][1] >= p.y1 - 6]
+            escolha = min(acima)[1] if acima else (min(abaixo)[1] if abaixo else None)
+            if escolha is not None:
+                im = doc.imagens[escolha]
+                f.imagem_indice, f.ext, f.largura, f.altura = escolha, im["ext"], im["largura"], im["altura"]
+        model.figuras.append(f)
         return
     m = RE_FONTE.match(t)
     if m and model.figuras and model.figuras[-1].pagina == p.pagina and not model.figuras[-1].fonte:
@@ -157,9 +169,12 @@ def _registra_figura(model: ArticleModel, p: Paragrafo, t: str):
 def _chamadas_figuras(model: ArticleModel):
     texto = " ".join(par for s in model.secoes for par in s.paragrafos)
     for f in model.figuras:
-        rot = re.escape(f.rotulo.split()[0][:3]) + r"\w*\.?\s*" + re.escape(f.rotulo.split()[-1])
+        rot = re.escape(f.rotulo.split()[0][:3]) + r"\w*\.?\s*" + re.escape(f.rotulo.split()[-1]) + r"(?!\d)"
         if re.search(rot, texto, re.I):
             f.chamada_no_texto = True
+    sem_imagem = [f.rotulo for f in model.figuras if f.tipo == "fig" and f.imagem_indice is None]
+    if sem_imagem:
+        model.aviso(f"Legenda(s) sem imagem associada no PDF: {', '.join(sem_imagem)} (F01).")
 
 
 def _citacoes(model: ArticleModel):

@@ -46,5 +46,6 @@ Ordem: homologação primeiro, produção depois. Banco de dados ainda não é n
 - Extrator de PDF passa nos seis elementos obrigatórios da SciELO nos seis PDFs de teste (placar em `poc/saida/placar.md` após rodar `poc/extrair.py`).
 - XML gerado é válido no DTD JATS 1.1; o Schematron SPS reprova só onde o PDF não traz o dado (data de publicação com dia e mês; seção da revista), que o site mostra como bloqueante.
 - Tela "Revisar e editar": o operador preenche o que o PDF não traz (datas do OJS, seção, ORCID, e-mail de correspondência, revista) e o XML é regenerado e revalidado. As edições ficam em `edicoes.json` como sobreposições à extração; o PDF e o modelo original não mudam. Com isso, o artigo da Direito e Práxis chega a "Pronto" (zero bloqueantes, Schematron ok) preenchendo só a data de publicação.
-- Pacote `.zip` com XML e PDF no nome-base da SPS.
-- Falta: caminho DOCX, figuras/imagens no XML, chamadas de notas no texto, campos completos de referência, contas e cadastro editável de revistas, fila com IA.
+- Figuras: as imagens são extraídas do PDF, associadas às legendas, emitidas como `<fig>`/`<graphic>` com chamadas `xref` no texto, convertidas para TIFF no pacote com o nome `<base>-gfNN.tif` e mostradas como miniaturas no resultado.
+- Pacote `.zip` com XML, PDF e imagens no nome-base da SPS.
+- Falta: caminho DOCX, tabelas e equações, chamadas de notas no texto, campos completos de referência, contas e cadastro editável de revistas, fila com IA.

@@ -243,8 +243,30 @@ def campos_bloqueados(bloqueantes) -> dict:
 
 # ---------------------------------------------------------------- pipeline
 
+def prepara_imagens_pacote(pasta: Path, imagens) -> dict:
+    """Converte as imagens extraidas para TIFF com o nome SPS (<base>-gfNN.tif) em pasta/pacote. Devolve {origem: nome_sps}."""
+    import shutil
+    destino = pasta / "pacote"
+    if destino.exists():
+        shutil.rmtree(destino)
+    destino.mkdir(parents=True, exist_ok=True)
+    mapa = {}
+    for origem, nome_sps in imagens:
+        src = pasta / "imagens" / origem
+        if not src.exists():
+            continue
+        try:
+            from PIL import Image
+            with Image.open(src) as im:
+                im = im.convert("RGB") if im.mode not in ("RGB", "L") else im
+                im.save(destino / nome_sps, format="TIFF", compression="tiff_lzw")
+        except Exception:  # noqa: BLE001
+            shutil.copy(src, destino / (Path(nome_sps).stem + src.suffix))
+        mapa[origem] = nome_sps
+    return mapa
+
 def extrai_e_salva(pasta: Path):
-    doc, model = cli.extrai(str(pasta / "original.pdf"))
+    doc, model = cli.extrai(str(pasta / "original.pdf"), pasta_imagens=str(pasta / "imagens"))
     grava_json(pasta / "model.json", model.to_dict())
     with io.open(pasta / "resumo.md", "w", encoding="utf-8") as f:
         f.write(cli.resumo_md(model))
@@ -277,6 +299,7 @@ def gera_e_valida(pasta: Path) -> dict:
     with open(xml_path, "wb") as f:
         f.write(res.xml)
     dtd_ok, sps_ok, erros, detalhe = gx.valida_packtools(str(xml_path))
+    figuras_pacote = prepara_imagens_pacote(pasta, res.imagens)
     pronto = not res.bloqueantes and bool(dtd_ok) and bool(sps_ok)
     codigos_bloq = {c for b in res.bloqueantes for c in re.findall(r"\(([A-Z]\d{2})\)", b)}
     avisos_extrator = [a for a in modelo.get("avisos", []) if not (set(re.findall(r"\(([A-Z]\d{2})", a)) & codigos_bloq)]
@@ -303,6 +326,8 @@ def gera_e_valida(pasta: Path) -> dict:
         "packtools": erros,
         "packtools_detalhe": detalhe,
         "editados": editados,
+        "figuras": [{"rotulo": f["rotulo"], "legenda": f.get("legenda"), "fonte": f.get("fonte"), "arquivo": f.get("arquivo"),
+                     "href": figuras_pacote.get(f.get("arquivo")), "chamada": f.get("chamada_no_texto")} for f in modelo.get("figuras", []) if f["tipo"] == "fig"],
         "contagens": {
             "paginas": modelo.get("paginas"),
             "autores": len(modelo.get("autores", [])),
@@ -465,8 +490,20 @@ def baixar_pacote(doc_id: str, usuario: str = Depends(autentica)):
         pdf = pasta / "original.pdf"
         if pdf.exists():
             z.write(str(pdf), f"{base}/{base}.pdf")
+        for img in sorted((pasta / "pacote").glob("*")) if (pasta / "pacote").exists() else []:
+            z.write(str(img), f"{base}/{img.name}")
     buf.seek(0)
     return Response(buf.read(), media_type="application/zip", headers={"Content-Disposition": f'attachment; filename="{base}.zip"'})
+
+
+@app.get("/doc/{doc_id}/img/{nome}")
+def imagem(doc_id: str, nome: str, usuario: str = Depends(autentica)):
+    if not re.fullmatch(r"fig\d{2}\.[a-z0-9]{2,5}", nome):
+        raise HTTPException(404)
+    caminho = _pasta(doc_id) / "imagens" / nome
+    if not caminho.exists():
+        raise HTTPException(404)
+    return FileResponse(str(caminho))
 
 
 @app.get("/doc/{doc_id}/modelo.json")
