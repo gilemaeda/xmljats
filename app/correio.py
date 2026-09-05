@@ -28,7 +28,39 @@ CAIXAS = [("entrada", "Caixa de entrada"), ("saida", "Caixa de saída"), ("envia
           ("rascunhos", "Rascunhos"), ("lixeira", "Lixeira")]
 ROTULO_CAIXA = dict(CAIXAS)
 API = "https://api.resend.com/emails"
+REMETENTE_TESTE = "onboarding@resend.dev"  # remetente que o Resend libera antes de verificar um domínio próprio
+# a API do Resend fica atrás da Cloudflare, que bloqueia requisição sem User-Agent (erro 1010)
+UA = "xmljats/1.0 (+https://github.com/gilemaeda/xmljats)"
 RE_EMAIL_SIMPLES = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+# domínios de e-mail pessoal: nunca dá para verificá-los no Resend, então não servem como remetente
+DOMINIOS_PUBLICOS = {"gmail.com", "googlemail.com", "hotmail.com", "outlook.com", "outlook.com.br", "live.com",
+                     "yahoo.com", "yahoo.com.br", "uol.com.br", "bol.com.br", "terra.com.br", "icloud.com", "me.com", "aol.com"}
+
+
+def explica_erro(codigo: int, corpo: str) -> str:
+    """Transforma a resposta do Resend em uma frase que diz o que fazer."""
+    try:
+        d = json.loads(corpo or "{}")
+        msg = d.get("message") or d.get("error") or ""
+    except ValueError:
+        msg = (corpo or "").strip()
+    baixo = (msg or corpo or "").lower()
+    if codigo == 403 and "1010" in (corpo or ""):
+        return ("A Cloudflare do Resend recusou a chamada (erro 1010). Isso acontecia quando a requisição ia sem "
+                "identificação; se continuar, tente de novo em alguns minutos.")
+    if codigo == 401 or "api key is invalid" in baixo:
+        return "A chave da API não foi aceita pelo Resend. Confira se copiou a chave inteira e se ela não foi revogada."
+    if "domain is not verified" in baixo or "not verified" in baixo:
+        return (f"O domínio do remetente não está verificado no Resend. Enquanto você não verificar um domínio seu, "
+                f"use {REMETENTE_TESTE} como remetente (o Resend só entrega para o e-mail dono da conta).")
+    if "you can only send testing emails to your own email address" in baixo or "own email address" in baixo:
+        return ("Com o remetente de teste do Resend só dá para enviar para o e-mail dono da conta do Resend. "
+                "Para enviar a outros endereços, verifique um domínio seu.")
+    if codigo == 422 or "validation" in baixo:
+        return f"O Resend recusou os dados da mensagem: {msg or corpo[:160]}"
+    if codigo == 429:
+        return "Limite de envios do Resend atingido. Espere um pouco e tente de novo."
+    return f"O Resend respondeu HTTP {codigo}: {msg or corpo[:160]}"
 
 
 def _le(caminho: Path, padrao):
@@ -91,6 +123,8 @@ class Correio:
         if not c["url_base"]:
             pend.append("endereço público do site (para o link de confirmação)")
         c["pendencias"] = pend
+        c["remetente_teste"] = REMETENTE_TESTE
+        c["usando_remetente_teste"] = c["remetente_email"] == REMETENTE_TESTE
         return c
 
     def salva_config(self, dados: dict):
@@ -104,6 +138,10 @@ class Correio:
                 c[k] = (dados.get(k) or "").strip()
         if c["remetente_email"] and not RE_EMAIL_SIMPLES.match(c["remetente_email"]):
             raise ValueError("O e-mail remetente precisa ser um endereço válido.")
+        dominio = c["remetente_email"].split("@")[-1].lower() if c["remetente_email"] else ""
+        if dominio in DOMINIOS_PUBLICOS:
+            raise ValueError(f"O Resend não deixa enviar em nome de {dominio}: esse domínio não é seu e não pode ser "
+                             f"verificado. Use {REMETENTE_TESTE} enquanto não tiver um domínio próprio verificado.")
         if c["url_base"] and not re.match(r"^https?://", c["url_base"]):
             raise ValueError("O endereço do site precisa começar com http:// ou https://.")
         c["url_base"] = c["url_base"].rstrip("/")
@@ -186,7 +224,8 @@ class Correio:
     # ------------------------------------------------------------ envio
     def _post_resend(self, chave: str, corpo: dict):
         req = urllib.request.Request(API, data=json.dumps(corpo).encode("utf-8"), method="POST",
-                                     headers={"Authorization": "Bearer " + chave, "Content-Type": "application/json"})
+                                     headers={"Authorization": "Bearer " + chave, "Content-Type": "application/json",
+                                              "User-Agent": UA, "Accept": "application/json"})
         with urllib.request.urlopen(req, timeout=30) as r:
             return json.loads(r.read().decode("utf-8") or "{}")
 
@@ -208,9 +247,10 @@ class Correio:
         try:
             resp = self._post_resend(c["resend_chave"], corpo)
         except urllib.error.HTTPError as e:
-            detalhe = e.read().decode("utf-8", "ignore")[:300]
+            detalhe = e.read().decode("utf-8", "ignore")[:400]
+            recado = explica_erro(e.code, detalhe)
             return self._muda(mid, lambda x: x.update(
-                caixa="saida", estado="falhou", erro=f"HTTP {e.code}: {detalhe}",
+                caixa="saida", estado="falhou", erro=recado, erro_bruto=detalhe[:200],
                 historico=x["historico"] + [{"quando": agora_iso(), "evento": f"falha no envio (HTTP {e.code})", "por": por}]))
         except Exception as e:  # noqa: BLE001
             return self._muda(mid, lambda x: x.update(

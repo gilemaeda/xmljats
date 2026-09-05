@@ -62,8 +62,7 @@
   </div>
 {% endif %}
 <div class="grp">
-  <span class="grp-t">Conta</span>
-  <a href="/conta" class="{% if ativo == 'conta' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg>Minha conta</a>
+  <span class="grp-t">Ajuda</span>
   <a href="/ajuda" class="{% if ativo == 'ajuda' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.8.6-1.5 1-1.5 2M12 17.5v.5"/></svg>Como funciona</a>
 </div>
 {%- endmacro -%}
@@ -71,8 +70,10 @@
 <div class="side-foot">
   <div class="row" style="gap:8px">{{ seletor_tema() }}{{ seletor_menu() }}</div>
   <div class="user-card">
-    {{ foto(usuario, 32) }}
-    <span class="who"><span class="nm" title="{{ usuario.email }}">{{ usuario.nome }}</span><span class="rl">{{ ROTULO_PAPEL.get(usuario.papel, usuario.papel) }}</span></span>
+    <a class="quem {% if ativo == 'conta' %}active{% endif %}" href="/conta" title="Minha conta">
+      {{ foto(usuario, 44) }}
+      <span class="who"><span class="nm">{{ usuario.nome }}</span><span class="rl">{{ ROTULO_PAPEL.get(usuario.papel, usuario.papel) }}</span></span>
+    </a>
     {% if usuario.id not in ('local', 'api') %}<form method="post" action="/sair"><button class="btn small quiet" type="submit" title="Sair da conta" aria-label="Sair"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></button></form>{% endif %}
   </div>
   <span class="ver">xmljats {{ versao }}</span>
@@ -96,7 +97,7 @@
       <nav class="nav-topo" aria-label="Principal">{{ itens_menu() }}</nav>
       <div class="fim">
         {{ seletor_tema() }}{{ seletor_menu() }}
-        <div class="user-card">{{ foto(usuario, 30) }}<span class="who"><span class="nm">{{ usuario.nome }}</span><span class="rl">{{ ROTULO_PAPEL.get(usuario.papel, usuario.papel) }}</span></span></div>
+        <div class="user-card"><a class="quem {% if ativo == 'conta' %}active{% endif %}" href="/conta" title="Minha conta">{{ foto(usuario, 38) }}<span class="who"><span class="nm">{{ usuario.nome }}</span><span class="rl">{{ ROTULO_PAPEL.get(usuario.papel, usuario.papel) }}</span></span></a></div>
         {% if usuario.id not in ('local', 'api') %}<form method="post" action="/sair"><button class="btn small quiet" type="submit" title="Sair da conta" aria-label="Sair"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg></button></form>{% endif %}
       </div>
     </div>

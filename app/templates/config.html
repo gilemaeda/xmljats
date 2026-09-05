@@ -21,6 +21,8 @@
         {% if cfg.pronto_para_enviar %}<span class="chip ok">pronto para enviar</span>{% else %}<span class="chip warn">falta configurar</span>{% endif %}
       </div>
       {% if cfg.pendencias %}<div class="msg warn">Falta: {{ cfg.pendencias|join('; ') }}.</div>{% endif %}
+      {% if cfg.usando_remetente_teste %}<div class="msg note">Você está usando o remetente de teste do Resend. Ele só entrega
+        para o e-mail dono da conta do Resend, e a mensagem chega como "onboarding". Para enviar a qualquer pessoa, verifique um domínio seu.</div>{% endif %}
       <div class="field">
         <label for="resend_chave">Chave da API</label>
         <div class="senha-wrap">
@@ -34,8 +36,9 @@
       <div class="grid2">
         <div class="field">
           <label for="remetente_email">E-mail remetente</label>
-          <input id="remetente_email" name="remetente_email" type="email" value="{{ cfg.remetente_email }}" placeholder="nao-responda@seudominio.com.br">
-          <span class="hint">Precisa ser de um domínio verificado no Resend.</span>
+          <input id="remetente_email" name="remetente_email" type="email" value="{{ cfg.remetente_email }}" placeholder="{{ cfg.remetente_teste }}">
+          <span class="hint">Precisa ser de um domínio verificado no Resend. Sem domínio próprio, use
+            <button type="button" class="btn small quiet" style="padding:0 4px" onclick="document.getElementById('remetente_email').value='{{ cfg.remetente_teste }}'">{{ cfg.remetente_teste }}</button>.</span>
         </div>
         <div class="field">
           <label for="remetente_nome">Nome que aparece</label>
@@ -68,19 +71,28 @@
   <aside class="stack">
     <div class="card pad stack" style="gap:10px">
       <h3>Como ligar o Resend</h3>
+      <p class="small"><b>Para começar hoje, sem domínio:</b></p>
       <ol class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
-        <li>Crie a conta em <span class="mono">resend.com</span>.</li>
-        <li>Adicione seu domínio e publique os registros DNS que ele indicar (SPF, DKIM). Sem domínio verificado o Resend só entrega para o seu próprio e-mail.</li>
-        <li>Gere uma API Key e cole no campo ao lado.</li>
-        <li>Use um remetente do domínio verificado, por exemplo <span class="mono">nao-responda@seudominio.com.br</span>.</li>
-        <li>Clique em <b>Enviar teste</b> e confira a caixa de entrada.</li>
+        <li>Cole a API Key do Resend no campo ao lado.</li>
+        <li>Use <span class="mono">{{ cfg.remetente_teste }}</span> como remetente.</li>
+        <li>Em <b>Enviar teste</b>, mande para o <b>mesmo e-mail com que você criou a conta no Resend</b>. Só ele aceita mensagens nesse modo.</li>
       </ol>
+      <p class="small" style="margin-top:10px"><b>Para valer, com domínio próprio:</b></p>
+      <ol class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+        <li>No Resend, em <b>Domains</b>, adicione um domínio que seja seu (ex.: <span class="mono">xmljats.com.br</span>).</li>
+        <li>Publique no DNS os registros que ele mostrar (SPF, DKIM e, se pedir, DMARC).</li>
+        <li>Espere ficar "verified" e troque o remetente para <span class="mono">nao-responda@seudominio.com.br</span>.</li>
+      </ol>
+      <p class="small muted" style="margin-top:10px">O endereço do Dokploy (<span class="mono">.sslip.io</span>) não serve:
+        ele não é um domínio seu e não dá para publicar DNS nele. O endereço do site pode continuar sendo esse; só o
+        <b>remetente</b> precisa de domínio verificado.</p>
     </div>
     <div class="card pad stack" style="gap:10px">
       <h3>Webhook</h3>
       <p class="small muted">Para registrar entrega, abertura e devolução, e para receber mensagens na caixa de entrada, cadastre este endereço no Resend:</p>
-      <pre class="xmlprev">{{ webhook or '(defina antes o endereço público do site)' }}{% if cfg.tem_chave %}?k=SEGREDO{% endif %}</pre>
-      <p class="small muted">O segredo fica no servidor. Peça-o a quem administra a máquina ou abra o arquivo de configuração em <span class="mono">XMLJATS_DATA/config.json</span>.</p>
+      <pre class="xmlprev" id="url-webhook">{{ webhook }}</pre>
+      <button class="btn small" type="button" onclick="navigator.clipboard.writeText(document.getElementById('url-webhook').textContent.trim());this.textContent='Copiado'">Copiar endereço</button>
+      <p class="small muted">O endereço já vem com o segredo. Trate-o como senha: quem tiver esse link consegue inserir mensagens na caixa de entrada.</p>
     </div>
     <div class="card pad stack" style="gap:10px">
       <h3>Onde isso é guardado</h3>

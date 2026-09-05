@@ -63,7 +63,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.9.1"
+VERSAO_APP = "0.9.2"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -1087,9 +1087,11 @@ def correio_reenvia(usuario: dict = Depends(exige_admin)):
 
 @app.get("/admin/config", response_class=HTMLResponse)
 def config_sistema(request: Request, usuario: dict = Depends(exige_admin), mensagem: str = "", erro: str = ""):
+    c = CORREIO.config()
+    base = (c.get("url_base") or "").rstrip("/") or str(request.base_url).rstrip("/")
     return templates.TemplateResponse(request, "config.html", {
         "usuario": usuario, "cfg": CORREIO.config_publica(), "mensagem": mensagem, "erro": erro,
-        "webhook": (CORREIO.config().get("url_base") or "") + "/webhook/resend"})
+        "webhook": f"{base}/webhook/resend?k={c.get('webhook_segredo')}"})
 
 
 @app.post("/admin/config")
