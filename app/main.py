@@ -78,7 +78,7 @@ DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
 MAX_LOTE = int(os.environ.get("XMLJATS_MAX_LOTE", "20"))  # arquivos por envio; entram na fila e saem um a um
-VERSAO_APP = "0.26.0"
+VERSAO_APP = "0.26.1"
 if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
     raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)

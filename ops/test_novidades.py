@@ -41,6 +41,8 @@ ok(all(i["para"] == "todos" for v in N.visiveis("cliente") for i in v["itens"]),
 ok(all(i["para"] != "admin" for v in N.visiveis("operador") for i in v["itens"]), "operador não vê item 'admin'")
 ok(any(i["para"] == "admin" for v in N.visiveis("admin") for i in v["itens"]), "administrador vê os itens do painel")
 ok(all(v["itens"] for v in N.visiveis("cliente")), "versão sem item visível some da lista")
+ok(not any(p in (i["titulo"] + " " + i["texto"]).lower() for v in N.VERSOES for i in v["itens"] if i["para"] == "todos" for p in N.PALAVRAS_DE_ADMIN),
+   "nenhum item para 'todos' fala de administração (o módulo recusa subir se falar)")
 ok(N.linha_de_base({"id": "local", "papel": "admin"}) == N.ATUAL, "modo local (sem conta) nunca tem novidade pendente")
 ok(N.linha_de_base({"id": "x", "papel": "cliente", "atividade": {"ultimo_acesso": "2026-09-06T09:00:00-03:00"}}) == "0.17.0",
    "conta antiga sem registro: o que saiu antes do último acesso não é novidade (base 0.17.0 para acesso em 06/09)")

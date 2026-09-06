@@ -12,6 +12,11 @@ antiga sem o campo usa a data do último acesso: o que saiu antes dela não é n
 from typing import List, Optional
 
 VERSOES = [
+    {"versao": "0.26.1", "data": "2026-09-06", "itens": [
+        {"para": "admin", "titulo": "Novidade de cliente sem texto de administração",
+         "texto": "O item do menu do topo citava Correio e Configurações para o cliente; o texto foi limpo, e o teste passa a impedir "
+                  "que item marcado como \"todos\" mencione qualquer coisa do painel administrativo."},
+    ]},
     {"versao": "0.26.0", "data": "2026-09-06", "itens": [
         {"para": "admin", "titulo": "Lotes de entrega",
          "texto": "Na página Lotes, até 5 artigos prontos da mesma revista e do mesmo volume/número viram um só pacote (.zip com uma pasta, "
@@ -19,8 +24,7 @@ VERSOES = [
     ]},
     {"versao": "0.25.0", "data": "2026-09-06", "itens": [
         {"para": "todos", "titulo": "Menu do topo mais limpo",
-         "texto": "Com o menu no topo, Como funciona e Novidades (e, para o administrador, Correio e Configurações) viram ícones com dica, "
-                  "e a barra deixa de rolar."},
+         "texto": "Com o menu no topo, Como funciona e Novidades viram ícones com dica, e a barra deixa de rolar."},
         {"para": "todos", "titulo": "Caixa do ISSN some ao escolher a revista",
          "texto": "No envio, o campo \"ISSN da revista\" só aparece com \"Detectar pelo ISSN\"; escolhida uma revista da lista, ele some."},
         {"para": "todos", "titulo": "Como funciona explica contas, organizações e revistas",
@@ -150,7 +154,17 @@ def chave(versao: str) -> tuple:
     return tuple(int(x) for x in str(versao).split("."))
 
 
+PALAVRAS_DE_ADMIN = ("administrador", "administra", "configurações", "correio", "painel", "usuários", "organizações (menu)")
+
+
 def _confere():
+    for v in VERSOES:
+        for i in v["itens"]:
+            if i.get("para") == "todos":
+                texto = (i.get("titulo", "") + " " + i.get("texto", "")).lower()
+                for p in PALAVRAS_DE_ADMIN:
+                    if p in texto:
+                        raise RuntimeError(f"app/novidades.py: item para 'todos' na versão {v['versao']} fala de administração ('{p}')")
     chaves = [chave(v["versao"]) for v in VERSOES]
     if chaves != sorted(chaves, reverse=True) or len(set(chaves)) != len(chaves):
         raise RuntimeError("app/novidades.py: versões fora de ordem ou repetidas")
