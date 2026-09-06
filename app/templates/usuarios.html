@@ -24,7 +24,7 @@
   <section class="card">
     <header class="cardhead"><h2>Contas</h2><span class="muted small">clique em Editar para mudar nome, e-mail, papel ou senha</span></header>
     <div class="tblwrap"><table class="tbl">
-      <thead><tr><th>Pessoa</th><th>Papel</th><th>Situação</th><th>Validações</th><th>Desde</th><th></th></tr></thead>
+      <thead><tr><th>Pessoa</th><th>Papel</th><th>Organização</th><th>Situação</th><th>Validações</th><th>Desde</th><th></th></tr></thead>
       <tbody>
       {% for u in usuarios %}
         <tr>
@@ -36,6 +36,7 @@
             </div>
           </td>
           <td><span class="chip {{ 'crit' if u.papel == 'admin' else ('info' if u.papel == 'operador' else 'neutral') }}">{{ ROTULO_PAPEL.get(u.papel, u.papel) }}</span></td>
+          <td class="small">{{ organizacao_nome(u.organizacao) or '—' }}</td>
           <td>
             {% if u.ultimo_acesso|online %}<span class="chip ok">online</span>
             {% elif u.ultimo_acesso %}<span class="small">visto {{ u.ultimo_acesso|ha_quanto }}</span><div class="small faint">{{ u.ultimo_acesso|quando }}</div>
@@ -82,6 +83,7 @@
                 </form>
                 {% if u.id != usuario.id %}
                 <hr class="sep">
+                <form method="post" action="/usuarios/{{ u.id }}/novidades"><button class="btn small" type="submit" title="A janela de novidades da versão atual volta a aparecer para esta conta">Reexibir novidades</button></form>
                 <form method="post" action="/usuarios/{{ u.id }}/remover" onsubmit="return confirm('Remover {{ u.nome }}? Os documentos enviados por ele continuam no sistema.')"><button class="btn small danger" type="submit">Remover usuário</button></form>
                 {% endif %}
               </div>

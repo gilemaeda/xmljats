@@ -77,7 +77,7 @@ DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
 MAX_LOTE = int(os.environ.get("XMLJATS_MAX_LOTE", "20"))  # arquivos por envio; entram na fila e saem um a um
-VERSAO_APP = "0.24.0"
+VERSAO_APP = "0.25.0"
 if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
     raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)
@@ -998,6 +998,9 @@ def revista_por_issn(numero: str, usuario: dict) -> tuple:
     numero = issn_api.normaliza(numero)
     lista = carrega_revistas()
     ja = next((r for r in lista if numero in {(r.get("issn_epub") or "").upper(), (r.get("issn_ppub") or "").upper()}), None)
+    if ja and ja["acronimo"] not in {r["acronimo"] for r in revistas_para(usuario)}:
+        return None, (f"O ISSN {numero} já está cadastrado como {ja['titulo']} ({ja['acronimo']}) por outra organização. "
+                      "Uma revista só existe uma vez: peça ao administrador para torná-la pública ou vinculá-la à sua organização."), None
     if ja:
         return ja["acronimo"], f"Revista {ja['titulo']} ({ja['acronimo']}) já estava cadastrada com o ISSN {numero}.", None
     consulta = issn_api.consulta(numero)
@@ -1400,6 +1403,8 @@ async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(a
             continue
         if k == "revista":
             cfg = le_json(pasta / "config.json", {}) or {}
+            if val and val not in {r["acronimo"] for r in revistas_para(usuario)}:
+                raise HTTPException(400, "Revista fora do seu alcance: use uma revista pública ou da sua organização.")
             cfg["revista"] = val or None
             grava_json(pasta / "config.json", cfg)
             continue
@@ -1938,6 +1943,10 @@ def revista_consulta(numero: str = "", usuario: dict = Depends(autentica)):
     lista = carrega_revistas()
     alvo = issn_api.normaliza(numero)
     ja = next((r for r in lista if alvo in {(r.get("issn_epub") or "").upper(), (r.get("issn_ppub") or "").upper()}), None)
+    if ja and ja["acronimo"] not in {r["acronimo"] for r in revistas_para(usuario)}:
+        return {"ok": False, "cadastrada": True, "oculta": True, "issn": alvo, "dados": {}, "fontes": [],
+                "mensagem": (f"O ISSN {alvo} já está cadastrado como {ja['titulo']} ({ja['acronimo']}) por outra organização. "
+                             "Peça ao administrador para torná-la pública ou vinculá-la à sua organização.")}
     if ja:
         return {"ok": True, "cadastrada": True, "acronimo": ja["acronimo"], "issn": alvo,
                 "mensagem": f"Já cadastrada: {ja['titulo']} ({ja['acronimo']}).",
@@ -1996,7 +2005,13 @@ async def revista_salvar(request: Request, acronimo: str, usuario: dict = Depend
     dados, erros = valida_revista(form, lista, acronimo_atual=acronimo)
     if erros:
         return _form_revista(request, usuario, {**form, "na_scielo": dados["na_scielo"], "acronimo": form.get("acronimo") or acronimo}, erros, False)
-    dados["organizacao"], dados["dono"] = rev.get("organizacao"), rev.get("dono")  # editar não muda de quem é
+    vis = str(form.get("visibilidade") or "")  # "Quem vê esta revista": pública, de uma organização ou como estava
+    if vis == "publica":
+        dados["organizacao"], dados["dono"] = None, None
+    elif vis.startswith("org:") and ORGS.por_id(vis[4:]):
+        dados["organizacao"], dados["dono"] = vis[4:], None
+    else:
+        dados["organizacao"], dados["dono"] = rev.get("organizacao"), rev.get("dono")
     lista[lista.index(rev)] = dados
     grava_revistas(lista)
     return RedirectResponse(url="/revistas?mensagem=" + urllib.parse.quote(f"Revista {dados['acronimo']} atualizada."), status_code=303)
@@ -2490,8 +2505,10 @@ def admin(request: Request, usuario: dict = Depends(exige_admin), dono: str = ""
 
 @app.get("/admin/documentos", response_class=HTMLResponse)
 def admin_documentos(request: Request, usuario: dict = Depends(exige_admin), revista: str = "", etapa: str = "",
-                     situacao: str = "", dono: str = "", ordem: str = "atualizado"):
+                     situacao: str = "", dono: str = "", ordem: str = "atualizado", organizacao: str = ""):
     docs = lista_docs(0)
+    if organizacao:
+        docs = [d for d in docs if (d.get("organizacao") or "") == organizacao]
     if revista:
         docs = [d for d in docs if d.get("revista") == revista]
     if etapa:
@@ -2503,7 +2520,7 @@ def admin_documentos(request: Request, usuario: dict = Depends(exige_admin), rev
     if dono:
         docs = [d for d in docs if (d.get("criado_por_id") or "") == dono]
     docs = ordena_docs(docs, ordem)
-    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao, "dono": dono,
+    filtros = {"revista": revista, "etapa": etapa, "situacao": situacao, "dono": dono, "organizacao": organizacao,
                "ordem": ordem if ordem != "atualizado" else ""}
     query = "?" + urllib.parse.urlencode({k: v for k, v in filtros.items() if v}) if any(filtros.values()) else ""
     return templates.TemplateResponse(request, "admin_docs.html", {
@@ -2528,6 +2545,7 @@ def _organizacoes_com_totais() -> list:
     saida = []
     for o in ORGS.lista():
         saida.append({**o, "membros": sum(1 for u in usuarios if u.get("organizacao") == o["id"]),
+                      "nomes": sorted(u["nome"] for u in usuarios if u.get("organizacao") == o["id"]),
                       "docs": sum(1 for d in docs if d.get("organizacao") == o["id"]),
                       "revistas": sum(1 for r in revistas if r.get("organizacao") == o["id"])})
     return saida
@@ -2580,6 +2598,17 @@ def admin_organizacao_remover(oid: str, usuario: dict = Depends(exige_admin)):
     except ValueError as e:
         return RedirectResponse(url="/admin/organizacoes?erro=" + urllib.parse.quote(str(e)), status_code=303)
     return RedirectResponse(url="/admin/organizacoes?mensagem=" + urllib.parse.quote("Organização removida."), status_code=303)
+
+
+@app.post("/usuarios/{uid}/novidades")
+def usuario_novidades(uid: str, usuario: dict = Depends(exige_admin)):
+    """A janela de novidades volta a aparecer para esta conta (mostra a versão atual de novo)."""
+    anterior = novidades.VERSOES[1]["versao"] if len(novidades.VERSOES) > 1 else None
+    try:
+        CONTAS.marca_novidades(uid, anterior)
+    except ValueError as e:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote("As novidades da versão atual vão aparecer de novo para esta conta."), status_code=303)
 
 
 @app.post("/usuarios/{uid}/organizacao")

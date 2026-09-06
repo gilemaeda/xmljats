@@ -33,6 +33,7 @@
             <details>
               <summary class="btn small" style="display:inline-flex">Gerenciar</summary>
               <div class="stack" style="gap:8px;margin-top:8px;min-width:280px;text-align:left">
+                <div class="small muted">Membros: {{ o.nomes|join(', ') if o.nomes else '— (vincule contas em Usuários ou passe o código)' }}</div>
                 <form method="post" action="/admin/organizacoes/{{ o.id }}/nome" class="row" style="gap:6px;flex-wrap:nowrap">
                   <input name="nome" value="{{ o.nome }}" aria-label="Nome" required style="flex:1">
                   <button class="btn small" type="submit">Renomear</button>

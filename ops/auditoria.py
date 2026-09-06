@@ -396,6 +396,11 @@ def roda_site():
     check("membro da mesma organização vê o documento do colega", _membros[1].get(_did).status_code == 200)
     check("quem está fora da organização não vê", _fora.get(_did).status_code == 403)
     check("página de organizações do administrador", "Editora Auditoria" in c.get("/admin/organizacoes").text)
+    check("Como funciona explica contas, organizações e quem vê o quê (parte do administrador só para ele)",
+          "Para o administrador" in c.get("/ajuda").text and "Para o administrador" not in _fora.get("/ajuda").text
+          and "quem vê o quê" in _fora.get("/ajuda").text)
+    check("[hidden] vence o display dos campos (caixa do ISSN some de verdade)",
+          "[hidden]{display:none!important}" in io.open(os.path.join(RAIZ, "app", "static", "style.css"), encoding="utf-8").read())
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)

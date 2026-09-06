@@ -117,6 +117,17 @@
           {{ campo('idioma_padrao', 'Idioma em que publica', 'pt, en, es… preenche o idioma do artigo quando o arquivo não diz; vem do DOAJ na busca por ISSN') }}
           {{ campo('email_editorial', 'E-mail da equipe editorial', 'recebe cópia do aviso de depósito enviado à SciELO', tipo='email') }}
         </div>
+        {% if not nova and usuario.papel == 'admin' %}
+        <div class="field">
+          <label for="visibilidade">Quem vê esta revista</label>
+          <select id="visibilidade" name="visibilidade">
+            <option value="publica" {% if not v.get('organizacao') and not v.get('dono') %}selected{% endif %}>Todas as contas (pública)</option>
+            {% for o in organizacoes_lista() %}<option value="org:{{ o.id }}" {% if v.get('organizacao') == o.id %}selected{% endif %}>Só a organização {{ o.nome }}</option>{% endfor %}
+            {% if v.get('dono') %}<option value="dono" selected>Só quem cadastrou (particular)</option>{% endif %}
+          </select>
+          <span class="hint">Revista cadastrada por cliente nasce da organização dele (ou particular). Uma revista só existe uma vez por ISSN: se outra organização precisar dela, torne-a pública.</span>
+        </div>
+        {% endif %}
         <div class="field">
           <label for="_fonte">Observações e origem dos dados</label>
           <textarea id="_fonte" name="_fonte" rows="3">{{ v.get('_fonte', '') or '' }}</textarea>

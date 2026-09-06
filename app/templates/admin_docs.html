@@ -42,6 +42,13 @@
     </select>
   </div>
   <div class="field">
+    <label for="f-org">Organização</label>
+    <select id="f-org" name="organizacao">
+      <option value="">Todas</option>
+      {% for o in organizacoes_lista() %}<option value="{{ o.id }}" {% if filtros.organizacao == o.id %}selected{% endif %}>{{ o.nome }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
     <label for="f-ordem">Ordenar por</label>
     <select id="f-ordem" name="ordem" onchange="this.form.submit()">
       {% for cod, rotulo, _f, _r in ordens %}<option value="{{ cod }}" {% if ordem == cod %}selected{% endif %}>{{ rotulo }}</option>{% endfor %}

@@ -142,6 +142,65 @@
   </aside>
 </div>
 
+<h2 class="sec-t" id="organizacoes">Contas, organizações e quem vê o quê</h2>
+<div class="cards-3">
+  <article class="card pad ficha">
+    <span class="ic brand"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span>
+    <h3>Conta</h3>
+    <p class="small muted">Uma pessoa, com e-mail e senha, com um papel: <b>cliente</b> envia e revisa artigos; <b>operador</b> é a nossa
+      equipe e trabalha em todos; <b>administrador</b> cuida de contas, organizações, revistas, correio e configurações (e não usa o validador).</p>
+  </article>
+  <article class="card pad ficha">
+    <span class="ic brand"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/></svg></span>
+    <h3>Organização</h3>
+    <p class="small muted">Uma editora, instituição ou equipe de revista que agrupa contas de cliente. Quem está na mesma organização vê os
+      mesmos documentos e as revistas que ela cadastrou. Não é uma conta: é o grupo. Entra-se por código de convite.</p>
+  </article>
+  <article class="card pad ficha">
+    <span class="ic brand"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5M8 13h8M8 17h5"/></svg></span>
+    <h3>Revista</h3>
+    <p class="small muted">Um cadastro (acrônimo, ISSN, editora, licença…), não uma conta. Cadastrada pela nossa equipe, é pública para todos;
+      cadastrada por um cliente, fica da organização dele (ou só dele). Um ISSN só existe uma vez no cadastro.</p>
+  </article>
+</div>
+<div class="review" style="grid-template-columns:1fr 1fr;margin-top:var(--s-4)">
+  <div class="card pad stack" style="gap:8px">
+    <h3>Para quem envia artigos</h3>
+    <ol class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+      <li>Crie sua conta. Se a sua editora já usa o xmljats, entre com o <b>código de convite</b> que um colega vê em Minha conta;
+        se não, crie a organização ali mesmo (ou depois, em Minha conta).</li>
+      <li>Entrar é sempre com o seu e-mail e senha: a organização fica ligada à conta, não é um login à parte.</li>
+      <li>Para trazer colegas, passe o código de convite. Quem entra passa a ver os documentos e revistas da organização;
+        o que cada um enviou antes de entrar continua só dele.</li>
+      <li>Trocar de organização ou sair dela é com o administrador, porque muda quem vê o quê.</li>
+    </ol>
+  </div>
+  {% if usuario.papel == 'admin' %}
+  <div class="card pad stack" style="gap:8px">
+    <h3>Para o administrador</h3>
+    <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+      <li><b>Organizações</b> (menu): criar, renomear, gerar novo código de convite (o antigo deixa de valer) e remover (só sem membros).
+        A lista mostra membros, documentos e revistas de cada uma. A editora também pode criar a sua sozinha, no cadastro ou em Minha conta.</li>
+      <li><b>Usuários</b>: coluna com a organização; vincular ou desvincular uma conta; reexibir a janela de novidades; papel e senha.</li>
+      <li><b>Revistas</b>: ao editar, "Quem vê esta revista" abre a revista para todos ou muda de organização. Se outra organização
+        precisar de uma revista já cadastrada (mesmo ISSN), torne-a pública.</li>
+      <li><b>Documentos</b>: filtro por organização e por conta; o documento nasce na organização de quem enviou.</li>
+      <li>Operador vê tudo sem precisar de organização. Envio em lote passa pela fila; PDF escaneado passa pelo OCR (veja /saude).</li>
+    </ul>
+  </div>
+  {% else %}
+  <div class="card pad stack" style="gap:8px">
+    <h3>O que a organização muda na prática</h3>
+    <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+      <li>Meus documentos passa a listar também os dos colegas, com "enviado por".</li>
+      <li>A lista de revistas do envio mostra as públicas e as da sua organização.</li>
+      <li>Revista cadastrada por você fica da organização (ou só sua, se não está em nenhuma).</li>
+      <li>Se um ISSN já foi cadastrado por outra organização, o sistema avisa: o administrador pode torná-la pública.</li>
+    </ul>
+  </div>
+  {% endif %}
+</div>
+
 <h2 class="sec-t">Cadastro de revistas</h2>
 <div class="cards-3">
   <article class="card pad ficha">

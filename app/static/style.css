@@ -572,3 +572,11 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 .nov-itens{margin:8px 0 0;padding-left:18px;line-height:1.55}
 .nov-itens li{margin:4px 0}
 .nov-lista .nov-versao{border-top:0}
+/* o atributo hidden tem de vencer .field{display:flex} e afins: a caixa do ISSN sumia só no papel */
+[hidden]{display:none!important}
+/* menu no topo: os grupos Sistema e Ajuda viram ícones com dica, para caber sem barra de rolagem */
+:root[data-menu="topo"] .nav-topo .grp.compacto a .rot{display:none}
+:root[data-menu="topo"] .nav-topo .grp.compacto a svg{display:block;width:18px;height:18px;color:var(--text-2);fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+:root[data-menu="topo"] .nav-topo .grp.compacto a{padding:7px 8px}
+:root[data-menu="topo"] .nav-topo .grp.compacto a.active svg{color:var(--brand-text)}
+:root[data-menu="topo"] .nav-topo .grp.compacto a .n{margin-left:3px}

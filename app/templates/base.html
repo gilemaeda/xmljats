@@ -43,29 +43,29 @@
 {% if usuario.papel == 'admin' %}
   <div class="grp">
     <span class="grp-t">Administração</span>
-    <a href="/admin" class="{% if ativo == 'admin' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg>Visão geral</a>
-    <a href="/admin/documentos" class="{% if ativo == 'admin-docs' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></svg>Documentos</a>
-    <a href="/usuarios" class="{% if ativo == 'usuarios' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 5.5a3.4 3.4 0 010 5M17.5 20a6.5 6.5 0 00-2-4.7"/></svg>Usuários</a>
-    <a href="/admin/organizacoes" class="{% if ativo == 'orgs' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>Organizações</a>
-    <a href="/revistas" class="{% if ativo == 'revistas' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5M8 13h8M8 17h5"/></svg>Revistas</a>
+    <a href="/admin" class="{% if ativo == 'admin' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M8 17v-5M13 17V8M18 17v-3"/></svg><span class="rot">Visão geral</span></a>
+    <a href="/admin/documentos" class="{% if ativo == 'admin-docs' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h4"/></svg><span class="rot">Documentos</span></a>
+    <a href="/usuarios" class="{% if ativo == 'usuarios' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.4"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 5.5a3.4 3.4 0 010 5M17.5 20a6.5 6.5 0 00-2-4.7"/></svg><span class="rot">Usuários</span></a>
+    <a href="/admin/organizacoes" class="{% if ativo == 'orgs' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg><span class="rot">Organizações</span></a>
+    <a href="/revistas" class="{% if ativo == 'revistas' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5M8 13h8M8 17h5"/></svg><span class="rot">Revistas</span></a>
   </div>
-  <div class="grp">
+  <div class="grp compacto">
     <span class="grp-t">Sistema</span>
-    <a href="/admin/correio" class="{% if ativo == 'correio' %}active{% endif %}"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>Correio{% set nl = nao_lidas() %}{% if nl %}<span class="n">{{ nl }}</span>{% endif %}</a>
-    <a href="/admin/config" class="{% if ativo == 'config' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.6 1.6 0 008 19.4a1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H2a2 2 0 110-4h.1A1.6 1.6 0 004.6 8a1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3H9a1.6 1.6 0 001-1.5V2a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8V9a1.6 1.6 0 001.5 1H22a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg>Configurações</a>
+    <a href="/admin/correio" class="{% if ativo == 'correio' %}active{% endif %}" title="Correio"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg><span class="rot">Correio</span>{% set nl = nao_lidas() %}{% if nl %}<span class="n">{{ nl }}</span>{% endif %}</a>
+    <a href="/admin/config" class="{% if ativo == 'config' %}active{% endif %}" title="Configurações"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1A1.6 1.6 0 008 19.4a1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H2a2 2 0 110-4h.1A1.6 1.6 0 004.6 8a1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3H9a1.6 1.6 0 001-1.5V2a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8V9a1.6 1.6 0 001.5 1H22a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/></svg><span class="rot">Configurações</span></a>
   </div>
 {% else %}
   <div class="grp">
     <span class="grp-t">Trabalho</span>
-    <a href="/" class="{% if ativo == 'validador' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>Validar artigo</a>
-    <a href="/painel" class="{% if ativo == 'painel' %}active{% endif %}"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg>{{ 'Meus documentos' if usuario.papel == 'cliente' else 'Documentos' }}{% if total_docs %}<span class="n">{{ total_docs }}</span>{% endif %}</a>
-    <a href="/revistas" class="{% if ativo == 'revistas' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5M8 13h8M8 17h5"/></svg>Revistas</a>
+    <a href="/" class="{% if ativo == 'validador' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0L8 8m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg><span class="rot">Validar artigo</span></a>
+    <a href="/painel" class="{% if ativo == 'painel' %}active{% endif %}"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg><span class="rot">{{ 'Meus documentos' if usuario.papel == 'cliente' else 'Documentos' }}</span>{% if total_docs %}<span class="n">{{ total_docs }}</span>{% endif %}</a>
+    <a href="/revistas" class="{% if ativo == 'revistas' %}active{% endif %}"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5M8 13h8M8 17h5"/></svg><span class="rot">Revistas</span></a>
   </div>
 {% endif %}
-<div class="grp">
+<div class="grp compacto">
   <span class="grp-t">Ajuda</span>
-  <a href="/ajuda" class="{% if ativo == 'ajuda' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.8.6-1.5 1-1.5 2M12 17.5v.5"/></svg>Como funciona</a>
-  <a href="/novidades" class="{% if ativo == 'novidades' %}active{% endif %}" title="O que mudou nas versões">{% set nn = novidades_conta(novidades_pendentes(usuario)) %}<span class="sino-ico"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg>{% if nn %}<i class="sino-ponto" title="{{ nn }} novidade(s) não vista(s)" aria-label="{{ nn }} novidade(s) não vista(s)"></i>{% endif %}</span>Novidades</a>
+  <a href="/ajuda" class="{% if ativo == 'ajuda' %}active{% endif %}" title="Como funciona"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.8.6-1.5 1-1.5 2M12 17.5v.5"/></svg><span class="rot">Como funciona</span></a>
+  <a href="/novidades" class="{% if ativo == 'novidades' %}active{% endif %}" title="O que mudou nas versões">{% set nn = novidades_conta(novidades_pendentes(usuario)) %}<span class="sino-ico"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg>{% if nn %}<i class="sino-ponto" title="{{ nn }} novidade(s) não vista(s)" aria-label="{{ nn }} novidade(s) não vista(s)"></i>{% endif %}</span><span class="rot">Novidades</span></a>
 </div>
 {%- endmacro -%}
 {%- macro rodape_menu() -%}

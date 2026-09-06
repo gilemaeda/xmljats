@@ -12,6 +12,19 @@ antiga sem o campo usa a data do último acesso: o que saiu antes dela não é n
 from typing import List, Optional
 
 VERSOES = [
+    {"versao": "0.25.0", "data": "2026-09-06", "itens": [
+        {"para": "todos", "titulo": "Menu do topo mais limpo",
+         "texto": "Com o menu no topo, Como funciona e Novidades (e, para o administrador, Correio e Configurações) viram ícones com dica, "
+                  "e a barra deixa de rolar."},
+        {"para": "todos", "titulo": "Caixa do ISSN some ao escolher a revista",
+         "texto": "No envio, o campo \"ISSN da revista\" só aparece com \"Detectar pelo ISSN\"; escolhida uma revista da lista, ele some."},
+        {"para": "todos", "titulo": "Como funciona explica contas, organizações e revistas",
+         "texto": "Nova seção com o que é conta, papel, organização e revista, como entrar numa organização e o que muda para quem está nela."},
+        {"para": "admin", "titulo": "Organização em todo lugar",
+         "texto": "Filtro por organização em Documentos, coluna em Usuários, membros na página Organizações, \"Quem vê esta revista\" ao "
+                  "editar uma revista e \"Reexibir novidades\" para uma conta. O ISSN de uma revista de outra organização não é cadastrado "
+                  "de novo: o sistema orienta a pedir ao administrador."},
+    ]},
     {"versao": "0.24.0", "data": "2026-09-06", "itens": [
         {"para": "todos", "titulo": "Organizações: sua equipe vê os mesmos documentos",
          "texto": "Uma editora ou instituição agrupa contas: quem está na mesma organização vê os mesmos documentos e revistas. "

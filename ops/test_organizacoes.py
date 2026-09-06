@@ -8,6 +8,7 @@ import sys
 if hasattr(sys.stdout, "reconfigure"):  # console cp1252 do Windows nao imprime todo Unicode e derrubava o teste
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import tempfile
+import urllib.parse
 
 tmp = tempfile.mkdtemp(prefix="xmljats-org-")
 os.environ["XMLJATS_DATA"] = tmp
@@ -20,6 +21,7 @@ os.chdir(RAIZ)
 from fastapi.testclient import TestClient  # noqa: E402
 import app.main as M  # noqa: E402
 from app.main import app  # noqa: E402
+import novidades as N  # noqa: E402
 
 falhas = []
 
@@ -175,6 +177,40 @@ ok(op.get(f"/doc/{doc_a}").status_code == 200 and op.get(f"/doc/{doc_c}").status
    "operador continua vendo tudo")
 ok("Revista da Editora X" in adm.get("/admin/documentos").text or "Editora X Ltda" in adm.get("/admin/documentos").text,
    "a lista do administrador mostra a organização do documento")
+
+# ---------------------------------------------------------------- 9. ISSN de revista de outra organização; visibilidade; filtros; reexibir novidades
+j = b.get("/revistas/consulta?numero=1413-9936").json()
+ok(j.get("cadastrada") and j.get("oculta") and "outra organização" in (j.get("mensagem") or ""),
+   "consulta de ISSN de revista de outra organização avisa em vez de cadastrar de novo")
+r = b.post("/revistas/importar", data={"numero": "1413-9936", "voltar": "/"})
+ok(r.status_code == 303 and "outra organiza" in urllib.parse.unquote(r.headers["location"]), "importar pelo ISSN também avisa")
+ok(next(x for x in M.carrega_revistas() if x["acronimo"] == "edx").get("organizacao") == o["id"], "e a revista continua da organização de Ana")
+form_pub = dict(form_edit, visibilidade="publica")
+ok(adm.post("/revistas/edx", data=form_pub).status_code == 303 and not next(x for x in M.carrega_revistas() if x["acronimo"] == "edx").get("organizacao"),
+   "'Quem vê esta revista' = pública tira a revista da organização")
+ok("edx" in b.get("/revistas").text, "agora Bia vê a revista")
+form_org = dict(form_edit, visibilidade=f"org:{org_b}")
+ok(adm.post("/revistas/edx", data=form_org).status_code == 303 and next(x for x in M.carrega_revistas() if x["acronimo"] == "edx").get("organizacao") == org_b,
+   "e pode mudar a revista de organização")
+ok("edx" not in a.get("/revistas").text and "edx" in b.get("/revistas").text, "a revista passou para a organização de Bia")
+ok('name="visibilidade"' in adm.get("/revistas/edx").text and 'name="visibilidade"' not in adm.get("/revistas/nova").text,
+   "o seletor 'Quem vê esta revista' só aparece ao editar")
+pd = adm.get(f"/admin/documentos?organizacao={o['id']}").text
+ok(doc_a in pd and doc_c not in pd, "filtro por organização na lista do administrador")
+ok('name="organizacao"' in pd and "Editora X Ltda" in pd, "o filtro e o nome da organização aparecem na lista")
+ok("<th>Organização</th>" in adm.get("/usuarios").text, "Usuários tem a coluna Organização")
+M.CONTAS.marca_novidades(uid("ana@exemplo.org"), N.ATUAL)
+ok('id="novidades-modal"' not in a.get("/painel").text, "Ana não tem novidade pendente")
+ok(adm.post(f"/usuarios/{uid('ana@exemplo.org')}/novidades").status_code == 303 and 'id="novidades-modal"' in a.get("/painel").text,
+   "'Reexibir novidades' faz a janela voltar para a conta")
+po = adm.get("/admin/organizacoes").text
+ok("Membros:" in po and "Ana" in po and "Aldo" in po, "a página Organizações lista os membros")
+ok("[hidden]{display:none!important}" in io.open(os.path.join(RAIZ, "app", "static", "style.css"), encoding="utf-8").read(),
+   "CSS: [hidden] vence o display dos campos (caixa do ISSN some de verdade)")
+aj_a = a.get("/ajuda").text
+aj_adm = adm.get("/ajuda").text
+ok("quem vê o quê" in aj_a and "Para o administrador" not in aj_a and "Para o administrador" in aj_adm,
+   "Como funciona explica organizações; a parte do administrador só aparece para ele")
 
 print("\nFALHAS:", len(falhas))
 for f in falhas:
