@@ -43,13 +43,13 @@
         <div class="drop" id="drop">
           <div class="row" style="gap:12px">
             <span class="icon"><svg viewBox="0 0 24 24"><path d="M12 16V4m0 0l-4 4m4-4l4 4"/><path d="M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg></span>
-            <div><b>Arraste o PDF ou o DOCX do artigo para aqui</b><div class="small muted">ou escolha no computador. Até 50 MB. No DOCX, as seções, as tabelas e as fórmulas vêm do próprio arquivo, sem adivinhação.</div></div>
+            <div><b>Arraste o PDF ou o DOCX do artigo para aqui</b><div class="small muted">ou escolha no computador. Até 50 MB por arquivo. Vários de uma vez (até 20) entram numa fila e são processados um a um. No DOCX, as seções, as tabelas e as fórmulas vêm do próprio arquivo, sem adivinhação.</div></div>
           </div>
           <div class="row" style="gap:10px">
-            <label class="btn" for="arquivo" style="cursor:pointer"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>Escolher arquivo</label>
+            <label class="btn" for="arquivo" style="cursor:pointer"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg>Escolher arquivos</label>
             <span id="nome-arquivo" class="small muted">Nenhum arquivo escolhido.</span>
           </div>
-          <input id="arquivo" class="visualmente-oculto" type="file" name="arquivo" accept="application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+          <input id="arquivo" class="visualmente-oculto" type="file" name="arquivo" multiple accept="application/pdf,.pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
         </div>
       </div>
       <div class="row between">
@@ -99,11 +99,13 @@
 (function(){
   var drop=document.getElementById('drop'), input=document.getElementById('arquivo'), nome=document.getElementById('nome-arquivo');
   function mostra(){
-    var f=input.files&&input.files[0];
-    if(!f){nome.textContent='Nenhum arquivo escolhido.';nome.className='small muted';return;}
-    var mb=(f.size/1048576).toFixed(1);
-    if(!/\.(pdf|docx)$/i.test(f.name)){nome.textContent=f.name+' não é PDF nem DOCX. O sistema lê os dois formatos.';nome.className='small crit-text';input.value='';return;}
-    nome.textContent=f.name+' · '+mb+' MB';nome.className='small';
+    var fs=input.files?Array.prototype.slice.call(input.files):[];
+    if(!fs.length){nome.textContent='Nenhum arquivo escolhido.';nome.className='small muted';return;}
+    var ruim=fs.filter(function(f){return !/\.(pdf|docx)$/i.test(f.name);});
+    if(ruim.length){nome.textContent=ruim[0].name+' não é PDF nem DOCX. O sistema lê os dois formatos.';nome.className='small crit-text';input.value='';return;}
+    if(fs.length>20){nome.textContent='No máximo 20 arquivos por envio ('+fs.length+' escolhidos).';nome.className='small crit-text';input.value='';return;}
+    var mb=(fs.reduce(function(t,f){return t+f.size;},0)/1048576).toFixed(1);
+    nome.textContent=(fs.length===1?fs[0].name:fs.length+' arquivos')+' · '+mb+' MB'+(fs.length>1?' · entram na fila':'');nome.className='small';
   }
   input.addEventListener('change',mostra);
   ['dragenter','dragover'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('is-over');});});
@@ -112,7 +114,7 @@
     if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length){input.files=e.dataTransfer.files;mostra();}
   });
   var form=input.form;
-  form.addEventListener('submit',function(){var b=form.querySelector('button[type=submit]');b.disabled=true;b.textContent='Processando… leva alguns segundos';});
+  form.addEventListener('submit',function(){var b=form.querySelector('button[type=submit]');b.disabled=true;b.textContent=(input.files&&input.files.length>1)?'Enviando '+input.files.length+' arquivos para a fila…':'Processando… leva alguns segundos';});
 })();
 </script>
 <form id="form-importa-issn" method="post" action="/revistas/importar" style="display:none">

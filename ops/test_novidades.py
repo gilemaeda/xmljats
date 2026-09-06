@@ -118,7 +118,11 @@ adm = TestClient(app, follow_redirects=False)
 r = adm.post("/entrar", data={"email": "admin", "senha": "senha-de-teste-123", "proximo": "/"}, headers={"x-forwarded-for": "10.1.1.3"})
 adm.cookies.set("xmljats_sessao", r.cookies["xmljats_sessao"])
 pa = adm.get("/admin").text
-ok(MODAL in pa and any(t in pa for t in SO_ADMIN), "administrador vê os itens do painel na janela")
+adm_user = next(u for u in M.CONTAS.lista() if u["email"] == "admin")
+pend_adm = N.pendentes(adm_user)
+ok(MODAL in pa and all(i["titulo"] in pa for v in pend_adm[:3] for i in v["itens"]),
+   "administrador vê a janela com todos os itens das três versões mais novas, inclusive os do painel quando há")
+ok(any(i["para"] == "admin" for v in pend_adm for i in v["itens"]), "há item do painel entre as pendências do administrador")
 npa = adm.get("/novidades").text
 ok(any(t in npa for t in SO_ADMIN) and "novo para você" in npa, "a página do administrador lista os itens do painel e marca os novos")
 

@@ -353,6 +353,22 @@ def roda_site():
     check("cliente não vê novidade do painel administrativo",
           bool(_so_admin) and not any(t in _home for t in _so_admin) and not any(t in _pagina for t in _so_admin))
     check("abrir a página Novidades marca como visto", 'id="novidades-modal"' not in _nc.get("/").text)
+    # ---- fila: dois arquivos de uma vez entram na fila e saem processados
+    import json as _json2
+    import time as _time
+    with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"), "rb") as _f1, open(os.path.join(RAIZ, "modelos", "1222+-+VF (5).pdf"), "rb") as _f2:
+        _rf = _nc.post("/validar", files=[("arquivo", ("a.pdf", _f1, "application/pdf")), ("arquivo", ("b.pdf", _f2, "application/pdf"))],
+                       data={"revista": "rdp", "sps": "1.10"})
+    check("dois arquivos de uma vez vão para a fila", _rf.status_code == 303 and "/painel" in _rf.headers.get("location", ""))
+    _ids = sorted(p for p in os.listdir(os.path.join(tmp, "docs")))[-2:]
+    _t0 = _time.time()
+    while _time.time() - _t0 < 300:
+        _est = [(_json2.load(io.open(os.path.join(tmp, "docs", i, "config.json"), encoding="utf-8")).get("estado")) for i in _ids]
+        if all(e in ("concluido", "erro") for e in _est):
+            break
+        _time.sleep(2)
+    check("a fila processa os dois e a lista volta ao normal",
+          all(e == "concluido" for e in _est) and all(os.path.exists(os.path.join(tmp, "docs", i, "validacao.json")) for i in _ids))
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)
@@ -472,7 +488,8 @@ def main():
           "| Novidades por versão: janela ao entrar, página de notificações e sino, filtrados por papel | pronto | ops/test_novidades.py |",
           "| Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |",
           "| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |",
-          "| Equipe da revista compartilhando documentos, fila em lote e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem fila em lote nem custo com revisão humana |",
+          "| Fila de processamento: envio em lote, estado na lista, página de espera, retomada após reinício | pronto | ops/test_fila.py |",
+          "| Equipe da revista compartilhando documentos e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem custo com revisão humana |",
           "| Validador público sem conta e captcha no registro | não começou | decisão dos sócios (fase 4); Turnstile precisa das chaves da Cloudflare |",
           "| Integração com OJS | não começou | fase 5 do plano; o depósito por FTP já existe |", ""]
     io.open(SAIDA, "w", encoding="utf-8").write("\n".join(L) + "\n")

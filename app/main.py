@@ -39,7 +39,7 @@ import time
 import uuid
 import zipfile
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse, RedirectResponse, Response
@@ -62,6 +62,7 @@ import obrigatorios  # noqa: E402  (app/obrigatorios.py: o que a SPS exige e o P
 import entrega  # noqa: E402  (app/entrega.py: conferência do pacote, FTP da SciELO e e-mails obrigatórios)
 import enriquece  # noqa: E402  (app/enriquece.py: completa o que falta pelo DOI no Crossref e confere o ORCID)
 import novidades  # noqa: E402  (app/novidades.py: o que mudou em cada versão, filtrado por papel, e quem já viu)
+import fila  # noqa: E402  (app/fila.py: envio em lote entra numa fila; um trabalhador processa um arquivo por vez)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -72,7 +73,8 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.21.1"
+MAX_LOTE = int(os.environ.get("XMLJATS_MAX_LOTE", "20"))  # arquivos por envio; entram na fila e saem um a um
+VERSAO_APP = "0.22.0"
 if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
     raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)
@@ -441,14 +443,24 @@ def ordena_docs(docs: list, ordem: str) -> list:
 def lista_docs(limite=30, usuario: Optional[dict] = None):
     itens = []
     for pasta in DOCS.iterdir():
+        if not pasta.is_dir():
+            continue
+        cfg = le_json(pasta / "config.json", {}) or {}
         d = le_json(pasta / "validacao.json")
         if not d:
-            continue
+            # ainda na fila, processando ou com erro: entra na lista com o que o config sabe
+            if cfg.get("estado") not in ("na_fila", "processando", "erro"):
+                continue
+            d = {"titulo": "", "nome_base": "", "pronto": False, "bloqueantes": [], "packtools": [], "revista": cfg.get("revista"),
+                 "criado_em": cfg.get("criado_em") or cfg.get("fila_em") or "",
+                 "atualizado_em": cfg.get("fila_em") or cfg.get("criado_em") or ""}
         d["id"] = pasta.name
+        d["estado"] = cfg.get("estado") or "concluido"
+        d["erro"] = cfg.get("erro")
+        d["posicao"] = fila.posicao(pasta) if d["estado"] == "na_fila" else None
         nome = pasta / "nome_original.txt"
         if d.get("arquivo_original") in (None, "original.pdf") and nome.exists():
             d["arquivo_original"] = nome.read_text(encoding="utf-8").strip()
-        cfg = le_json(pasta / "config.json", {}) or {}
         d["etapa"] = cfg.get("etapa") or "recebido"
         d["criado_por"] = cfg.get("criado_por")
         d["criado_por_id"] = cfg.get("criado_por_id")
@@ -998,6 +1010,9 @@ def processa_envio(pasta: Path) -> dict:
     return r
 
 
+fila.configura(DOCS, processa_envio, le_json, grava_json, tempo.agora_iso)
+
+
 def registra_duracao(pasta: Path, extracao: float, total: float) -> None:
     v = le_json(pasta / "validacao.json", {}) or {}
     if not v:
@@ -1151,17 +1166,28 @@ def index(request: Request, usuario: dict = Depends(autentica), mensagem: str = 
 
 
 @app.post("/validar")
-async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.10"),
+async def validar(request: Request, arquivo: List[UploadFile] = File(...), revista: str = Form(""), sps: str = Form("1.10"),
                   issn: str = Form(""), usuario: dict = Depends(autentica)):
-    nome = arquivo.filename or "arquivo"
-    ext = os.path.splitext(nome)[1].lower()
-    if ext not in FORMATOS:
-        raise HTTPException(400, f"Formato não aceito: {ext or 'sem extensão'}. O sistema lê {', '.join(sorted(FORMATOS))}.")
+    """Um arquivo: processa na hora e cai no resultado. Vários: entram na fila (um trabalhador processa um a um)
+    e a pessoa acompanha na lista de documentos, que atualiza sozinha."""
+    arquivos = [a for a in arquivo if a is not None and (a.filename or "").strip()]
+    if not arquivos:
+        raise HTTPException(400, "Escolha pelo menos um arquivo.")
+    if len(arquivos) > MAX_LOTE:
+        raise HTTPException(400, f"No máximo {MAX_LOTE} arquivos por envio; este tinha {len(arquivos)}.")
+    for a in arquivos:
+        ext = os.path.splitext(a.filename or "")[1].lower()
+        if ext not in FORMATOS:
+            raise HTTPException(400, f"Formato não aceito: {a.filename} ({ext or 'sem extensão'}). O sistema lê "
+                                     f"{', '.join(sorted(FORMATOS))}.")
     if confirmacao_pendente(usuario):
         raise HTTPException(403, "Confirme seu e-mail antes de enviar arquivos. Veja o link em Minha conta.")
-    conteudo = await arquivo.read()
-    if len(conteudo) > MAX_MB * 1024 * 1024:
-        raise HTTPException(413, f"Arquivo maior que {MAX_MB} MB.")
+    conteudos = []
+    for a in arquivos:
+        conteudo = await a.read()
+        if len(conteudo) > MAX_MB * 1024 * 1024:
+            raise HTTPException(413, f"{a.filename}: maior que {MAX_MB} MB.")
+        conteudos.append((a.filename or "arquivo", conteudo))
     if sps not in ("1.9", "1.10"):
         sps = "1.10"
     # "Detectar pelo ISSN": sem revista na lista, o número resolve o cadastro (e o cria, se as bases responderem)
@@ -1170,37 +1196,62 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
         # consulta de rede numa rota async: fora do event loop, senão o site inteiro fica parado esperando
         revista, aviso_revista, _ = await run_in_threadpool(revista_por_issn, issn, usuario)
         revista = revista or ""
-    doc_id = tempo.agora().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]
-    pasta = DOCS / doc_id
-    pasta.mkdir(parents=True, exist_ok=True)
-    with open(pasta / ("original" + ext), "wb") as f:
-        f.write(conteudo)
-    (pasta / "nome_original.txt").write_text(nome, encoding="utf-8")
-    agora = tempo.agora_iso()
-    grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None, "criado_por": usuario["nome"],
-                                       "criado_por_id": usuario["id"], "etapa": "recebido", "issn_informado": issn.strip() or None,
-                                       "aviso_revista": aviso_revista,
-                                       "historico_etapas": [{"etapa": "recebido", "por": usuario["nome"], "em": agora}]})
-    try:
-        # extração + XML + packtools levam segundos: fora do event loop, senão o site inteiro espera este envio
-        await run_in_threadpool(processa_envio, pasta)
-    except Exception as e:  # noqa: BLE001
-        (pasta / "erro.txt").write_text(repr(e), encoding="utf-8")
-        raise HTTPException(500, f"Falha ao processar o arquivo: {e}")
-    return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
+    novos = []
+    for nome, conteudo in conteudos:
+        ext = os.path.splitext(nome)[1].lower()
+        doc_id = tempo.agora().strftime("%Y%m%d-%H%M%S") + "-" + uuid.uuid4().hex[:6]
+        pasta = DOCS / doc_id
+        pasta.mkdir(parents=True, exist_ok=True)
+        with open(pasta / ("original" + ext), "wb") as f:
+            f.write(conteudo)
+        (pasta / "nome_original.txt").write_text(nome, encoding="utf-8")
+        agora = tempo.agora_iso()
+        grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None, "criado_por": usuario["nome"],
+                                           "criado_por_id": usuario["id"], "criado_em": agora, "etapa": "recebido",
+                                           "issn_informado": issn.strip() or None, "aviso_revista": aviso_revista,
+                                           "historico_etapas": [{"etapa": "recebido", "por": usuario["nome"], "em": agora}]})
+        novos.append((doc_id, pasta))
+    if len(novos) == 1:
+        doc_id, pasta = novos[0]
+        try:
+            # extração + XML + packtools levam segundos: fora do event loop, senão o site inteiro espera este envio
+            await run_in_threadpool(processa_envio, pasta)
+        except Exception as e:  # noqa: BLE001
+            (pasta / "erro.txt").write_text(repr(e), encoding="utf-8")
+            raise HTTPException(500, f"Falha ao processar o arquivo: {e}")
+        return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
+    for _doc_id, pasta in novos:
+        fila.enfileira(pasta)
+    return RedirectResponse(url="/painel?mensagem=" + urllib.parse.quote(
+        f"{len(novos)} arquivos na fila. A lista atualiza sozinha enquanto eles são processados."), status_code=303)
 
 
 @app.get("/doc/{doc_id}", response_class=HTMLResponse)
 def ver_doc(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id, usuario)
     r = le_json(pasta / "validacao.json")
+    cfg = le_json(pasta / "config.json", {}) or {}
     if not r:
+        if cfg.get("estado") in ("na_fila", "processando", "erro"):
+            nome = (pasta / "nome_original.txt").read_text(encoding="utf-8").strip() if (pasta / "nome_original.txt").exists() else doc_id
+            return templates.TemplateResponse(request, "aguardando.html", {
+                "usuario": usuario, "id": doc_id, "nome": nome, "estado": cfg.get("estado"), "erro": cfg.get("erro"),
+                "posicao": fila.posicao(pasta), "na_fila": fila.tamanho()})
         raise HTTPException(404, "Documento sem resultado")
     marca_aberto(pasta, usuario)
     r["id"] = doc_id
-    cfg = le_json(pasta / "config.json", {}) or {}
     return templates.TemplateResponse(request, "resultado.html", {"r": r, "usuario": usuario, "etapas": ETAPAS, "etapa": cfg.get("etapa") or "recebido",
                                                                   "historico": cfg.get("historico_etapas") or [], "criado_por": cfg.get("criado_por")})
+
+
+@app.get("/doc/{doc_id}/estado.json")
+def estado_do_documento(doc_id: str, usuario: dict = Depends(autentica)):
+    """Estado do processamento, para a página de espera e a lista se atualizarem sozinhas."""
+    pasta = _pasta(doc_id, usuario)
+    cfg = le_json(pasta / "config.json", {}) or {}
+    estado = cfg.get("estado") or ("concluido" if (pasta / "validacao.json").exists() else "na_fila")
+    return {"estado": estado, "posicao": fila.posicao(pasta), "na_fila": fila.tamanho(), "erro": cfg.get("erro"),
+            "pronto": bool((le_json(pasta / "validacao.json", {}) or {}).get("pronto"))}
 
 
 @app.post("/doc/{doc_id}/etapa")
@@ -1486,6 +1537,7 @@ def reprocessar(doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id, usuario)
     visual.limpa(pasta)  # o PDF vai ser lido de novo: as páginas renderizadas saem junto
     processa_envio(pasta)
+    fila.conclui(pasta)  # documento que veio da fila (ou deu erro nela) volta a 'concluido'
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
 
 
@@ -1899,7 +1951,7 @@ def revista_remover(acronimo: str, usuario: dict = Depends(exige_admin)):
 
 @app.get("/painel", response_class=HTMLResponse)
 def painel(request: Request, usuario: dict = Depends(autentica), revista: str = "", etapa: str = "", situacao: str = "",
-           ordem: str = "atualizado"):
+           ordem: str = "atualizado", mensagem: str = ""):
     if usuario.get("papel") == "admin":
         return RedirectResponse(url="/admin/documentos", status_code=303)
     docs = lista_docs(0, usuario)
@@ -1917,7 +1969,8 @@ def painel(request: Request, usuario: dict = Depends(autentica), revista: str = 
     return templates.TemplateResponse(request, "painel.html", {"docs": docs, "revistas": carrega_revistas(), "etapas": ETAPAS, "filtros": filtros,
                                                                "filtro_ativo": any(v for k, v in filtros.items() if k != "ordem"),
                                                                "query": query, "usuario": usuario, "ordens": ORDENS, "ordem": ordem,
-                                                               "total_docs": len(lista_docs(0, usuario))})
+                                                               "total_docs": len(lista_docs(0, usuario)), "mensagem": mensagem,
+                                                               "em_fila": any(d.get("estado") in ("na_fila", "processando") for d in docs)})
 
 
 # ---------------------------------------------------------------- contas

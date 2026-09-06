@@ -12,6 +12,12 @@ antiga sem o campo usa a data do último acesso: o que saiu antes dela não é n
 from typing import List, Optional
 
 VERSOES = [
+    {"versao": "0.22.0", "data": "2026-09-06", "itens": [
+        {"para": "todos", "titulo": "Envio em lote com fila de processamento",
+         "texto": "Escolha vários PDF ou DOCX de uma vez (até 20): eles entram numa fila e são processados um a um. A lista de "
+                  "documentos mostra \"na fila\", \"processando\" e o resultado, atualizando sozinha. Um arquivo só continua "
+                  "sendo processado na hora."},
+    ]},
     {"versao": "0.21.1", "data": "2026-09-06", "itens": [
         {"para": "todos", "titulo": "Bolinha no sino",
          "texto": "Enquanto houver novidade que você não viu, o sino \"Novidades\" mostra uma bolinha; ela some quando você abre a página."},

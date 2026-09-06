@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% set ativo = 'painel' %}
+{% block titulo %}{{ 'Erro' if estado == 'erro' else 'Na fila' }} · {{ nome }}{% endblock %}
+{% block conteudo %}
+<div class="result-head">
+  <div class="stack" style="gap:6px">
+    <p class="eyebrow">{{ 'Processamento' if estado != 'erro' else 'Processamento com erro' }}</p>
+    <h1>{{ nome }}</h1>
+    <div class="row" style="gap:8px">
+      {% if estado == 'erro' %}<span class="chip crit">erro</span>
+      {% elif estado == 'processando' %}<span class="chip warn">processando agora</span>
+      {% else %}<span class="chip warn">na fila{% if posicao %} · posição {{ posicao }}{% endif %}</span>{% endif %}
+      {% if estado != 'erro' and na_fila %}<span class="chip neutral">{{ na_fila }} na fila</span>{% endif %}
+    </div>
+  </div>
+  <div class="row"><a class="btn" href="/painel">Ver a lista</a></div>
+</div>
+
+{% if estado == 'erro' %}
+<div class="card pad stack" style="gap:10px">
+  <b>O motor não conseguiu processar este arquivo.</b>
+  <p class="mono small" style="margin:0;white-space:pre-wrap">{{ erro or 'sem detalhe' }}</p>
+  <p class="small muted" style="margin:0">Confira se o arquivo é um PDF ou DOCX íntegro. Dá para tentar de novo aqui ou
+    <a href="/">enviar outro arquivo</a>.</p>
+  <form method="post" action="/doc/{{ id }}/reprocessar"><button class="btn" type="submit">Tentar de novo</button></form>
+</div>
+{% else %}
+<div class="card pad stack" style="gap:8px" id="aguardando" data-id="{{ id }}">
+  <b id="estado-txt">{% if estado == 'processando' %}Lendo o arquivo, gerando o XML e validando no packtools…{% else %}Esperando a vez na fila.{% endif %}</b>
+  <p class="small muted" style="margin:0">Esta página atualiza sozinha; quando terminar, o resultado abre aqui. Você pode ir para a lista e voltar depois.</p>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+{% if estado != 'erro' %}
+<script>
+// Pergunta o estado a cada poucos segundos; terminou (ou deu erro), recarrega e a tela vira o resultado.
+(function(){
+  var id=document.getElementById('aguardando').getAttribute('data-id'), txt=document.getElementById('estado-txt');
+  function tick(){
+    fetch('/doc/'+id+'/estado.json',{credentials:'same-origin'}).then(function(r){return r.json();}).then(function(j){
+      if(j.estado==='concluido'||j.estado==='erro'){location.reload();return;}
+      txt.textContent=j.estado==='processando'?'Lendo o arquivo, gerando o XML e validando no packtools…':('Esperando a vez na fila'+(j.posicao?' (posição '+j.posicao+')':'')+'.');
+      setTimeout(tick,3000);
+    }).catch(function(){setTimeout(tick,6000);});
+  }
+  setTimeout(tick,3000);
+})();
+</script>
+{% endif %}
+{% endblock %}

@@ -64,7 +64,7 @@
         <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }} · {{ d.nome_base }}</div></td>
         <td>{{ d.revista or '—' }}</td>
         <td class="small">{{ d.criado_por or '—' }}</td>
-        <td>{% if d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
+        <td>{% if d.estado == 'na_fila' %}<span class="chip warn">na fila{% if d.posicao %} · {{ d.posicao }}º{% endif %}</span>{% elif d.estado == 'processando' %}<span class="chip warn">processando</span>{% elif d.estado == 'erro' %}<span class="chip crit" title="{{ d.erro }}">erro</span>{% elif d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
         <td>
           <form method="post" action="/doc/{{ d.id }}/etapa" class="row" style="gap:6px;flex-wrap:nowrap">
             <input type="hidden" name="voltar" value="/admin/documentos{{ query }}">
