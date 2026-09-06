@@ -36,11 +36,18 @@ def extrai(caminho: str, pasta_imagens: str = None):
     # do que devolver "título não identificado" para tudo.
     if not e_docx:
         chars = sum(len((l.texto or "").strip()) for l in doc.linhas)
-        if chars < 40 * max(1, doc.paginas):
+        ocr_paginas = list(getattr(doc, "ocr_paginas", None) or [])
+        if ocr_paginas and chars >= 40 * max(1, doc.paginas):
+            model.marca("texto", f"OCR em {len(ocr_paginas)} de {doc.paginas} página(s)")
+            model.avisos.append(f"Texto obtido por OCR em {len(ocr_paginas)} de {doc.paginas} página(s), porque o PDF é uma "
+                                "imagem escaneada: confira com atenção título, autores, resumo e referências, porque OCR erra "
+                                "acentos e quebras (D02).")
+        elif chars < 40 * max(1, doc.paginas):
+            from extrator import ocr as _ocr  # noqa: WPS433
             model.sem_texto = True
+            motivo = "o OCR não está disponível neste servidor" if not _ocr.tessdata_dir() else "o OCR não conseguiu ler o texto"
             model.avisos.append(f"O PDF não tem camada de texto ({chars} caractere(s) em {doc.paginas} página(s)): é um "
-                                "documento escaneado. O motor lê texto e ainda não faz OCR; envie o DOCX ou o PDF gerado "
-                                "pelo editor de texto (D01).")
+                                f"documento escaneado, e {motivo}. Envie o DOCX ou o PDF gerado pelo editor de texto (D01).")
     i_sec = corpo.indice_primeira_secao(doc)
     i_ref = referencias.indice_referencias(doc, i_sec)
     if i_sec is not None and i_ref is not None and i_ref <= i_sec:

@@ -172,9 +172,15 @@ with open(caminho_esc, "rb") as f:
 ok(up2.status_code == 303, f"PDF escaneado é aceito e processado ({up2.status_code})")
 doc2 = up2.headers["location"].rsplit("/", 1)[-1]
 val3 = json.load(io.open(__import__("pathlib").Path(tmp) / "docs" / doc2 / "validacao.json", encoding="utf-8"))
-ok(bool(val3.get("bloqueantes")) and "camada de texto" in val3["bloqueantes"][0] and "(D01)" in val3["bloqueantes"][0],
-   f"o primeiro bloqueante explica que o PDF não tem texto: {(val3.get('bloqueantes') or ['-'])[0][:90]}")
-ok("escaneado" in c.get(f"/doc/{doc2}").text, "o resultado diz que o PDF é escaneado")
+from extrator import ocr as _ocr  # noqa: E402
+if _ocr.disponivel():
+    ok(not any("(D01)" in b for b in val3.get("bloqueantes") or []) and any("(D02)" in a for a in val3.get("avisos_extrator") or []),
+       "com OCR no servidor, o PDF escaneado é lido e o resultado avisa que o texto veio de OCR (D02)")
+    ok("OCR" in c.get(f"/doc/{doc2}").text, "o resultado diz que o texto veio de OCR")
+else:
+    ok(bool(val3.get("bloqueantes")) and "camada de texto" in val3["bloqueantes"][0] and "(D01)" in val3["bloqueantes"][0],
+       f"sem OCR, o primeiro bloqueante explica que o PDF não tem texto: {(val3.get('bloqueantes') or ['-'])[0][:90]}")
+    ok("escaneado" in c.get(f"/doc/{doc2}").text, "o resultado diz que o PDF é escaneado")
 ok("correções à mão por artigo" in adm.get("/admin").text, "o painel mostra as correções à mão por artigo (taxa de erro do motor)")
 ok("Se a revista deposita sozinha" in c.get(f"/doc/{doc}/entrega").text, "a tela de entrega traz o roteiro para a revista depositar sozinha")
 

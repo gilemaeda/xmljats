@@ -168,7 +168,6 @@
 <h2 class="sec-t">O que ainda não é feito aqui</h2>
 <div class="cards-3">
   {% for titulo, texto in [
-    ('OCR de PDF escaneado', 'PDF só com imagem é detectado e avisado, mas não é lido. Entra quando a retroconversão de números antigos começar.'),
     ('Credencial do FTP e andamento na SciELO', 'O depósito no FTP e o aviso por e-mail saem daqui, mas a credencial do FTP é pedida à SciELO (pela revista ou pelo prestador), e o andamento do QA não é consultado: quem acompanha anota a etapa.'),
     ('Integração com o OJS', 'Datas, seção e DOI ainda entram na revisão ou são pedidos por e-mail; puxar da submissão no OJS é o passo seguinte.'),
     ('DOI das referências pelo Crossref', 'Medido e descartado por enquanto: a busca por texto devolve DOI errado com a mesma confiança de um certo. O DOI do próprio artigo, sim, é conferido no Crossref.'),
@@ -186,7 +185,7 @@
 <h2 class="sec-t">Perguntas rápidas</h2>
 <div class="faq">
   {% for p, r in [
-    ('Meu PDF é digitalizado (escaneado). Funciona?', 'Ainda não. O motor lê a camada de texto do PDF; um arquivo que é só imagem é detectado e o resultado avisa, em vez de devolver "título não identificado" para tudo. OCR entra com a retroconversão de números antigos; por enquanto, envie o DOCX ou o PDF gerado pelo editor de texto.'),
+    ('Meu PDF é digitalizado (escaneado). Funciona?', 'Sim, por OCR: o motor reconhece o texto da imagem (português e inglês) e segue o fluxo normal, com um aviso para conferir com atenção, porque OCR erra acentos e quebras de linha. O DOCX ou o PDF gerado pelo editor continuam sendo a melhor entrada.'),
     ('Posso enviar vários arquivos de uma vez?', 'Sim, até 20 por envio. Eles entram numa fila e são processados um a um; a lista de documentos mostra "na fila", "processando" e depois o resultado, atualizando sozinha. Um arquivo só é processado na hora, e você cai direto no resultado.'),
     ('Onde vejo o que mudou no sistema?', 'No sino "Novidades" do menu. Depois de uma atualização, uma janela mostra ao entrar o que mudou para o seu perfil; a página guarda o histórico de versões. O que é do painel administrativo só aparece para o administrador.'),
     ('Por que meu artigo não fica "Pronto"?', 'Falta algum dado que o arquivo não traz. O mais comum é o dia e o mês da publicação, que só existem no sistema da revista. A tela de revisão mostra cada pendência com o nome do campo e de onde buscar o dado.'),

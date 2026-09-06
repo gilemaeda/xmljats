@@ -78,7 +78,14 @@ def prepara(pasta: Path, forca: bool = False) -> dict:
             pix.save(str(destino / nome))
             # palavras com caixa: (x0, y0, x1, y1, palavra, bloco, linha, palavra_no_bloco)
             palavras = []
-            for p in page.get_text("words"):
+            lista = page.get_text("words")
+            if not any((p[4] or "").strip() for p in lista):
+                # página escaneada: a camada de texto do visualizador também vem do OCR
+                from extrator import ocr as _ocr  # noqa: WPS433
+                tp = _ocr.textpage(page)
+                if tp is not None:
+                    lista = page.get_text("words", textpage=tp)
+            for p in lista:
                 x0, y0, x1, y1, txt, bloco, linha, _ = p
                 if not (txt or "").strip():
                     continue

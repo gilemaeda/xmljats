@@ -7,6 +7,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# OCR para PDF escaneado: o PyMuPDF traz o Tesseract embutido e só precisa dos dados de idioma (português e inglês)
+RUN apt-get update && apt-get install -y --no-install-recommends tesseract-ocr-por tesseract-ocr-eng \
+    && rm -rf /var/lib/apt/lists/*
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

@@ -67,6 +67,7 @@ import fila  # noqa: E402  (app/fila.py: envio em lote entra numa fila; um traba
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
 from extrator import xml_jats  # noqa: E402
+from extrator import ocr as ocr_mod  # noqa: E402  (poc/extrator/ocr.py: Tesseract via PyMuPDF para PDF escaneado)
 from extrator.util import RE_ORCID, orcid_valido  # noqa: E402
 
 DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
@@ -74,7 +75,7 @@ DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
 MAX_LOTE = int(os.environ.get("XMLJATS_MAX_LOTE", "20"))  # arquivos por envio; entram na fila e saem um a um
-VERSAO_APP = "0.22.0"
+VERSAO_APP = "0.23.0"
 if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
     raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)
@@ -1153,7 +1154,8 @@ def saude():
         pk = packtools.__version__
     except Exception:  # noqa: BLE001
         pk = None
-    return {"ok": True, "app": VERSAO_APP, "packtools": pk, "docs": sum(1 for _ in DOCS.iterdir())}
+    return {"ok": True, "app": VERSAO_APP, "packtools": pk, "docs": sum(1 for _ in DOCS.iterdir()),
+            "ocr": ocr_mod.disponivel(), "ocr_idiomas": ocr_mod.idiomas() or None}
 
 
 @app.get("/", response_class=HTMLResponse)

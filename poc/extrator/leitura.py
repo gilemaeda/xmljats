@@ -101,6 +101,7 @@ class Documento:
     imagens: List[dict] = field(default_factory=list)  # {pagina, bbox, ext, dados, largura, altura}
     tabelas: List[dict] = field(default_factory=list)  # {pagina, bbox, celulas, linhas_cabecalho, colunas}
     equacoes: List[dict] = field(default_factory=list)  # {pagina, bbox, rotulo, texto, numerada, png, largura, altura}
+    ocr_paginas: List[int] = field(default_factory=list)  # páginas sem camada de texto lidas por OCR
 
     def linhas_zona(self, zona):
         return [ln for ln in self.linhas if ln.zona == zona]
@@ -154,8 +155,9 @@ def _ital(s):
     return bool(s["flags"] & 2) or "italic" in f or "oblique" in f
 
 
-def _linhas_pagina(page, pno):
-    d = page.get_text("dict")
+def _linhas_pagina(page, pno, textpage=None):
+    # textpage vem do OCR quando a página não tem camada de texto (ver extrator/ocr.py)
+    d = page.get_text("dict", textpage=textpage) if textpage is not None else page.get_text("dict")
     out = []
     for bi, b in enumerate(d["blocks"]):
         if b["type"] != 0:
@@ -449,15 +451,21 @@ def _layout(paginas, W, corpo):
 def ler_pdf(caminho: str) -> Documento:
     pdf = pymupdf.open(caminho)
     W, H = pdf[0].rect.width, pdf[0].rect.height
+    from extrator import ocr as _ocr  # noqa: WPS433
     paginas: Dict[int, List[Linha]] = {}
     imagens = []
     blocos_imagem = []
+    ocr_paginas: List[int] = []
     for pno, page in enumerate(pdf, start=1):
-        paginas[pno] = _linhas_pagina(page, pno)
+        # página sem camada de texto (escaneada): o texto vem do OCR, se o Tesseract estiver disponível
+        tp = _ocr.textpage(page) if _ocr.sem_texto(page) else None
+        if tp is not None:
+            ocr_paginas.append(pno)
+        paginas[pno] = _linhas_pagina(page, pno, tp)
         imagens.append(len(page.get_images(full=True)))
         for b in page.get_text("dict")["blocks"]:
-            if b.get("type") != 1:
-                continue
+            if b.get("type") != 1 or pno in ocr_paginas:
+                continue  # numa página escaneada a imagem é a página inteira, não uma figura
             x0, y0, x1, y1 = b["bbox"]
             if (x1 - x0) < 60 or (y1 - y0) < 60:
                 continue  # logos, filetes, marcadores
@@ -517,5 +525,5 @@ def ler_pdf(caminho: str) -> Documento:
         caminho=caminho, paginas=pdf.page_count, metadata={k: v for k, v in pdf.metadata.items() if v}, largura=W, altura=H,
         corpo_size=corpo, corpo_font=corpo_font, layout=layout, linhas=todas, cabecalhos=cabecalhos, paragrafos=paragrafos,
         notas=notas, laterais=laterais, margens=margens, imagens_por_pagina=imagens, coluna_esquerda=col_esq,
-        imagens=blocos_imagem, tabelas=tabelas, equacoes=equacoes,
+        imagens=blocos_imagem, tabelas=tabelas, equacoes=equacoes, ocr_paginas=ocr_paginas,
     )
