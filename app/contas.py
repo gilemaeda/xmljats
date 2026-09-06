@@ -95,7 +95,7 @@ class Contas:
         return None
 
     # ------------------------------------------------------------ CRUD
-    def cria(self, email: str, nome: str, senha: str, papel: str = "operador") -> dict:
+    def cria(self, email: str, nome: str, senha: str, papel: str = "operador", novidades_vistas: Optional[str] = None) -> dict:
         email = (email or "").strip().lower()
         nome = (nome or "").strip()
         if not RE_EMAIL.match(email):
@@ -111,7 +111,9 @@ class Contas:
         if any(u["email"] == email for u in usuarios):
             raise ValueError(f"Já existe usuário com o e-mail {email}.")
         u = {"id": secrets.token_hex(6), "email": email, "nome": nome, "papel": papel, "senha": self.hash_senha(senha),
-             "criado_em": agora_iso(), "atividade": {}, "email_confirmado": False, "avatar": None}
+             "criado_em": agora_iso(), "atividade": {}, "email_confirmado": False, "avatar": None,
+             # ultima versao cujas novidades a pessoa viu; conta nova nasce na versao atual (nada e novidade para ela)
+             "novidades_vistas": novidades_vistas}
         usuarios.append(u)
         self._grava(usuarios)
         return self._publico(u)
@@ -130,6 +132,10 @@ class Contas:
         if erro:
             raise ValueError(erro)
         return self._altera(uid, lambda u, _: u.update(senha=self.hash_senha(senha)))
+
+    def marca_novidades(self, uid: str, versao: str):
+        """Registra que a pessoa viu as novidades ate esta versao (dispensou a janela ou abriu a pagina)."""
+        return self._altera(uid, lambda u, _: u.update(novidades_vistas=versao))
 
     def define_papel(self, uid: str, papel: str):
         if papel not in PAPEIS:

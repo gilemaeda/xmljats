@@ -336,6 +336,23 @@ def roda_site():
         import json as _js
         _cfg = _js.load(io.open(os.path.join(tmp, "docs", doc.rsplit("/", 1)[-1], "config.json"), encoding="utf-8"))
         check("a abertura fica gravada com quem abriu", bool(_cfg.get("aberto_em")) and bool(_cfg.get("aberto_por")))
+    # ---- novidades por versão: janela para quem ainda não viu, filtrada por papel
+    import novidades as _nov
+    from app.main import CONTAS as _contas
+    _nc = TestClient(app, follow_redirects=False)
+    _nr = _nc.post("/registrar", data={"nome": "Novato", "email": "novato@exemplo.org", "senha": "senha-forte-1", "senha2": "senha-forte-1"},
+                   headers={"x-forwarded-for": "10.9.9.9"})
+    _nc.cookies.set("xmljats_sessao", _nr.cookies["xmljats_sessao"])
+    check("conta nova não recebe janela de novidades (nada mudou para ela)", 'id="novidades-modal"' not in _nc.get("/").text)
+    _nid = next(u["id"] for u in _contas.lista() if u["email"] == "novato@exemplo.org")
+    _contas.marca_novidades(_nid, "0.19.0")
+    _home = _nc.get("/").text
+    check("novidades: janela para quem ainda não viu a versão", 'id="novidades-modal"' in _home and "SciELO PS 1.10" in _home)
+    _so_admin = [i["titulo"] for v in _nov.VERSOES for i in v["itens"] if i["para"] == "admin"]
+    _pagina = _nc.get("/novidades").text
+    check("cliente não vê novidade do painel administrativo",
+          bool(_so_admin) and not any(t in _home for t in _so_admin) and not any(t in _pagina for t in _so_admin))
+    check("abrir a página Novidades marca como visto", 'id="novidades-modal"' not in _nc.get("/").text)
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)
@@ -452,6 +469,7 @@ def main():
           "| Validação no Schematron da SPS 1.10 (o packtools só liga 1.8 e 1.9 por padrão) | pronto | seção 3; SPS 1.10 é a versão padrão |",
           "| Freio de tentativas no login e registro; XML rascunho marcado; 'ir para o campo'; tempo medido | pronto | ops/test_auditoria_furos.py |",
           "| OCR de PDF escaneado | não começou | o PDF só com imagem é detectado e vira bloqueante com explicação (D01); ler exige Tesseract no container |",
+          "| Novidades por versão: janela ao entrar, página de notificações e sino, filtrados por papel | pronto | ops/test_novidades.py |",
           "| Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |",
           "| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |",
           "| Equipe da revista compartilhando documentos, fila em lote e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem fila em lote nem custo com revisão humana |",

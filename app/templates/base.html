@@ -64,6 +64,7 @@
 <div class="grp">
   <span class="grp-t">Ajuda</span>
   <a href="/ajuda" class="{% if ativo == 'ajuda' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.8.6-1.5 1-1.5 2M12 17.5v.5"/></svg>Como funciona</a>
+  <a href="/novidades" class="{% if ativo == 'novidades' %}active{% endif %}" title="O que mudou nas versões"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg>Novidades{% set nn = novidades_conta(novidades_pendentes(usuario)) %}{% if nn %}<span class="n">{{ nn }}</span>{% endif %}</a>
 </div>
 {%- endmacro -%}
 {%- macro rodape_menu() -%}
@@ -173,6 +174,30 @@
   });
 })();
 </script>
+{% if usuario and request.url.path != '/novidades' %}{% set pend = novidades_pendentes(usuario) %}{% if pend %}
+{# O sistema foi atualizado desde a última vez que esta pessoa viu as novidades: janela com o que mudou para o papel dela.
+   Os itens já chegam filtrados do servidor (novidades.pendentes); nada do painel administrativo entra aqui para o cliente. #}
+<div class="modal-fundo" id="novidades-modal" role="dialog" aria-modal="true" aria-labelledby="novidades-titulo">
+  <div class="modal card">
+    <form method="post" action="/novidades/vista" class="modal-x"><input type="hidden" name="proximo" value="{{ request.url.path }}{% if request.url.query %}?{{ request.url.query }}{% endif %}"><button class="btn small quiet" type="submit" aria-label="Fechar" title="Fechar"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></form>
+    <p class="eyebrow">O sistema foi atualizado</p>
+    <h2 id="novidades-titulo">O que mudou para você</h2>
+    <div class="modal-corpo">
+    {% for v in pend[:3] %}
+    <div class="nov-versao">
+      <div class="row" style="gap:8px;align-items:center"><span class="chip ok">versão {{ v.versao }}</span><span class="small muted">{{ v.data_br }}</span></div>
+      <ul class="nov-itens">{% for i in v.itens %}<li><b>{{ i.titulo }}.</b> {{ i.texto }}</li>{% endfor %}</ul>
+    </div>
+    {% endfor %}
+    {% if pend|length > 3 %}<p class="small muted">Mais {{ pend|length - 3 }} atualização(ões) anterior(es) na página Novidades.</p>{% endif %}
+    </div>
+    <div class="row modal-acoes" style="gap:8px;justify-content:flex-end">
+      <a class="btn" href="/novidades">Ver todas as novidades</a>
+      <form method="post" action="/novidades/vista"><input type="hidden" name="proximo" value="{{ request.url.path }}{% if request.url.query %}?{{ request.url.query }}{% endif %}"><button class="btn primary" type="submit">Entendi</button></form>
+    </div>
+  </div>
+</div>
+{% endif %}{% endif %}
 {% block scripts %}{% endblock %}
 <script>
 // Botao de voltar ao topo: aparece depois de rolar uma tela, some no topo. As telas de revisar sao longas.

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% set ativo = 'novidades' %}
+{% block titulo %}Novidades{% endblock %}
+{% block conteudo %}
+<div class="result-head">
+  <div class="stack" style="gap:6px">
+    <p class="eyebrow">Notificações</p>
+    <h1>Novidades</h1>
+    <p class="muted small" style="margin:0">O que mudou em cada versão, só o que vale para o seu perfil
+      ({{ ROTULO_PAPEL.get(usuario.papel, usuario.papel) }}). Versão atual: <span class="mono">{{ versao }}</span>.
+      {% if novas %}As marcadas como novas são as que você ainda não tinha visto.{% endif %}</p>
+  </div>
+</div>
+
+<div class="stack nov-lista">
+  {% for v in versoes %}
+  <div class="card pad nov-versao">
+    <div class="row" style="gap:8px;align-items:center">
+      <span class="chip {{ 'ok' if v.versao in novas else 'neutral' }}">versão {{ v.versao }}</span>
+      <span class="small muted">{{ v.data_br }}</span>
+      {% if v.versao in novas %}<span class="chip warn">novo para você</span>{% endif %}
+    </div>
+    <ul class="nov-itens">{% for i in v.itens %}<li><b>{{ i.titulo }}.</b> {{ i.texto }}</li>{% endfor %}</ul>
+  </div>
+  {% else %}
+  <div class="empty">Nenhuma novidade registrada para o seu perfil.</div>
+  {% endfor %}
+</div>
+{% endblock %}

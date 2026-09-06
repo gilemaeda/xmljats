@@ -557,3 +557,15 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
   .hero h1{font-size:24px}.hero-pub h1{font-size:30px}
   main{padding:20px 16px 88px}.rodape{padding:0 16px 20px}
 }
+/* novidades: janela ao entrar depois de uma atualização e página com o histórico */
+.modal-fundo{position:fixed;inset:0;z-index:1200;background:color-mix(in srgb,var(--text) 45%,transparent);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{position:relative;display:flex;flex-direction:column;width:min(640px,100%);max-height:88vh;padding:22px 24px}
+.modal .modal-corpo{overflow:auto;min-height:0;flex:1;margin:0 -6px;padding:0 6px}
+.modal .modal-acoes{flex:none;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.modal .modal-x{position:absolute;top:10px;right:10px;margin:0}
+.modal h2{margin:2px 0 10px}
+.nov-versao{padding:10px 0;border-top:1px solid var(--border)}
+.modal .nov-versao:first-of-type{border-top:0}
+.nov-itens{margin:8px 0 0;padding-left:18px;line-height:1.55}
+.nov-itens li{margin:4px 0}
+.nov-lista .nov-versao{border-top:0}

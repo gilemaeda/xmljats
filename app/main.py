@@ -61,6 +61,7 @@ import visual  # noqa: E402  (app/visual.py: páginas do PDF renderizadas + cama
 import obrigatorios  # noqa: E402  (app/obrigatorios.py: o que a SPS exige e o PDF não traz)
 import entrega  # noqa: E402  (app/entrega.py: conferência do pacote, FTP da SciELO e e-mails obrigatórios)
 import enriquece  # noqa: E402  (app/enriquece.py: completa o que falta pelo DOI no Crossref e confere o ORCID)
+import novidades  # noqa: E402  (app/novidades.py: o que mudou em cada versão, filtrado por papel, e quem já viu)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -71,7 +72,9 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.20.1"
+VERSAO_APP = "0.21.0"
+if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
+    raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -110,6 +113,8 @@ except Exception:  # noqa: BLE001
     _ESTATICO_PREVIA = None
 templates = Jinja2Templates(directory=str(RAIZ / "app" / "templates"))
 templates.env.globals["versao"] = VERSAO_APP
+templates.env.globals["novidades_pendentes"] = novidades.pendentes  # o que esta pessoa ainda não viu (já filtrado por papel)
+templates.env.globals["novidades_conta"] = novidades.conta_itens
 templates.env.globals["ETAPA_ROTULO"] = ETAPA_ROTULO
 templates.env.globals["FUSO"] = tempo.NOME_FUSO
 templates.env.globals["ROTULO_PAPEL"] = ROTULO_PAPEL
@@ -1969,7 +1974,7 @@ async def registrar(request: Request):
     if (form.get("senha") or "") != (form.get("senha2") or ""):
         return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": "As duas senhas não são iguais.", "form": form}, status_code=400)
     try:
-        u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), "cliente")
+        u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), "cliente", novidades_vistas=VERSAO_APP)
     except ValueError as e:
         return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": str(e), "form": form}, status_code=400)
     freio_marca(f"registro:ip:{ip}")
@@ -2214,6 +2219,37 @@ async def webhook_resend(request: Request):
     return {"ok": True, "resultado": CORREIO.registra_evento(dados)}
 
 
+# ---------------------------------------------------------------- novidades por versão
+
+def _marca_novidades_vistas(usuario: dict) -> None:
+    if usuario.get("id") in ("local", "api"):
+        return
+    try:
+        CONTAS.marca_novidades(usuario["id"], VERSAO_APP)
+    except ValueError:
+        pass
+
+
+@app.get("/novidades", response_class=HTMLResponse)
+def novidades_pagina(request: Request, usuario: dict = Depends(autentica)):
+    """Histórico do que mudou, só com o que este papel pode ver. Abrir a página conta como 'visto'."""
+    novas = {v["versao"] for v in novidades.pendentes(usuario)}
+    _marca_novidades_vistas(usuario)
+    return templates.TemplateResponse(request, "novidades.html", {
+        "usuario": usuario, "versoes": novidades.visiveis(usuario.get("papel") or "cliente"), "novas": novas})
+
+
+@app.post("/novidades/vista")
+async def novidades_vista(request: Request, usuario: dict = Depends(autentica)):
+    """Botão 'Entendi' (ou fechar) da janela: registra a versão e volta para onde a pessoa estava."""
+    form = await request.form()
+    _marca_novidades_vistas(usuario)
+    proximo = str(form.get("proximo") or "/")
+    if not proximo.startswith("/") or proximo.startswith("//"):
+        proximo = "/"
+    return RedirectResponse(url=proximo, status_code=303)
+
+
 @app.get("/ajuda", response_class=HTMLResponse)
 def ajuda(request: Request, usuario: dict = Depends(autentica)):
     return templates.TemplateResponse(request, "ajuda.html", {"usuario": usuario, "etapas": ETAPAS})
@@ -2342,7 +2378,8 @@ async def usuario_dados(request: Request, uid: str, usuario: dict = Depends(exig
 async def usuario_criar(request: Request, usuario: dict = Depends(exige_admin)):
     form = dict((await request.form()).items())
     try:
-        u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), form.get("papel", "operador"))
+        u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), form.get("papel", "operador"),
+                        novidades_vistas=VERSAO_APP)
     except ValueError as e:
         return templates.TemplateResponse(request, "usuarios.html", {"usuarios": CONTAS.lista(), "usuario": usuario, "erro": str(e), "form": form}, status_code=400)
     return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote(f"Usuário {u['nome']} criado."), status_code=303)
