@@ -133,6 +133,10 @@ class Contas:
             raise ValueError(erro)
         return self._altera(uid, lambda u, _: u.update(senha=self.hash_senha(senha)))
 
+    def define_organizacao(self, uid: str, oid: Optional[str]):
+        """Vincula (ou desvincula, com None) a conta a uma organizacao. Documentos novos passam a ser dela."""
+        return self._altera(uid, lambda u, _: u.update(organizacao=oid or None))
+
     def marca_novidades(self, uid: str, versao: str):
         """Registra que a pessoa viu as novidades ate esta versao (dispensou a janela ou abriu a pagina)."""
         return self._altera(uid, lambda u, _: u.update(novidades_vistas=versao))

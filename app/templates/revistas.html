@@ -38,7 +38,7 @@
   {% for r in revistas %}
     <tr>
       <td class="mono">{{ r.acronimo }}</td>
-      <td>{{ r.titulo }}</td>
+      <td>{{ r.titulo }}{% if r.organizacao %} <span class="chip neutral" title="só a organização vê">{{ organizacao_nome(r.organizacao) or 'organização' }}</span>{% elif r.dono %} <span class="chip neutral" title="só quem cadastrou vê">particular</span>{% endif %}</td>
       <td>{{ r.abrev }}</td>
       <td class="mono">{{ r.issn_epub or '—' }}</td>
       <td>{{ r.editora }}</td>

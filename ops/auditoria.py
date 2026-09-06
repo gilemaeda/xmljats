@@ -356,19 +356,46 @@ def roda_site():
     # ---- fila: dois arquivos de uma vez entram na fila e saem processados
     import json as _json2
     import time as _time
+    _antes = set(os.listdir(os.path.join(tmp, "docs")))
     with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"), "rb") as _f1, open(os.path.join(RAIZ, "modelos", "1222+-+VF (5).pdf"), "rb") as _f2:
         _rf = _nc.post("/validar", files=[("arquivo", ("a.pdf", _f1, "application/pdf")), ("arquivo", ("b.pdf", _f2, "application/pdf"))],
                        data={"revista": "rdp", "sps": "1.10"})
     check("dois arquivos de uma vez vão para a fila", _rf.status_code == 303 and "/painel" in _rf.headers.get("location", ""))
-    _ids = sorted(p for p in os.listdir(os.path.join(tmp, "docs")))[-2:]
+    _ids = sorted(set(os.listdir(os.path.join(tmp, "docs"))) - _antes)  # os dois novos, pelo conjunto (ids do mesmo segundo se embaralham)
     _t0 = _time.time()
     while _time.time() - _t0 < 300:
         _est = [(_json2.load(io.open(os.path.join(tmp, "docs", i, "config.json"), encoding="utf-8")).get("estado")) for i in _ids]
         if all(e in ("concluido", "erro") for e in _est):
             break
         _time.sleep(2)
-    check("a fila processa os dois e a lista volta ao normal",
-          all(e == "concluido" for e in _est) and all(os.path.exists(os.path.join(tmp, "docs", i, "validacao.json")) for i in _ids))
+    _detalhe = []
+    for _i in _ids:
+        _cfgi = _json2.load(io.open(os.path.join(tmp, "docs", _i, "config.json"), encoding="utf-8"))
+        _erro_txt = os.path.join(tmp, "docs", _i, "erro.txt")
+        _detalhe.append(f"{_i[-6:]}={_cfgi.get('estado')}" + (f" ({_cfgi.get('erro')})" if _cfgi.get("erro") else "")
+                        + ((" | " + io.open(_erro_txt, encoding="utf-8").read()[-300:].replace(chr(10), " ")) if os.path.exists(_erro_txt) else ""))
+    _fila_ok = all(e == "concluido" for e in _est) and all(os.path.exists(os.path.join(tmp, "docs", i, "validacao.json")) for i in _ids)
+    check("a fila processa os dois e a lista volta ao normal" + ("" if _fila_ok else f" [{'; '.join(_detalhe)}]"), _fila_ok)
+    # ---- organizações: colegas veem os mesmos documentos; quem está fora, não
+    from app.main import ORGS as _orgs
+    _org = _orgs.cria("Editora Auditoria", por="auditoria")
+    _membros = []
+    for _i, _em in enumerate(("m1@exemplo.org", "m2@exemplo.org")):
+        _cl = TestClient(app, follow_redirects=False)
+        _rr = _cl.post("/registrar", data={"nome": f"Membro {_i}", "email": _em, "senha": "senha-forte-1", "senha2": "senha-forte-1",
+                                           "convite": _org["convite"]}, headers={"x-forwarded-for": f"10.9.8.{_i}"})
+        _cl.cookies.set("xmljats_sessao", _rr.cookies["xmljats_sessao"])
+        _membros.append(_cl)
+    _fora = TestClient(app, follow_redirects=False)
+    _rf = _fora.post("/registrar", data={"nome": "Fora", "email": "fora@exemplo.org", "senha": "senha-forte-1", "senha2": "senha-forte-1"},
+                     headers={"x-forwarded-for": "10.9.8.9"})
+    _fora.cookies.set("xmljats_sessao", _rf.cookies["xmljats_sessao"])
+    with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"), "rb") as _f:
+        _up = _membros[0].post("/validar", files={"arquivo": ("a.pdf", _f, "application/pdf")}, data={"revista": "rdp", "sps": "1.10"})
+    _did = _up.headers["location"]
+    check("membro da mesma organização vê o documento do colega", _membros[1].get(_did).status_code == 200)
+    check("quem está fora da organização não vê", _fora.get(_did).status_code == 403)
+    check("página de organizações do administrador", "Editora Auditoria" in c.get("/admin/organizacoes").text)
     check("sair encerra a sessão", c.post("/sair").status_code == 303)
     shutil.rmtree(tmp, ignore_errors=True)
     os.environ.pop("APP_SENHA", None)
@@ -489,7 +516,8 @@ def main():
           "| Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |",
           "| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |",
           "| Fila de processamento: envio em lote, estado na lista, página de espera, retomada após reinício | pronto | ops/test_fila.py |",
-          "| Equipe da revista compartilhando documentos e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem custo com revisão humana |",
+          "| Organizações: contas agrupadas por editora/instituição, documentos e revistas compartilhados, convite, administração | pronto | ops/test_organizacoes.py |",
+          "| Custo por artigo com a revisão humana | parcial | tempo de máquina por artigo e correções à mão no painel; horas de revisão não são medidas |",
           "| Validador público sem conta e captcha no registro | não começou | decisão dos sócios (fase 4); Turnstile precisa das chaves da Cloudflare |",
           "| Integração com OJS | não começou | fase 5 do plano; o depósito por FTP já existe |", ""]
     io.open(SAIDA, "w", encoding="utf-8").write("\n".join(L) + "\n")

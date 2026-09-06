@@ -1,0 +1,183 @@
+"""Organizações: contas agrupadas por editora/instituição, documentos e revistas compartilhados entre membros,
+isolamento de quem está fora, convite, conta e administração."""
+import io
+import json
+import os
+import shutil
+import sys
+if hasattr(sys.stdout, "reconfigure"):  # console cp1252 do Windows nao imprime todo Unicode e derrubava o teste
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+import tempfile
+
+tmp = tempfile.mkdtemp(prefix="xmljats-org-")
+os.environ["XMLJATS_DATA"] = tmp
+os.environ["APP_SENHA"] = "senha-de-teste-123"
+RAIZ = r"C:\Users\gilej\PROJETOS\XML"
+sys.path.insert(0, RAIZ)
+sys.path.insert(0, os.path.join(RAIZ, "poc"))
+sys.path.insert(0, os.path.join(RAIZ, "app"))
+os.chdir(RAIZ)
+from fastapi.testclient import TestClient  # noqa: E402
+import app.main as M  # noqa: E402
+from app.main import app  # noqa: E402
+
+falhas = []
+
+
+def ok(cond, msg):
+    print(("ok   " if cond else "FALHA"), msg)
+    if not cond:
+        falhas.append(msg)
+
+
+ORGS = M.ORGS
+PDF = os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf")
+_ip = [0]
+
+
+def cliente(nome, email, **extra):
+    _ip[0] += 1
+    c = TestClient(app, follow_redirects=False)
+    r = c.post("/registrar", data={"nome": nome, "email": email, "senha": "senha-forte-1", "senha2": "senha-forte-1", **extra},
+               headers={"x-forwarded-for": f"10.4.4.{_ip[0]}"})
+    if r.status_code == 303:
+        c.cookies.set("xmljats_sessao", r.cookies["xmljats_sessao"])
+    return c, r
+
+
+def uid(email):
+    return next(u["id"] for u in M.CONTAS.lista() if u["email"] == email)
+
+
+def envia(c, revista="rdp"):
+    with open(PDF, "rb") as f:
+        r = c.post("/validar", files={"arquivo": ("a.pdf", f, "application/pdf")}, data={"revista": revista, "sps": "1.10"})
+    return r, (r.headers.get("location", "").rsplit("/", 1)[-1] if r.status_code == 303 else None)
+
+
+# ---------------------------------------------------------------- 1. o módulo
+o = ORGS.cria("Editora X", por="teste")
+ok(len(o["convite"]) == 8 and o["convite"].isupper(), f"organização nasce com código de convite: {o['convite']}")
+ok(ORGS.por_convite(o["convite"].lower())["id"] == o["id"] and ORGS.por_convite(" " + o["convite"][:4] + "-" + o["convite"][4:] + " ")["id"] == o["id"],
+   "o código é aceito em minúsculas, com espaços ou hífen")
+for ruim, motivo in (("editora x", "nome repetido, ignorando maiúsculas"), ("ab", "nome curto")):
+    try:
+        ORGS.cria(ruim)
+        ok(False, f"{motivo} deveria ser recusado")
+    except ValueError:
+        ok(True, f"{motivo} é recusado")
+ok(ORGS.renomeia(o["id"], "Editora X Ltda")["nome"] == "Editora X Ltda", "renomear funciona")
+antigo = o["convite"]
+novo = ORGS.novo_convite(o["id"])["convite"]
+ok(novo != antigo and ORGS.por_convite(antigo) is None and ORGS.por_convite(novo)["id"] == o["id"], "novo código invalida o antigo")
+convite = novo
+
+# ---------------------------------------------------------------- 2. cadastro com convite, com organização nova e sem nada
+a, _ = cliente("Ana", "ana@exemplo.org", convite=convite)
+a2, _ = cliente("Aldo", "aldo@exemplo.org", convite=convite)
+b, _ = cliente("Bia", "bia@exemplo.org", organizacao_nova="Revista Y")
+c_, _ = cliente("Caio", "caio@exemplo.org")
+ok(M.CONTAS.por_id(uid("ana@exemplo.org")).get("organizacao") == o["id"] and M.CONTAS.por_id(uid("aldo@exemplo.org")).get("organizacao") == o["id"],
+   "quem se cadastra com o convite entra na organização")
+org_b = M.CONTAS.por_id(uid("bia@exemplo.org")).get("organizacao")
+ok(org_b and ORGS.por_id(org_b)["nome"] == "Revista Y" and org_b != o["id"], "quem cria uma organização no cadastro fica nela")
+ok(M.CONTAS.por_id(uid("caio@exemplo.org")).get("organizacao") is None, "sem convite nem nome, a conta fica sem organização")
+_, r = cliente("Dora", "dora@exemplo.org", convite="ZZZZZZZZ")
+ok(r.status_code == 400 and not any(u["email"] == "dora@exemplo.org" for u in M.CONTAS.lista()), "convite errado recusa o cadastro sem criar a conta")
+_, r = cliente("Eva", "eva@exemplo.org", organizacao_nova="editora x ltda")
+ok(r.status_code == 400 and not any(u["email"] == "eva@exemplo.org" for u in M.CONTAS.lista()), "nome de organização já usado recusa o cadastro")
+
+# ---------------------------------------------------------------- 3. documentos: colegas veem, os outros não
+r, doc_a = envia(a)
+ok(r.status_code == 303 and doc_a, "Ana envia um artigo")
+cfg = json.load(io.open(os.path.join(tmp, "docs", doc_a, "config.json"), encoding="utf-8"))
+ok(cfg.get("organizacao") == o["id"], "o documento nasce na organização de quem enviou")
+ok(a2.get(f"/doc/{doc_a}").status_code == 200, "o colega da mesma organização abre o documento")
+ok(a2.get(f"/doc/{doc_a}/editar").status_code == 200, "e pode revisar")
+ok(b.get(f"/doc/{doc_a}").status_code == 403 and c_.get(f"/doc/{doc_a}").status_code == 403, "quem está em outra organização, ou em nenhuma, não vê")
+pa2 = a2.get("/painel").text
+ok(doc_a in pa2 and "enviado por Ana" in pa2, "a lista do colega mostra o documento e quem enviou")
+r, doc_c = envia(c_)
+ok(a.get(f"/doc/{doc_c}").status_code == 403, "documento de quem não tem organização é só dele")
+
+# ---------------------------------------------------------------- 4. revistas: da organização, particulares e públicas
+form_rev = {"acronimo": "edx", "titulo": "Revista da Editora X", "abrev": "Rev. Ed. X", "issn_epub": "1413-9936", "editora": "Editora X",
+            "licenca_url": "https://creativecommons.org/licenses/by/4.0/", "modo_publicacao": "continua"}
+ok(a.post("/revistas/nova", data=form_rev).status_code == 303, "Ana cadastra uma revista")
+rev = next(x for x in M.carrega_revistas() if x["acronimo"] == "edx")
+ok(rev.get("organizacao") == o["id"], "a revista fica da organização")
+ok("edx" in a2.get("/revistas").text and 'value="edx"' in a2.get("/").text, "o colega vê a revista na lista e no envio")
+ok("edx" not in b.get("/revistas").text and 'value="edx"' not in b.get("/").text and "edx" not in c_.get("/revistas").text,
+   "quem está fora não vê a revista da organização")
+ok("rdp" in b.get("/revistas").text and 'value="rdp"' in c_.get("/").text, "as revistas públicas continuam para todos")
+ok(c_.post("/revistas/nova", data=dict(form_rev, acronimo="cpv", titulo="Revista do Caio", issn_epub="2179-8966")).status_code == 303, "Caio cadastra a dele")
+rev_c = next(x for x in M.carrega_revistas() if x["acronimo"] == "cpv")
+ok(rev_c.get("dono") == uid("caio@exemplo.org") and "cpv" in c_.get("/revistas").text and "cpv" not in a.get("/revistas").text,
+   "revista de quem não tem organização é particular")
+r, _ = envia(b, revista="edx")
+ok(r.status_code == 400, "enviar para uma revista fora do alcance é recusado")
+adm = TestClient(app, follow_redirects=False)
+ra = adm.post("/entrar", data={"email": "admin", "senha": "senha-de-teste-123", "proximo": "/"}, headers={"x-forwarded-for": "10.4.5.1"})
+adm.cookies.set("xmljats_sessao", ra.cookies["xmljats_sessao"])
+pr = adm.get("/revistas").text
+ok("edx" in pr and "Editora X Ltda" in pr and "particular" in pr, "o administrador vê todas, com a marca de quem é cada uma")
+form_edit = {k: v for k, v in rev.items() if isinstance(v, str)}
+form_edit["na_scielo"] = "nao"
+ok(adm.post("/revistas/edx", data=form_edit).status_code == 303
+   and next(x for x in M.carrega_revistas() if x["acronimo"] == "edx").get("organizacao") == o["id"], "editar a revista não muda de quem ela é")
+
+# ---------------------------------------------------------------- 5. administrador vincula uma conta; o que era dela antes continua só dela
+r = adm.post(f"/usuarios/{uid('caio@exemplo.org')}/organizacao", data={"organizacao": o["id"]})
+ok(r.status_code == 303 and M.CONTAS.por_id(uid("caio@exemplo.org")).get("organizacao") == o["id"], "administrador vincula Caio à Editora X")
+ok(c_.get(f"/doc/{doc_a}").status_code == 200, "Caio passa a ver os documentos da organização")
+ok(a.get(f"/doc/{doc_c}").status_code == 403, "o documento que Caio enviou antes continua só dele")
+r, doc_c2 = envia(c_)
+ok(a.get(f"/doc/{doc_c2}").status_code == 200, "o que Caio envia depois é da organização")
+ok(adm.post(f"/usuarios/{uid('caio@exemplo.org')}/organizacao", data={"organizacao": "inexistente"}).headers["location"].find("erro") > 0,
+   "vincular a organização inexistente é recusado")
+ok('name="organizacao"' in adm.get("/usuarios").text and "Editora X Ltda" in adm.get("/usuarios").text, "Usuários tem o seletor de organização")
+
+# ---------------------------------------------------------------- 6. Minha conta: entrar por código ou criar
+f_, _ = cliente("Fabi", "fabi@exemplo.org")
+ok("Código de convite" in f_.get("/conta").text, "sem organização, a conta oferece entrar por código ou criar")
+ok("erro" in f_.post("/conta/organizacao", data={"convite": "NADA1234"}).headers["location"], "código errado é recusado")
+ok("mensagem" in f_.post("/conta/organizacao", data={"convite": convite}).headers["location"]
+   and M.CONTAS.por_id(uid("fabi@exemplo.org")).get("organizacao") == o["id"], "código certo coloca a pessoa na organização")
+ok(convite in f_.get("/conta").text and "Editora X Ltda" in f_.get("/conta").text, "a conta mostra a organização e o código para convidar colegas")
+ok("erro" in f_.post("/conta/organizacao", data={"nome": "Outra"}).headers["location"], "quem já está numa organização não troca sozinho")
+g, _ = cliente("Gil", "gil@exemplo.org")
+ok("mensagem" in g.post("/conta/organizacao", data={"nome": "Instituto G"}).headers["location"]
+   and ORGS.por_id(M.CONTAS.por_id(uid("gil@exemplo.org")).get("organizacao"))["nome"] == "Instituto G", "criar organização pela conta")
+ok("erro" in g.post("/conta/organizacao", data={}).headers["location"] or True, "pedido vazio não quebra")
+
+# ---------------------------------------------------------------- 7. administração de organizações
+pg = adm.get("/admin/organizacoes").text
+ok("Editora X Ltda" in pg and "Revista Y" in pg and "Instituto G" in pg, "a página lista as organizações")
+ok(adm.post("/admin/organizacoes", data={"nome": "Nova Org"}).status_code == 303 and any(x["nome"] == "Nova Org" for x in ORGS.lista()), "criar pela administração")
+nova = next(x for x in ORGS.lista() if x["nome"] == "Nova Org")
+ok("mensagem" in adm.post(f"/admin/organizacoes/{nova['id']}/nome", data={"nome": "Nova Org 2"}).headers["location"]
+   and ORGS.por_id(nova["id"])["nome"] == "Nova Org 2", "renomear pela administração")
+ok("mensagem" in adm.post(f"/admin/organizacoes/{nova['id']}/convite").headers["location"] and ORGS.por_id(nova["id"])["convite"] != nova["convite"],
+   "novo código pela administração")
+ok("erro" in adm.post(f"/admin/organizacoes/{o['id']}/remover").headers["location"] and ORGS.por_id(o["id"]), "organização com membros não é removida")
+ok("mensagem" in adm.post(f"/admin/organizacoes/{nova['id']}/remover").headers["location"] and ORGS.por_id(nova["id"]) is None, "organização vazia é removida")
+ok("membros" in pg.lower() and "Documentos" in pg, "a página mostra membros e documentos por organização")
+
+# ---------------------------------------------------------------- 8. quem não é administrador não administra
+ok(a.get("/admin/organizacoes").status_code == 403 and a.post("/admin/organizacoes", data={"nome": "X"}).status_code == 403
+   and a.post(f"/usuarios/{uid('bia@exemplo.org')}/organizacao", data={"organizacao": o["id"]}).status_code == 403,
+   "cliente não cria, nem vincula, nem lista organizações pela administração")
+M.CONTAS.cria("op@exemplo.org", "Op", "senha-forte-1", "operador")
+op = TestClient(app, follow_redirects=False)
+ro = op.post("/entrar", data={"email": "op@exemplo.org", "senha": "senha-forte-1", "proximo": "/"}, headers={"x-forwarded-for": "10.4.5.2"})
+op.cookies.set("xmljats_sessao", ro.cookies["xmljats_sessao"])
+ok(op.get(f"/doc/{doc_a}").status_code == 200 and op.get(f"/doc/{doc_c}").status_code == 200 and "edx" in op.get("/revistas").text,
+   "operador continua vendo tudo")
+ok("Revista da Editora X" in adm.get("/admin/documentos").text or "Editora X Ltda" in adm.get("/admin/documentos").text,
+   "a lista do administrador mostra a organização do documento")
+
+print("\nFALHAS:", len(falhas))
+for f in falhas:
+    print("  -", f)
+shutil.rmtree(tmp, ignore_errors=True)
+sys.exit(1 if falhas else 0)

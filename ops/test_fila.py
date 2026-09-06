@@ -109,10 +109,11 @@ ok(r.status_code == 303 and r.headers["location"] == f"/doc/{um}" and os.path.ex
 ok(cfg_de(um).get("estado") is None, "documento síncrono não passa pela fila")
 
 # ---------------------------------------------------------------- 3. erro fica visível, não engole
+antes_q = set(os.listdir(DOCS))
 r = c.post("/validar", files=[("arquivo", ("quebrado.pdf", b"isto nao e um pdf", "application/pdf")),
                               ("arquivo", ("quebrado2.pdf", b"nem isto", "application/pdf"))], data={"revista": "rdp", "sps": "1.10"})
 ok(r.status_code == 303, "arquivos quebrados entram na fila sem derrubar o envio")
-quebrados = sorted(os.listdir(DOCS))[-2:]
+quebrados = sorted(set(os.listdir(DOCS)) - antes_q)  # pelo conjunto, não pelo nome: ids do mesmo segundo se embaralham
 ok(espera(quebrados, 120), "os quebrados saem da fila")
 ok(all(cfg_de(d).get("estado") == "erro" and cfg_de(d).get("erro") for d in quebrados), f"viram 'erro' com motivo: {cfg_de(quebrados[0]).get('erro', '')[:60]}")
 pe = c.get(f"/doc/{quebrados[0]}")
@@ -135,8 +136,9 @@ novo = os.path.join(DOCS, "20260101-000000-retoma")
 os.makedirs(novo)
 shutil.copy(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"), os.path.join(novo, "original.pdf"))
 io.open(os.path.join(novo, "nome_original.txt"), "w", encoding="utf-8").write("retomado.pdf")
-json.dump({"versao_sps": "1.10", "revista": "rdp", "criado_por": "Lote", "criado_por_id": "x", "etapa": "recebido",
-           "estado": "processando", "criado_em": "2026-01-01T00:00:00-03:00"}, io.open(os.path.join(novo, "config.json"), "w", encoding="utf-8"))
+with io.open(os.path.join(novo, "config.json"), "w", encoding="utf-8") as _f:  # fechado: no Windows, arquivo aberto trava a troca atômica
+    json.dump({"versao_sps": "1.10", "revista": "rdp", "criado_por": "Lote", "criado_por_id": "x", "etapa": "recebido",
+               "estado": "processando", "criado_em": "2026-01-01T00:00:00-03:00"}, _f)
 voltaram = F.retoma()
 ok(voltaram == 1, f"documento que ficou 'processando' numa queda volta para a fila ({voltaram})")
 ok(espera(["20260101-000000-retoma"], 240) and cfg_de("20260101-000000-retoma").get("estado") == "concluido", "e é processado")

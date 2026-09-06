@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-06
 
-Gerada por `python ops/auditoria.py` (app 0.23.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.24.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 113 de 113 verificações passaram.
+- **Site:** 116 de 116 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -149,6 +149,9 @@ Gerada por `python ops/auditoria.py` (app 0.23.0). Cada número vem de uma medi�
 - ok — abrir a página Novidades marca como visto
 - ok — dois arquivos de uma vez vão para a fila
 - ok — a fila processa os dois e a lista volta ao normal
+- ok — membro da mesma organização vê o documento do colega
+- ok — quem está fora da organização não vê
+- ok — página de organizações do administrador
 - ok — sair encerra a sessão
 
 ## 5. O que o validador oficial ainda aponta
@@ -233,7 +236,8 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |
 | Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |
 | Fila de processamento: envio em lote, estado na lista, página de espera, retomada após reinício | pronto | ops/test_fila.py |
-| Equipe da revista compartilhando documentos e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem custo com revisão humana |
+| Organizações: contas agrupadas por editora/instituição, documentos e revistas compartilhados, convite, administração | pronto | ops/test_organizacoes.py |
+| Custo por artigo com a revisão humana | parcial | tempo de máquina por artigo e correções à mão no painel; horas de revisão não são medidas |
 | Validador público sem conta e captcha no registro | não começou | decisão dos sócios (fase 4); Turnstile precisa das chaves da Cloudflare |
 | Integração com OJS | não começou | fase 5 do plano; o depósito por FTP já existe |
 

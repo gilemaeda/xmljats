@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% set ativo = 'orgs' %}
+{% block titulo %}Organizações · administração{% endblock %}
+{% block conteudo %}
+<div class="result-head">
+  <div class="stack" style="gap:6px">
+    <p class="eyebrow">Administração</p>
+    <h1 style="margin-top:4px">Organizações</h1>
+    <p class="muted small" style="margin:0">Uma editora ou instituição agrupa contas de cliente: quem está na mesma organização vê os mesmos
+      documentos e revistas. A pessoa entra com o código de convite (em Minha conta ou ao criar a conta) ou você a vincula em Usuários.</p>
+  </div>
+</div>
+
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+
+<div class="review" style="grid-template-columns:2fr 1fr">
+  <section class="card">
+    <header class="cardhead"><h2>Cadastradas</h2><span class="muted small">{{ organizacoes|length }} organização(ões)</span></header>
+    {% if organizacoes %}
+    <div class="tblwrap"><table class="tbl">
+      <thead><tr><th>Nome</th><th>Membros</th><th>Documentos</th><th>Revistas</th><th>Código de convite</th><th>Desde</th><th></th></tr></thead>
+      <tbody>
+      {% for o in organizacoes %}
+        <tr>
+          <td><b>{{ o.nome }}</b></td>
+          <td class="tnum">{{ o.membros }}</td>
+          <td class="tnum">{{ o.docs }}</td>
+          <td class="tnum">{{ o.revistas }}</td>
+          <td class="mono">{{ o.convite }}</td>
+          <td class="small muted">{{ o.criado_em|quando }}</td>
+          <td style="text-align:right">
+            <details>
+              <summary class="btn small" style="display:inline-flex">Gerenciar</summary>
+              <div class="stack" style="gap:8px;margin-top:8px;min-width:280px;text-align:left">
+                <form method="post" action="/admin/organizacoes/{{ o.id }}/nome" class="row" style="gap:6px;flex-wrap:nowrap">
+                  <input name="nome" value="{{ o.nome }}" aria-label="Nome" required style="flex:1">
+                  <button class="btn small" type="submit">Renomear</button>
+                </form>
+                <form method="post" action="/admin/organizacoes/{{ o.id }}/convite"><button class="btn small" type="submit">Gerar novo código (o antigo deixa de valer)</button></form>
+                {% if o.membros == 0 %}
+                <form method="post" action="/admin/organizacoes/{{ o.id }}/remover" onsubmit="return confirm('Remover {{ o.nome }}?')"><button class="btn small danger" type="submit">Remover</button></form>
+                {% else %}<span class="small muted">Só dá para remover sem membros: desvincule as contas em Usuários.</span>{% endif %}
+              </div>
+            </details>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}
+    <div class="empty">Nenhuma organização ainda.</div>
+    {% endif %}
+  </section>
+
+  <form method="post" action="/admin/organizacoes" class="card pad stack" style="gap:var(--s-4)">
+    <div><h2>Nova organização</h2><p class="small muted" style="margin-top:4px">O código de convite é gerado na hora.</p></div>
+    <div class="field"><label for="nome">Nome</label><input id="nome" name="nome" required placeholder="editora ou instituição"></div>
+    <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Criar</button>
+  </form>
+</div>
+{% endblock %}

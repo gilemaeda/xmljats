@@ -46,13 +46,34 @@
     <div class="field"><label for="nome">Nome</label><input id="nome" name="nome" value="{{ usuario.nome }}" {% if sem_conta %}disabled{% endif %} required></div>
     <div class="field"><label for="email">E-mail</label><input id="email" name="email" value="{{ usuario.email }}" {% if sem_conta %}disabled{% endif %} required></div>
     <dl class="kv">
-      <dt>Papel</dt><dd>{{ {'admin': 'administrador (gerencia usuários e revistas)', 'operador': 'operador (vê todos os documentos)', 'cliente': 'cliente (vê os próprios documentos)'}.get(usuario.papel, usuario.papel) }}</dd>
+      <dt>Papel</dt><dd>{{ {'admin': 'administrador (gerencia usuários e revistas)', 'operador': 'operador (vê todos os documentos)', 'cliente': 'cliente (vê os próprios documentos e os da organização)'}.get(usuario.papel, usuario.papel) }}</dd>
       {% if usuario.criado_em %}<dt>Conta criada em</dt><dd>{{ usuario.criado_em|quando }}</dd>{% endif %}
       {% if usuario.atividade and usuario.atividade.ultimo_login %}<dt>Última entrada</dt><dd>{{ usuario.atividade.ultimo_login|quando }}{% if usuario.atividade.ip %} · <span class="mono">{{ usuario.atividade.ip }}</span>{% endif %}</dd>{% endif %}
     </dl>
     <button class="btn primary" type="submit" {% if sem_conta %}disabled{% endif %}><svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>Salvar dados</button>
   </form>
 
+  <div class="card pad stack">
+    <div><h2>Organização</h2><p class="small muted" style="margin-top:4px">Quem está na mesma organização vê os mesmos documentos e revistas.</p></div>
+    {% set org = organizacao_de(usuario) %}
+    {% if org %}
+      <p style="margin:0"><b>{{ org.nome }}</b></p>
+      <p class="small muted" style="margin:0">Código de convite para colegas: <span class="mono">{{ org.convite }}</span>. Quem entrar com ele vê os
+        documentos da organização. Documentos enviados antes de entrar continuam só de quem enviou. Para trocar de organização, fale com o administrador.</p>
+    {% elif usuario.papel == 'cliente' %}
+      <form method="post" action="/conta/organizacao" class="stack" style="gap:8px">
+        <div class="field"><label for="convite">Código de convite</label><input id="convite" name="convite" placeholder="ex.: A3F9C2D1" autocomplete="off">
+          <span class="hint">Peça a um colega que já usa o xmljats.</span></div>
+        <div class="row" style="gap:8px"><button class="btn small" type="submit">Entrar na organização</button></div>
+      </form>
+      <form method="post" action="/conta/organizacao" class="stack" style="gap:8px">
+        <div class="field"><label for="org-nome">Ou crie a sua</label><input id="org-nome" name="nome" placeholder="nome da editora ou instituição"></div>
+        <div class="row" style="gap:8px"><button class="btn small" type="submit">Criar organização</button></div>
+      </form>
+    {% else %}
+      <p class="small muted" style="margin:0">Operador e administrador veem tudo; organização é para contas de cliente.</p>
+    {% endif %}
+  </div>
   <form class="card pad stack" method="post" action="/conta/foto" enctype="multipart/form-data">
     <div><h2>Foto de perfil</h2><p class="small muted" style="margin-top:4px">Aparece no menu e nas telas de administração.</p></div>
     <div class="field">

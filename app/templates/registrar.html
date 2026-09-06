@@ -7,10 +7,10 @@
       <div>
         <p class="eyebrow" style="color:inherit;opacity:.8">xmljats</p>
         <h2 style="margin-top:6px">Crie sua conta e valide o primeiro artigo em minutos.</h2>
-        <p style="margin-top:12px">Cada conta vê apenas os próprios documentos. Nada é publicado: os arquivos ficam guardados para você baixar o XML e o pacote.</p>
+        <p style="margin-top:12px">Cada conta vê os próprios documentos e, numa organização, os da equipe. Nada é publicado: os arquivos ficam guardados para você baixar o XML e o pacote.</p>
       </div>
       <ul>
-        <li>Envio de PDF (DOCX na próxima fase)</li>
+        <li>Envio de PDF ou DOCX, um ou vários de uma vez</li>
         <li>Validação no packtools, o validador oficial</li>
         <li>Revisão campo a campo, com o original ao lado</li>
         <li>Pacote com XML, PDF e imagens no nome da SPS</li>
@@ -47,6 +47,15 @@
           </div>
         </div>
       </div>
+      <details class="small" {% if form and (form.convite or form.organizacao_nova) %}open{% endif %}>
+        <summary>Sua editora ou instituição já usa o xmljats? (opcional)</summary>
+        <div class="field" style="margin-top:8px"><label for="convite">Código de convite</label>
+          <input id="convite" name="convite" value="{{ form.convite if form else '' }}" placeholder="ex.: A3F9C2D1" autocomplete="off">
+          <span class="hint">Você entra na organização e passa a ver os documentos e revistas dela.</span></div>
+        <div class="field"><label for="organizacao_nova">Ou crie uma organização</label>
+          <input id="organizacao_nova" name="organizacao_nova" value="{{ form.organizacao_nova if form else '' }}" placeholder="nome da editora ou instituição">
+          <span class="hint">Depois, em Minha conta, você pega o código para convidar colegas.</span></div>
+      </details>
       <button class="btn primary" type="submit" style="justify-content:center"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Criar conta</button>
       <p class="small muted" style="text-align:center">Já tem conta? <a href="/entrar">Entrar</a></p>
     </form>

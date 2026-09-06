@@ -126,12 +126,16 @@ def processa(pasta: Path) -> None:
         return  # entrou duas vezes na fila; já está pronto
     _em_processamento.add(pasta)
     try:
-        _muda(pasta, estado="processando", processando_em=_cfg["agora"]())
         try:
+            _muda(pasta, estado="processando", processando_em=_cfg["agora"]())
             _cfg["processa"](pasta)
             _muda(pasta, estado="concluido", concluido_em=_cfg["agora"](), erro=None)
         except Exception as e:  # noqa: BLE001
-            (pasta / "erro.txt").write_text(traceback.format_exc(), encoding="utf-8")
-            _muda(pasta, estado="erro", concluido_em=_cfg["agora"](), erro=f"{type(e).__name__}: {str(e)[:300]}")
+            # o documento nunca fica preso em 'processando': qualquer falha, inclusive ao gravar o estado, vira 'erro'
+            try:
+                (pasta / "erro.txt").write_text(traceback.format_exc(), encoding="utf-8")
+                _muda(pasta, estado="erro", concluido_em=_cfg["agora"](), erro=f"{type(e).__name__}: {str(e)[:300]}")
+            except Exception:  # noqa: BLE001
+                pass
     finally:
         _em_processamento.discard(pasta)

@@ -193,7 +193,8 @@
     ('Por que essa tabela veio como imagem e a outra não?', 'Quando a tabela tem linhas de grade, a estrutura é reconstruída e vira uma tabela real no XML. Quando ela só tem filetes horizontais, a divisão das colunas fica incerta; nesse caso ela vai como imagem com aviso (T02), e a tela de revisar deixa digitar ou colar as células para a tabela sair codificada, como o guia pede.'),
     ('O sistema muda meu PDF?', 'Não. O arquivo enviado fica guardado como veio e entra no pacote apenas renomeado no padrão da SPS. As correções que você faz na revisão valem só para o XML.'),
     ('A área da revista muda o XML?', 'Não. JATS é o mesmo para toda área. O que muda é o que esperar do artigo: estilo de citação, presença de tabelas e de equações. Por isso a área e o estilo de referências ficam no cadastro, e o sistema avisa quando o texto é lido num estilo diferente do esperado.'),
-    ('Quem vê o quê?', 'Cliente vê e abre apenas os próprios documentos. Operador vê todos. Administrador administra usuários, revistas, correio e configurações, e não usa o validador.')] %}
+    ('Quem vê o quê?', 'Cliente vê os próprios documentos e, se está numa organização (editora ou instituição), os dos colegas dela; revistas cadastradas por cliente ficam da organização (ou só dele). Operador vê todos. Administrador administra usuários, organizações, revistas, correio e configurações, e não usa o validador.'),
+    ('Como minha equipe compartilha os documentos?', 'Em Minha conta, crie a organização ou entre com o código de convite que um colega já tem. Documentos e revistas criados depois disso são da organização; o que foi enviado antes continua só de quem enviou. Trocar de organização é com o administrador.')] %}
   <details class="card">
     <summary>{{ p }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></summary>
     <p class="small">{{ r }}</p>

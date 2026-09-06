@@ -64,7 +64,7 @@
       <tr>
         <td class="tnum muted small">{{ (d.atualizado_em or d.criado_em)|quando }}</td>
         <td class="tnum muted small">{% if d.aberto_em %}{{ d.aberto_em|quando }}<div class="faint" style="font-size:11px">{{ d.aberto_em|ha_quanto }}{% if d.aberto_por and usuario.papel != 'cliente' %} · {{ d.aberto_por }}{% endif %}</div>{% else %}<span class="faint">nunca aberto</span>{% endif %}</td>
-        <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }} · {{ d.nome_base }}</div></td>
+        <td><a href="/doc/{{ d.id }}"><b>{{ (d.titulo or d.arquivo_original)[:80] }}</b></a><div class="small muted mono" style="margin-top:2px">{{ d.arquivo_original }} · {{ d.nome_base }}{% if d.criado_por_id and d.criado_por_id != usuario.id %} · enviado por {{ d.criado_por }}{% endif %}</div></td>
         <td>{{ d.revista or '—' }}</td>
         <td>{% if d.estado == 'na_fila' %}<span class="chip warn">na fila{% if d.posicao %} · {{ d.posicao }}º{% endif %}</span>{% elif d.estado == 'processando' %}<span class="chip warn">processando</span>{% elif d.estado == 'erro' %}<span class="chip crit" title="{{ d.erro }}">erro</span>{% elif d.pronto %}<span class="chip ok">Pronto</span>{% else %}<span class="chip crit">{{ d.bloqueantes|length }} bloq.</span>{% endif %}</td>
         <td>
