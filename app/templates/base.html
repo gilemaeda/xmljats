@@ -64,7 +64,7 @@
 <div class="grp">
   <span class="grp-t">Ajuda</span>
   <a href="/ajuda" class="{% if ativo == 'ajuda' %}active{% endif %}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.8.6-1.5 1-1.5 2M12 17.5v.5"/></svg>Como funciona</a>
-  <a href="/novidades" class="{% if ativo == 'novidades' %}active{% endif %}" title="O que mudou nas versões"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg>Novidades{% set nn = novidades_conta(novidades_pendentes(usuario)) %}{% if nn %}<span class="n">{{ nn }}</span>{% endif %}</a>
+  <a href="/novidades" class="{% if ativo == 'novidades' %}active{% endif %}" title="O que mudou nas versões">{% set nn = novidades_conta(novidades_pendentes(usuario)) %}<span class="sino-ico"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 20a2 2 0 004 0"/></svg>{% if nn %}<i class="sino-ponto" title="{{ nn }} novidade(s) não vista(s)" aria-label="{{ nn }} novidade(s) não vista(s)"></i>{% endif %}</span>Novidades</a>
 </div>
 {%- endmacro -%}
 {%- macro rodape_menu() -%}

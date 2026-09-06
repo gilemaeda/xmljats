@@ -69,7 +69,7 @@ uid = next(u["id"] for u in M.CONTAS.lista() if u["email"] == "n@exemplo.org")
 ok(M.CONTAS.por_id(uid).get("novidades_vistas") == N.ATUAL, "conta nova nasce com a versão atual como vista")
 home = c.get("/").text
 ok(MODAL not in home, "sem atualização desde o cadastro, não há janela")
-ok('href="/novidades"' in home and 'Novidades<span class="n">' not in home, "o sino está no menu, sem contador")
+ok('href="/novidades"' in home and 'class="sino-ponto"' not in home, "o sino está no menu, sem bolinha")
 
 # ---------------------------------------------------------------- 3. o sistema foi atualizado: janela filtrada
 M.CONTAS.marca_novidades(uid, "0.19.0")
@@ -79,16 +79,16 @@ ok([v["versao"] for v in pend] == [v["versao"] for v in N.visiveis("cliente") if
 n_itens = N.conta_itens(pend)
 pag = c.get("/painel").text
 ok(MODAL in pag and "O sistema foi atualizado" in pag, "ao entrar depois da atualização aparece a janela")
-ok("SciELO PS 1.10" in pag and "Novidades e notificações" in pag, "a janela traz o que mudou para o cliente")
+ok(all(i["titulo"] in pag for v in pend[:3] for i in v["itens"]), "a janela traz os itens das três versões mais novas que o cliente não viu")
 ok(not any(t in pag for t in SO_ADMIN), "nada do painel administrativo vaza para o cliente")
-ok(f'Novidades<span class="n">{n_itens}</span>' in pag, f"o sino conta as {n_itens} novidades não vistas")
+ok('class="sino-ponto"' in pag and f'title="{n_itens} novidade(s) não vista(s)"' in pag, f"o sino ganha a bolinha ({n_itens} não vistas no título)")
 np = c.get("/novidades").text
 ok(MODAL not in np, "a página Novidades não abre a janela por cima de si mesma")
 ok("novo para você" in np and "versão 0.20.0" in np and "versão 0.11.0" in np, "a página lista o histórico e marca o que é novo")
 ok(not any(t in np for t in SO_ADMIN), "a página do cliente não tem item do painel administrativo")
 ok(M.CONTAS.por_id(uid).get("novidades_vistas") == N.ATUAL, "abrir a página marca como visto")
 depois = c.get("/painel").text
-ok(MODAL not in depois and 'Novidades<span class="n">' not in depois, "depois disso, sem janela e sem contador")
+ok(MODAL not in depois and 'class="sino-ponto"' not in depois, "depois de ver, sem janela e sem bolinha")
 
 # ---------------------------------------------------------------- 4. botão 'Entendi'
 M.CONTAS.marca_novidades(uid, "0.20.0")

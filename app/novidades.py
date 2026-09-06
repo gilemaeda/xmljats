@@ -12,6 +12,10 @@ antiga sem o campo usa a data do último acesso: o que saiu antes dela não é n
 from typing import List, Optional
 
 VERSOES = [
+    {"versao": "0.21.1", "data": "2026-09-06", "itens": [
+        {"para": "todos", "titulo": "Bolinha no sino",
+         "texto": "Enquanto houver novidade que você não viu, o sino \"Novidades\" mostra uma bolinha; ela some quando você abre a página."},
+    ]},
     {"versao": "0.21.0", "data": "2026-09-06", "itens": [
         {"para": "todos", "titulo": "Novidades e notificações",
          "texto": "Depois de uma atualização, uma janela mostra o que mudou para você ao entrar. O sino \"Novidades\" no menu "
