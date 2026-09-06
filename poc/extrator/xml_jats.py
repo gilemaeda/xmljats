@@ -301,6 +301,9 @@ def _tipo_declaracao(titulo: str) -> Optional[str]:
 
 def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.10", rascunho_ok: bool = True) -> Resultado:
     res = Resultado()
+    if model.get("sem_texto"):
+        res.bloqueia("O PDF não tem camada de texto (documento escaneado): o motor lê só texto e ainda não faz OCR. "
+                     "Envie o DOCX ou o PDF gerado pelo editor de texto (D01).")
     v = VERSOES[versao]
     lang = model.get("idioma") or "pt"
     res.nome_base = nome_base_sps(rev, model) or "artigo"

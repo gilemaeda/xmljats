@@ -156,6 +156,28 @@ ok("CRediT" not in bloco and "Hoje o sistema lê PDF" not in bloco, "a ajuda nã
 ok("PDF ou DOCX do artigo" in aj and "equação pede o LaTeX" in aj, "a ajuda fala nos dois formatos e segue o guia nas fórmulas")
 ok("PDF ou o DOCX" in c.get("/").text, "a tela inicial fala nos dois formatos")
 
+# ---------------------------------------------------------------- 6b. PDF escaneado é detectado, não engolido
+import fitz  # noqa: E402
+
+src = fitz.open(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"))
+esc = fitz.open()
+for i in range(2):
+    pix = src[i].get_pixmap(dpi=72)
+    pg = esc.new_page(width=src[i].rect.width, height=src[i].rect.height)
+    pg.insert_image(pg.rect, pixmap=pix)
+caminho_esc = os.path.join(tmp, "escaneado.pdf")
+esc.save(caminho_esc)
+with open(caminho_esc, "rb") as f:
+    up2 = c.post("/validar", files={"arquivo": ("escaneado.pdf", f, "application/pdf")}, data={"revista": "rdp", "sps": "1.10"})
+ok(up2.status_code == 303, f"PDF escaneado é aceito e processado ({up2.status_code})")
+doc2 = up2.headers["location"].rsplit("/", 1)[-1]
+val3 = json.load(io.open(__import__("pathlib").Path(tmp) / "docs" / doc2 / "validacao.json", encoding="utf-8"))
+ok(bool(val3.get("bloqueantes")) and "camada de texto" in val3["bloqueantes"][0] and "(D01)" in val3["bloqueantes"][0],
+   f"o primeiro bloqueante explica que o PDF não tem texto: {(val3.get('bloqueantes') or ['-'])[0][:90]}")
+ok("escaneado" in c.get(f"/doc/{doc2}").text, "o resultado diz que o PDF é escaneado")
+ok("correções à mão por artigo" in adm.get("/admin").text, "o painel mostra as correções à mão por artigo (taxa de erro do motor)")
+ok("Se a revista deposita sozinha" in c.get(f"/doc/{doc}/entrega").text, "a tela de entrega traz o roteiro para a revista depositar sozinha")
+
 # ---------------------------------------------------------------- 7. o envio não trava o site (servidor de verdade)
 import httpx  # noqa: E402
 

@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-06
 
-Gerada por `python ops/auditoria.py` (app 0.20.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.20.1). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 106 de 106 verificações passaram.
+- **Site:** 107 de 107 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -95,6 +95,7 @@ Gerada por `python ops/auditoria.py` (app 0.20.0). Cada número vem de uma medi�
 - ok — tela de entrega confere o pacote contra o guia
 - ok — entrega lembra o aviso obrigatório e o formato do pacote
 - ok — entrega explica o atestado de capacidade técnica
+- ok — entrega traz o roteiro para a revista depositar sozinha
 - ok — pacote com uma pasta de mesmo nome dentro e o relatório xpm.html (SPS 1.10)
 - ok — regras de nome do guia (sem acento, underline ou ponto extra)
 - ok — depósito sem FTP configurado é recusado com explicação
@@ -221,6 +222,7 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Pacote, nome da pasta, lote e e-mail de entrega conforme a SPS 1.10 | pronto | ops/test_entrega.py |
 | Validação no Schematron da SPS 1.10 (o packtools só liga 1.8 e 1.9 por padrão) | pronto | seção 3; SPS 1.10 é a versão padrão |
 | Freio de tentativas no login e registro; XML rascunho marcado; 'ir para o campo'; tempo medido | pronto | ops/test_auditoria_furos.py |
+| OCR de PDF escaneado | não começou | o PDF só com imagem é detectado e vira bloqueante com explicação (D01); ler exige Tesseract no container |
 | Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |
 | Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |
 | Equipe da revista compartilhando documentos, fila em lote e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem fila em lote nem custo com revisão humana |

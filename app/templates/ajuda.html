@@ -168,6 +168,7 @@
 <h2 class="sec-t">O que ainda não é feito aqui</h2>
 <div class="cards-3">
   {% for titulo, texto in [
+    ('OCR de PDF escaneado', 'PDF só com imagem é detectado e avisado, mas não é lido. Entra quando a retroconversão de números antigos começar.'),
     ('Credencial do FTP e andamento na SciELO', 'O depósito no FTP e o aviso por e-mail saem daqui, mas a credencial do FTP é pedida à SciELO (pela revista ou pelo prestador), e o andamento do QA não é consultado: quem acompanha anota a etapa.'),
     ('Integração com o OJS', 'Datas, seção e DOI ainda entram na revisão ou são pedidos por e-mail; puxar da submissão no OJS é o passo seguinte.'),
     ('DOI das referências pelo Crossref', 'Medido e descartado por enquanto: a busca por texto devolve DOI errado com a mesma confiança de um certo. O DOI do próprio artigo, sim, é conferido no Crossref.'),
@@ -185,6 +186,7 @@
 <h2 class="sec-t">Perguntas rápidas</h2>
 <div class="faq">
   {% for p, r in [
+    ('Meu PDF é digitalizado (escaneado). Funciona?', 'Ainda não. O motor lê a camada de texto do PDF; um arquivo que é só imagem é detectado e o resultado avisa, em vez de devolver "título não identificado" para tudo. OCR entra com a retroconversão de números antigos; por enquanto, envie o DOCX ou o PDF gerado pelo editor de texto.'),
     ('Por que meu artigo não fica "Pronto"?', 'Falta algum dado que o arquivo não traz. O mais comum é o dia e o mês da publicação, que só existem no sistema da revista. A tela de revisão mostra cada pendência com o nome do campo e de onde buscar o dado.'),
     ('Por que a equação pede o LaTeX?', 'PDF não guarda MathML, guarda o desenho da fórmula, e o guia de entrega exige as fórmulas codificadas em MathML ou LaTeX. A tela de revisar mostra o recorte da equação e pede o LaTeX, que vira MathML no XML; equação só como imagem fica bloqueante. No DOCX a fórmula do Word (OMML) é convertida sozinha.'),
     ('Por que essa tabela veio como imagem e a outra não?', 'Quando a tabela tem linhas de grade, a estrutura é reconstruída e vira uma tabela real no XML. Quando ela só tem filetes horizontais, a divisão das colunas fica incerta; nesse caso ela vai como imagem com aviso (T02), e a tela de revisar deixa digitar ou colar as células para a tabela sair codificada, como o guia pede.'),

@@ -185,6 +185,7 @@ def roda_site():
         check("entrega lembra o aviso obrigatório e o formato do pacote",
               "publicacao@scielo.org" in ent and ".rar" in ent and "MathML ou LaTeX" in ent)
         check("entrega explica o atestado de capacidade técnica", "Atestado de capacidade técnica" in ent and "6 meses" in ent)
+        check("entrega traz o roteiro para a revista depositar sozinha", "Se a revista deposita sozinha" in ent and "/Entrega" in ent)
         import zipfile as _zip
         with _zip.ZipFile(io.BytesIO(c.get(doc + "/pacote.zip").content)) as z:
             nomes = z.namelist()
@@ -450,6 +451,7 @@ def main():
           "| Pacote, nome da pasta, lote e e-mail de entrega conforme a SPS 1.10 | pronto | ops/test_entrega.py |",
           "| Validação no Schematron da SPS 1.10 (o packtools só liga 1.8 e 1.9 por padrão) | pronto | seção 3; SPS 1.10 é a versão padrão |",
           "| Freio de tentativas no login e registro; XML rascunho marcado; 'ir para o campo'; tempo medido | pronto | ops/test_auditoria_furos.py |",
+          "| OCR de PDF escaneado | não começou | o PDF só com imagem é detectado e vira bloqueante com explicação (D01); ler exige Tesseract no container |",
           "| Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |",
           "| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |",
           "| Equipe da revista compartilhando documentos, fila em lote e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem fila em lote nem custo com revisão humana |",

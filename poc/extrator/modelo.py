@@ -204,6 +204,7 @@ class ArticleModel:
     back_matter: List[dict] = field(default_factory=list)
     proveniencia: dict = field(default_factory=dict)
     avisos: List[str] = field(default_factory=list)
+    sem_texto: bool = False  # PDF sem camada de texto (escaneado): o motor nao faz OCR; vira bloqueante no gerador
 
     def marca(self, campo, origem):
         self.proveniencia[campo] = origem

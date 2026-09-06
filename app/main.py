@@ -71,7 +71,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.20.0"
+VERSAO_APP = "0.20.1"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -2273,6 +2273,9 @@ def admin(request: Request, usuario: dict = Depends(exige_admin), dono: str = ""
     prontos = [d for d in docs if d.get("pronto")]
     medidos = [d["duracao_s"] for d in docs if isinstance(d.get("duracao_s"), (int, float))]
     tempo_medio = round(sum(medidos) / len(medidos), 1) if medidos else None
+    # taxa de erro do motor, medida pelo que o revisor precisou corrigir à mão (campos editados por artigo)
+    corrigidos = [d["editados"] for d in docs if isinstance(d.get("editados"), int)]
+    media_editados = round(sum(corrigidos) / len(corrigidos), 1) if corrigidos else None
     uso = _uso_por_usuario(docs, usuarios)
     dias = sorted(por_dia.items())[-14:]
     return templates.TemplateResponse(request, "admin.html", {
@@ -2283,7 +2286,7 @@ def admin(request: Request, usuario: dict = Depends(exige_admin), dono: str = ""
         "recentes": docs[:8], "uso": uso, "dias": dias, "filtros": {"dono": dono, "desde": desde},
         "filtro_ativo": bool(dono or desde),
         "online": sum(1 for x in uso if tempo.online(x["ultimo_acesso"])),
-        "tempo_medio": tempo_medio, "medidos": len(medidos),
+        "tempo_medio": tempo_medio, "medidos": len(medidos), "media_editados": media_editados,
     })
 
 

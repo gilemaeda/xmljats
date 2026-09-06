@@ -117,6 +117,16 @@
       <p class="small faint" style="margin:0">Fonte: SPS 1.10, seção "Entrega de Pacote XML para Publicação" (que incorporou o guia de dez/2024).</p>
     </div>
     <div class="card pad stack" style="gap:10px">
+      <h3>Se a revista deposita sozinha</h3>
+      <ol class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+        <li>Pedir o login do FTP da SciELO a <span class="mono">{{ email_scielo }}</span>, dizendo a revista e a coleção.</li>
+        <li>Baixar o pacote aqui e subir o .zip, pelo FileZilla ou outro cliente de FTP, na pasta <span class="mono">{{ revista.acronimo if revista else 'acrônimo' }}/Entrega</span> (correção: <span class="mono">{{ revista.acronimo if revista else 'acrônimo' }}/Correcao</span>).</li>
+        <li>Mandar o e-mail para <span class="mono">{{ email_scielo }}</span> com o título <span class="mono">{{ assunto }}</span> e o texto que aparece acima, com cópia à equipe editorial.</li>
+        <li>Anotar aqui a etapa "Entregue à SciELO" e, quando a resposta chegar, "Entrega confirmada".</li>
+      </ol>
+      <p class="small faint" style="margin:0">É o caminho de quem ainda não tem prestador com atestado (SPS 1.10, "FTP do SciELO").</p>
+    </div>
+    <div class="card pad stack" style="gap:10px">
       <h3>Publicação contínua</h3>
       <p class="small muted" style="margin:0">Exige <span class="mono">article-id pub-id-type="other"</span> com exatamente
         5 dígitos, criado pelo provedor do XML junto com a planilha de "Other" da SciELO. O título da seção precisa ser
