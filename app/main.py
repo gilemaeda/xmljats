@@ -79,7 +79,7 @@ DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
 MAX_LOTE = int(os.environ.get("XMLJATS_MAX_LOTE", "20"))  # arquivos por envio; entram na fila e saem um a um
-VERSAO_APP = "0.27.0"
+VERSAO_APP = "0.27.1"
 if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
     raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)
@@ -367,7 +367,7 @@ def _cadastra_revista(lista: list, dados: dict, usuario: dict) -> None:
 
 def _exige_criar_revista(usuario: dict) -> None:
     if not acesso.pode(usuario, "criar_revista"):
-        raise HTTPException(403, "Cadastrar revista é do administrador da sua organização (ou de quem ainda não está em nenhuma).")
+        raise HTTPException(403, "Cadastrar revista é de quem administra a sua organização (ou de quem ainda não está em nenhuma).")
 
 
 def carrega_revistas():
@@ -1025,8 +1025,8 @@ def revista_por_issn(numero: str, usuario: dict) -> tuple:
         return None, (f"As bases responderam, mas faltam campos obrigatórios para cadastrar sozinho ({falta}). "
                       f"Abra Revistas > Nova revista com esse ISSN e complete à mão."), consulta
     if not acesso.pode(usuario, "criar_revista"):
-        return None, ("As bases conhecem esse ISSN, mas cadastrar revista é do administrador da sua organização: "
-                      "peça a ele para cadastrá-la."), consulta
+        return None, ("As bases conhecem esse ISSN, mas cadastrar revista é de quem administra a sua organização: "
+                      "peça a essa pessoa para cadastrá-la."), consulta
     _cadastra_revista(lista, dados, usuario)
     return dados["acronimo"], (f"Revista {dados['titulo']} cadastrada pelo ISSN {numero} "
                                f"({consulta['mensagem'].split('.')[0].lower()})."), consulta

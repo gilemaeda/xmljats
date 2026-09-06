@@ -54,12 +54,12 @@
   </form>
 
   <div class="card pad stack">
-    <div><h2>Organização</h2><p class="small muted" style="margin-top:4px">Quem está na mesma organização vê os mesmos documentos e revistas.</p></div>
+    <div><h2>Organização</h2><p class="small muted" style="margin-top:4px">Quem entra pelo convite vira secretaria editorial nas revistas da organização (vê, envia e corrige).</p></div>
     {% set org = organizacao_de(usuario) %}
     {% if org %}
       <p style="margin:0"><b>{{ org.nome }}</b></p>
       <p class="small muted" style="margin:0">Código de convite para colegas: <span class="mono">{{ org.convite }}</span>. Quem entrar com ele vê os
-        documentos da organização. Documentos enviados antes de entrar continuam só de quem enviou. Para trocar de organização, fale com o administrador.</p>
+        documentos da organização. Documentos enviados antes de entrar continuam só de quem enviou. Para sair da organização, fale com a nossa equipe.</p>
     {% elif usuario.papel == 'cliente' %}
       <form method="post" action="/conta/organizacao" class="stack" style="gap:8px">
         <div class="field"><label for="convite">Código de convite</label><input id="convite" name="convite" placeholder="ex.: A3F9C2D1" autocomplete="off">

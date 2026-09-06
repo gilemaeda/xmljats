@@ -234,6 +234,17 @@ aj_adm = adm.get("/ajuda").text
 ok("quem vê o quê" in aj_a and "Para o administrador" not in aj_a and "Para o administrador" in aj_adm,
    "Como funciona explica organizações; a parte do administrador só aparece para ele")
 
+# ---------------------------------------------------------------- 10. nada do painel administrativo aparece em página de cliente
+import re as _re
+PALAVRAS_ADMIN = ("configurações", "correio", "painel administrativo", "usuários", "/admin", "administrador")
+paginas = ["/", "/painel", "/conta", "/revistas", "/revistas/nova", "/ajuda", "/novidades", f"/doc/{doc_a}", f"/doc/{doc_a}/editar", f"/doc/{doc_a}/entrega"]
+for pg_ in paginas:
+    html = a.get(pg_).text
+    texto = _re.sub(r"<script.*?</script>", " ", html, flags=_re.S)
+    texto = _re.sub(r"<[^>]+>", " ", texto).lower()
+    achadas = [w for w in PALAVRAS_ADMIN if w in texto]
+    ok(not achadas, f"página de cliente {pg_} sem vocabulário administrativo {achadas}")
+
 print("\nFALHAS:", len(falhas))
 for f in falhas:
     print("  -", f)

@@ -63,7 +63,7 @@
         {% if not ftp.pronto %}
         <div class="msg warn">O FTP ainda não está configurado. As credenciais são pedidas a
           <span class="mono">{{ email_scielo }}</span> e depois vão em
-          {% if usuario.papel == 'admin' %}<a href="/admin/config">Configurações</a>{% else %}Configurações (acesso do administrador){% endif %}.
+          {% if usuario.papel == 'admin' %}<a href="/admin/config">Configurações</a>{% else %}a configuração do sistema, feita pela nossa equipe{% endif %}.
           Enquanto isso, baixe o pacote e deposite pelo cliente de FTP.</div>
         {% else %}
         <p class="small muted" style="margin:0">Servidor <span class="mono">{{ ftp.servidor }}:{{ ftp.porta }}</span>,
@@ -82,7 +82,7 @@
         {% endif %}
         <div class="msg note">Depositar não basta. A SPS diz que é <b>obrigatório avisar {{ email_scielo }} por e-mail a cada
           depósito</b>, com cópia à equipe editorial; sem o aviso, a publicação não é garantida. Ao depositar daqui, o aviso já
-          fica como rascunho no correio, no formato que ela exige.</div>
+          {% if usuario.papel == 'admin' %}fica como rascunho no correio{% else %}sai montado pela nossa equipe{% endif %}, no formato que ela exige.</div>
         <details class="small">
           <summary>Aviso por e-mail, pronto para {{ email_scielo }}{% if revista and revista.email_editorial %} com cópia a {{ revista.email_editorial }}{% endif %}</summary>
           <p style="margin:6px 0 4px"><b>Título:</b> <span class="mono">{{ assunto }}</span></p>
@@ -97,7 +97,7 @@
         {% if not r.pronto %}<span class="small crit-text">O documento ainda tem bloqueante: resolva em Revisar e editar.</span>
         {% elif conferencia and not conferencia.ok %}<span class="small crit-text">A conferência acima ainda tem item em falta.</span>{% endif %}
         {% else %}
-        <p class="small muted" style="margin:0">O depósito é feito pelo administrador.</p>
+        <p class="small muted" style="margin:0">O depósito é feito pela nossa equipe.</p>
         {% endif %}
       </div>
     </div>

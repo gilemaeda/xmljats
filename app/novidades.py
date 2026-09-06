@@ -12,6 +12,11 @@ antiga sem o campo usa a data do último acesso: o que saiu antes dela não é n
 from typing import List, Optional
 
 VERSOES = [
+    {"versao": "0.27.1", "data": "2026-09-06", "itens": [
+        {"para": "admin", "titulo": "Páginas do cliente sem vocabulário administrativo",
+         "texto": "Como funciona, Entrega, Minha conta e Revisar do cliente não citam mais Configurações, correio nem o administrador; "
+                  "um teste varre todas as páginas do cliente e recusa essas palavras. Como funciona passou a explicar os papéis por revista."},
+    ]},
     {"versao": "0.27.0", "data": "2026-09-06", "itens": [
         {"para": "todos", "titulo": "Papéis por revista",
          "texto": "O que você pode fazer numa revista passa a ser um papel nela: secretaria editorial (envia e corrige), corpo editorial "

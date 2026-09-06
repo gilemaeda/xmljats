@@ -69,8 +69,8 @@
       <label for="destino">Pedir à revista ou ao autor</label>
       <input id="destino" name="destino" type="email" placeholder="editor@revista.org">
     </div>
-    <button class="btn small" type="submit"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Montar o pedido no correio</button>
-    <span class="small faint">Gera a lista do que falta, com o motivo de cada item, como rascunho no correio.</span>
+    <button class="btn small" type="submit"><svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Montar o pedido por e-mail</button>
+    <span class="small faint">Gera a lista do que falta, com o motivo de cada item, como rascunho de e-mail{% if usuario.papel != 'admin' %} que a nossa equipe envia{% endif %}.</span>
   </form>
   <ul class="pend-lista">
     {% for g in obrig_grupos %}

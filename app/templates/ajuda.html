@@ -98,9 +98,9 @@
         Schematron, todos os arquivos citados pelo XML estão dentro, e o relatório de validação vai junto.</li>
       <li><b>Deposite no FTP.</b> O <span class="mono">.zip</span> vai para a pasta <span class="mono">Entrega</span>;
         correções vão para <span class="mono">Correcao</span>. As credenciais são pedidas a
-        <span class="mono">publicacao@scielo.org</span> e ficam em Configurações, só no servidor.</li>
+        <span class="mono">publicacao@scielo.org</span>{% if usuario.papel == 'admin' %} e ficam em Configurações, só no servidor{% else %} pela nossa equipe, que guarda as credenciais só no servidor{% endif %}.</li>
       <li><b>Avise por e-mail.</b> O guia é explícito: depositar sozinho <b>não garante publicação</b>. Ao depositar daqui,
-        o aviso para <span class="mono">publicacao@scielo.org</span> já fica pronto no correio, com periódico, ISSN, DOI e
+        o aviso para <span class="mono">publicacao@scielo.org</span> já sai montado{% if usuario.papel == 'admin' %} como rascunho no correio{% endif %}, com periódico, ISSN, DOI e
         nome do pacote preenchidos.</li>
       <li><b>Acompanhe.</b> Vá anotando a etapa aqui a cada retorno da SciELO.</li>
     </ol>
@@ -132,8 +132,8 @@
         de 15 + 15. No todo, de 30 a 60 dias. Aprovada, a empresa entra na lista de parceiras e segue sendo avaliada a cada
         entrega; reprovada, nova amostra só depois de 6 meses.</p>
       <p class="small muted">Qualquer programa de marcação serve, desde que a saída seja compatível com a SPS/JATS e venha
-        com o relatório do validador — que é o que este sistema produz. Em Configurações, o pedido é montado como rascunho no
-        correio, com empresa e CNPJ.</p>
+        com o relatório do validador — que é o que este sistema produz.{% if usuario.papel == 'admin' %} Em Configurações, o pedido é montado como rascunho no
+        correio, com empresa e CNPJ.{% endif %}</p>
     </div>
     <div class="card pad stack" style="gap:10px">
       <h3>O mesmo validador</h3>
@@ -148,20 +148,21 @@
   <article class="card pad ficha">
     <span class="ic brand"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0116 0"/></svg></span>
     <h3>Conta</h3>
-    <p class="small muted">Uma pessoa, com e-mail e senha, com um papel: <b>cliente</b> envia e revisa artigos; <b>operador</b> é a nossa
-      equipe e trabalha em todos; <b>administrador</b> cuida de contas, organizações, revistas, correio e configurações (e não usa o validador).</p>
+    <p class="small muted">Uma pessoa, com e-mail e senha. O que ela pode fazer em cada revista é um <b>papel</b> nela: <b>secretaria editorial</b>
+      envia e corrige, <b>corpo editorial</b> acompanha, <b>editor-chefe</b> aprova o XML para a entrega. A nossa equipe (operador) trabalha em todos os
+      documentos{% if usuario.papel == 'admin' %}; o administrador cuida de contas, organizações, revistas, correio e configurações (e não usa o validador){% endif %}.</p>
   </article>
   <article class="card pad ficha">
     <span class="ic brand"><svg viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/></svg></span>
     <h3>Organização</h3>
-    <p class="small muted">Uma editora, instituição ou equipe de revista que agrupa contas de cliente. Quem está na mesma organização vê os
-      mesmos documentos e as revistas que ela cadastrou. Não é uma conta: é o grupo. Entra-se por código de convite.</p>
+    <p class="small muted">Uma editora ou instituição, dona das suas revistas, que agrupa pessoas. Quem entra pelo código de convite vira
+      secretaria editorial em todas as revistas dela; quem a criou a administra (pessoas, papéis e revistas). Não é uma conta: é o grupo.</p>
   </article>
   <article class="card pad ficha">
     <span class="ic brand"><svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 012-2h9l5 5v14H6a2 2 0 01-2-2z"/><path d="M15 3v5h5M8 13h8M8 17h5"/></svg></span>
     <h3>Revista</h3>
-    <p class="small muted">Um cadastro (acrônimo, ISSN, editora, licença…), não uma conta. Cadastrada pela nossa equipe, é pública para todos;
-      cadastrada por um cliente, fica da organização dele (ou só dele). Um ISSN só existe uma vez no cadastro.</p>
+    <p class="small muted">Um cadastro (acrônimo, ISSN, editora, licença…), não uma conta. Cadastrada pela nossa equipe, é do catálogo, aberta a todos;
+      cadastrada por quem administra uma organização, é dela (quem não tinha organização ganha uma com o próprio nome). Um ISSN só existe uma vez no cadastro.</p>
   </article>
 </div>
 <div class="review" style="grid-template-columns:1fr 1fr;margin-top:var(--s-4)">
@@ -171,21 +172,22 @@
       <li>Crie sua conta. Se a sua editora já usa o xmljats, entre com o <b>código de convite</b> que um colega vê em Minha conta;
         se não, crie a organização ali mesmo (ou depois, em Minha conta).</li>
       <li>Entrar é sempre com o seu e-mail e senha: a organização fica ligada à conta, não é um login à parte.</li>
-      <li>Para trazer colegas, passe o código de convite. Quem entra passa a ver os documentos e revistas da organização;
-        o que cada um enviou antes de entrar continua só dele.</li>
-      <li>Trocar de organização ou sair dela é com o administrador, porque muda quem vê o quê.</li>
+      <li>Para trazer colegas, passe o código de convite. Quem entra vira secretaria editorial nas revistas da organização (vê, envia e
+        corrige os documentos delas); o que cada um enviou antes de entrar continua só dele.</li>
+      <li>Dá para estar em mais de uma organização, com papéis diferentes em cada revista. Para sair de uma, fale com a nossa equipe.</li>
     </ol>
   </div>
   {% if usuario.papel == 'admin' %}
   <div class="card pad stack" style="gap:8px">
     <h3>Para o administrador</h3>
     <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
-      <li><b>Organizações</b> (menu): criar, renomear, gerar novo código de convite (o antigo deixa de valer) e remover (só sem membros).
+      <li><b>Organizações</b> (menu): criar, renomear, gerar novo código de convite (o antigo deixa de valer) e remover (só sem pessoas nem revistas).
         A lista mostra membros, documentos e revistas de cada uma. A editora também pode criar a sua sozinha, no cadastro ou em Minha conta.</li>
-      <li><b>Usuários</b>: coluna com a organização; vincular ou desvincular uma conta; reexibir a janela de novidades; papel e senha.</li>
+      <li><b>Usuários</b>: coluna com a organização principal; vincular (vira membro e secretaria nas revistas dela) ou desvincular uma conta;
+        reexibir a janela de novidades; papel e senha. Os papéis por revista ficam em papeis.json (a tela vem na próxima etapa).</li>
       <li><b>Revistas</b>: ao editar, "Quem vê esta revista" abre a revista para todos ou muda de organização. Se outra organização
         precisar de uma revista já cadastrada (mesmo ISSN), torne-a pública.</li>
-      <li><b>Documentos</b>: filtro por organização e por conta; o documento nasce na organização de quem enviou.</li>
+      <li><b>Documentos</b>: filtro por organização e por conta; o documento nasce na organização da revista (em revista de catálogo, na de quem enviou).</li>
       <li><b>Lotes</b>: junte até 5 artigos prontos da mesma revista e do mesmo volume/número num só pacote, com um só aviso
         ("Total de XMLs = N"); o número do lote segue a sequência por volume/número. A entrega artigo por artigo continua na tela de cada documento.</li>
       <li>Operador vê tudo sem precisar de organização. Envio em lote passa pela fila; PDF escaneado passa pelo OCR (veja /saude).</li>
@@ -195,10 +197,10 @@
   <div class="card pad stack" style="gap:8px">
     <h3>O que a organização muda na prática</h3>
     <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
-      <li>Meus documentos passa a listar também os dos colegas, com "enviado por".</li>
-      <li>A lista de revistas do envio mostra as públicas e as da sua organização.</li>
-      <li>Revista cadastrada por você fica da organização (ou só sua, se não está em nenhuma).</li>
-      <li>Se um ISSN já foi cadastrado por outra organização, o sistema avisa: o administrador pode torná-la pública.</li>
+      <li>Meus documentos passa a listar também os das revistas em que você tem papel, com "enviado por".</li>
+      <li>A lista de revistas do envio mostra as do catálogo e as da sua organização em que você é secretaria editorial ou editor-chefe.</li>
+      <li>Revista cadastrada por quem administra a organização fica dela; quem não tinha organização ganha uma com o próprio nome.</li>
+      <li>Se um ISSN já foi cadastrado por outra organização, o sistema avisa: peça à nossa equipe para torná-la pública.</li>
     </ul>
   </div>
   {% endif %}
@@ -249,14 +251,14 @@
   {% for p, r in [
     ('Meu PDF é digitalizado (escaneado). Funciona?', 'Sim, por OCR: o motor reconhece o texto da imagem (português e inglês) e segue o fluxo normal, com um aviso para conferir com atenção, porque OCR erra acentos e quebras de linha. O DOCX ou o PDF gerado pelo editor continuam sendo a melhor entrada.'),
     ('Posso enviar vários arquivos de uma vez?', 'Sim, até 20 por envio. Eles entram numa fila e são processados um a um; a lista de documentos mostra "na fila", "processando" e depois o resultado, atualizando sozinha. Um arquivo só é processado na hora, e você cai direto no resultado.'),
-    ('Onde vejo o que mudou no sistema?', 'No sino "Novidades" do menu. Depois de uma atualização, uma janela mostra ao entrar o que mudou para o seu perfil; a página guarda o histórico de versões. O que é do painel administrativo só aparece para o administrador.'),
+    ('Onde vejo o que mudou no sistema?', 'No sino "Novidades" do menu. Depois de uma atualização, uma janela mostra ao entrar o que mudou para o seu perfil; a página guarda o histórico de versões. O que é da nossa equipe só aparece para ela.'),
     ('Por que meu artigo não fica "Pronto"?', 'Falta algum dado que o arquivo não traz. O mais comum é o dia e o mês da publicação, que só existem no sistema da revista. A tela de revisão mostra cada pendência com o nome do campo e de onde buscar o dado.'),
     ('Por que a equação pede o LaTeX?', 'PDF não guarda MathML, guarda o desenho da fórmula, e o guia de entrega exige as fórmulas codificadas em MathML ou LaTeX. A tela de revisar mostra o recorte da equação e pede o LaTeX, que vira MathML no XML; equação só como imagem fica bloqueante. No DOCX a fórmula do Word (OMML) é convertida sozinha.'),
     ('Por que essa tabela veio como imagem e a outra não?', 'Quando a tabela tem linhas de grade, a estrutura é reconstruída e vira uma tabela real no XML. Quando ela só tem filetes horizontais, a divisão das colunas fica incerta; nesse caso ela vai como imagem com aviso (T02), e a tela de revisar deixa digitar ou colar as células para a tabela sair codificada, como o guia pede.'),
     ('O sistema muda meu PDF?', 'Não. O arquivo enviado fica guardado como veio e entra no pacote apenas renomeado no padrão da SPS. As correções que você faz na revisão valem só para o XML.'),
     ('A área da revista muda o XML?', 'Não. JATS é o mesmo para toda área. O que muda é o que esperar do artigo: estilo de citação, presença de tabelas e de equações. Por isso a área e o estilo de referências ficam no cadastro, e o sistema avisa quando o texto é lido num estilo diferente do esperado.'),
-    ('Quem vê o quê?', 'Cliente vê os próprios documentos e, se está numa organização (editora ou instituição), os dos colegas dela; revistas cadastradas por cliente ficam da organização (ou só dele). Operador vê todos. Administrador administra usuários, organizações, revistas, correio e configurações, e não usa o validador.'),
-    ('Como minha equipe compartilha os documentos?', 'Em Minha conta, crie a organização ou entre com o código de convite que um colega já tem. Documentos e revistas criados depois disso são da organização; o que foi enviado antes continua só de quem enviou. Trocar de organização é com o administrador.')] %}
+    ('Quem vê o quê?', 'Quem enviou o documento sempre o vê. Quem tem papel na revista dele (secretaria editorial, corpo editorial ou editor-chefe) também, e quem administra a organização vê tudo dela. Nas revistas do catálogo (sem organização), os colegas da sua organização veem o que você envia. A nossa equipe vê todos, para fazer a revisão e a entrega.'),
+    ('Como minha equipe compartilha os documentos?', 'Em Minha conta, crie a organização ou entre com o código de convite que um colega já tem. Quem entra vira secretaria editorial em todas as revistas da organização (também nas cadastradas depois); o que foi enviado antes continua só de quem enviou. Para sair de uma organização, fale com a nossa equipe.')] %}
   <details class="card">
     <summary>{{ p }}<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></summary>
     <p class="small">{{ r }}</p>
