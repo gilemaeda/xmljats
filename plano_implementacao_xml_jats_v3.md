@@ -104,7 +104,23 @@ Mais a camada de operação:
 - [ ] Reduzir dependência de revisão humana conforme a IA prova consistência
 - [ ] Concluir o processo de atestado de capacidade técnica, se ainda pendente, pra virar prestador oficial com FTP próprio
 - [ ] Expandir pra mais áreas de conhecimento
-- [ ] Automação parcial do próprio depósito no FTP (via script, já que não existe API oficial)
+- [ ] Concluir a certificação de prestador (atestado), pra ter FTP próprio e não depender mais da credencial de cada revista
+
+---
+
+## Como funciona o envio para a SciELO (e por que dá pra automatizar)
+
+Isso **não é só o validador** — o manual descreve um processo de entrega com duas ações obrigatórias, e as duas são automatizáveis por código, sem precisar de IA:
+
+**1. Depósito do pacote .zip num FTP.**
+Existem 2 tipos de conta de FTP: a da própria SciELO (usada por revistas sem prestador certificado — login pedido por e-mail a `publicacao@scielo.org`) ou a conta própria de um prestador com o atestado de capacidade técnica. O pacote é depositado dentro de uma pasta "Entrega" (ou "Correcao", se for correção de um pacote já enviado). Isso é upload de arquivo via protocolo FTP — totalmente scriptável, sem precisar do FileZilla manualmente.
+
+**2. E-mail obrigatório avisando do depósito.**
+Só subir o arquivo no FTP não garante nada — é preciso mandar um e-mail para `publicacao@scielo.org` (com cópia pra equipe editorial da revista) avisando. O detalhe importante: **o título do e-mail segue um formato fixo e replicável por código**, por exemplo:
+`Entrega | scie v40n2 2025 - BR`
+(termo "Entrega" + acrônimo da revista + volume/número + ano + sigla da coleção). O corpo do e-mail também é um template simples ("Informo que o .zip com a marcação XML do periódico [nome], foi disponibilizado no FTP. Total de XMLs = xx").
+
+**Conclusão prática:** como o nome do arquivo, a estrutura de pastas e o título/corpo do e-mail seguem regras fixas e conhecidas, dá pra automatizar o processo inteiro de entrega — não só gerar e validar o XML, mas também depositar e avisar a SciELO automaticamente. A única coisa que não é automatizável de cara é **conseguir a credencial do FTP** (isso exige um pedido pontual por e-mail — da própria revista, sem precisar de atestado, ou do prestador, com atestado).
 
 ---
 
@@ -118,10 +134,12 @@ Mais a camada de operação:
 | 4 | Gerador de XML por template | Código | 1-2 |
 | 5 | Gerador de nome de arquivo/pasta | Código | 2 |
 | 6 | Montador de pacote .zip | Código | 2 |
-| 7 | Painel de revisão humana | Interface | 2 |
-| 8 | Painel de status do pacote | Interface | 4 |
-| 9 | Fila de processamento | Código | 2 |
-| 10 | Automação parcial do depósito FTP | Código | 5 |
+| 7 | **Módulo de entrega — upload FTP + e-mail formatado automático** | Código | 2-3 |
+| 8 | Painel de revisão humana | Interface | 2 |
+| 9 | Painel de status do pacote | Interface | 4 |
+| 10 | Fila de processamento | Código | 2 |
+
+O item 7 só funciona na prática depois que alguma credencial de FTP existir (a da própria revista, pedida sem burocracia na Fase 0/3, ou a do prestador certificado, mais pra frente) — mas o código do módulo em si pode ser construído em paralelo, sem esperar isso.
 
 ---
 
