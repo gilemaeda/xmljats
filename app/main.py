@@ -66,6 +66,7 @@ import novidades  # noqa: E402  (app/novidades.py: o que mudou em cada versão, 
 import fila  # noqa: E402  (app/fila.py: envio em lote entra numa fila; um trabalhador processa um arquivo por vez)
 import organizacoes  # noqa: E402  (app/organizacoes.py: editora/instituição que agrupa contas; membros veem os mesmos documentos)
 import lotes  # noqa: E402  (app/lotes.py: até 5 artigos prontos da mesma revista/número num só pacote de entrega)
+import acesso  # noqa: E402  (app/acesso.py: quem pode o quê — papéis por revista, admins da organização, staff; migração)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -78,7 +79,7 @@ DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
 MAX_LOTE = int(os.environ.get("XMLJATS_MAX_LOTE", "20"))  # arquivos por envio; entram na fila e saem um a um
-VERSAO_APP = "0.26.1"
+VERSAO_APP = "0.27.0"
 if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
     raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)
@@ -94,7 +95,7 @@ FORMATOS = {".pdf", ".docx"}
 # Da quarta em diante são os status que a SciELO usa no título dos e-mails do fluxo de publicação (SPS 1.10):
 # Entrega, Entrega Confirmada, Pré-QA (Correção), QA (Correção), QA Finalizado.
 ETAPAS = [("recebido", "Recebido"), ("em_revisao", "Em revisão"), ("pronto", "Pronto para entrega"),
-          ("entregue", "Entregue à SciELO"), ("entrega_confirmada", "Entrega confirmada"), ("pre_qa", "Pré-QA"), ("qa", "QA"),
+          ("aprovado", "Aprovado pelo editor-chefe"), ("entregue", "Entregue à SciELO"), ("entrega_confirmada", "Entrega confirmada"), ("pre_qa", "Pré-QA"), ("qa", "QA"),
           ("correcao_pedida", "Correção pedida pela SciELO"), ("qa_finalizado", "QA finalizado"), ("publicado", "Publicado")]
 ETAPA_ROTULO = dict(ETAPAS)
 # A área não muda o XML (JATS é o mesmo para todas), mas muda o que esperar do artigo: estilo de referências,
@@ -123,7 +124,12 @@ templates.env.globals["versao"] = VERSAO_APP
 templates.env.globals["novidades_pendentes"] = novidades.pendentes  # o que esta pessoa ainda não viu (já filtrado por papel)
 templates.env.globals["novidades_conta"] = novidades.conta_itens
 templates.env.globals["organizacoes_lista"] = ORGS.lista
-templates.env.globals["organizacao_de"] = lambda u: ORGS.por_id((u or {}).get("organizacao"))
+templates.env.globals["organizacao_de"] = acesso.organizacao_principal  # a que a conta mostra; o acesso vem dos papéis
+templates.env.globals["organizacoes_de"] = acesso.organizacoes_de
+templates.env.globals["papel_em"] = acesso.papel_em
+templates.env.globals["e_admin_org"] = acesso.e_admin_org
+templates.env.globals["pode"] = acesso.pode
+templates.env.globals["ROTULO_PAPEL_REVISTA"] = acesso.ROTULO_PAPEL_REVISTA
 templates.env.globals["organizacao_nome"] = ORGS.nome_de
 templates.env.globals["ETAPA_ROTULO"] = ETAPA_ROTULO
 templates.env.globals["FUSO"] = tempo.NOME_FUSO
@@ -344,26 +350,24 @@ def _arquivo_revistas() -> Path:
 
 
 def revistas_para(usuario: dict) -> list:
-    """Revistas que esta pessoa pode ver: as públicas (sem organização nem dono), as da organização dela e as que
-    ela mesma cadastrou. Operador e administrador veem todas."""
-    todas = carrega_revistas()
-    if (usuario or {}).get("papel") in ("admin", "operador"):
-        return todas
-    org = (usuario or {}).get("organizacao")
-    uid = (usuario or {}).get("id")
-    return [r for r in todas if (not r.get("organizacao") and not r.get("dono"))
-            or (org and r.get("organizacao") == org) or (uid and r.get("dono") == uid)]
+    """Revistas ao alcance desta pessoa (regra em app/acesso.py): catálogo, as em que tem papel e as das organizações
+    que administra. Operador e administrador veem todas."""
+    return acesso.revistas_de(usuario)
 
 
-def _marca_dona(dados: dict, usuario: dict) -> None:
-    """Revista cadastrada por cliente fica da organização dele (ou só dele, se não está em nenhuma);
-    cadastrada por operador ou administrador fica pública."""
-    if (usuario or {}).get("papel") in ("admin", "operador"):
-        return
-    if usuario.get("organizacao"):
-        dados["organizacao"] = usuario["organizacao"]
-    else:
-        dados["dono"] = usuario.get("id")
+def _cadastra_revista(lista: list, dados: dict, usuario: dict) -> None:
+    """Revista nova: cadastrada por cliente fica da organização dele (a que administra; senão a de que é membro; senão
+    uma organização pessoal criada na hora); por operador ou administrador fica no catálogo (pública). Depois de gravar,
+    os membros da organização ganham o papel de secretaria editorial nela."""
+    dados["organizacao"] = acesso.organizacao_para_nova_revista(usuario)
+    lista.append(dados)
+    grava_revistas(lista)
+    acesso.ao_criar_revista(dados, usuario, por=usuario.get("nome") or "")
+
+
+def _exige_criar_revista(usuario: dict) -> None:
+    if not acesso.pode(usuario, "criar_revista"):
+        raise HTTPException(403, "Cadastrar revista é do administrador da sua organização (ou de quem ainda não está em nenhuma).")
 
 
 def carrega_revistas():
@@ -375,6 +379,10 @@ def grava_revistas(lista):
     atual = le_json(arq, {}) or {}
     atual["revistas"] = lista
     grava_json(arq, atual)
+
+
+acesso.configura(DATA, le_json, grava_json, tempo.agora_iso, carrega_revistas, grava_revistas, ORGS, CONTAS)
+acesso.migra()  # dados de antes dos papéis por revista: roda uma vez, marcado em papeis.json
 
 
 RE_ACRONIMO = re.compile(r"^[a-z][a-z0-9]{1,24}$")
@@ -436,7 +444,7 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
     return d, erros
 
 
-def _pasta(doc_id: str, usuario: Optional[dict] = None) -> Path:
+def _pasta(doc_id: str, usuario: Optional[dict] = None, acao: str = "ver_status") -> Path:
     if not doc_id or "/" in doc_id or "\\" in doc_id or ".." in doc_id:
         raise HTTPException(404)
     pasta = DOCS / doc_id
@@ -444,19 +452,21 @@ def _pasta(doc_id: str, usuario: Optional[dict] = None) -> Path:
         raise HTTPException(404, "Documento não encontrado")
     if usuario is not None:
         cfg = le_json(pasta / "config.json", {}) or {}
-        if not pode_ver(cfg, usuario):
-            raise HTTPException(403, "Este documento é de outra conta.")
+        if not acesso.pode(usuario, acao, cfg):
+            raise HTTPException(403, MOTIVO_403.get(acao, "Este documento é de outra conta."))
     return pasta
 
 
+MOTIVO_403 = {"ver_status": "Este documento é de outra conta.",
+              "corrigir": "Seu papel nesta revista não permite corrigir: quem corrige é a secretaria editorial (ou quem enviou).",
+              "aprovar": "Só o editor-chefe da revista aprova o XML para entrega.",
+              "depositar": "Só a equipe do xmljats deposita na SciELO."}
+
+
 def pode_ver(doc: dict, usuario: dict) -> bool:
-    """Cliente só vê os próprios documentos; operador e admin veem todos."""
-    if usuario.get("papel") in ("admin", "operador"):
-        return True
-    if (doc.get("criado_por_id") or doc.get("criado_por")) in (usuario.get("id"), usuario.get("nome")):
-        return True
-    org = usuario.get("organizacao")  # colegas da mesma organização veem os documentos dela
-    return bool(org) and doc.get("organizacao") == org
+    """Quem vê o documento (regra em app/acesso.py): staff, quem enviou, quem tem papel na revista, o admin da
+    organização e, em revista de catálogo, os colegas da organização de quem enviou."""
+    return acesso.pode_ver_doc(doc, usuario)
 
 
 def marca_aberto(pasta: Path, usuario: dict) -> None:
@@ -521,6 +531,7 @@ def lista_docs(limite=30, usuario: Optional[dict] = None):
         d["criado_por"] = cfg.get("criado_por")
         d["criado_por_id"] = cfg.get("criado_por_id")
         d["organizacao"] = cfg.get("organizacao")  # antes de pode_ver: colegas da organização veem o documento
+        d["revista"] = cfg.get("revista") or d.get("revista")  # a revista escolhida decide quem tem papel nele
         if usuario is not None and not pode_ver(d, usuario):
             continue
         hist = cfg.get("historico_etapas") or []
@@ -1013,9 +1024,10 @@ def revista_por_issn(numero: str, usuario: dict) -> tuple:
         falta = ", ".join(sorted(erros))
         return None, (f"As bases responderam, mas faltam campos obrigatórios para cadastrar sozinho ({falta}). "
                       f"Abra Revistas > Nova revista com esse ISSN e complete à mão."), consulta
-    _marca_dona(dados, usuario)
-    lista.append(dados)
-    grava_revistas(lista)
+    if not acesso.pode(usuario, "criar_revista"):
+        return None, ("As bases conhecem esse ISSN, mas cadastrar revista é do administrador da sua organização: "
+                      "peça a ele para cadastrá-la."), consulta
+    _cadastra_revista(lista, dados, usuario)
     return dados["acronimo"], (f"Revista {dados['titulo']} cadastrada pelo ISSN {numero} "
                                f"({consulta['mensagem'].split('.')[0].lower()})."), consulta
 
@@ -1101,6 +1113,8 @@ def marca_rascunho(xml: Optional[bytes], bloqueantes: list) -> Optional[bytes]:
 def gera_e_valida(pasta: Path) -> dict:
     """Aplica edicoes, gera o XML, valida no packtools e grava validacao.json."""
     cfg = le_json(pasta / "config.json", {}) or {}
+    if acesso.desfaz_aprovacao(cfg, "o XML foi gerado de novo"):  # a aprovação vale para um XML; mudou, aprova de novo
+        grava_json(pasta / "config.json", cfg)
     versao_sps = cfg.get("versao_sps", "1.9")
     modelo = modelo_para_xml(modelo_efetivo(pasta))
     revistas = carrega_revistas()
@@ -1260,6 +1274,8 @@ async def validar(request: Request, arquivo: List[UploadFile] = File(...), revis
         # consulta de rede numa rota async: fora do event loop, senão o site inteiro fica parado esperando
         revista, aviso_revista, _ = await run_in_threadpool(revista_por_issn, issn, usuario)
         revista = revista or ""
+    if revista and not acesso.pode(usuario, "enviar", revista):
+        raise HTTPException(403, "Seu papel nesta revista não envia artigos: quem envia é a secretaria editorial ou o editor-chefe.")
     novos = []
     for nome, conteudo in conteudos:
         ext = os.path.splitext(nome)[1].lower()
@@ -1272,7 +1288,7 @@ async def validar(request: Request, arquivo: List[UploadFile] = File(...), revis
         agora = tempo.agora_iso()
         grava_json(pasta / "config.json", {"versao_sps": sps, "revista": revista or None, "criado_por": usuario["nome"],
                                            "criado_por_id": usuario["id"], "criado_em": agora, "etapa": "recebido",
-                                           "organizacao": usuario.get("organizacao"),
+                                           "organizacao": acesso.organizacao_do_envio(usuario, revista),
                                            "issn_informado": issn.strip() or None, "aviso_revista": aviso_revista,
                                            "historico_etapas": [{"etapa": "recebido", "por": usuario["nome"], "em": agora}]})
         novos.append((doc_id, pasta))
@@ -1321,12 +1337,14 @@ def estado_do_documento(doc_id: str, usuario: dict = Depends(autentica)):
 
 @app.post("/doc/{doc_id}/etapa")
 async def muda_etapa(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id, usuario)
+    pasta = _pasta(doc_id, usuario, "corrigir")
     form = await request.form()
     etapa = str(form.get("etapa") or "")
     if etapa not in ETAPA_ROTULO:
         raise HTTPException(400, "Etapa inválida.")
     cfg = le_json(pasta / "config.json", {}) or {}
+    if etapa == "aprovado" and not cfg.get("aprovacao"):
+        raise HTTPException(400, "\"Aprovado\" é registrado pelo editor-chefe da revista ao aprovar o XML, não à mão.")
     if cfg.get("etapa") != etapa:
         cfg["etapa"] = etapa
         cfg.setdefault("historico_etapas", []).append({"etapa": etapa, "por": usuario["nome"], "em": tempo.agora_iso(),
@@ -1336,6 +1354,28 @@ async def muda_etapa(request: Request, doc_id: str, usuario: dict = Depends(aute
     if not voltar.startswith("/"):
         voltar = f"/doc/{doc_id}"
     return RedirectResponse(url=voltar, status_code=303)
+
+
+@app.post("/doc/{doc_id}/aprovar")
+async def aprovar_doc(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
+    """Editor-chefe da revista aprova o XML para a entrega (exigido quando a revista tem editor-chefe). Qualquer
+    correção depois disso desfaz a aprovação, porque o XML muda."""
+    pasta = _pasta(doc_id, usuario, "aprovar")
+    form = await request.form()
+    val = le_json(pasta / "validacao.json", {}) or {}
+    cfg = le_json(pasta / "config.json", {}) or {}
+    voltar = str(form.get("voltar") or f"/doc/{doc_id}")
+    if not voltar.startswith("/"):
+        voltar = f"/doc/{doc_id}"
+    sep = "&" if "?" in voltar else "?"
+    if not val.get("pronto"):
+        return RedirectResponse(url=f"{voltar}{sep}erro=" + urllib.parse.quote(
+            "O XML ainda não está pronto (há bloqueante ou erro do validador): aprove depois da correção."), status_code=303)
+    if cfg.get("aprovacao"):
+        return RedirectResponse(url=f"{voltar}{sep}mensagem=" + urllib.parse.quote("Este XML já estava aprovado."), status_code=303)
+    acesso.registra_aprovacao(cfg, usuario, str(form.get("nota") or "").strip())
+    grava_json(pasta / "config.json", cfg)
+    return RedirectResponse(url=f"{voltar}{sep}mensagem=" + urllib.parse.quote("XML aprovado para entrega."), status_code=303)
 
 
 def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valores: dict, editados: set,
@@ -1378,7 +1418,7 @@ def _contexto_editar(request: Request, doc_id: str, pasta, usuario: dict, valore
 
 @app.get("/doc/{doc_id}/editar", response_class=HTMLResponse)
 def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica), mensagem: str = ""):
-    pasta = _pasta(doc_id, usuario)
+    pasta = _pasta(doc_id, usuario, "corrigir")
     marca_aberto(pasta, usuario)
     modelo = le_json(pasta / "model.json", {})
     campos = (le_json(pasta / "edicoes.json", {}) or {}).get("campos", {})
@@ -1392,7 +1432,7 @@ def editar_form(request: Request, doc_id: str, usuario: dict = Depends(autentica
 
 @app.post("/doc/{doc_id}/editar")
 async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id, usuario)
+    pasta = _pasta(doc_id, usuario, "corrigir")
     form = await request.form()
     modelo = le_json(pasta / "model.json", {})
     originais = valores_editaveis(modelo)
@@ -1518,7 +1558,7 @@ def busca_por_doi(doc_id: str, numero: str = "", usuario: dict = Depends(autenti
 async def manda_pendencias(request: Request, doc_id: str, usuario: dict = Depends(autentica)):
     """Monta no correio a lista do que falta, para pedir de uma vez à revista ou ao autor.
     Na prática é o que mais custa tempo: ORCID, datas do OJS e seção do sumário nunca estão no arquivo."""
-    pasta = _pasta(doc_id, usuario)
+    pasta = _pasta(doc_id, usuario, "corrigir")
     form = await request.form()
     destino = str(form.get("destino") or "").strip()
     cfg = le_json(pasta / "config.json", {}) or {}
@@ -1562,7 +1602,7 @@ def confere_orcid(numero: str = "", nome: str = "", usuario: dict = Depends(aute
 async def envia_figura(request: Request, doc_id: str, indice: int = Form(...), imagem: UploadFile = File(...),
                        usuario: dict = Depends(autentica)):
     """Imagem de uma figura, enviada à mão na revisão (a que o motor não achou no PDF, ou a que veio errada)."""
-    pasta = _pasta(doc_id, usuario)
+    pasta = _pasta(doc_id, usuario, "corrigir")
     dados = await imagem.read()
     if len(dados) > 25 * 1024 * 1024:
         raise HTTPException(413, "Imagem maior que 25 MB.")
@@ -1601,7 +1641,7 @@ async def envia_figura(request: Request, doc_id: str, indice: int = Form(...), i
 
 @app.post("/doc/{doc_id}/reprocessar")
 def reprocessar(doc_id: str, usuario: dict = Depends(autentica)):
-    pasta = _pasta(doc_id, usuario)
+    pasta = _pasta(doc_id, usuario, "corrigir")
     visual.limpa(pasta)  # o PDF vai ser lido de novo: as páginas renderizadas saem junto
     processa_envio(pasta)
     fila.conclui(pasta)  # documento que veio da fila (ou deu erro nela) volta a 'concluido'
@@ -1691,7 +1731,8 @@ def lote_do_documento(pasta: Path, revista: Optional[dict], val: dict) -> Option
     return None
 
 
-lotes.configura(DATA, DOCS, le_json, grava_json, tempo.agora_iso, carrega_revistas, entrega, lista_docs, proximo_lote, registra_lote)
+lotes.configura(DATA, DOCS, le_json, grava_json, tempo.agora_iso, carrega_revistas, entrega, lista_docs, proximo_lote, registra_lote,
+                liberada=acesso.entrega_liberada)
 
 
 def nome_pacote(pasta: Path) -> tuple:
@@ -1811,6 +1852,9 @@ async def entrega_deposita(request: Request, doc_id: str, usuario: dict = Depend
     if not val.get("pronto"):
         return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(
             "Este documento ainda não está pronto: resolva os bloqueantes em Revisar e editar antes de depositar."), status_code=303)
+    liberada, motivo = acesso.entrega_liberada(cfg)
+    if not liberada:
+        return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(motivo), status_code=303)
     zipe = caminho_pacote(pasta)
     conf = entrega.confere_pacote(str(zipe))
     if not conf["ok"]:
@@ -1933,6 +1977,7 @@ def _form_revista(request: Request, usuario: dict, v: dict, erros: dict, nova: b
 @app.get("/revistas/nova", response_class=HTMLResponse)
 def revista_nova(request: Request, usuario: dict = Depends(autentica), issn: str = ""):
     """Formulário em branco ou preenchido com o que as bases de ISSN sabem (quem cadastra confere antes de salvar)."""
+    _exige_criar_revista(usuario)
     v = {"licenca_url": LICENCAS[0][0], "modo_publicacao": "continua"}
     busca = None
     if issn.strip():
@@ -1976,14 +2021,13 @@ async def revista_importar(request: Request, usuario: dict = Depends(autentica))
 
 @app.post("/revistas/nova", response_class=HTMLResponse)
 async def revista_criar(request: Request, usuario: dict = Depends(autentica)):
+    _exige_criar_revista(usuario)
     form = dict((await request.form()).items())
     lista = carrega_revistas()
     dados, erros = valida_revista(form, lista)
     if erros:
         return _form_revista(request, usuario, {**form, "na_scielo": dados["na_scielo"]}, erros, True)
-    _marca_dona(dados, usuario)
-    lista.append(dados)
-    grava_revistas(lista)
+    _cadastra_revista(lista, dados, usuario)
     return RedirectResponse(url="/revistas?mensagem=" + urllib.parse.quote(f"Revista {dados['acronimo']} cadastrada."), status_code=303)
 
 
@@ -2009,15 +2053,18 @@ async def revista_salvar(request: Request, acronimo: str, usuario: dict = Depend
     dados, erros = valida_revista(form, lista, acronimo_atual=acronimo)
     if erros:
         return _form_revista(request, usuario, {**form, "na_scielo": dados["na_scielo"], "acronimo": form.get("acronimo") or acronimo}, erros, False)
-    vis = str(form.get("visibilidade") or "")  # "Quem vê esta revista": pública, de uma organização ou como estava
+    vis = str(form.get("visibilidade") or "")  # "Quem vê esta revista": catálogo (pública), de uma organização ou como estava
     if vis == "publica":
-        dados["organizacao"], dados["dono"] = None, None
+        dados["organizacao"] = None
     elif vis.startswith("org:") and ORGS.por_id(vis[4:]):
-        dados["organizacao"], dados["dono"] = vis[4:], None
+        dados["organizacao"] = vis[4:]
     else:
-        dados["organizacao"], dados["dono"] = rev.get("organizacao"), rev.get("dono")
+        dados["organizacao"] = rev.get("organizacao")
     lista[lista.index(rev)] = dados
     grava_revistas(lista)
+    if dados["acronimo"] != acronimo:
+        acesso.ao_renomear_revista(acronimo, dados["acronimo"])
+    acesso.ao_mudar_organizacao(dados["acronimo"], rev.get("organizacao"), dados["organizacao"], por=usuario["nome"])
     return RedirectResponse(url="/revistas?mensagem=" + urllib.parse.quote(f"Revista {dados['acronimo']} atualizada."), status_code=303)
 
 
@@ -2026,6 +2073,7 @@ def revista_remover(acronimo: str, usuario: dict = Depends(exige_admin)):
     lista, rev = _revista_ou_404(acronimo)
     lista.remove(rev)
     grava_revistas(lista)
+    acesso.ao_remover_revista(acronimo)
     return RedirectResponse(url="/revistas?mensagem=" + urllib.parse.quote(f"Revista {acronimo} removida do cadastro."), status_code=303)
 
 
@@ -2125,10 +2173,10 @@ async def registrar(request: Request):
         u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), "cliente", novidades_vistas=VERSAO_APP)
     except ValueError as e:
         return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": str(e), "form": form}, status_code=400)
-    if org:
-        CONTAS.define_organizacao(u["id"], org["id"])
-    elif nova_org:
-        CONTAS.define_organizacao(u["id"], ORGS.cria(nova_org, por=u["id"])["id"])
+    if org:  # convite: membro, com secretaria editorial em todas as revistas da organização
+        acesso.entrar_na_organizacao(u["id"], org["id"], por=u["nome"], principal=True)
+    elif nova_org:  # quem cria a organização administra a organização
+        acesso.entrar_na_organizacao(u["id"], ORGS.cria(nova_org, por=u["id"])["id"], por=u["nome"], como_admin=True, principal=True)
     freio_marca(f"registro:ip:{ip}")
     CONTAS.registra_login(u["id"], ip, navegador)
     try:
@@ -2152,15 +2200,12 @@ def conta(request: Request, usuario: dict = Depends(autentica), mensagem: str = 
 
 @app.post("/conta/organizacao")
 async def conta_organizacao(request: Request, usuario: dict = Depends(autentica)):
-    """Cliente entra numa organização pelo código de convite ou cria a sua. Só quem ainda não está em nenhuma;
-    trocar é com o administrador, porque muda quem vê o quê."""
+    """Cliente entra numa organização pelo código de convite (vira secretaria editorial nas revistas dela) ou cria a sua
+    (vira administrador dela). Como os papéis são por revista, entrar numa segunda não tira nada da primeira."""
     form = await request.form()
     if usuario.get("papel") != "cliente" or usuario.get("id") in ("local", "api"):
         return RedirectResponse(url="/conta?erro=" + urllib.parse.quote("Organização é para contas de cliente."), status_code=303)
-    atual = CONTAS.por_id(usuario["id"]) or usuario
-    if atual.get("organizacao"):
-        return RedirectResponse(url="/conta?erro=" + urllib.parse.quote(
-            "Você já está numa organização; para trocar, fale com o administrador."), status_code=303)
+    primeira = not acesso.organizacoes_de(usuario["id"])
     convite = str(form.get("convite") or "").strip()
     nome = " ".join(str(form.get("nome") or "").split())
     try:
@@ -2172,7 +2217,7 @@ async def conta_organizacao(request: Request, usuario: dict = Depends(autentica)
             org = ORGS.cria(nome, por=usuario["id"])
         else:
             raise ValueError("Informe o código de convite ou o nome da nova organização.")
-        CONTAS.define_organizacao(usuario["id"], org["id"])
+        acesso.entrar_na_organizacao(usuario["id"], org["id"], por=usuario["nome"], como_admin=not convite, principal=primeira)
     except ValueError as e:
         return RedirectResponse(url="/conta?erro=" + urllib.parse.quote(str(e)), status_code=303)
     return RedirectResponse(url="/conta?mensagem=" + urllib.parse.quote(
@@ -2547,9 +2592,11 @@ def _organizacoes_com_totais() -> list:
     docs = lista_docs(0)
     revistas = carrega_revistas()
     saida = []
+    nomes = {u["id"]: u["nome"] for u in usuarios}
     for o in ORGS.lista():
-        saida.append({**o, "membros": sum(1 for u in usuarios if u.get("organizacao") == o["id"]),
-                      "nomes": sorted(u["nome"] for u in usuarios if u.get("organizacao") == o["id"]),
+        pessoas = ORGS.pessoas(o["id"])
+        saida.append({**o, "membros": len(pessoas),
+                      "nomes": sorted(nomes.get(uid, "?") + (" (admin)" if uid in o["admins"] else "") for uid in pessoas),
                       "docs": sum(1 for d in docs if d.get("organizacao") == o["id"]),
                       "revistas": sum(1 for r in revistas if r.get("organizacao") == o["id"])})
     return saida
@@ -2594,9 +2641,12 @@ def admin_organizacao_convite(oid: str, usuario: dict = Depends(exige_admin)):
 
 @app.post("/admin/organizacoes/{oid}/remover")
 def admin_organizacao_remover(oid: str, usuario: dict = Depends(exige_admin)):
-    if any(u.get("organizacao") == oid for u in CONTAS.lista()):
+    if ORGS.pessoas(oid):
         return RedirectResponse(url="/admin/organizacoes?erro=" + urllib.parse.quote(
             "A organização ainda tem membros: desvincule as contas em Usuários antes de remover."), status_code=303)
+    if any(r.get("organizacao") == oid for r in carrega_revistas()):
+        return RedirectResponse(url="/admin/organizacoes?erro=" + urllib.parse.quote(
+            "A organização ainda tem revistas: em Revistas, mude a organização delas (ou torne-as públicas) antes de remover."), status_code=303)
     try:
         ORGS.remove(oid)
     except ValueError as e:
@@ -2625,12 +2675,21 @@ async def usuario_organizacao(request: Request, uid: str, usuario: dict = Depend
     oid = str(form.get("organizacao") or "").strip() or None
     if oid and not ORGS.por_id(oid):
         return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote("Organização não encontrada."), status_code=303)
+    alvo = CONTAS.por_id(uid)
+    if not alvo:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote("Usuário não encontrado."), status_code=303)
     try:
-        CONTAS.define_organizacao(uid, oid)
+        if oid:  # entra como membro (secretaria editorial nas revistas dela) e passa a mostrá-la como principal
+            acesso.entrar_na_organizacao(uid, oid, por=usuario["nome"], principal=True)
+        else:  # sai da organização que a conta mostra; os papéis nas revistas dela vão junto
+            principal = acesso.organizacao_principal(alvo)
+            if not principal:
+                raise ValueError("A conta não está em organização nenhuma.")
+            acesso.sair_da_organizacao(uid, principal["id"])
     except ValueError as e:
         return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote(str(e)), status_code=303)
     return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote(
-        f"Conta vinculada a {ORGS.nome_de(oid)}." if oid else "Conta desvinculada de organização."), status_code=303)
+        f"Conta vinculada a {ORGS.nome_de(oid)}." if oid else "Conta desvinculada da organização que mostrava."), status_code=303)
 
 
 # ---------------------------------------------------------------- lotes de entrega (administração)
@@ -2726,6 +2785,10 @@ async def admin_lote_entrega(request: Request, pasta: str, usuario: dict = Depen
         raise HTTPException(404, "Lote não encontrado.")
     form = await request.form()
     correcao = str(form.get("correcao") or "") == "1"
+    for i in rec.get("docs", []):  # revista com editor-chefe: cada XML do lote precisa da aprovação dele
+        liberada, motivo = acesso.entrega_liberada(le_json(DOCS / i / "config.json", {}) or {})
+        if not liberada:
+            return RedirectResponse(url=f"/admin/lotes/{pasta}?erro=" + urllib.parse.quote(f"Documento {i}: {motivo}"), status_code=303)
     zipe = lotes.caminho_zip(pasta)
     if not zipe.exists():
         return RedirectResponse(url=f"/admin/lotes/{pasta}?erro=" + urllib.parse.quote("O .zip do lote não existe mais: desfaça e monte de novo."),

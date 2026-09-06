@@ -19,9 +19,10 @@ _cfg: dict = {}
 
 
 def configura(data: Path, docs: Path, le_json, grava_json, agora_iso, carrega_revistas, entrega, lista_docs, proximo_lote,
-              registra_lote) -> None:
+              registra_lote, liberada=None) -> None:
+    """`liberada(cfg) -> (bool, motivo)`: regra de entrega do app/acesso.py (revista com editor-chefe exige a aprovação dele)."""
     _cfg.update(data=Path(data), docs=Path(docs), le=le_json, grava=grava_json, agora=agora_iso, revistas=carrega_revistas,
-                entrega=entrega, lista_docs=lista_docs, proximo_lote=proximo_lote, registra_lote=registra_lote)
+                entrega=entrega, lista_docs=lista_docs, proximo_lote=proximo_lote, registra_lote=registra_lote, liberada=liberada)
 
 
 # ---------------------------------------------------------------- registro
@@ -132,6 +133,10 @@ def cria(ids: List[str], lote: Optional[int], por: str) -> dict:
             raise ValueError(f"\"{val.get('titulo') or i}\" ainda não está pronto: tem bloqueante ou erro do validador.")
         if cfg.get("lote_pasta"):
             raise ValueError(f"\"{val.get('titulo') or i}\" já está no lote {cfg['lote_pasta']}.")
+        if _cfg.get("liberada"):
+            liberada, motivo = _cfg["liberada"](cfg)
+            if not liberada:
+                raise ValueError(f"\"{val.get('titulo') or i}\": {motivo}")
         xml = next(pasta.glob("*.xml"), None)
         if not xml:
             raise ValueError(f"\"{val.get('titulo') or i}\" está sem XML gerado.")

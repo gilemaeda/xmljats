@@ -396,6 +396,37 @@ def roda_site():
     check("membro da mesma organização vê o documento do colega", _membros[1].get(_did).status_code == 200)
     check("quem está fora da organização não vê", _fora.get(_did).status_code == 403)
     check("página de organizações do administrador", "Editora Auditoria" in c.get("/admin/organizacoes").text)
+    # ---- papéis por revista (etapa 2 do multi-tenant): membro vira secretaria; corpo editorial só acompanha; entrega exige o editor-chefe
+    import acesso as _acesso
+    _us = json.load(io.open(os.path.join(tmp, "usuarios.json"), encoding="utf-8"))["usuarios"]
+    _m1 = next(u["id"] for u in _us if u["email"] == "m1@exemplo.org")
+    _m2 = next(u["id"] for u in _us if u["email"] == "m2@exemplo.org")
+    check("quem entra pelo convite vira membro da organização (organizacoes.json, não um campo da conta)",
+          _m1 in _orgs.por_id(_org["id"])["membros"] and _m2 in _orgs.por_id(_org["id"])["membros"])
+    _fe = {"acronimo": "orgaud", "titulo": "Revista da Editora Auditoria", "abrev": "Rev. Ed. Aud.", "issn_epub": "2222-2227", "editora": "E",
+           "doi_prefixo": "10.99999/orgaud", "licenca_url": "https://creativecommons.org/licenses/by/4.0/", "modo_publicacao": "continua", "na_scielo": "nao"}
+    c.post("/revistas/nova", data=_fe)
+    c.post("/revistas/orgaud", data=dict(_fe, visibilidade=f"org:{_org['id']}"))
+    check("revista que passa para a organização dá secretaria editorial aos membros",
+          _acesso.papel_em(_m1, "orgaud") == "secretaria_editorial" and _acesso.papel_em(_m2, "orgaud") == "secretaria_editorial")
+    _acesso.define_papel(_m2, "orgaud", "corpo_editorial", "auditoria")
+    with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"), "rb") as _f:
+        _up2 = _membros[0].post("/validar", files={"arquivo": ("a.pdf", _f, "application/pdf")}, data={"revista": "orgaud", "sps": "1.10"})
+    _did2 = _up2.headers["location"]
+    check("corpo editorial vê o documento da revista, mas não corrige",
+          _membros[1].get(_did2).status_code == 200 and _membros[1].get(_did2 + "/editar").status_code == 403)
+    with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"), "rb") as _f:
+        check("corpo editorial não envia", _membros[1].post("/validar", files={"arquivo": ("a.pdf", _f, "application/pdf")},
+                                                            data={"revista": "orgaud", "sps": "1.10"}).status_code == 403)
+    check("quem está fora não alcança a revista da organização", _fora.get(_did2).status_code == 403)
+    _acesso.define_papel(_m2, "orgaud", "editor_chefe", "auditoria")
+    check("revista com editor-chefe: entrega só depois da aprovação dele",
+          not _acesso.entrega_liberada({"revista": "orgaud"})[0] and _acesso.entrega_liberada({"revista": "orgaud", "aprovacao": {"em": "x"}})[0])
+    check("só o editor-chefe aprova, e só XML pronto",
+          _membros[0].post(_did2 + "/aprovar").status_code == 403 and _membros[1].post(_did2 + "/aprovar").status_code == 303)
+    check("etapa 'Aprovado pelo editor-chefe' entre Pronto e Entregue",
+          [e[0] for e in ETAPAS].index("aprovado") == [e[0] for e in ETAPAS].index("pronto") + 1)
+    check("papéis vivem em papeis.json", os.path.exists(os.path.join(tmp, "papeis.json")))
     check("Como funciona explica contas, organizações e quem vê o quê (parte do administrador só para ele)",
           "Para o administrador" in c.get("/ajuda").text and "Para o administrador" not in _fora.get("/ajuda").text
           and "quem vê o quê" in _fora.get("/ajuda").text)
@@ -523,6 +554,7 @@ def main():
           "| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |",
           "| Fila de processamento: envio em lote, estado na lista, página de espera, retomada após reinício | pronto | ops/test_fila.py |",
           "| Organizações: contas agrupadas por editora/instituição, documentos e revistas compartilhados, convite, administração | pronto | ops/test_organizacoes.py |",
+          "| Multi-tenant etapa 2: papéis por revista (papeis.json), admins/membros da organização, acesso centralizado (app/acesso.py), aprovação do editor-chefe antes da entrega, migração | pronto | ops/test_acesso.py |",
           "| Custo por artigo com a revisão humana | parcial | tempo de máquina por artigo e correções à mão no painel; horas de revisão não são medidas |",
           "| Validador público sem conta e captcha no registro | não começou | decisão dos sócios (fase 4); Turnstile precisa das chaves da Cloudflare |",
           "| Integração com OJS | não começou | fase 5 do plano; o depósito por FTP já existe |", ""]

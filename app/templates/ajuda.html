@@ -59,12 +59,13 @@
 </div>
 
 <h2 class="sec-t" id="etapas">As etapas do documento</h2>
-<p class="lead" style="margin-bottom:var(--s-4)">As três primeiras acontecem aqui dentro. Da quarta em diante, quem trabalha é a SciELO: o sistema guarda a etapa que você anota, para todo mundo saber onde cada artigo está.</p>
+<p class="lead" style="margin-bottom:var(--s-4)">As quatro primeiras acontecem aqui dentro. Da quinta em diante, quem trabalha é a SciELO: o sistema guarda a etapa que você anota, para todo mundo saber onde cada artigo está.</p>
 <div class="trilha-etapas">
   {% set descricao = {
     'recebido': ('O arquivo chegou e o motor já leu.', 'aqui'),
     'em_revisao': ('Alguém está preenchendo o que faltou.', 'aqui'),
     'pronto': ('Sem bloqueantes e sem erro do validador oficial: o pacote pode ser gerado.', 'aqui'),
+    'aprovado': ('O editor-chefe da revista aprovou o XML. Quando a revista tem editor-chefe, a entrega só sai depois disso; corrigir de novo desfaz a aprovação.', 'aqui'),
     'entregue': ('O pacote foi depositado no FTP e o aviso "Entrega |" foi enviado.', 'fora'),
     'entrega_confirmada': ('A SciELO respondeu "Entrega Confirmada": o pacote entrou na fila de publicação.', 'fora'),
     'pre_qa': ('A SciELO confere o pacote recebido.', 'fora'),

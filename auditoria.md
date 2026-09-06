@@ -1,10 +1,10 @@
 # Auditoria do xmljats — 2026-09-06
 
-Gerada por `python ops/auditoria.py` (app 0.26.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.27.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
-- **Site:** 118 de 118 verificações passaram.
+- **Site:** 127 de 127 verificações passaram.
 - **Contraste (WCAG):** 0 par(es) abaixo do mínimo nos dois temas.
 - **XML:** 10 de 10 arquivos válidos no DTD JATS.
 - **Schematron SPS:** 0 de 10 sem erros. O que sobra está na seção 5: são dados que o PDF não traz (dia e mês da publicação, seção da revista, resumo em revistas cujo layout ainda não é lido), todos já sinalizados como bloqueante na tela de revisão.
@@ -152,6 +152,15 @@ Gerada por `python ops/auditoria.py` (app 0.26.0). Cada número vem de uma medi�
 - ok — membro da mesma organização vê o documento do colega
 - ok — quem está fora da organização não vê
 - ok — página de organizações do administrador
+- ok — quem entra pelo convite vira membro da organização (organizacoes.json, não um campo da conta)
+- ok — revista que passa para a organização dá secretaria editorial aos membros
+- ok — corpo editorial vê o documento da revista, mas não corrige
+- ok — corpo editorial não envia
+- ok — quem está fora não alcança a revista da organização
+- ok — revista com editor-chefe: entrega só depois da aprovação dele
+- ok — só o editor-chefe aprova, e só XML pronto
+- ok — etapa 'Aprovado pelo editor-chefe' entre Pronto e Entregue
+- ok — papéis vivem em papeis.json
 - ok — Como funciona explica contas, organizações e quem vê o quê (parte do administrador só para ele)
 - ok — [hidden] vence o display dos campos (caixa do ISSN some de verdade)
 - ok — sair encerra a sessão
@@ -171,7 +180,7 @@ Agrupado por mensagem, somando os arquivos desta rodada. Todos são dados que o 
 
 ## 6. Etapas do documento
 
-Fluxo implementado: recebido → em_revisao → pronto → entregue → entrega_confirmada → pre_qa → qa → correcao_pedida → qa_finalizado → publicado.
+Fluxo implementado: recebido → em_revisao → pronto → aprovado → entregue → entrega_confirmada → pre_qa → qa → correcao_pedida → qa_finalizado → publicado.
 
 ## 7. Cobertura do plano
 
@@ -240,6 +249,7 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |
 | Fila de processamento: envio em lote, estado na lista, página de espera, retomada após reinício | pronto | ops/test_fila.py |
 | Organizações: contas agrupadas por editora/instituição, documentos e revistas compartilhados, convite, administração | pronto | ops/test_organizacoes.py |
+| Multi-tenant etapa 2: papéis por revista (papeis.json), admins/membros da organização, acesso centralizado (app/acesso.py), aprovação do editor-chefe antes da entrega, migração | pronto | ops/test_acesso.py |
 | Custo por artigo com a revisão humana | parcial | tempo de máquina por artigo e correções à mão no painel; horas de revisão não são medidas |
 | Validador público sem conta e captcha no registro | não começou | decisão dos sócios (fase 4); Turnstile precisa das chaves da Cloudflare |
 | Integração com OJS | não começou | fase 5 do plano; o depósito por FTP já existe |

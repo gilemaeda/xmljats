@@ -1,11 +1,15 @@
-"""Organizações: uma editora ou instituição agrupa contas de cliente.
+"""Organizações: uma editora ou instituição (ou, no futuro, um parceiro revendedor) que é dona de revistas e agrupa pessoas.
 
-Quem está na mesma organização vê os mesmos documentos e as mesmas revistas (as que a organização cadastrou).
-Documento e revista guardam `organizacao` (o id) quando são criados por alguém que está numa; o que foi criado
-antes de entrar continua só da pessoa. Entrar numa organização é por código de convite (ou pelo administrador,
-em Usuários); ninguém entra digitando o nome, porque isso abriria os documentos dos outros.
+Desde a etapa 2 do multi-tenant (multitenancy_proposta_v1.md), a organização guarda:
+- `admins`: quem administra a organização (pessoas, papéis, revistas, uso). Não precisa ter papel em revista.
+- `membros`: quem entrou pelo código de convite (ou foi vinculado pelo administrador). Membro ganha o papel de
+  secretaria editorial em todas as revistas da organização (app/acesso.py cuida disso), inclusive nas criadas depois.
+- `tipo`: "instituicao" ou "parceiro_revenda"; `pai`: organização parceira acima desta (futuro); `plano`: forma de cobrança.
+Quem pode o quê nunca é um campo na conta: fica em papeis.json (papel por revista) e aqui (admins/membros).
 
-Armazenamento: XMLJATS_DATA/organizacoes.json — lista de {id, nome, convite, criado_em, criado_por}.
+Ninguém entra digitando o nome, só pelo código de convite (ou pelo administrador, em Usuários).
+Armazenamento: XMLJATS_DATA/organizacoes.json — {"organizacoes": [{id, nome, tipo, plano, convite, admins, membros, pai,
+criado_em, criado_por}]}. Registros de antes ganham os campos novos ao serem lidos.
 """
 import json
 import os
@@ -18,10 +22,22 @@ from typing import List, Optional
 from tempo import agora_iso
 
 RE_NOME = re.compile(r"^\S.{1,78}\S$")
+TIPOS = ("instituicao", "parceiro_revenda")
+ROTULO_TIPO = {"instituicao": "instituição", "parceiro_revenda": "parceiro revendedor"}
 
 
 def normaliza_convite(codigo: str) -> str:
     return re.sub(r"[^A-Z0-9]", "", (codigo or "").upper())
+
+
+def _completa(o: dict) -> dict:
+    """Registro de antes da etapa 2 ganha os campos novos (sem mexer no arquivo até a próxima gravação)."""
+    o.setdefault("tipo", "instituicao")
+    o.setdefault("plano", None)
+    o.setdefault("pai", None)
+    o["admins"] = list(o.get("admins") or [])
+    o["membros"] = list(o.get("membros") or [])
+    return o
 
 
 class Organizacoes:
@@ -37,7 +53,8 @@ class Organizacoes:
                 dados = json.load(f)
         except (OSError, ValueError):
             return []
-        return dados.get("organizacoes", []) if isinstance(dados, dict) else (dados or [])
+        lista = dados.get("organizacoes", []) if isinstance(dados, dict) else (dados or [])
+        return [_completa(o) for o in lista]
 
     def _grava(self, lista: list) -> None:
         self.arquivo.parent.mkdir(parents=True, exist_ok=True)
@@ -65,6 +82,17 @@ class Organizacoes:
         o = self.por_id(oid)
         return o["nome"] if o else ""
 
+    def pessoas(self, oid: Optional[str]) -> List[str]:
+        """Ids de todo mundo ligado à organização: membros e administradores, sem repetir."""
+        o = self.por_id(oid)
+        if not o:
+            return []
+        vistos: List[str] = []
+        for uid in o["membros"] + o["admins"]:
+            if uid not in vistos:
+                vistos.append(uid)
+        return vistos
+
     # ------------------------------------------------------------ mudanças
     @staticmethod
     def valida_nome(nome: str, existentes: list, ignorar: Optional[str] = None) -> str:
@@ -75,11 +103,16 @@ class Organizacoes:
             raise ValueError(f"Já existe uma organização chamada {nome}.")
         return nome
 
-    def cria(self, nome: str, por: str = "") -> dict:
+    def cria(self, nome: str, por: str = "", tipo: str = "instituicao", pai: Optional[str] = None) -> dict:
+        """Cria sem ninguém dentro: quem entra (e quem administra) é decidido por app/acesso.py."""
+        if tipo not in TIPOS:
+            raise ValueError("Tipo de organização inválido.")
         lista = self._carrega()
         nome = self.valida_nome(nome, lista)
-        o = {"id": secrets.token_hex(6), "nome": nome, "convite": secrets.token_hex(4).upper(),
-             "criado_em": agora_iso(), "criado_por": por}
+        if pai and not any(o["id"] == pai for o in lista):
+            raise ValueError("Organização parceira (pai) não encontrada.")
+        o = {"id": secrets.token_hex(6), "nome": nome, "tipo": tipo, "plano": None, "convite": secrets.token_hex(4).upper(),
+             "admins": [], "membros": [], "pai": pai, "criado_em": agora_iso(), "criado_por": por}
         lista.append(o)
         self._grava(lista)
         return o
@@ -96,9 +129,48 @@ class Organizacoes:
     def renomeia(self, oid: str, nome: str) -> dict:
         return self._altera(oid, lambda o, lista: o.update(nome=self.valida_nome(nome, lista, ignorar=oid)))
 
+    def define_tipo(self, oid: str, tipo: str) -> dict:
+        if tipo not in TIPOS:
+            raise ValueError("Tipo de organização inválido.")
+        return self._altera(oid, lambda o, _: o.update(tipo=tipo))
+
     def novo_convite(self, oid: str) -> dict:
         """Troca o código: quem tinha o antigo não entra mais."""
         return self._altera(oid, lambda o, _: o.update(convite=secrets.token_hex(4).upper()))
+
+    def adiciona_membro(self, oid: str, uid: str, admin: bool = False) -> dict:
+        """Entra como membro (e, se pedido, como administrador). Repetir não duplica."""
+        if not uid:
+            raise ValueError("Conta não informada.")
+
+        def muda(o, _):
+            if uid not in o["membros"]:
+                o["membros"].append(uid)
+            if admin and uid not in o["admins"]:
+                o["admins"].append(uid)
+
+        return self._altera(oid, muda)
+
+    def define_admin(self, oid: str, uid: str, admin: bool) -> dict:
+        """Dá ou tira a administração da organização (o administrador não precisa ser membro)."""
+        if not uid:
+            raise ValueError("Conta não informada.")
+
+        def muda(o, _):
+            if admin and uid not in o["admins"]:
+                o["admins"].append(uid)
+            if not admin and uid in o["admins"]:
+                o["admins"].remove(uid)
+
+        return self._altera(oid, muda)
+
+    def remove_membro(self, oid: str, uid: str) -> dict:
+        """Sai da organização: deixa de ser membro e de administrar."""
+        def muda(o, _):
+            o["membros"] = [x for x in o["membros"] if x != uid]
+            o["admins"] = [x for x in o["admins"] if x != uid]
+
+        return self._altera(oid, muda)
 
     def remove(self, oid: str) -> None:
         lista = self._carrega()

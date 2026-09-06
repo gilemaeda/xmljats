@@ -12,6 +12,21 @@ antiga sem o campo usa a data do último acesso: o que saiu antes dela não é n
 from typing import List, Optional
 
 VERSOES = [
+    {"versao": "0.27.0", "data": "2026-09-06", "itens": [
+        {"para": "todos", "titulo": "Papéis por revista",
+         "texto": "O que você pode fazer numa revista passa a ser um papel nela: secretaria editorial (envia e corrige), corpo editorial "
+                  "(acompanha) ou editor-chefe (aprova o XML para a entrega). Quem entra numa organização pelo convite vira secretaria "
+                  "editorial nas revistas dela; uma mesma pessoa pode ter papéis diferentes em revistas de organizações diferentes."},
+        {"para": "todos", "titulo": "Toda revista de trabalho pertence a uma organização",
+         "texto": "Quem tinha uma revista só sua ganhou uma organização com o próprio nome, que aparece em Minha conta. As revistas do "
+                  "catálogo (sem organização) continuam abertas a todos. A etapa \"Aprovado pelo editor-chefe\" entra entre "
+                  "\"Pronto para entrega\" e \"Entregue à SciELO\"."},
+        {"para": "admin", "titulo": "Regras de acesso num lugar só e aprovação do editor-chefe",
+         "texto": "app/acesso.py decide quem pode o quê: papéis por revista em papeis.json, administradores e membros na organização, "
+                  "migração automática dos dados antigos (membros viram secretaria, quem criou a organização vira admin dela, revista "
+                  "particular vira de uma organização pessoal). Revista com editor-chefe: o depósito, por artigo ou por lote, exige a "
+                  "aprovação dele. As telas (página da organização, convite com papel, botão de aprovar) vêm na próxima etapa."},
+    ]},
     {"versao": "0.26.1", "data": "2026-09-06", "itens": [
         {"para": "admin", "titulo": "Novidade de cliente sem texto de administração",
          "texto": "O item do menu do topo citava Correio e Configurações para o cliente; o texto foi limpo, e o teste passa a impedir "

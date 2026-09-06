@@ -102,27 +102,40 @@ ok(doc_a in pa2 and "enviado por Ana" in pa2, "a lista do colega mostra o docume
 r, doc_c = envia(c_)
 ok(a.get(f"/doc/{doc_c}").status_code == 403, "documento de quem não tem organização é só dele")
 
-# ---------------------------------------------------------------- 4. revistas: da organização, particulares e públicas
+# Ana passa a administrar a Editora X: cadastrar revista na organização é do admin dela; Aldo é só membro
+M.ORGS.define_admin(o["id"], uid("ana@exemplo.org"), True)
+ok(uid("ana@exemplo.org") in ORGS.por_id(o["id"])["admins"] and uid("aldo@exemplo.org") in ORGS.por_id(o["id"])["membros"]
+   and uid("aldo@exemplo.org") not in ORGS.por_id(o["id"])["admins"], "quem entra pelo convite é membro; o admin da organização é definido à parte")
+
+# ---------------------------------------------------------------- 4. revistas: da organização, pessoais e de catálogo
 form_rev = {"acronimo": "edx", "titulo": "Revista da Editora X", "abrev": "Rev. Ed. X", "issn_epub": "1413-9936", "editora": "Editora X",
             "licenca_url": "https://creativecommons.org/licenses/by/4.0/", "modo_publicacao": "continua"}
 ok(a.post("/revistas/nova", data=form_rev).status_code == 303, "Ana cadastra uma revista")
 rev = next(x for x in M.carrega_revistas() if x["acronimo"] == "edx")
 ok(rev.get("organizacao") == o["id"], "a revista fica da organização")
+ok(M.acesso.papel_em(uid("aldo@exemplo.org"), "edx") == "secretaria_editorial" and M.acesso.papel_em(uid("ana@exemplo.org"), "edx") == "secretaria_editorial",
+   "os membros ganham secretaria editorial na revista nova")
+ok(a2.post("/revistas/nova", data=dict(form_rev, acronimo="ald", titulo="Revista do Aldo", issn_epub="2222-2227")).status_code == 403
+   and a2.get("/revistas/nova").status_code == 403, "membro que não administra a organização não cadastra revista")
 ok("edx" in a2.get("/revistas").text and 'value="edx"' in a2.get("/").text, "o colega vê a revista na lista e no envio")
 ok("edx" not in b.get("/revistas").text and 'value="edx"' not in b.get("/").text and "edx" not in c_.get("/revistas").text,
    "quem está fora não vê a revista da organização")
 ok("rdp" in b.get("/revistas").text and 'value="rdp"' in c_.get("/").text, "as revistas públicas continuam para todos")
 ok(c_.post("/revistas/nova", data=dict(form_rev, acronimo="cpv", titulo="Revista do Caio", issn_epub="2179-8966")).status_code == 303, "Caio cadastra a dele")
 rev_c = next(x for x in M.carrega_revistas() if x["acronimo"] == "cpv")
-ok(rev_c.get("dono") == uid("caio@exemplo.org") and "cpv" in c_.get("/revistas").text and "cpv" not in a.get("/revistas").text,
-   "revista de quem não tem organização é particular")
+org_c = ORGS.por_id(rev_c.get("organizacao"))
+ok(org_c and org_c["nome"] == "Organização de Caio" and uid("caio@exemplo.org") in org_c["admins"] and "dono" not in rev_c
+   and "cpv" in c_.get("/revistas").text and "cpv" not in a.get("/revistas").text,
+   "revista de quem não tem organização vira de uma organização pessoal dele (que ele administra)")
+ok(M.CONTAS.por_id(uid("caio@exemplo.org")).get("organizacao") == org_c["id"] and "Organização de Caio" in c_.get("/conta").text,
+   "a organização pessoal aparece em Minha conta")
 r, _ = envia(b, revista="edx")
 ok(r.status_code == 400, "enviar para uma revista fora do alcance é recusado")
 adm = TestClient(app, follow_redirects=False)
 ra = adm.post("/entrar", data={"email": "admin", "senha": "senha-de-teste-123", "proximo": "/"}, headers={"x-forwarded-for": "10.4.5.1"})
 adm.cookies.set("xmljats_sessao", ra.cookies["xmljats_sessao"])
 pr = adm.get("/revistas").text
-ok("edx" in pr and "Editora X Ltda" in pr and "particular" in pr, "o administrador vê todas, com a marca de quem é cada uma")
+ok("edx" in pr and "Editora X Ltda" in pr and "Organização de Caio" in pr, "o administrador vê todas, com a marca de quem é cada uma")
 form_edit = {k: v for k, v in rev.items() if isinstance(v, str)}
 form_edit["na_scielo"] = "nao"
 ok(adm.post("/revistas/edx", data=form_edit).status_code == 303
@@ -132,6 +145,10 @@ ok(adm.post("/revistas/edx", data=form_edit).status_code == 303
 r = adm.post(f"/usuarios/{uid('caio@exemplo.org')}/organizacao", data={"organizacao": o["id"]})
 ok(r.status_code == 303 and M.CONTAS.por_id(uid("caio@exemplo.org")).get("organizacao") == o["id"], "administrador vincula Caio à Editora X")
 ok(c_.get(f"/doc/{doc_a}").status_code == 200, "Caio passa a ver os documentos da organização")
+ok(uid("caio@exemplo.org") in ORGS.por_id(o["id"])["membros"] and M.acesso.papel_em(uid("caio@exemplo.org"), "edx") == "secretaria_editorial",
+   "vinculado pelo administrador, Caio vira membro e secretaria editorial nas revistas dela")
+ok("cpv" in c_.get("/revistas").text and uid("caio@exemplo.org") in ORGS.por_id(org_c["id"])["admins"],
+   "e continua administrando a organização pessoal dele, com a revista dela")
 ok(a.get(f"/doc/{doc_c}").status_code == 403, "o documento que Caio enviou antes continua só dele")
 r, doc_c2 = envia(c_)
 ok(a.get(f"/doc/{doc_c2}").status_code == 200, "o que Caio envia depois é da organização")
@@ -146,7 +163,10 @@ ok("erro" in f_.post("/conta/organizacao", data={"convite": "NADA1234"}).headers
 ok("mensagem" in f_.post("/conta/organizacao", data={"convite": convite}).headers["location"]
    and M.CONTAS.por_id(uid("fabi@exemplo.org")).get("organizacao") == o["id"], "código certo coloca a pessoa na organização")
 ok(convite in f_.get("/conta").text and "Editora X Ltda" in f_.get("/conta").text, "a conta mostra a organização e o código para convidar colegas")
-ok("erro" in f_.post("/conta/organizacao", data={"nome": "Outra"}).headers["location"], "quem já está numa organização não troca sozinho")
+ok("mensagem" in f_.post("/conta/organizacao", data={"nome": "Outra"}).headers["location"]
+   and len(M.acesso.organizacoes_de(uid("fabi@exemplo.org"))) == 2 and M.CONTAS.por_id(uid("fabi@exemplo.org")).get("organizacao") == o["id"],
+   "quem já está numa organização pode criar (ou entrar em) outra: os papéis são por revista, e a principal continua a primeira")
+ok("erro" in f_.post("/conta/organizacao", data={"convite": convite}).headers["location"], "entrar de novo na mesma organização é recusado")
 g, _ = cliente("Gil", "gil@exemplo.org")
 ok("mensagem" in g.post("/conta/organizacao", data={"nome": "Instituto G"}).headers["location"]
    and ORGS.por_id(M.CONTAS.por_id(uid("gil@exemplo.org")).get("organizacao"))["nome"] == "Instituto G", "criar organização pela conta")
@@ -193,6 +213,8 @@ form_org = dict(form_edit, visibilidade=f"org:{org_b}")
 ok(adm.post("/revistas/edx", data=form_org).status_code == 303 and next(x for x in M.carrega_revistas() if x["acronimo"] == "edx").get("organizacao") == org_b,
    "e pode mudar a revista de organização")
 ok("edx" not in a.get("/revistas").text and "edx" in b.get("/revistas").text, "a revista passou para a organização de Bia")
+ok(M.acesso.papel_em(uid("ana@exemplo.org"), "edx") is None and M.acesso.papel_em(uid("bia@exemplo.org"), "edx") == "secretaria_editorial",
+   "mudar a organização da revista move os papéis: Ana perde o dela, Bia (membro da nova) ganha secretaria")
 ok('name="visibilidade"' in adm.get("/revistas/edx").text and 'name="visibilidade"' not in adm.get("/revistas/nova").text,
    "o seletor 'Quem vê esta revista' só aparece ao editar")
 pd = adm.get(f"/admin/documentos?organizacao={o['id']}").text
