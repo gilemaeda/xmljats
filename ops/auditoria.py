@@ -517,6 +517,7 @@ def main():
           "| Validação no Schematron da SPS 1.10 (o packtools só liga 1.8 e 1.9 por padrão) | pronto | seção 3; SPS 1.10 é a versão padrão |",
           "| Freio de tentativas no login e registro; XML rascunho marcado; 'ir para o campo'; tempo medido | pronto | ops/test_auditoria_furos.py |",
           "| OCR de PDF escaneado (Tesseract via PyMuPDF, por + eng) | pronto | ops/test_ocr.py; /saude diz se o servidor tem OCR |",
+          "| Lote de entrega: até 5 artigos da mesma revista/número num só pacote, com um aviso | pronto | ops/test_lotes.py |",
           "| Novidades por versão: janela ao entrar, página de notificações e sino, filtrados por papel | pronto | ops/test_novidades.py |",
           "| Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |",
           "| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |",

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% set ativo = 'lotes' %}
+{% block titulo %}Lotes de entrega · administração{% endblock %}
+{% block conteudo %}
+<div class="result-head">
+  <div class="stack" style="gap:6px">
+    <p class="eyebrow">Administração</p>
+    <h1 style="margin-top:4px">Lotes de entrega</h1>
+    <p class="muted small" style="margin:0">Em publicação contínua, a SciELO recebe um <b>lote</b>: até 5 artigos prontos, da mesma revista e do
+      mesmo volume/número, num só .zip, com um só aviso por e-mail ("Total de XMLs = N"). A entrega artigo por artigo (lote de 1) continua
+      na tela de cada documento.</p>
+  </div>
+</div>
+
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+
+<section class="card" style="margin-bottom:var(--s-4)">
+  <header class="cardhead"><h2>Prontos para entrar num lote</h2><span class="muted small">{{ grupos|length }} revista(s)/número(s)</span></header>
+  {% if grupos %}
+  <div class="stack" style="gap:var(--s-4);padding:var(--s-4)">
+    {% for g in grupos %}
+    <form method="post" action="/admin/lotes" class="card pad stack" style="gap:10px" data-max="5">
+      <div class="row" style="gap:8px;align-items:center;flex-wrap:wrap">
+        <b>{{ g.revista }}</b>
+        <span class="chip neutral">v{{ g.volume }}{% if g.numero %}n{{ g.numero }}{% endif %}</span>
+        <span class="chip neutral">{{ g.docs|length }} pronto(s)</span>
+        {% if not g.continua %}<span class="chip warn" title="modalidade regular: o pacote é o número inteiro, sem número de lote">modalidade regular</span>{% endif %}
+      </div>
+      <div class="stack" style="gap:4px">
+        {% for d in g.docs %}
+        <label class="check" style="align-items:flex-start">
+          <input type="checkbox" name="doc" value="{{ d.id }}" {% if loop.index <= 5 %}checked{% endif %}>
+          <span><b>{{ d.titulo[:90] }}</b><span class="small muted mono"> · {{ d.nome_base }}</span>
+            {% if d.criado_por %}<span class="small muted"> · enviado por {{ d.criado_por }}</span>{% endif %}</span>
+        </label>
+        {% endfor %}
+      </div>
+      <div class="row" style="gap:10px;align-items:flex-end;flex-wrap:wrap">
+        {% if g.continua %}
+        <div class="field" style="max-width:140px;margin:0">
+          <label for="lote-{{ loop.index }}">Número do lote</label>
+          <input id="lote-{{ loop.index }}" name="lote" type="number" min="1" max="999" value="{{ g.proximo }}">
+        </div>
+        <span class="small muted">Sequência por volume/número, 01 em diante; sugerido pelo registro de entregas.</span>
+        {% endif %}
+        <button class="btn primary" type="submit" style="margin-left:auto"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg>Montar lote (até 5)</button>
+      </div>
+    </form>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty">Nenhum documento pronto fora de lote. Um documento entra aqui quando fica "Pronto para entrega" e tem revista e volume.</div>
+  {% endif %}
+</section>
+
+<section class="card">
+  <header class="cardhead"><h2>Lotes montados</h2><span class="muted small">{{ pacotes|length }} lote(s)</span></header>
+  {% if pacotes %}
+  <div class="tblwrap"><table class="tbl">
+    <thead><tr><th>Pacote</th><th>Revista</th><th>Volume/número</th><th>Lote</th><th>XMLs</th><th>Montado</th><th>Situação</th><th></th></tr></thead>
+    <tbody>
+    {% for p in pacotes %}
+      <tr>
+        <td class="mono">{{ p.pasta }}.zip</td>
+        <td>{{ p.revista }}</td>
+        <td>v{{ p.volume }}{% if p.numero %}n{{ p.numero }}{% endif %} · {{ p.ano }}</td>
+        <td class="tnum">{{ '%02d'|format(p.lote) if p.lote is not none else '—' }}</td>
+        <td class="tnum">{{ p.docs|length }}</td>
+        <td class="small muted">{{ p.criado_em|quando }} · {{ p.por }}</td>
+        <td>{% if p.depositado_em %}<span class="chip ok">depositado {{ p.depositado_em|quando }}</span>{% else %}<span class="chip warn">montado, não depositado</span>{% endif %}</td>
+        <td style="text-align:right"><a class="btn small" href="/admin/lotes/{{ p.pasta }}">Abrir</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+  <div class="empty">Nenhum lote montado ainda.</div>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+// no maximo 5 marcados por lote: desmarca o excedente e avisa
+(function(){
+  document.querySelectorAll('form[data-max]').forEach(function(f){
+    var max = parseInt(f.getAttribute('data-max'), 10);
+    f.addEventListener('change', function(e){
+      if (e.target.type !== 'checkbox') return;
+      var marcados = f.querySelectorAll('input[name=doc]:checked');
+      if (marcados.length > max) { e.target.checked = false; alert('Um lote leva no máximo ' + max + ' XMLs.'); }
+    });
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% set ativo = 'lotes' %}
+{% block titulo %}Lote {{ p.pasta }}{% endblock %}
+{% block conteudo %}
+<div class="result-head">
+  <div class="stack" style="gap:6px">
+    <p class="eyebrow">Lote de entrega</p>
+    <h1><span class="mono">{{ p.pasta }}.zip</span></h1>
+    <div class="row" style="gap:8px">
+      <span class="chip neutral">{{ revista.titulo if revista else p.revista }}</span>
+      <span class="chip neutral">v{{ p.volume }}{% if p.numero %}n{{ p.numero }}{% endif %} · {{ p.ano }}</span>
+      {% if p.lote is not none %}<span class="chip neutral">lote {{ '%02d'|format(p.lote) }}</span>{% endif %}
+      <span class="chip neutral">{{ p.docs|length }} XML(s)</span>
+      {% if p.depositado_em %}<span class="chip ok">depositado {{ p.depositado_em|quando }}{% if p.correcao %} (correção){% endif %}</span>{% else %}<span class="chip warn">ainda não depositado</span>{% endif %}
+    </div>
+  </div>
+  <div class="row"><a class="btn" href="/admin/lotes">Todos os lotes</a></div>
+</div>
+
+{% if mensagem %}<div class="msg auto" style="margin-bottom:var(--s-4)">{{ mensagem }}</div>{% endif %}
+{% if erro %}<div class="msg block" style="margin-bottom:var(--s-4)">{{ erro }}</div>{% endif %}
+
+<div class="review" style="grid-template-columns:3fr 2fr">
+  <div class="stack">
+    <div class="fs">
+      <header><h2>Artigos do lote</h2><span class="small muted">cada um com XML, PDF e imagens dentro da pasta do pacote</span></header>
+      <div class="in">
+        <table class="tbl">
+          <thead><tr><th>Artigo</th><th>Nome-base</th><th>Etapa</th><th></th></tr></thead>
+          <tbody>
+          {% for d in docs %}
+          <tr>
+            <td><b>{{ d.titulo[:90] }}</b>{% if d.criado_por %}<div class="small muted">enviado por {{ d.criado_por }}</div>{% endif %}</td>
+            <td class="mono small">{{ d.nome_base }}</td>
+            <td><span class="chip neutral">{{ ETAPA_ROTULO.get(d.etapa, d.etapa) }}</span></td>
+            <td style="text-align:right"><a class="btn small" href="/doc/{{ d.id }}">Abrir</a></td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Conferência do pacote</h2><span class="small muted">SPS 1.10 · Entrega de Pacote XML para Publicação</span></header>
+      <div class="in">
+        {% if not conferencia %}
+        <div class="msg warn">O .zip do lote não foi encontrado. Desfaça e monte de novo.</div>
+        {% else %}
+        <table class="tbl">
+          <thead><tr><th style="width:34%">Item</th><th style="width:12%">Resultado</th><th>Detalhe</th></tr></thead>
+          <tbody>
+            {% for i in conferencia.itens %}
+            <tr>
+              <td>{{ i.que }}</td>
+              <td><span class="chip {{ 'ok' if i.ok else 'crit' }}">{{ 'ok' if i.ok else 'falta' }}</span></td>
+              <td class="small {{ '' if i.ok else 'crit-text' }}">{{ i.detalhe }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="stack" style="gap:6px;margin-top:var(--s-4)">
+          <b class="small">Arquivos no pacote ({{ conferencia.arquivos|length }})</b>
+          <div class="row" style="gap:6px;flex-wrap:wrap">
+            {% for a in conferencia.arquivos %}<span class="chip neutral mono">{{ a }}</span>{% endfor %}
+          </div>
+        </div>
+        {% if conferencia.erros_xml %}
+        <div class="msg block" style="margin-top:var(--s-4)"><b>O validador aponta:</b>
+          <ul style="margin:6px 0 0;padding-left:18px">{% for e in conferencia.erros_xml[:12] %}<li class="small">{{ e }}</li>{% endfor %}</ul>
+        </div>
+        {% endif %}
+        {% endif %}
+        <div class="row" style="gap:8px;margin-top:var(--s-4)">
+          <a class="btn" href="/admin/lotes/{{ p.pasta }}/pacote.zip"><svg viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4"/><path d="M4 20h16"/></svg>Baixar o lote</a>
+          {% if not p.depositado_em %}
+          <form method="post" action="/admin/lotes/{{ p.pasta }}/desfazer" onsubmit="return confirm('Desfazer o lote? Os documentos voltam a ficar disponíveis para outro lote.')"><button class="btn danger" type="submit">Desfazer lote</button></form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="fs">
+      <header><h2>Depositar no FTP da SciELO</h2><span class="small muted">pasta {{ caminho_ftp }} · correções em {{ caminho_ftp_correcao }}</span></header>
+      <div class="in stack">
+        {% if not ftp.pronto %}
+        <div class="msg warn">O FTP ainda não está configurado: as credenciais vão em <a href="/admin/config">Configurações</a>. Enquanto isso, baixe o lote e deposite pelo cliente de FTP.</div>
+        {% endif %}
+        <div class="msg note">Depositar não basta: a SPS exige o aviso por e-mail a {{ email_scielo }}, com cópia à equipe editorial. Ao depositar daqui, o aviso fica como rascunho no correio, no formato dela, com "Total de XMLs = {{ p.docs|length }}".</div>
+        <details class="small">
+          <summary>Aviso por e-mail{% if revista and revista.email_editorial %} (cópia a {{ revista.email_editorial }}){% endif %}</summary>
+          <p style="margin:6px 0 4px"><b>Título:</b> <span class="mono">{{ assunto }}</span></p>
+          <pre class="mono small" style="white-space:pre-wrap;margin:0">{{ corpo }}</pre>
+        </details>
+        <form method="post" action="/admin/lotes/{{ p.pasta }}/entrega" class="row" style="gap:8px;align-items:center">
+          <button class="btn primary" type="submit" {% if not (ftp.pronto and conferencia and conferencia.ok) %}disabled{% endif %}>
+            <svg viewBox="0 0 24 24"><path d="M12 20V8m0 0l-4 4m4-4l4 4"/><path d="M4 4h16"/></svg>Depositar em {{ caminho_ftp }}</button>
+          <button class="btn" type="submit" name="correcao" value="1" {% if not (ftp.pronto and conferencia and conferencia.ok) %}disabled{% endif %}>Depositar como correção</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <aside class="stack">
+    <div class="card pad stack" style="gap:10px">
+      <h3>O que a SPS 1.10 diz sobre lotes</h3>
+      <ul class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
+        <li>Um lote tem até <b>5 XMLs</b>, todos do mesmo volume/número.</li>
+        <li>Pasta e .zip com o mesmo nome: <span class="mono">ISSN-acrônimo-volume-número-lote</span>; o lote é a sequência (01, 02…) mais os dois dígitos do ano do volume.</li>
+        <li>Um só <span class="mono">xpm.html</span> por pacote, com a validação de cada artigo.</li>
+        <li>Lotes em ordem, sem buracos; cada depósito com o seu e-mail.</li>
+      </ul>
+    </div>
+  </aside>
+</div>
+{% endblock %}

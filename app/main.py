@@ -65,6 +65,7 @@ import enriquece  # noqa: E402  (app/enriquece.py: completa o que falta pelo DOI
 import novidades  # noqa: E402  (app/novidades.py: o que mudou em cada versão, filtrado por papel, e quem já viu)
 import fila  # noqa: E402  (app/fila.py: envio em lote entra numa fila; um trabalhador processa um arquivo por vez)
 import organizacoes  # noqa: E402  (app/organizacoes.py: editora/instituição que agrupa contas; membros veem os mesmos documentos)
+import lotes  # noqa: E402  (app/lotes.py: até 5 artigos prontos da mesma revista/número num só pacote de entrega)
 
 import extrair as cli  # noqa: E402  (poc/extrair.py)
 import gerar_xml as gx  # noqa: E402  (poc/gerar_xml.py)
@@ -77,7 +78,7 @@ DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
 MAX_LOTE = int(os.environ.get("XMLJATS_MAX_LOTE", "20"))  # arquivos por envio; entram na fila e saem um a um
-VERSAO_APP = "0.25.0"
+VERSAO_APP = "0.26.0"
 if novidades.ATUAL != VERSAO_APP:  # as notas de versão saem junto com a versão: as duas têm de andar juntas
     raise RuntimeError(f"app/novidades.py está em {novidades.ATUAL}, mas VERSAO_APP é {VERSAO_APP}")
 CONTAS = Contas(DATA)
@@ -1690,6 +1691,9 @@ def lote_do_documento(pasta: Path, revista: Optional[dict], val: dict) -> Option
     return None
 
 
+lotes.configura(DATA, DOCS, le_json, grava_json, tempo.agora_iso, carrega_revistas, entrega, lista_docs, proximo_lote, registra_lote)
+
+
 def nome_pacote(pasta: Path) -> tuple:
     """(nome da pasta do pacote, nome-base do artigo, revista, lote). A pasta segue a "Nomeação de Pastas" da
     SPS 1.10; sem revista, volume ou lote, cai no nome-base do artigo e a conferência aponta o que falta."""
@@ -2602,8 +2606,12 @@ def admin_organizacao_remover(oid: str, usuario: dict = Depends(exige_admin)):
 
 @app.post("/usuarios/{uid}/novidades")
 def usuario_novidades(uid: str, usuario: dict = Depends(exige_admin)):
-    """A janela de novidades volta a aparecer para esta conta (mostra a versão atual de novo)."""
-    anterior = novidades.VERSOES[1]["versao"] if len(novidades.VERSOES) > 1 else None
+    """A janela de novidades volta a aparecer para esta conta: mostra de novo a última versão que tem algo para o papel dela."""
+    alvo = CONTAS.por_id(uid)
+    if not alvo:
+        return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote("Usuário não encontrado."), status_code=303)
+    visiveis = novidades.visiveis(alvo.get("papel") or "cliente")
+    anterior = visiveis[1]["versao"] if len(visiveis) > 1 else None
     try:
         CONTAS.marca_novidades(uid, anterior)
     except ValueError as e:
@@ -2623,6 +2631,124 @@ async def usuario_organizacao(request: Request, uid: str, usuario: dict = Depend
         return RedirectResponse(url="/usuarios?erro=" + urllib.parse.quote(str(e)), status_code=303)
     return RedirectResponse(url="/usuarios?mensagem=" + urllib.parse.quote(
         f"Conta vinculada a {ORGS.nome_de(oid)}." if oid else "Conta desvinculada de organização."), status_code=303)
+
+
+# ---------------------------------------------------------------- lotes de entrega (administração)
+
+def _pasta_lote_ok(pasta: str) -> str:
+    if not pasta or entrega.confere_nome_pasta(pasta):
+        raise HTTPException(404, "Lote não encontrado.")
+    return pasta
+
+
+@app.get("/admin/lotes", response_class=HTMLResponse)
+def admin_lotes(request: Request, usuario: dict = Depends(exige_admin), mensagem: str = "", erro: str = ""):
+    """Documentos prontos agrupados por revista e volume/número, para juntar até 5 num só pacote; e os lotes já montados."""
+    revistas = {r["acronimo"]: r for r in carrega_revistas()}
+    grupos = []
+    for (acr, vol, num), docs in sorted(lotes.candidatos().items()):
+        rev = revistas.get(acr) or {}
+        meta = entrega.metadados(le_json(DOCS / docs[0]["id"] / "validacao.json", {}) or {})
+        grupos.append({"acronimo": acr, "revista": rev.get("titulo") or acr, "volume": vol, "numero": num, "docs": docs,
+                       "continua": entrega.continua(rev), "proximo": proximo_lote(rev, meta) if rev else 1})
+    return templates.TemplateResponse(request, "admin_lotes.html", {"usuario": usuario, "grupos": grupos, "pacotes": lotes.pacotes(),
+                                                                    "mensagem": mensagem, "erro": erro})
+
+
+@app.post("/admin/lotes")
+async def admin_lote_criar(request: Request, usuario: dict = Depends(exige_admin)):
+    form = await request.form()
+    ids = [str(x) for x in form.getlist("doc")]
+    bruto = str(form.get("lote") or "").strip()
+    lote = int(bruto) if bruto.isdigit() and 1 <= int(bruto) <= 999 else None
+    try:
+        rec = await run_in_threadpool(lotes.cria, ids, lote, usuario["nome"])  # monta o .zip e confere: fora do event loop
+    except ValueError as e:
+        return RedirectResponse(url="/admin/lotes?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url=f"/admin/lotes/{rec['pasta']}?mensagem=" + urllib.parse.quote(
+        f"Lote montado com {len(rec['docs'])} XML(s). Confira o pacote e o aviso antes de depositar."), status_code=303)
+
+
+def _tela_lote(request: Request, usuario: dict, pasta: str, mensagem: str = "", erro: str = ""):
+    rec = lotes.por_pasta(pasta)
+    if not rec:
+        raise HTTPException(404, "Lote não encontrado.")
+    zipe = lotes.caminho_zip(pasta)
+    conferencia = entrega.confere_pacote(str(zipe)) if zipe.exists() else None
+    revista = next((r for r in carrega_revistas() if r["acronimo"] == rec["revista"]), None) or {}
+    docs = []
+    for i in rec.get("docs", []):
+        val = le_json(DOCS / i / "validacao.json", {}) or {}
+        cfg = le_json(DOCS / i / "config.json", {}) or {}
+        docs.append({"id": i, "titulo": val.get("titulo") or val.get("arquivo_original") or i, "nome_base": val.get("nome_base"),
+                     "etapa": cfg.get("etapa") or "recebido", "criado_por": cfg.get("criado_por")})
+    ftp = entrega.config_ftp(CORREIO.config())
+    acr = rec["revista"]
+    meta = {"volume": rec.get("volume"), "numero": rec.get("numero"), "ano": rec.get("ano"), "titulo": f"{len(docs)} artigo(s) do lote"}
+    assunto, corpo = entrega.email_deposito(revista, meta, rec.get("lote"), ftp["colecao_sigla"], f"{pasta}.zip",
+                                            entrega.caminho_ftp(ftp, acr), total_xml=len(docs))
+    return templates.TemplateResponse(request, "admin_lote.html", {
+        "usuario": usuario, "p": rec, "docs": docs, "conferencia": conferencia, "revista": revista, "ftp": ftp,
+        "email_scielo": entrega.EMAIL_SCIELO, "assunto": assunto, "corpo": corpo, "mensagem": mensagem, "erro": erro,
+        "caminho_ftp": entrega.caminho_ftp(ftp, acr), "caminho_ftp_correcao": entrega.caminho_ftp(ftp, acr, True)})
+
+
+@app.get("/admin/lotes/{pasta}", response_class=HTMLResponse)
+def admin_lote(request: Request, pasta: str, usuario: dict = Depends(exige_admin), mensagem: str = "", erro: str = ""):
+    return _tela_lote(request, usuario, _pasta_lote_ok(pasta), mensagem, erro)
+
+
+@app.get("/admin/lotes/{pasta}/pacote.zip")
+def admin_lote_zip(pasta: str, usuario: dict = Depends(exige_admin)):
+    z = lotes.caminho_zip(_pasta_lote_ok(pasta))
+    if not z.exists():
+        raise HTTPException(404, "O .zip do lote não existe mais.")
+    return FileResponse(str(z), media_type="application/zip", filename=z.name)
+
+
+@app.post("/admin/lotes/{pasta}/desfazer")
+def admin_lote_desfazer(pasta: str, usuario: dict = Depends(exige_admin)):
+    pasta = _pasta_lote_ok(pasta)
+    try:
+        lotes.desfaz(pasta)
+    except ValueError as e:
+        return RedirectResponse(url=f"/admin/lotes/{pasta}?erro=" + urllib.parse.quote(str(e)), status_code=303)
+    return RedirectResponse(url="/admin/lotes?mensagem=" + urllib.parse.quote(f"Lote {pasta} desfeito; os documentos voltaram a ficar disponíveis."),
+                            status_code=303)
+
+
+@app.post("/admin/lotes/{pasta}/entrega")
+async def admin_lote_entrega(request: Request, pasta: str, usuario: dict = Depends(exige_admin)):
+    """Deposita o lote no FTP da SciELO, deixa o aviso pronto no correio e marca todos os artigos como entregues."""
+    pasta = _pasta_lote_ok(pasta)
+    rec = lotes.por_pasta(pasta)
+    if not rec:
+        raise HTTPException(404, "Lote não encontrado.")
+    form = await request.form()
+    correcao = str(form.get("correcao") or "") == "1"
+    zipe = lotes.caminho_zip(pasta)
+    if not zipe.exists():
+        return RedirectResponse(url=f"/admin/lotes/{pasta}?erro=" + urllib.parse.quote("O .zip do lote não existe mais: desfaça e monte de novo."),
+                                status_code=303)
+    conf = entrega.confere_pacote(str(zipe))
+    if not conf["ok"]:
+        falhas = "; ".join(i["que"] for i in conf["itens"] if not i["ok"])
+        return RedirectResponse(url=f"/admin/lotes/{pasta}?erro=" + urllib.parse.quote(
+            f"O pacote não passa na conferência ({falhas}). Corrija antes de depositar."), status_code=303)
+    revista = next((r for r in carrega_revistas() if r["acronimo"] == rec["revista"]), None) or {}
+    acr = rec["revista"]
+    r = await run_in_threadpool(entrega.deposita, CORREIO.config(), str(zipe), correcao, acronimo=acr)
+    if not r["ok"]:
+        return RedirectResponse(url=f"/admin/lotes/{pasta}?erro=" + urllib.parse.quote(r["mensagem"]), status_code=303)
+    ftp = entrega.config_ftp(CORREIO.config())
+    meta = {"volume": rec.get("volume"), "numero": rec.get("numero"), "ano": rec.get("ano"), "titulo": f"{len(rec['docs'])} artigo(s) do lote"}
+    assunto, corpo = entrega.email_deposito(revista, meta, rec.get("lote"), ftp["colecao_sigla"], zipe.name,
+                                            entrega.caminho_ftp(ftp, acr, correcao), correcao=correcao, total_xml=len(rec["docs"]))
+    para = [entrega.EMAIL_SCIELO] + ([revista["email_editorial"]] if revista.get("email_editorial") else [])
+    CORREIO.cria(para, assunto, corpo, caixa="rascunhos", tipo="scielo", por=usuario["nome"])
+    lotes.marca_depositado(pasta, usuario["nome"], correcao, r["passos"])
+    return RedirectResponse(url=f"/admin/lotes/{pasta}?mensagem=" + urllib.parse.quote(
+        r["mensagem"] + " O aviso já está como rascunho no correio; todos os artigos do lote foram marcados como entregues."), status_code=303)
 
 
 @app.get("/usuarios", response_class=HTMLResponse)

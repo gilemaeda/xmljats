@@ -235,7 +235,7 @@ def confere_pacote(caminho_zip: str) -> dict:
     problema_pasta = next((m for t in topos if (m := confere_nome_pasta(t))), None)
     item("Nome da pasta", not problema_pasta, problema_pasta or "só letras, números e hífen, como o guia exige")
     xmls = [n for n in curtos if n.lower().endswith(".xml")]
-    item("XML do artigo", len(xmls) == 1, f"{len(xmls)} arquivo(s) .xml no pacote")
+    item("XML dos artigos (1 a 5 por pacote)", 1 <= len(xmls) <= 5, f"{len(xmls)} arquivo(s) .xml no pacote")
     pdfs = [n for n in curtos if n.lower().endswith(".pdf")]
     item("PDF do artigo", bool(pdfs), "o pacote leva o PDF de cada idioma" if not pdfs else ", ".join(pdfs))
     item("Relatório de validação (xpm.html)", RELATORIO in curtos,
@@ -251,19 +251,26 @@ def confere_pacote(caminho_zip: str) -> dict:
     if xmls:
         temp = tempfile.mkdtemp(prefix="xmljats-conf-")
         try:
-            with zipfile.ZipFile(caminho_zip) as z:
-                interno = next(n for n in z.namelist() if os.path.basename(n) == xmls[0])
-                destino = os.path.join(temp, xmls[0])
-                with open(destino, "wb") as saida:
-                    saida.write(z.read(interno))
             from gerar_xml import valida_packtools
-            dtd_ok, sps_ok, erros, _ = valida_packtools(destino)
-            erros_xml.extend(erros[:40])
-            item("XML válido no DTD JATS", dtd_ok is True,
-                 "; ".join(e for e in erros if "DTD" in e)[:200] if dtd_ok is not True else "")
-            item("XML válido no Schematron SciELO PS", sps_ok is True,
-                 "; ".join(e for e in erros if "DTD" not in e)[:200] if sps_ok is not True else "")
-            faltando = _arquivos_citados(destino) - set(curtos)
+            dtd_todos, sps_todos, faltando, prob_dtd, prob_sps = True, True, set(), [], []
+            with zipfile.ZipFile(caminho_zip) as z:
+                for nome_xml in xmls:  # num lote há até 5 XML: cada um passa pelo DTD e pelo Schematron
+                    interno = next(n for n in z.namelist() if os.path.basename(n) == nome_xml)
+                    destino = os.path.join(temp, nome_xml)
+                    with open(destino, "wb") as saida:
+                        saida.write(z.read(interno))
+                    dtd_ok, sps_ok, erros, _ = valida_packtools(destino)
+                    prefixo = f"{nome_xml}: " if len(xmls) > 1 else ""
+                    erros_xml.extend(prefixo + e for e in erros[:40])
+                    if dtd_ok is not True:
+                        dtd_todos = False
+                        prob_dtd.append(prefixo + "; ".join(e for e in erros if "DTD" in e)[:160])
+                    if sps_ok is not True:
+                        sps_todos = False
+                        prob_sps.append(prefixo + "; ".join(e for e in erros if "DTD" not in e)[:160])
+                    faltando |= _arquivos_citados(destino) - set(curtos)
+            item("XML válido no DTD JATS", dtd_todos, "" if dtd_todos else " | ".join(prob_dtd)[:240])
+            item("XML válido no Schematron SciELO PS", sps_todos, "" if sps_todos else " | ".join(prob_sps)[:240])
             item("Arquivos citados pelo XML estão no pacote", not faltando,
                  ("faltam: " + ", ".join(sorted(faltando))) if faltando else "nenhuma referência solta")
         except Exception as e:  # noqa: BLE001
@@ -322,6 +329,35 @@ na seção "Entrega de Pacote XML para Publicação".</p>
 {linhas("Apontamentos do packtools", validacao.get("erros") or [])}
 {linhas("Bloqueantes das nossas regras", validacao.get("bloqueantes") or [])}
 {linhas("Avisos", validacao.get("avisos") or [])}
+</html>"""
+    return corpo.encode("utf-8")
+
+
+def relatorio_lote_html(pasta_pacote: str, artigos: list, conferencia: dict) -> bytes:
+    """Um xpm.html por pacote, com a validação de cada artigo do lote e a conferência do .zip."""
+    linhas_art = ""
+    for a in artigos:
+        v = a.get("validacao") or {}
+        linhas_art += (f"<tr><td><code>{_escapa(a['base'])}</code><br><span class='muted'>{_escapa(v.get('titulo') or '')}</span></td>"
+                       f"<td class='{'ok' if v.get('dtd_ok') else 'erro'}'>{'válido' if v.get('dtd_ok') else 'inválido'}</td>"
+                       f"<td class='{'ok' if v.get('sps_ok') else 'erro'}'>{'válido' if v.get('sps_ok') else 'com apontamentos'}</td>"
+                       f"<td>{len(v.get('bloqueantes') or [])}</td><td>{len(v.get('avisos_extrator') or []) + len(v.get('avisos_gerador') or [])}</td></tr>")
+    checks = "".join(
+        f"<tr><td>{_escapa(i['que'])}</td><td class='{'ok' if i['ok'] else 'erro'}'>{'ok' if i['ok'] else 'falta'}</td>"
+        f"<td>{_escapa(i['detalhe'])}</td></tr>" for i in conferencia.get("itens", []))
+    corpo = f"""<!doctype html><html lang="pt-BR"><meta charset="utf-8">
+<title>Relatório de validação — lote {_escapa(pasta_pacote)}</title>
+<style>body{{font:14px/1.6 system-ui,sans-serif;max-width:64em;margin:2em auto;padding:0 1em;color:#131a24}}
+h1{{font-size:20px}} h2{{font-size:15px;margin-top:1.6em}} table{{border-collapse:collapse;width:100%}}
+td,th{{border:1px solid #d5dce6;padding:6px 10px;text-align:left;vertical-align:top}}
+.ok{{color:#12603f}} .erro{{color:#b3261e}} .muted{{color:#5b6573;font-size:12px}} code{{font-family:ui-monospace,monospace}}</style>
+<h1>Relatório de validação — lote {_escapa(pasta_pacote)}</h1>
+<p>Gerado pelo xmljats com o packtools, a biblioteca de validação da SciELO. Um relatório por pacote, com {len(artigos)} artigo(s),
+no lugar e com o nome (xpm.html) que a SPS 1.10 dá ao relatório na seção "Entrega de Pacote XML para Publicação".</p>
+<h2>Artigos do lote</h2>
+<table><tr><th>Arquivo</th><th>DTD JATS</th><th>Schematron SciELO PS</th><th>Bloqueantes</th><th>Avisos</th></tr>{linhas_art}</table>
+<h2>Conferência do pacote</h2>
+<table><tr><th>Item</th><th>Resultado</th><th>Detalhe</th></tr>{checks}</table>
 </html>"""
     return corpo.encode("utf-8")
 

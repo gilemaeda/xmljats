@@ -12,6 +12,11 @@ antiga sem o campo usa a data do último acesso: o que saiu antes dela não é n
 from typing import List, Optional
 
 VERSOES = [
+    {"versao": "0.26.0", "data": "2026-09-06", "itens": [
+        {"para": "admin", "titulo": "Lotes de entrega",
+         "texto": "Na página Lotes, até 5 artigos prontos da mesma revista e do mesmo volume/número viram um só pacote (.zip com uma pasta, "
+                  "um xpm.html) e um só aviso por e-mail com \"Total de XMLs = N\", como a SPS 1.10 pede. Depositar marca todos como entregues."},
+    ]},
     {"versao": "0.25.0", "data": "2026-09-06", "itens": [
         {"para": "todos", "titulo": "Menu do topo mais limpo",
          "texto": "Com o menu no topo, Como funciona e Novidades (e, para o administrador, Correio e Configurações) viram ícones com dica, "
