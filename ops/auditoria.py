@@ -14,6 +14,8 @@ import os
 import re
 import subprocess
 import sys
+if hasattr(sys.stdout, "reconfigure"):  # console cp1252 do Windows nao imprime todo Unicode e derrubava o teste
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import tempfile
 import urllib.parse
 import shutil
@@ -96,7 +98,7 @@ def roda_site():
     check("revista com ISSN inválido é recusada", c.post("/revistas/nova", data={"acronimo": "x1", "titulo": "T", "abrev": "T", "issn_epub": "1234-5678", "editora": "E", "licenca_url": "https://creativecommons.org/licenses/by/4.0/"}).status_code == 400)
     check("revista válida é criada", c.post("/revistas/nova", data={"acronimo": "audit", "titulo": "Revista da Auditoria", "abrev": "Rev. Aud.", "issn_epub": "2446-8088", "editora": "E", "doi_prefixo": "10.99999/aud", "licenca_url": "https://creativecommons.org/licenses/by/4.0/", "modo_publicacao": "continua", "na_scielo": "nao"}).status_code == 303)
     with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.pdf"), "rb") as f:
-        up = c.post("/validar", files={"arquivo": ("Direito e Praxis.pdf", f, "application/pdf")}, data={"revista": "", "sps": "1.9"})
+        up = c.post("/validar", files={"arquivo": ("Direito e Praxis.pdf", f, "application/pdf")}, data={"revista": "", "sps": "1.10"})
     check("upload de PDF processa e redireciona", up.status_code == 303)
     doc = up.headers.get("location", "")
     pag = c.get(doc).text if doc else ""
@@ -186,8 +188,8 @@ def roda_site():
         import zipfile as _zip
         with _zip.ZipFile(io.BytesIO(c.get(doc + "/pacote.zip").content)) as z:
             nomes = z.namelist()
-        check("pacote com arquivos na raiz e relatório de validação dentro",
-              all("/" not in n for n in nomes) and any(n.endswith("-relatorio.html") for n in nomes))
+        check("pacote com uma pasta de mesmo nome dentro e o relatório xpm.html (SPS 1.10)",
+              len({n.split("/")[0] for n in nomes}) == 1 and all("/" in n for n in nomes) and any(n.endswith("/xpm.html") for n in nomes))
         import entrega as ent_mod
         check("regras de nome do guia (sem acento, underline ou ponto extra)",
               ent_mod.confere_nome("2179-8966-rdp-17-03-e92016.xml") is None and
@@ -278,7 +280,7 @@ def roda_site():
     # ---- entrada DOCX
     with open(os.path.join(RAIZ, "modelos", "Direito e Praxis.docx"), "rb") as f:
         up2 = c.post("/validar", files={"arquivo": ("artigo.docx", f, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
-                     data={"revista": "rdp", "sps": "1.9"})
+                     data={"revista": "rdp", "sps": "1.10"})
     check("site aceita DOCX", up2.status_code == 303)
     docx_doc = up2.headers.get("location", "")
     if docx_doc:
@@ -288,7 +290,7 @@ def roda_site():
               os.path.exists(os.path.join(tmp, "docs", docx_doc.rsplit("/", 1)[-1], "original.docx")))
     check("formato fora da lista é recusado com o motivo",
           c.post("/validar", files={"arquivo": ("x.txt", b"nao", "text/plain")},
-                 data={"revista": "", "sps": "1.9"}).status_code == 400)
+                 data={"revista": "", "sps": "1.10"}).status_code == 400)
     from extrator.docx import omml_para_mathml
     from lxml import etree as _et
     _omml = _et.fromstring('<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">'
@@ -445,10 +447,14 @@ def main():
           "| Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |",
           "| Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |",
           "| Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |",
-          "| Caminho DOCX | não começou | depende dos arquivos DOCX da ANAMORPHOSIS |",
-          "| Parser de referências com IA + Crossref | não começou | hoje é heurística; a confiança de cada referência aparece no resultado |",
-          "| Multi-tenant por revista, fila e métricas de custo | não começou | fase 2 do plano |",
-          "| Integração com OJS e depósito por FTP | não começou | fase 5 do plano |", ""]
+          "| Pacote, nome da pasta, lote e e-mail de entrega conforme a SPS 1.10 | pronto | ops/test_entrega.py |",
+          "| Validação no Schematron da SPS 1.10 (o packtools só liga 1.8 e 1.9 por padrão) | pronto | seção 3; SPS 1.10 é a versão padrão |",
+          "| Freio de tentativas no login e registro; XML rascunho marcado; 'ir para o campo'; tempo medido | pronto | ops/test_auditoria_furos.py |",
+          "| Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |",
+          "| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |",
+          "| Equipe da revista compartilhando documentos, fila em lote e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem fila em lote nem custo com revisão humana |",
+          "| Validador público sem conta e captcha no registro | não começou | decisão dos sócios (fase 4); Turnstile precisa das chaves da Cloudflare |",
+          "| Integração com OJS | não começou | fase 5 do plano; o depósito por FTP já existe |", ""]
     io.open(SAIDA, "w", encoding="utf-8").write("\n".join(L) + "\n")
     print("\n".join(L[:14]))
     print(f"\nrelatório: {os.path.relpath(SAIDA, RAIZ)}")

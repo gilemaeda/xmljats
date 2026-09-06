@@ -14,7 +14,7 @@
   </div>
   <div class="ajuda-fluxo">
     {% for ic, t, d in [
-      ('envio', 'Você envia', 'PDF do artigo'),
+      ('envio', 'Você envia', 'PDF ou DOCX do artigo'),
       ('motor', 'O motor lê', 'metadados, corpo, figuras, tabelas, equações, notas e referências'),
       ('xml', 'Sai o XML', 'SciELO PS, validado no packtools'),
       ('rev', 'Você revisa', 'o que falta aparece campo a campo'),
@@ -40,7 +40,7 @@
     ('Pessoas', 'Quem assina e de onde vem.', ['Nome dividido em sobrenome e nomes', 'ORCID com dígito verificador conferido', 'Afiliação com instituição, cidade e país', 'Autor correspondente e e-mail'], 'info', 'gente'),
     ('Texto', 'A espinha do artigo.', ['Títulos em cada idioma', 'Resumos e palavras-chave', 'Seções e subseções', 'Notas de rodapé com a chamada ligada'], 'ok', 'texto'),
     ('Figuras', 'Imagem e legenda juntas.', ['Imagem extraída do PDF', 'Legenda, fonte e chamada no texto', 'Nome -gfNN.tif no pacote'], 'warn', 'imagem'),
-    ('Tabelas e equações', 'O que costuma dar mais trabalho à mão.', ['Tabela com grade vira table de verdade', 'Grade incerta vai como imagem, com aviso', 'Equação recortada em alta resolução'], 'brand', 'tabela'),
+    ('Tabelas e equações', 'O que costuma dar mais trabalho à mão.', ['Tabela com grade vira table de verdade', 'Grade incerta vai como imagem, com aviso', 'Equação em MathML, do LaTeX ou da fórmula do Word'], 'brand', 'tabela'),
     ('Referências', 'Uma a uma, com grau de confiança.', ['ABNT, APA e numérico (Vancouver, IEEE)', 'Autores, título, fonte, volume, páginas', 'DOI, link e data de acesso'], 'info', 'livro')] %}
   <article class="card pad ficha">
     <span class="ic {{ cor }}">
@@ -65,9 +65,11 @@
     'recebido': ('O arquivo chegou e o motor já leu.', 'aqui'),
     'em_revisao': ('Alguém está preenchendo o que faltou.', 'aqui'),
     'pronto': ('Sem bloqueantes e sem erro do validador oficial: o pacote pode ser gerado.', 'aqui'),
-    'entregue': ('O pacote foi enviado à SciELO pelo canal combinado com a coleção.', 'fora'),
+    'entregue': ('O pacote foi depositado no FTP e o aviso "Entrega |" foi enviado.', 'fora'),
+    'entrega_confirmada': ('A SciELO respondeu "Entrega Confirmada": o pacote entrou na fila de publicação.', 'fora'),
     'pre_qa': ('A SciELO confere o pacote recebido.', 'fora'),
     'qa': ('Controle de qualidade da SciELO em andamento.', 'fora'),
+    'correcao_pedida': ('A SciELO mandou "Pré-QA Correção" ou "QA Correção": corrigir e reenviar o pacote em até 30 dias, senão ele é cancelado.', 'fora'),
     'qa_finalizado': ('Controle de qualidade concluído.', 'fora'),
     'publicado': ('Artigo no ar na coleção.', 'fora')} %}
   {% for cod, rotulo in etapas %}
@@ -109,11 +111,12 @@
     <div class="card pad stack" style="gap:10px">
       <h3>O que entra no pacote</h3>
       <ul class="lista">
+        <li>Uma pasta com o nome do pacote dentro do .zip, e o .zip com o mesmo nome (SPS 1.10)</li>
         <li>XML do artigo em SciELO PS (e sub-article por tradução)</li>
         <li>PDF de cada idioma</li>
         <li>Imagens em <span class="mono">.tiff</span>, <span class="mono">.jpg</span> ou <span class="mono">.png</span></li>
         <li>Tabelas, fórmulas e equações <b>codificadas em MathML ou LaTeX</b>, nunca como imagem</li>
-        <li>Relatório do validador em <span class="mono">.html</span></li>
+        <li>Relatório de validação, um por pacote, com o nome <span class="mono">xpm.html</span></li>
         <li>Material suplementar (de preferência <span class="mono">.pdf</span>) e vídeos em <span class="mono">.mp4</span></li>
       </ul>
       <p class="small muted">É por isso que a tela de revisar pede o LaTeX de cada equação: sem ele a fórmula sairia como
@@ -165,12 +168,12 @@
 <h2 class="sec-t">O que ainda não é feito aqui</h2>
 <div class="cards-3">
   {% for titulo, texto in [
-    ('Envio automático à SciELO', 'Não existe API pública de depósito. O pacote sai pronto; o envio é pelo canal da coleção, e a etapa é anotada aqui.'),
-    ('Entrada por DOCX', 'Hoje o sistema lê PDF. O caminho DOCX está previsto e depende dos arquivos reais da revista piloto.'),
-    ('Referências com IA e Crossref', 'A separação de campos é por regra, com grau de confiança visível. Cruzar com o Crossref para completar dados é passo seguinte.'),
-    ('Status vindo da SciELO', 'O sistema não consulta o andamento do QA: quem acompanha anota a etapa.'),
-    ('CRediT', 'Papéis de contribuição de cada autor ainda não são gerados.'),
-    ('Fila e custo por artigo', 'Processamento em lote e medição de custo entram com o volume.')] %}
+    ('Credencial do FTP e andamento na SciELO', 'O depósito no FTP e o aviso por e-mail saem daqui, mas a credencial do FTP é pedida à SciELO (pela revista ou pelo prestador), e o andamento do QA não é consultado: quem acompanha anota a etapa.'),
+    ('Integração com o OJS', 'Datas, seção e DOI ainda entram na revisão ou são pedidos por e-mail; puxar da submissão no OJS é o passo seguinte.'),
+    ('DOI das referências pelo Crossref', 'Medido e descartado por enquanto: a busca por texto devolve DOI errado com a mesma confiança de um certo. O DOI do próprio artigo, sim, é conferido no Crossref.'),
+    ('Validador público sem conta', 'Hoje é preciso entrar para enviar um arquivo.'),
+    ('Modelo DOCX da revista', 'O DOCX é lido pelos estilos de título do Word; um modelo com estilos próprios e tabela de metadados ainda não é distribuído.'),
+    ('Fila e custo por artigo', 'Cada arquivo é processado na hora do envio; processamento em lote entra com o volume. O tempo de máquina já é medido; o custo com a revisão humana, ainda não.')] %}
   <article class="card pad ficha">
     <span class="ic warn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/></svg></span>
     <h3>{{ titulo }}</h3>
@@ -183,8 +186,8 @@
 <div class="faq">
   {% for p, r in [
     ('Por que meu artigo não fica "Pronto"?', 'Falta algum dado que o arquivo não traz. O mais comum é o dia e o mês da publicação, que só existem no sistema da revista. A tela de revisão mostra cada pendência com o nome do campo e de onde buscar o dado.'),
-    ('Por que a equação virou imagem?', 'PDF não guarda MathML, guarda o desenho da fórmula. Recortamos a equação em alta resolução e emitimos em disp-formula com graphic, que é o que a SPS aceita. Com o DOCX ou o LaTeX original dá para gerar MathML de verdade.'),
-    ('Por que essa tabela veio como imagem e a outra não?', 'Quando a tabela tem linhas de grade, a estrutura é reconstruída e vira uma tabela real no XML. Quando ela só tem filetes horizontais, a divisão das colunas fica incerta; nesse caso preferimos mandar a imagem a entregar número na coluna errada.'),
+    ('Por que a equação pede o LaTeX?', 'PDF não guarda MathML, guarda o desenho da fórmula, e o guia de entrega exige as fórmulas codificadas em MathML ou LaTeX. A tela de revisar mostra o recorte da equação e pede o LaTeX, que vira MathML no XML; equação só como imagem fica bloqueante. No DOCX a fórmula do Word (OMML) é convertida sozinha.'),
+    ('Por que essa tabela veio como imagem e a outra não?', 'Quando a tabela tem linhas de grade, a estrutura é reconstruída e vira uma tabela real no XML. Quando ela só tem filetes horizontais, a divisão das colunas fica incerta; nesse caso ela vai como imagem com aviso (T02), e a tela de revisar deixa digitar ou colar as células para a tabela sair codificada, como o guia pede.'),
     ('O sistema muda meu PDF?', 'Não. O arquivo enviado fica guardado como veio e entra no pacote apenas renomeado no padrão da SPS. As correções que você faz na revisão valem só para o XML.'),
     ('A área da revista muda o XML?', 'Não. JATS é o mesmo para toda área. O que muda é o que esperar do artigo: estilo de citação, presença de tabelas e de equações. Por isso a área e o estilo de referências ficam no cadastro, e o sistema avisa quando o texto é lido num estilo diferente do esperado.'),
     ('Quem vê o quê?', 'Cliente vê e abre apenas os próprios documentos. Operador vê todos. Administrador administra usuários, revistas, correio e configurações, e não usa o validador.')] %}

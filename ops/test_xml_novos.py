@@ -2,6 +2,8 @@
 import json
 import os
 import sys
+if hasattr(sys.stdout, "reconfigure"):  # console cp1252 do Windows nao imprime todo Unicode e derrubava o teste
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import tempfile
 
 sys.path.insert(0, r"C:\Users\gilej\PROJETOS\XML")

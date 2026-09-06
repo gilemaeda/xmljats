@@ -582,4 +582,18 @@
     var alvo = $('.pendencias');
     if (alvo) alvo.appendChild(ir);
   }
+
+  /* ------------------------------------------------------------------ chegou pelo "ir para o campo" do resultado */
+  if (location.hash.indexOf('#f-') === 0) {
+    var alvoHash = document.getElementById(location.hash.slice(1));
+    if (alvoHash) {
+      alvoHash.classList.add('is-alvo');
+      setTimeout(function () {
+        alvoHash.scrollIntoView({ block: 'center' });
+        var c = alvoHash.querySelector('input, textarea, select');
+        if (c) c.focus({ preventScroll: true });
+      }, 50);
+      setTimeout(function () { alvoHash.classList.remove('is-alvo'); }, 5000);
+    }
+  }
 })();

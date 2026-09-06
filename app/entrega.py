@@ -3,7 +3,8 @@ Entrega do pacote à SciELO: conferência do .zip, relatório de validação e d
 
 Base documental (os dois PDF que o Murillo indicou, lidos em 05/09/2026):
 
-1. "Guia de Entrega de Pacote XML para Publicação em SciELO" (versão dez/2024)
+1. Seção "Entrega de Pacote XML para Publicação" da documentação SPS 1.10 (o guia de dez/2024 em PDF foi
+   incorporado a ela em 2025: estrutura do .zip, nomeação de pastas, lote, título e corpo do e-mail)
    - O pacote é um .zip. .rar não é aceito.
    - Formatos: imagens .tiff, .jpg ou .png; XML .xml; relatório do validador .html;
      material suplementar de preferência .pdf; vídeos .mp4.
@@ -48,6 +49,11 @@ EMAIL_SCIELO = "publicacao@scielo.org"
 PASTA_ENTREGA = "Entrega"
 PASTA_CORRECAO = "Correcao"
 COLECOES_ATESTADO = ["SciELO Brasil", "SciELO Saúde Pública", "RevEnf", "Pepsic"]
+# siglas das coleções no título do e-mail de entrega (SPS 1.10, "Composição para o Título do Email de Entrega")
+COLECOES_SIGLA = {"BR": "SciELO Brasil", "SP": "SciELO Saúde Pública", "RE": "RevEnf", "PS": "Pepsic"}
+RE_SIGLA = re.compile(r"^(BR|SP|RE|PS)(/(BR|SP|RE|PS))*$")
+# nome que a estrutura do pacote na SPS 1.10 dá ao relatório de validação, um por pacote
+RELATORIO = "xpm.html"
 EXT_IMAGEM = {".tif", ".tiff", ".jpg", ".jpeg", ".png"}
 EXT_ACEITAS = EXT_IMAGEM | {".xml", ".pdf", ".html", ".mp4", ".svg"}
 RE_NOME_OK = re.compile(r"^[A-Za-z0-9][A-Za-z0-9-]*\.[A-Za-z0-9]+$")
@@ -77,6 +83,121 @@ def confere_nome(nome: str) -> Optional[str]:
     return None
 
 
+def confere_nome_pasta(nome: str) -> Optional[str]:
+    """Nome de pasta do pacote (SPS 1.10, "Nomeação de Pastas"): só letras, números e hífen; sem underline,
+    ponto, en dash, em dash, acento, espaço ou caractere especial."""
+    if not _sem_acento(nome):
+        return "tem acento"
+    for ch, que in (("_", "underline"), (".", "ponto"), (" ", "espaço"), ("\u2013", "en dash"), ("\u2014", "em dash")):
+        if ch in nome:
+            return f"tem {que}"
+    if not re.match(r"^[A-Za-z0-9][A-Za-z0-9-]*$", nome):
+        return "usa caractere fora de letras, números e hífen"
+    return None
+
+
+# ---------------------------------------------------------------- nome do pacote, lote e e-mail (SPS 1.10)
+
+def _n(v) -> str:
+    return str(v or "").strip()
+
+
+def _num(v) -> str:
+    """Número sem zero à esquerda ('03' -> '3'), como nos exemplos do título do e-mail (v40n2)."""
+    s = _n(v)
+    return (s.lstrip("0") or "0") if s else ""
+
+
+def metadados(val: dict) -> dict:
+    """Achata o validacao.json no que o nome do pacote e o e-mail usam: volume, número, ano, datas, DOI, seção, título.
+    (No validacao.json esses campos ficam em 'extracao'; o título fica na raiz.)"""
+    val = val or {}
+    ex = val.get("extracao") or {}
+    d = {k: ex.get(k) for k in ("volume", "numero", "ano", "elocation", "doi", "heading", "datas")}
+    d["titulo"] = val.get("titulo")
+    d["ano"] = _n(ex.get("ano")) or _n((ex.get("datas") or {}).get("publicado"))[:4]
+    return d
+
+
+def ano_do_volume(doc: dict) -> str:
+    """Ano do volume/número a que o artigo pertence (é dele que sai o lote, não do ano do depósito)."""
+    ano = _n(doc.get("ano"))
+    if not ano:
+        datas = doc.get("datas") or {}
+        ano = _n(datas.get("publicado"))[:4] or _n(doc.get("data_publicado"))[:4]
+    return ano if ano.isdigit() else ""
+
+
+def codigo_lote(lote: int, ano: str) -> str:
+    """'Lote' da SPS 1.10: dois dígitos (ou mais) da sequência + dois dígitos finais do ano do volume.
+    Lote 3 do volume de 2025 = 0325; lote 103 de 2026 = 10326."""
+    return f"{int(lote):02d}{_n(ano)[-2:]}"
+
+
+def continua(revista: dict) -> bool:
+    return (revista or {}).get("modo_publicacao", "continua") != "regular"
+
+
+def fasciculo(doc: dict) -> str:
+    """'v40n2' para o título do e-mail: siglas em caixa baixa e números sem zero à esquerda, como nos exemplos."""
+    vol, num = _num(doc.get("volume")), _num(doc.get("numero"))
+    return (f"v{vol}" if vol else "") + (f"n{num}" if num else "")
+
+
+def nome_pasta(revista: dict, doc: dict, lote: Optional[int] = None) -> Optional[str]:
+    """Nome da pasta dentro do .zip, e do próprio .zip (SPS 1.10, "Nomeação de Pastas"):
+    ISSN-acrônimo-volume-número, mais o lote (sequência + ano) em publicação contínua.
+    Volume e número com dois dígitos, como o packtools escreve o nome dos arquivos (sps_package.package_name)."""
+    issn = (revista or {}).get("issn_epub") or (revista or {}).get("issn_ppub")
+    acr = (revista or {}).get("acronimo")
+    vol = _n(doc.get("volume"))
+    if not (issn and acr and vol):
+        return None
+    partes = [issn, acr, vol.zfill(2)]
+    if _n(doc.get("numero")):
+        partes.append(_n(doc.get("numero")).zfill(2))
+    if continua(revista):
+        ano = ano_do_volume(doc)
+        if lote is None or not ano:
+            return None
+        partes.append(codigo_lote(lote, ano))
+    return "-".join(partes)
+
+
+def identificador_entrega(revista: dict, doc: dict, lote: Optional[int], sigla: str) -> str:
+    """O que vai depois de 'Entrega | ' no título e entre aspas no corpo do e-mail:
+    'scie v40n2 Lote 0125 - BR' (publicação contínua) ou 'scie v40n2 2025 - BR' (regular)."""
+    acr = (revista or {}).get("acronimo") or "?"
+    ano = ano_do_volume(doc)
+    if continua(revista):
+        meio = f"Lote {codigo_lote(lote, ano)}" if (lote is not None and ano) else "Lote ????"
+    else:
+        meio = ano or "????"
+    return " ".join(p for p in (acr, fasciculo(doc), meio) if p) + f" - {sigla or 'BR'}"
+
+
+def retrospectivo(doc: dict) -> bool:
+    """Pacote retrospectivo = volume de dois anos ou mais antes do corrente; o termo do título muda."""
+    import datetime
+
+    ano = ano_do_volume(doc)
+    return bool(ano) and int(ano) <= datetime.date.today().year - 2
+
+
+def titulo_email(revista: dict, doc: dict, lote: Optional[int], sigla: str) -> str:
+    """Título no formato fixo da SPS 1.10: termo + pipe + identificador. Ex.: 'Entrega | scie v40n2 2025 - BR'."""
+    return ("Retrô Entrega" if retrospectivo(doc) else "Entrega") + " | " + identificador_entrega(revista, doc, lote, sigla)
+
+
+def caminho_ftp(f: dict, acronimo: str = "", correcao: bool = False) -> str:
+    """Pasta de destino no FTP. Conta de prestador (com atestado): Entrega/Correcao na raiz. Conta da própria
+    revista no FTP da SciELO: '<acrônimo>/Entrega' e '<acrônimo>/Correcao'."""
+    pasta = (f.get("pasta_correcao") or PASTA_CORRECAO) if correcao else (f.get("pasta_entrega") or PASTA_ENTREGA)
+    if (f.get("tipo_conta") or "prestador") == "scielo" and acronimo:
+        return f"{acronimo}/{pasta}"
+    return pasta
+
+
 def confere_pacote(caminho_zip: str) -> dict:
     """Confere o .zip contra o guia de entrega e contra o validador do packtools.
 
@@ -102,15 +223,23 @@ def confere_pacote(caminho_zip: str) -> dict:
     item("Nome dos arquivos", not problemas,
          "; ".join(f"{n}: {m}" for n, m in problemas) if problemas else
          "sem ponto extra, underline, acento ou espaço, como o guia exige")
-    item("Arquivos na raiz do pacote", all("/" not in n for n in nomes),
-         "a SciELO espera os arquivos direto na raiz do .zip" if any("/" in n for n in nomes) else "")
+    # SPS 1.10, "Estrutura da Pasta .zip": pasta.zip > pasta > xpm.html + arquivos; uma só pasta, sem subpastas
+    topos = sorted({n.split("/")[0] for n in nomes if "/" in n})
+    soltos = [n for n in nomes if "/" not in n]
+    aninhados = [n for n in nomes if n.count("/") > 1]
+    esperado = os.path.splitext(os.path.basename(caminho_zip))[0]
+    estrutura_ok = len(topos) == 1 and not soltos and not aninhados and esperado in topos
+    item("Uma pasta com o nome do pacote dentro do .zip", estrutura_ok,
+         f"{esperado}.zip > {esperado} > arquivos" if estrutura_ok else
+         f"pasta(s) {topos}, arquivos soltos {soltos[:3]}, subpastas {len(aninhados)}; o guia pede {esperado}.zip > {esperado} > arquivos")
+    problema_pasta = next((m for t in topos if (m := confere_nome_pasta(t))), None)
+    item("Nome da pasta", not problema_pasta, problema_pasta or "só letras, números e hífen, como o guia exige")
     xmls = [n for n in curtos if n.lower().endswith(".xml")]
     item("XML do artigo", len(xmls) == 1, f"{len(xmls)} arquivo(s) .xml no pacote")
     pdfs = [n for n in curtos if n.lower().endswith(".pdf")]
     item("PDF do artigo", bool(pdfs), "o pacote leva o PDF de cada idioma" if not pdfs else ", ".join(pdfs))
-    relat = [n for n in curtos if n.lower().endswith(".html")]
-    item("Relatório do validador", bool(relat),
-         "o guia pede o relatório de validação em .html junto do pacote" if not relat else relat[0])
+    item("Relatório de validação (xpm.html)", RELATORIO in curtos,
+         RELATORIO if RELATORIO in curtos else f"o guia pede um relatório {RELATORIO} por pacote, dentro da pasta")
     imagens = [n for n in curtos if os.path.splitext(n)[1].lower() in EXT_IMAGEM]
     item("Formato das imagens", True, f"{len(imagens)} imagem(ns): {', '.join(sorted(imagens)[:6]) or 'nenhuma'}")
 
@@ -180,8 +309,9 @@ h1{{font-size:20px}} h2{{font-size:15px;margin-top:1.6em}} table{{border-collaps
 td,th{{border:1px solid #d5dce6;padding:6px 10px;text-align:left;vertical-align:top}}
 .ok{{color:#12603f}} .erro{{color:#b3261e}} li{{margin:.2em 0}} code{{font-family:ui-monospace,monospace}}</style>
 <h1>Relatório de validação — {_escapa(nome_base)}</h1>
-<p>Gerado pelo xmljats com o packtools, o validador oficial da SciELO. Acompanha o pacote, como pede o
-Guia de Entrega de Pacote XML para Publicação em SciELO.</p>
+<p>Gerado pelo xmljats com o packtools, a biblioteca de validação da SciELO (o mesmo motor do Style Checker).
+Vai dentro da pasta do pacote com o nome xpm.html, que é o lugar e o nome que a SPS 1.10 dá ao relatório de validação
+na seção "Entrega de Pacote XML para Publicação".</p>
 <h2>Validação do XML</h2>
 <table><tr><th>Verificação</th><th>Resultado</th></tr>
 <tr><td>DTD JATS</td><td class="{'ok' if validacao.get('dtd_ok') else 'erro'}">{'válido' if validacao.get('dtd_ok') else 'inválido'}</td></tr>
@@ -212,6 +342,10 @@ def config_ftp(cfg: dict) -> dict:
         "senha_mascarada": (senha[:2] + "…" + senha[-2:]) if len(senha) > 6 else ("…" if senha else ""),
         "tls": bool(f.get("tls", True)), "pasta_entrega": f.get("pasta_entrega") or PASTA_ENTREGA,
         "pasta_correcao": f.get("pasta_correcao") or PASTA_CORRECAO,
+        # prestador com atestado deposita em Entrega/Correcao na raiz; a conta da própria revista no FTP da
+        # SciELO deposita em <acrônimo>/Entrega (SPS 1.10, "Depósito do Pacote de Entrega no FTP")
+        "tipo_conta": f.get("tipo_conta") or "prestador",
+        "colecao_sigla": f.get("colecao_sigla") or "BR",
         "pronto": bool(f.get("servidor") and f.get("usuario") and senha),
     }
 
@@ -234,7 +368,7 @@ def _conecta(f: dict, timeout: int = 30):
     return con, "FTP simples, sem TLS: a senha trafega em texto claro"
 
 
-def deposita(cfg: dict, caminho_zip: str, correcao: bool = False, timeout: int = 60) -> dict:
+def deposita(cfg: dict, caminho_zip: str, correcao: bool = False, timeout: int = 60, acronimo: str = "") -> dict:
     """Envia o .zip para o FTP da SciELO. Devolve {'ok','mensagem','passos':[...]}.
     Nunca levanta exceção de rede: o que der errado volta na mensagem."""
     f = (cfg or {}).get("scielo_ftp") or {}
@@ -243,7 +377,7 @@ def deposita(cfg: dict, caminho_zip: str, correcao: bool = False, timeout: int =
                                          f"{EMAIL_SCIELO}, e depois vão em Configurações.", "passos": []}
     if not os.path.exists(caminho_zip):
         return {"ok": False, "mensagem": "O pacote .zip ainda não foi gerado.", "passos": []}
-    pasta = (f.get("pasta_correcao") or PASTA_CORRECAO) if correcao else (f.get("pasta_entrega") or PASTA_ENTREGA)
+    pasta = caminho_ftp(f, acronimo, correcao)
     nome = os.path.basename(caminho_zip)
     passos = []
     con = None
@@ -319,25 +453,33 @@ def testa_conexao(cfg: dict, timeout: int = 25) -> dict:
 
 # ---------------------------------------------------------------- e-mails obrigatórios
 
-def email_deposito(nome_base: str, revista: dict, doc: dict, correcao: bool = False) -> tuple:
-    """Texto do aviso de depósito, que o guia torna obrigatório a cada envio."""
-    titulo = doc.get("titulo") or nome_base
-    assunto = (f"{'Correção' if correcao else 'Depósito'} de pacote XML — {revista.get('titulo') or ''} "
-               f"({revista.get('issn_epub') or ''}) — {nome_base}")
+def email_deposito(revista: dict, doc: dict, lote: Optional[int], sigla: str, nome_zip: str, pasta_ftp: str,
+                   correcao: bool = False, total_xml: int = 1) -> tuple:
+    """Aviso obrigatório a cada depósito. Título e primeira frase no formato da SPS 1.10 ("Composição para o
+    Título" e "Composição do Corpo do Email de Entrega"); o resto identifica o artigo para quem lê."""
+    revista = revista or {}
+    ident = identificador_entrega(revista, doc, lote, sigla)
+    assunto = titulo_email(revista, doc, lote, sigla)
+    titulo = doc.get("titulo") or nome_zip
+    if correcao:
+        abertura = (f"Informo que o .zip com a correção da marcação XML do periódico “{ident}” foi disponibilizado "
+                    f"no FTP, na pasta {pasta_ftp}, em resposta à solicitação de correção.")
+    else:
+        abertura = f"Informo que o .zip com a marcação XML do periódico “{ident}”, foi disponibilizado no FTP."
     corpo = f"""Prezados,
 
-{'Depositamos uma correção' if correcao else 'Depositamos um pacote'} no FTP da SciELO, na pasta {PASTA_CORRECAO if correcao else PASTA_ENTREGA}.
+{abertura}
+- Total de XMLs = {total_xml}.
 
-Periódico: {revista.get('titulo') or '—'}
-ISSN: {revista.get('issn_epub') or '—'}
-Acrônimo: {revista.get('acronimo') or '—'}
-Pacote: {nome_base}.zip
+Pacote: {nome_zip}
+Pasta no FTP: {pasta_ftp}
+Periódico: {revista.get('titulo') or '—'} (ISSN {revista.get('issn_epub') or '—'}, acrônimo {revista.get('acronimo') or '—'})
 Artigo: {titulo}
 DOI: {doc.get('doi') or '—'}
-Volume/número: {doc.get('volume') or '—'} / {doc.get('numero') or '—'}
+Volume/número/ano: {doc.get('volume') or '—'} / {doc.get('numero') or '—'} / {ano_do_volume(doc) or '—'}
 Seção: {doc.get('heading') or '—'}
 
-O pacote leva o XML em SciELO PS, o PDF, as imagens e o relatório de validação em HTML.
+O pacote leva, numa pasta com o seu nome, o XML em SciELO PS, o PDF, as imagens e o relatório de validação ({RELATORIO}).
 
 Atenciosamente,
 """

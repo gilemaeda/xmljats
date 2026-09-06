@@ -299,7 +299,7 @@ def _tipo_declaracao(titulo: str) -> Optional[str]:
 
 # ---------------------------------------------------------------- gerador
 
-def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.9", rascunho_ok: bool = True) -> Resultado:
+def gera_xml(model: dict, rev: Optional[dict], versao: str = "1.10", rascunho_ok: bool = True) -> Resultado:
     res = Resultado()
     v = VERSOES[versao]
     lang = model.get("idioma") or "pt"

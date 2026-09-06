@@ -166,6 +166,13 @@ class Correio:
         for k in ("servidor", "usuario", "pasta_entrega", "pasta_correcao"):
             if k in dados:
                 f[k] = (dados.get(k) or "").strip()
+        if "tipo_conta" in dados:
+            f["tipo_conta"] = "scielo" if (dados.get("tipo_conta") or "") == "scielo" else "prestador"
+        if "colecao_sigla" in dados:
+            sigla = (dados.get("colecao_sigla") or "BR").strip().upper()
+            if not re.match(r"^(BR|SP|RE|PS)(/(BR|SP|RE|PS))*$", sigla):
+                raise ValueError("Sigla da coleção: BR, SP, RE ou PS (ou duas separadas por barra, ex.: BR/SP).")
+            f["colecao_sigla"] = sigla
         if dados.get("senha"):  # em branco = manter a senha atual
             f["senha"] = str(dados["senha"]).strip()
         if dados.get("remover_senha"):

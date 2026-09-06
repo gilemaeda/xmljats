@@ -280,7 +280,7 @@ table.tbl tr:last-child td{border-bottom:0}
 .empty .icon svg{width:22px;height:22px;stroke-width:1.8}
 
 /* ---------- KPIs e filtros ---------- */
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-4);margin-bottom:var(--s-5)}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:var(--s-4);margin-bottom:var(--s-5)}
 .kpi{display:flex;align-items:center;gap:14px;padding:16px 18px}
 .kpi .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--brand-soft);color:var(--brand-text)}
 .kpi .ico.ok{background:var(--ok-bg);color:var(--ok-ink)}.kpi .ico.crit{background:var(--crit-bg);color:var(--crit-ink)}
@@ -513,6 +513,7 @@ details.acoes .pop{position:absolute;right:0;z-index:5;min-width:280px;text-alig
 .credit-lista .check{font-size:12.5px}
 .field.is-auto input,.field.is-auto textarea,.field.is-auto select{border-color:var(--brand-2);background:var(--brand-soft,var(--surface-2))}
 .field.is-auto>label{color:var(--brand-2)}
+.field.is-alvo{outline:2px solid var(--brand-2);outline-offset:4px;border-radius:8px}
 .prov.auto{color:var(--brand-2)}
 .como-citar{white-space:pre-wrap;line-height:1.65}
 .ao-topo{position:fixed;right:18px;bottom:96px;z-index:45;width:42px;height:42px;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);cursor:pointer;display:grid;place-items:center;box-shadow:var(--shadow-2)}

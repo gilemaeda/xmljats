@@ -7,7 +7,7 @@
     <div>
       <p class="eyebrow">Validador</p>
       <h1 style="margin-top:4px">Validar artigo para XML SciELO</h1>
-      <p class="lead">Envie o PDF do artigo. O motor extrai os metadados, gera o XML SciELO PS e valida no packtools, o validador oficial da SciELO. O que não estiver no PDF vira bloqueante e se corrige na revisão; nunca é inventado.</p>
+      <p class="lead">Envie o PDF ou o DOCX do artigo. O motor extrai os metadados, gera o XML SciELO PS e valida no packtools, o validador oficial da SciELO. O que não estiver no arquivo vira bloqueante e se corrige na revisão; nunca é inventado.</p>
     </div>
     {% if mensagem %}<div class="msg auto">{{ mensagem }}</div>{% endif %}
     <form class="card pad stack" method="post" action="/validar" enctype="multipart/form-data" style="gap:var(--s-5)">
@@ -23,10 +23,10 @@
         <div class="field">
           <label for="sps">Versão SPS</label>
           <select id="sps" name="sps">
-            <option value="1.9">SciELO PS 1.9 · JATS 1.1 (em uso na SciELO)</option>
-            <option value="1.10">SciELO PS 1.10 · JATS 1.3</option>
+            <option value="1.10">SciELO PS 1.10 · JATS 1.3 (versão vigente)</option>
+            <option value="1.9">SciELO PS 1.9 · JATS 1.1 (versão anterior)</option>
           </select>
-          <span class="hint">O XML oficial de 2026 da SciELO ainda usa 1.9.</span>
+          <span class="hint">A 1.10 é a versão vigente da SPS e traz as regras de entrega; a 1.9 fica para quem ainda a usa.</span>
         </div>
       </div>
       <div class="field issn-box" id="issn-box" hidden>
@@ -90,7 +90,7 @@
     </tbody>
   </table></div>
   {% else %}
-  <div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento ainda. Envie o primeiro PDF acima.</div>
+  <div class="empty"><div class="icon"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>Nenhum documento ainda. Envie o primeiro arquivo acima.</div>
   {% endif %}
 </section>
 {% endblock %}

@@ -1,6 +1,6 @@
-# Auditoria do xmljats — 2026-09-05
+# Auditoria do xmljats — 2026-09-06
 
-Gerada por `python ops/auditoria.py` (app 0.18.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
+Gerada por `python ops/auditoria.py` (app 0.20.0). Cada número vem de uma medição desta rodada: os PDFs foram reprocessados, os XML gerados e validados no packtools, e o site exercitado ponta a ponta.
 
 ## 1. Resumo
 
@@ -95,7 +95,7 @@ Gerada por `python ops/auditoria.py` (app 0.18.0). Cada número vem de uma medi�
 - ok — tela de entrega confere o pacote contra o guia
 - ok — entrega lembra o aviso obrigatório e o formato do pacote
 - ok — entrega explica o atestado de capacidade técnica
-- ok — pacote com arquivos na raiz e relatório de validação dentro
+- ok — pacote com uma pasta de mesmo nome dentro e o relatório xpm.html (SPS 1.10)
 - ok — regras de nome do guia (sem acento, underline ou ponto extra)
 - ok — depósito sem FTP configurado é recusado com explicação
 - ok — configurações têm FTP da SciELO e pedido do atestado
@@ -150,16 +150,16 @@ Agrupado por mensagem, somando os arquivos desta rodada. Todos são dados que o 
 
 | Mensagem do packtools | Arquivos |
 |---|---|
-| SPS [@sps-1.9]: Element 'pub-date': Missing element day. | 10 |
-| SPS [@sps-1.9]: Element 'pub-date': Missing element month. | 10 |
-| SPS [@sps-1.9]: Element 'article-meta': Missing element article-categories. | 3 |
-| SPS [@sps-1.9]: Element 'article-meta': Missing element abstract. | 2 |
-| SPS [@sps-1.9]: Element 'article-meta': Missing elements fpage or elocation-id. | 1 |
-| SPS [@sps-1.9]: Element 'page-count': Wrong value in page-count. | 1 |
+| SPS [@sps-1.10]: Element 'pub-date': Missing element day. | 10 |
+| SPS [@sps-1.10]: Element 'pub-date': Missing element month. | 10 |
+| SPS [@sps-1.10]: Element 'article-meta': Missing element article-categories. | 3 |
+| SPS [@sps-1.10]: Element 'article-meta': Missing element abstract. | 2 |
+| SPS [@sps-1.10]: Element 'article-meta': Missing elements fpage or elocation-id. | 1 |
+| SPS [@sps-1.10]: Element 'page-count': Wrong value in page-count. | 1 |
 
 ## 6. Etapas do documento
 
-Fluxo implementado: recebido → em_revisao → pronto → entregue → pre_qa → qa → qa_finalizado → publicado.
+Fluxo implementado: recebido → em_revisao → pronto → entregue → entrega_confirmada → pre_qa → qa → correcao_pedida → qa_finalizado → publicado.
 
 ## 7. Cobertura do plano
 
@@ -218,8 +218,12 @@ Telas da especificação (seção 5) e ferramentas do plano v3, com o estado de 
 | Ferramenta 1 · Gerador XML + packtools | pronto | seção 3 (coluna DTD) |
 | Ferramenta 6 · Nomenclatura SPS e pacote | pronto | nome-base nos arquivos gerados |
 | Figuras, tabelas, equações, notas, referências | pronto | seção 3 (colunas correspondentes) |
-| Caminho DOCX | não começou | depende dos arquivos DOCX da ANAMORPHOSIS |
-| Parser de referências com IA + Crossref | não começou | hoje é heurística; a confiança de cada referência aparece no resultado |
-| Multi-tenant por revista, fila e métricas de custo | não começou | fase 2 do plano |
-| Integração com OJS e depósito por FTP | não começou | fase 5 do plano |
+| Pacote, nome da pasta, lote e e-mail de entrega conforme a SPS 1.10 | pronto | ops/test_entrega.py |
+| Validação no Schematron da SPS 1.10 (o packtools só liga 1.8 e 1.9 por padrão) | pronto | seção 3; SPS 1.10 é a versão padrão |
+| Freio de tentativas no login e registro; XML rascunho marcado; 'ir para o campo'; tempo medido | pronto | ops/test_auditoria_furos.py |
+| Modelo DOCX distribuível (estilos próprios + tabela de metadados) | não começou | o DOCX já é lido pelos estilos de título do Word; o modelo é a fase 2 do plano |
+| Parser de referências com IA + Crossref | não começou | hoje é heurística medida contra gabarito; DOI por Crossref foi medido e descartado |
+| Equipe da revista compartilhando documentos, fila em lote e custo por artigo | parcial | tempo de máquina por artigo no painel; conta por pessoa; sem fila em lote nem custo com revisão humana |
+| Validador público sem conta e captcha no registro | não começou | decisão dos sócios (fase 4); Turnstile precisa das chaves da Cloudflare |
+| Integração com OJS | não começou | fase 5 do plano; o depósito por FTP já existe |
 

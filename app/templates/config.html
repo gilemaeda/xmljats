@@ -121,6 +121,21 @@
           <input id="pasta_correcao" name="pasta_correcao" value="{{ ftp.pasta_correcao }}" placeholder="Correcao">
         </div>
       </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="tipo_conta">Tipo de conta</label>
+          <select id="tipo_conta" name="tipo_conta">
+            <option value="prestador" {% if ftp.tipo_conta != 'scielo' %}selected{% endif %}>Prestador com atestado: pastas Entrega e Correcao na raiz</option>
+            <option value="scielo" {% if ftp.tipo_conta == 'scielo' %}selected{% endif %}>Conta da própria revista no FTP da SciELO: acrônimo/Entrega</option>
+          </select>
+          <span class="hint">SPS 1.10, "Depósito do Pacote de Entrega no FTP".</span>
+        </div>
+        <div class="field">
+          <label for="colecao_sigla">Sigla da coleção no título do e-mail</label>
+          <input id="colecao_sigla" name="colecao_sigla" value="{{ ftp.colecao_sigla }}" placeholder="BR">
+          <span class="hint">BR = SciELO Brasil, SP = Saúde Pública, RE = RevEnf, PS = Pepsic; em duas coleções, BR/SP.</span>
+        </div>
+      </div>
       <label class="check"><input type="checkbox" name="tls" value="1" {% if ftp.tls %}checked{% endif %}> Usar TLS quando o servidor aceitar (recomendado)</label>
       {% if ftp.tem_senha %}<label class="check"><input type="checkbox" name="remover_senha" value="1"> Remover a senha salva</label>{% endif %}
       <div class="row" style="gap:8px">

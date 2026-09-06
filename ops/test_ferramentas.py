@@ -2,6 +2,8 @@
 import os
 import shutil
 import sys
+if hasattr(sys.stdout, "reconfigure"):  # console cp1252 do Windows nao imprime todo Unicode e derrubava o teste
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import tempfile
 
 tmp = tempfile.mkdtemp(prefix="xmljats-ferr-")

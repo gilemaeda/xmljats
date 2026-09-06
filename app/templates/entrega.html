@@ -7,7 +7,7 @@
     <p class="eyebrow">Entrega à SciELO</p>
     <h1>{{ r.titulo or r.arquivo_original }}</h1>
     <div class="row" style="gap:8px">
-      <span class="file"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg><span class="mono">{{ r.nome_base }}.zip</span></span>
+      <span class="file"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg><span class="mono">{{ pasta_pacote }}.zip</span></span>
       <span class="chip {{ 'ok' if r.pronto else 'crit' }}">{{ 'pronto para entrega' if r.pronto else 'ainda tem bloqueante' }}</span>
       <span class="chip neutral">etapa: {{ ETAPA_ROTULO.get(etapa, etapa) }}</span>
     </div>
@@ -21,7 +21,7 @@
 <div class="review" style="grid-template-columns:3fr 2fr">
   <div class="stack">
     <div class="fs">
-      <header><h2>Conferência do pacote</h2><span class="small muted">Guia de Entrega de Pacote XML para Publicação em SciELO, dez/2024</span></header>
+      <header><h2>Conferência do pacote</h2><span class="small muted">SPS 1.10 · Entrega de Pacote XML para Publicação</span></header>
       <div class="in">
         {% if not conferencia %}
         <div class="msg warn">O XML ainda não foi gerado, então não há pacote para conferir. Passe por Revisar e editar primeiro.</div>
@@ -69,9 +69,25 @@
         <p class="small muted" style="margin:0">Servidor <span class="mono">{{ ftp.servidor }}:{{ ftp.porta }}</span>,
           usuário <span class="mono">{{ ftp.usuario }}</span>{% if ftp.tls %}, com TLS{% endif %}.</p>
         {% endif %}
-        <div class="msg note">Depositar não basta. O guia diz que é <b>obrigatório avisar {{ email_scielo }} por e-mail a cada
-          depósito</b>; sem o aviso, a publicação não é garantida. Ao depositar daqui, o aviso já fica como rascunho no correio,
-          com periódico, ISSN, pacote e DOI preenchidos.</div>
+        {% if continua %}
+        <form method="post" action="/doc/{{ id }}/entrega/lote" class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
+          <div class="field" style="max-width:150px;margin:0">
+            <label for="lote">Lote deste depósito</label>
+            <input id="lote" name="lote" type="number" min="1" max="999" value="{{ lote or '' }}" {% if usuario.papel != 'admin' %}disabled{% endif %}>
+          </div>
+          {% if usuario.papel == 'admin' %}<button class="btn small" type="submit">Guardar lote</button>{% endif %}
+          <span class="small muted" style="flex:1;min-width:240px">Sequência por volume/número, 01 em diante, sem buracos (SPS 1.10).
+            Vira a pasta <span class="mono">{{ pasta_pacote }}</span> e "Lote {{ codigo_lote }}" no e-mail.{% if not lote_gravado %} Sugerido pelo registro de entregas; confira antes de depositar.{% endif %}</span>
+        </form>
+        {% endif %}
+        <div class="msg note">Depositar não basta. A SPS diz que é <b>obrigatório avisar {{ email_scielo }} por e-mail a cada
+          depósito</b>, com cópia à equipe editorial; sem o aviso, a publicação não é garantida. Ao depositar daqui, o aviso já
+          fica como rascunho no correio, no formato que ela exige.</div>
+        <details class="small">
+          <summary>Aviso por e-mail, pronto para {{ email_scielo }}{% if revista and revista.email_editorial %} com cópia a {{ revista.email_editorial }}{% endif %}</summary>
+          <p style="margin:6px 0 4px"><b>Título:</b> <span class="mono">{{ assunto }}</span></p>
+          <pre class="mono small" style="white-space:pre-wrap;margin:0">{{ corpo }}</pre>
+        </details>
         {% if usuario.papel == 'admin' %}
         <form method="post" action="/doc/{{ id }}/entrega" class="row" style="gap:8px;align-items:center">
           <button class="btn primary" type="submit" {% if not (ftp.pronto and r.pronto and conferencia and conferencia.ok) %}disabled{% endif %}>
@@ -91,13 +107,14 @@
     <div class="card pad stack" style="gap:10px">
       <h3>Como a entrega funciona</h3>
       <ol class="small muted" style="margin:0;padding-left:18px;line-height:1.7">
-        <li>O pacote é um <b>.zip</b>. A SciELO não aceita .rar.</li>
-        <li>Nome de arquivo sem ponto final, underline ou acento.</li>
+        <li>O pacote é um <b>.zip</b> (a SciELO não aceita .rar) com <b>uma pasta dentro</b>, de mesmo nome: <span class="mono">{{ pasta_pacote }}</span>. Nela ficam o XML, o PDF, as imagens e o relatório <span class="mono">xpm.html</span>.</li>
+        <li>Nome de arquivo e de pasta sem ponto extra, underline, acento ou espaço.</li>
         <li>Tabelas, fórmulas e equações <b>codificadas em MathML ou LaTeX</b>, nunca como imagem.</li>
-        <li>O .zip vai para o FTP da coleção, na pasta <span class="mono">{{ ftp.pasta_entrega }}</span>; correção vai em <span class="mono">{{ ftp.pasta_correcao }}</span>.</li>
-        <li>E um e-mail para <span class="mono">{{ email_scielo }}</span> avisando do depósito. Isso é obrigatório.</li>
+        <li>Em publicação contínua, cada depósito é um <b>lote</b> de até 5 XMLs, numerado em sequência por volume/número.</li>
+        <li>O .zip vai para o FTP da coleção, na pasta <span class="mono">{{ caminho_ftp }}</span>; correção vai em <span class="mono">{{ caminho_ftp_correcao }}</span>.</li>
+        <li>E um e-mail para <span class="mono">{{ email_scielo }}</span>, com cópia à revista, no título fixo <span class="mono">{{ assunto }}</span>. Isso é obrigatório.</li>
       </ol>
-      <p class="small faint" style="margin:0">Fonte: Guia de Entrega de Pacote XML para Publicação em SciELO, versão dez/2024.</p>
+      <p class="small faint" style="margin:0">Fonte: SPS 1.10, seção "Entrega de Pacote XML para Publicação" (que incorporou o guia de dez/2024).</p>
     </div>
     <div class="card pad stack" style="gap:10px">
       <h3>Publicação contínua</h3>

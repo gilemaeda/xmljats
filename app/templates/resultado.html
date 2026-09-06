@@ -12,8 +12,8 @@
     <form method="post" action="/doc/{{ r.id }}/reprocessar" style="display:inline"><button class="btn" type="submit" title="Reextrai do PDF; mantém as edições"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 01-14.9 4M4 12a8 8 0 0114.9-4"/><path d="M20 4v4h-4M4 20v-4h4"/></svg>Reprocessar</button></form>
     <a class="btn" href="/doc/{{ r.id }}/resumo.md">Extração</a>
     <a class="btn" href="/doc/{{ r.id }}/modelo.json">JSON</a>
-    <a class="btn" href="/doc/{{ r.id }}/xml"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>XML</a>
-    <a class="btn" href="/doc/{{ r.id }}/pacote.zip">Pacote .zip</a>
+    <a class="btn" href="/doc/{{ r.id }}/xml"{% if not r.pronto %} title="Ainda há pendências: este XML sai marcado como rascunho e não deve ser entregue"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a1 1 0 001 1h14a1 1 0 001-1v-2"/></svg>XML{% if not r.pronto %} (rascunho){% endif %}</a>
+    <a class="btn" href="/doc/{{ r.id }}/pacote.zip"{% if not r.pronto %} title="Pacote com o XML em rascunho: serve para conferir, não para entregar"{% endif %}>Pacote .zip{% if not r.pronto %} (rascunho){% endif %}</a>
     <a class="btn" href="/doc/{{ r.id }}/entrega"><svg viewBox="0 0 24 24"><path d="M12 20V8m0 0l-4 4m4-4l4 4"/><path d="M4 4h16"/></svg>Entrega à SciELO</a>
     <a class="btn primary" href="/doc/{{ r.id }}/editar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M13 7l4 4"/></svg>Revisar e editar</a>
   </div>
@@ -62,7 +62,7 @@
   <div class="stack" style="gap:var(--s-4)">
     <div class="group">
       <header><span class="chip crit">Bloqueantes</span><span class="n">{{ r.bloqueantes|length }}</span><span class="small muted">impedem a entrega do XML</span></header>
-      {% for b in r.bloqueantes %}<div class="finding crit"><span class="stripe"></span><div class="body">{{ b|regra }}<a href="/doc/{{ r.id }}/editar">corrigir</a></div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">Nenhum bloqueante.</div></div>{% endfor %}
+      {% for b in r.bloqueantes %}{% set alvo = namespace(campo='') %}{% for c, msgs in (r.campos_bloqueados or {}).items() %}{% if not alvo.campo and ':' not in c and b in msgs %}{% set alvo.campo = c %}{% endif %}{% endfor %}<div class="finding crit"><span class="stripe"></span><div class="body">{{ b|regra }}<a href="/doc/{{ r.id }}/editar{% if alvo.campo %}#f-{{ alvo.campo }}{% endif %}">{% if alvo.campo %}ir para o campo{% else %}corrigir{% endif %}</a></div></div>{% else %}<div class="finding auto"><span class="stripe"></span><div class="body">Nenhum bloqueante.</div></div>{% endfor %}
     </div>
     <div class="group">
       <header><span class="chip warn">Validador oficial</span><span class="n">{{ r.packtools|length }}</span><span class="small muted" title="{{ r.packtools_detalhe }}">packtools · DTD JATS + Schematron SPS</span></header>

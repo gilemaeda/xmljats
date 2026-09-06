@@ -35,6 +35,7 @@ import os
 import re
 import secrets
 import sys
+import time
 import uuid
 import zipfile
 from pathlib import Path
@@ -53,7 +54,7 @@ sys.path.insert(0, str(RAIZ / "app"))
 
 from contas import COOKIE, PAPEIS, ROTULO_PAPEL, Contas  # noqa: E402  (app/contas.py)
 import tempo  # noqa: E402  (app/tempo.py: tudo no horário de Brasília)
-from correio import CAIXAS, ROTULO_CAIXA, Correio, corpo_confirmacao, token_confirmacao  # noqa: E402
+from correio import CAIXAS, RE_EMAIL_SIMPLES, ROTULO_CAIXA, Correio, corpo_confirmacao, token_confirmacao  # noqa: E402
 import scielo  # noqa: E402  (app/scielo.py: consulta de periódico por ISSN na SciELO)
 import issn as issn_api  # noqa: E402  (app/issn.py: consulta em cascata — ISSN.org, SciELO, DOAJ, Crossref, OpenAlex)
 import visual  # noqa: E402  (app/visual.py: páginas do PDF renderizadas + camada de texto para o revisar)
@@ -70,7 +71,7 @@ DATA = Path(os.environ.get("XMLJATS_DATA", RAIZ / "data"))
 DOCS = DATA / "docs"
 DOCS.mkdir(parents=True, exist_ok=True)
 MAX_MB = int(os.environ.get("MAX_UPLOAD_MB", "50"))
-VERSAO_APP = "0.19.0"
+VERSAO_APP = "0.20.0"
 CONTAS = Contas(DATA)
 CORREIO = Correio(DATA)
 AVATARES = DATA / "avatares"
@@ -80,8 +81,11 @@ AVATARES.mkdir(parents=True, exist_ok=True)
 # papel "cliente" vê só os próprios documentos; "operador" vê todos; "admin" também administra
 # formatos de entrada aceitos: o DOCX diz o que o PDF obriga a adivinhar (seções, tabelas, fórmulas)
 FORMATOS = {".pdf", ".docx"}
+# Da quarta em diante são os status que a SciELO usa no título dos e-mails do fluxo de publicação (SPS 1.10):
+# Entrega, Entrega Confirmada, Pré-QA (Correção), QA (Correção), QA Finalizado.
 ETAPAS = [("recebido", "Recebido"), ("em_revisao", "Em revisão"), ("pronto", "Pronto para entrega"),
-          ("entregue", "Entregue à SciELO"), ("pre_qa", "Pré-QA"), ("qa", "QA"), ("qa_finalizado", "QA finalizado"), ("publicado", "Publicado")]
+          ("entregue", "Entregue à SciELO"), ("entrega_confirmada", "Entrega confirmada"), ("pre_qa", "Pré-QA"), ("qa", "QA"),
+          ("correcao_pedida", "Correção pedida pela SciELO"), ("qa_finalizado", "QA finalizado"), ("publicado", "Publicado")]
 ETAPA_ROTULO = dict(ETAPAS)
 # A área não muda o XML (JATS é o mesmo para todas), mas muda o que esperar do artigo: estilo de referências,
 # presença de tabelas e equações. Serve para conferir a extração e para orientar quem opera.
@@ -176,6 +180,37 @@ def de_onde(request: Request):
     """IP real (o app roda atrás do Traefik, então o IP do cliente vem no cabeçalho) e navegador."""
     ip = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip() or (request.client.host if request.client else None)
     return ip, request.headers.get("user-agent")
+
+
+# ---------------------------------------------------------------- freio de tentativas (login e registro)
+# Em memória, por processo: o app roda num único processo do uvicorn, e reiniciar zera o freio, o que é aceitável.
+FREIO_LIMITE = 10          # falhas de login por IP ou por e-mail dentro da janela...
+FREIO_JANELA_S = 15 * 60   # ...e o tempo de espera depois disso
+FREIO_REGISTROS = 5        # contas novas por IP dentro da mesma janela
+_freio: dict = {}
+
+
+def freio_conta(chave: str, limite: int) -> Optional[int]:
+    """Quantos segundos faltam para a chave poder tentar de novo, ou None se ainda pode."""
+    agora = time.time()
+    fila = [t for t in _freio.get(chave, []) if agora - t < FREIO_JANELA_S]
+    _freio[chave] = fila
+    if len(fila) >= limite:
+        return int(FREIO_JANELA_S - (agora - fila[0])) + 1
+    return None
+
+
+def freio_marca(chave: str) -> None:
+    _freio.setdefault(chave, []).append(time.time())
+
+
+def freio_limpa(chave: str) -> None:
+    _freio.pop(chave, None)
+
+
+def freio_minutos(segundos: int) -> str:
+    m = max(1, (segundos + 59) // 60)
+    return f"{m} minuto" + ("s" if m > 1 else "")
 
 
 def autentica(request: Request, cred: Optional[HTTPBasicCredentials] = Depends(seguranca)) -> dict:
@@ -292,7 +327,7 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
     d = {k: (form.get(k) or "").strip() for k in ("acronimo", "titulo", "abrev", "issn_epub", "issn_ppub", "editora", "doi_prefixo",
                                                    "licenca_url", "modo_publicacao", "secao_padrao", "site", "_fonte",
                                                    "area", "estilo_referencias", "idioma_padrao",
-                                                   "editor_chefe", "editor_lattes", "editor_orcid")}
+                                                   "editor_chefe", "editor_lattes", "editor_orcid", "email_editorial")}
     d["acronimo"] = d["acronimo"].lower()
     d["na_scielo"] = (form.get("na_scielo") or "").strip() == "sim"
     erros = {}
@@ -331,10 +366,12 @@ def valida_revista(form: dict, existentes: list, acronimo_atual: Optional[str] =
             erros["editor_orcid"] = "ORCID inválido: use 0000-0000-0000-0000 com dígito verificador correto."
         else:
             d["editor_orcid"] = so.group(1).upper()
+    if d["email_editorial"] and not RE_EMAIL_SIMPLES.match(d["email_editorial"]):
+        erros["email_editorial"] = "E-mail da equipe editorial inválido."
     if d["idioma_padrao"] and d["idioma_padrao"] not in IDIOMAS:
         erros["idioma_padrao"] = "Use o código de duas letras: " + ", ".join(IDIOMAS) + "."
     for k in ("doi_prefixo", "secao_padrao", "site", "_fonte", "area", "estilo_referencias", "idioma_padrao",
-              "editor_chefe", "editor_lattes", "editor_orcid"):
+              "editor_chefe", "editor_lattes", "editor_orcid", "email_editorial"):
         d[k] = d[k] or None
     return d, erros
 
@@ -945,6 +982,41 @@ def arquivo_original(pasta: Path) -> Path:
     return pasta / "original.pdf"
 
 
+def processa_envio(pasta: Path) -> dict:
+    """Extrai, gera o XML e valida, medindo o tempo de cada parte. A duração fica no validacao.json e alimenta o
+    'tempo médio por artigo' do painel administrativo, a métrica de operação prevista no plano."""
+    inicio = time.perf_counter()
+    extrai_e_salva(pasta)
+    meio = time.perf_counter()
+    r = gera_e_valida(pasta)
+    registra_duracao(pasta, extracao=meio - inicio, total=time.perf_counter() - inicio)
+    return r
+
+
+def registra_duracao(pasta: Path, extracao: float, total: float) -> None:
+    v = le_json(pasta / "validacao.json", {}) or {}
+    if not v:
+        return
+    v["duracao_extracao_s"] = round(extracao, 1)
+    v["duracao_s"] = round(total, 1)
+    grava_json(pasta / "validacao.json", v)
+
+
+def marca_rascunho(xml: Optional[bytes], bloqueantes: list) -> Optional[bytes]:
+    """Com bloqueante pendente o XML existe para conferência, mas sai marcado como rascunho logo abaixo da declaração
+    (plano, seção 2.6: sem bloqueante resolvido não há XML final, no máximo um rascunho marcado como tal).
+    O comentário não muda a validação nem a prévia; some sozinho quando o documento fica pronto, porque o XML
+    é gerado de novo a cada salvamento."""
+    if not xml or not bloqueantes:
+        return xml
+    aviso = (f"<!-- xmljats: RASCUNHO. {len(bloqueantes)} bloqueante(s) pendente(s); este XML não está pronto "
+             f"para entrega à SciELO. -->").encode("utf-8")
+    fim_decl = xml.find(b"?>")
+    if xml.startswith(b"<?xml") and fim_decl > 0:
+        return xml[:fim_decl + 2] + b"\n" + aviso + xml[fim_decl + 2:]
+    return aviso + b"\n" + xml
+
+
 def gera_e_valida(pasta: Path) -> dict:
     """Aplica edicoes, gera o XML, valida no packtools e grava validacao.json."""
     cfg = le_json(pasta / "config.json", {}) or {}
@@ -970,7 +1042,7 @@ def gera_e_valida(pasta: Path) -> dict:
     base = res.nome_base or "artigo"
     xml_path = pasta / f"{base}.xml"
     with open(xml_path, "wb") as f:
-        f.write(res.xml)
+        f.write(marca_rascunho(res.xml, res.bloqueantes))
     dtd_ok, sps_ok, erros, detalhe = gx.valida_packtools(str(xml_path))
     figuras_pacote = prepara_imagens_pacote(pasta, res.imagens)
     # <base>-gf01.tif -> fig01.jpeg: a prévia precisa apontar para o arquivo que o navegador abre
@@ -990,6 +1062,8 @@ def gera_e_valida(pasta: Path) -> dict:
     resultado = {
         "criado_em": anterior.get("criado_em") or tempo.agora_iso(),
         "atualizado_em": tempo.agora_iso(),
+        # medição do envio (processa_envio); salvar a revisão não a apaga
+        "duracao_s": anterior.get("duracao_s"), "duracao_extracao_s": anterior.get("duracao_extracao_s"),
         "arquivo_original": nome_original,
         "titulo": next((t["texto"] for t in modelo.get("titulos", []) if t["tipo"] == "article-title"), ""),
         "revista": rev["acronimo"] if rev else None,
@@ -1037,7 +1111,7 @@ def gera_e_valida(pasta: Path) -> dict:
         "extracao": {
             "doi": modelo.get("doi"), "idioma": modelo.get("idioma"), "heading": modelo.get("heading"),
             "volume": modelo.get("volume"), "numero": modelo.get("numero"), "elocation": modelo.get("elocation"),
-            "datas": modelo.get("datas"), "licenca": modelo.get("licenca"),
+            "ano": modelo.get("ano"), "datas": modelo.get("datas"), "licenca": modelo.get("licenca"),
             "titulos": modelo.get("titulos", []),
             "autores": [{"nome": a["nome_completo"], "orcid": a.get("orcid"), "email": a.get("email"),
                          "afiliacoes": [x for x in modelo.get("afiliacoes", []) if x["id"] in a.get("aff_ids", [])]} for a in modelo.get("autores", [])],
@@ -1072,7 +1146,7 @@ def index(request: Request, usuario: dict = Depends(autentica), mensagem: str = 
 
 
 @app.post("/validar")
-async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.9"),
+async def validar(request: Request, arquivo: UploadFile = File(...), revista: str = Form(""), sps: str = Form("1.10"),
                   issn: str = Form(""), usuario: dict = Depends(autentica)):
     nome = arquivo.filename or "arquivo"
     ext = os.path.splitext(nome)[1].lower()
@@ -1084,7 +1158,7 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
     if len(conteudo) > MAX_MB * 1024 * 1024:
         raise HTTPException(413, f"Arquivo maior que {MAX_MB} MB.")
     if sps not in ("1.9", "1.10"):
-        sps = "1.9"
+        sps = "1.10"
     # "Detectar pelo ISSN": sem revista na lista, o número resolve o cadastro (e o cria, se as bases responderem)
     aviso_revista = None
     if not revista and issn.strip():
@@ -1103,11 +1177,11 @@ async def validar(request: Request, arquivo: UploadFile = File(...), revista: st
                                        "aviso_revista": aviso_revista,
                                        "historico_etapas": [{"etapa": "recebido", "por": usuario["nome"], "em": agora}]})
     try:
-        extrai_e_salva(pasta)
-        gera_e_valida(pasta)
+        # extração + XML + packtools levam segundos: fora do event loop, senão o site inteiro espera este envio
+        await run_in_threadpool(processa_envio, pasta)
     except Exception as e:  # noqa: BLE001
         (pasta / "erro.txt").write_text(repr(e), encoding="utf-8")
-        raise HTTPException(500, f"Falha ao processar o PDF: {e}")
+        raise HTTPException(500, f"Falha ao processar o arquivo: {e}")
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
 
 
@@ -1248,7 +1322,7 @@ async def editar_salvar(request: Request, doc_id: str, usuario: dict = Depends(a
                                      f"está marcado em vermelho e salve de novo, ou use \"Guardar rascunho\" para não "
                                      f"perder o que já digitou.")
     grava_json(pasta / "edicoes.json", ed)
-    gera_e_valida(pasta)
+    await run_in_threadpool(gera_e_valida, pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
 
 
@@ -1406,8 +1480,7 @@ async def envia_figura(request: Request, doc_id: str, indice: int = Form(...), i
 def reprocessar(doc_id: str, usuario: dict = Depends(autentica)):
     pasta = _pasta(doc_id, usuario)
     visual.limpa(pasta)  # o PDF vai ser lido de novo: as páginas renderizadas saem junto
-    extrai_e_salva(pasta)
-    gera_e_valida(pasta)
+    processa_envio(pasta)
     return RedirectResponse(url=f"/doc/{doc_id}", status_code=303)
 
 
@@ -1457,54 +1530,109 @@ def baixar_pacote(doc_id: str, usuario: dict = Depends(autentica)):
     if not xml:
         raise HTTPException(404)
     return Response(monta_pacote(pasta), media_type="application/zip",
-                    headers={"Content-Disposition": f'attachment; filename="{next(pasta.glob("*.xml")).stem}.zip"'})
+                    headers={"Content-Disposition": f'attachment; filename="{nome_pacote(pasta)[0]}.zip"'})
 
 
-def _zip_bruto(pasta: Path, base: str, relatorio: Optional[bytes]) -> bytes:
-    """Monta o .zip com os arquivos na raiz, como o guia pede. O relatório entra quando já existe."""
+# ---------------------------------------------------------------- lotes de entrega (SPS 1.10)
+# Em publicação contínua cada depósito é um "lote", numerado em sequência por volume/número (01, 02…, sem
+# buracos); o número entra no nome da pasta do pacote e no título do e-mail. O contador fica em lotes.json.
+
+def _chave_lote(revista: dict, doc: dict) -> str:
+    return f"{revista.get('acronimo')}|{entrega._num(doc.get('volume'))}|{entrega._num(doc.get('numero'))}"
+
+
+def proximo_lote(revista: dict, doc: dict) -> int:
+    reg = le_json(DATA / "lotes.json", {}) or {}
+    return int((reg.get(_chave_lote(revista, doc)) or {}).get("proximo") or 1)
+
+
+def registra_lote(revista: dict, doc: dict, lote: int, doc_id: str, pacote: str) -> None:
+    reg = le_json(DATA / "lotes.json", {}) or {}
+    chave = _chave_lote(revista, doc)
+    atual = reg.get(chave) or {"proximo": 1, "entregas": []}
+    if not any(e.get("doc") == doc_id and e.get("lote") == lote for e in atual["entregas"]):
+        atual["entregas"].append({"lote": lote, "doc": doc_id, "pacote": pacote, "em": tempo.agora_iso()})
+    atual["proximo"] = max(int(atual.get("proximo") or 1), int(lote) + 1)
+    reg[chave] = atual
+    grava_json(DATA / "lotes.json", reg)
+
+
+def lote_do_documento(pasta: Path, revista: Optional[dict], val: dict) -> Optional[int]:
+    """Lote gravado no documento; em publicação contínua, sem lote gravado, sugere o próximo da sequência."""
+    cfg = le_json(pasta / "config.json", {}) or {}
+    if cfg.get("lote"):
+        return int(cfg["lote"])
+    if revista and entrega.continua(revista) and revista.get("acronimo"):
+        return proximo_lote(revista, entrega.metadados(val))
+    return None
+
+
+def nome_pacote(pasta: Path) -> tuple:
+    """(nome da pasta do pacote, nome-base do artigo, revista, lote). A pasta segue a "Nomeação de Pastas" da
+    SPS 1.10; sem revista, volume ou lote, cai no nome-base do artigo e a conferência aponta o que falta."""
+    xml = next(pasta.glob("*.xml"), None)
+    if not xml:
+        raise HTTPException(404, "Gere o XML antes de montar o pacote.")
+    base = xml.stem
+    val = le_json(pasta / "validacao.json", {}) or {}
+    cfg = le_json(pasta / "config.json", {}) or {}
+    revista = next((x for x in carrega_revistas() if x["acronimo"] == (cfg.get("revista") or "")), None)
+    lote = lote_do_documento(pasta, revista, val)
+    return (entrega.nome_pasta(revista, entrega.metadados(val), lote) or base), base, revista, lote
+
+
+def _zip_bruto(pasta: Path, base: str, relatorio: Optional[bytes], pasta_pacote: str) -> bytes:
+    """Monta o .zip na estrutura da SPS 1.10: uma pasta com o nome do pacote e, dentro dela, o relatório
+    (xpm.html), o XML, o PDF e as imagens. O relatório entra quando já existe."""
     buf = io.BytesIO()
+    dentro = pasta_pacote + "/"
     with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as z:
-        z.write(str(pasta / f"{base}.xml"), f"{base}.xml") if (pasta / f"{base}.xml").exists() else None
         xml = next(pasta.glob("*.xml"), None)
-        if xml and xml.name != f"{base}.xml":
-            z.write(str(xml), f"{base}.xml")
+        if xml:
+            z.write(str(xml), dentro + f"{base}.xml")
         pdf = pasta / "original.pdf"
         if pdf.exists():
-            z.write(str(pdf), f"{base}.pdf")
+            z.write(str(pdf), dentro + f"{base}.pdf")
         # entrada DOCX: o PDF de publicação ainda não existe, e o guia exige um por idioma.
         # O relatório do pacote registra a falta; o .zip não sai com um PDF inventado.
         for img in sorted((pasta / "pacote").glob("*")) if (pasta / "pacote").exists() else []:
-            z.write(str(img), img.name)
+            z.write(str(img), dentro + img.name)
         if relatorio:
-            z.writestr(f"{base}-relatorio.html", relatorio)
+            z.writestr(dentro + entrega.RELATORIO, relatorio)
     return buf.getvalue()
 
 
 def monta_pacote(pasta: Path) -> bytes:
     """Pacote SPS com o relatório de validação dentro, e o relatório já com a conferência do guia.
     É preciso montar duas vezes: a conferência lê o .zip, e o resultado dela entra no relatório."""
-    xml = next(pasta.glob("*.xml"), None)
-    if not xml:
-        raise HTTPException(404)
-    base = xml.stem
+    import tempfile
+
+    pasta_pacote, base, _revista, _lote = nome_pacote(pasta)
     val = le_json(pasta / "validacao.json", {}) or {}
-    provisorio = pasta / f"{base}.parcial.zip"
-    provisorio.write_bytes(_zip_bruto(pasta, base, entrega.relatorio_html(base, val, {"itens": []})))
+    temporaria = Path(tempfile.mkdtemp(prefix="xmljats-pac-"))
+    provisorio = temporaria / f"{pasta_pacote}.zip"  # a conferência compara o nome do .zip com o da pasta
+    provisorio.write_bytes(_zip_bruto(pasta, base, entrega.relatorio_html(base, val, {"itens": []}), pasta_pacote))
     try:
         conf = entrega.confere_pacote(str(provisorio))
     except Exception:  # noqa: BLE001
         conf = {"itens": []}
     finally:
         provisorio.unlink(missing_ok=True)
-    return _zip_bruto(pasta, base, entrega.relatorio_html(base, val, conf))
+        try:
+            temporaria.rmdir()
+        except OSError:
+            pass
+    return _zip_bruto(pasta, base, entrega.relatorio_html(base, val, conf), pasta_pacote)
 
 
 def caminho_pacote(pasta: Path) -> Path:
-    """Grava o .zip na pasta do documento (o FTP precisa de um arquivo, não de bytes na memória)."""
-    xml = next(pasta.glob("*.xml"), None)
-    if not xml:
-        raise HTTPException(400, "Gere o XML antes de montar o pacote.")
-    destino = pasta / f"{xml.stem}.zip"
+    """Grava o .zip na pasta do documento (o FTP precisa de um arquivo, não de bytes na memória).
+    O .zip tem o nome da pasta interna, como a SPS 1.10 pede; um .zip antigo com outro nome sai."""
+    pasta_pacote, _base, _revista, _lote = nome_pacote(pasta)
+    destino = pasta / f"{pasta_pacote}.zip"
+    for velho in pasta.glob("*.zip"):
+        if velho != destino:
+            velho.unlink()
     destino.write_bytes(monta_pacote(pasta))
     return destino
 
@@ -1521,11 +1649,26 @@ def entrega_form(request: Request, doc_id: str, usuario: dict = Depends(autentic
         conferencia = entrega.confere_pacote(str(caminho_pacote(pasta)))
     except HTTPException:
         pass
+    ftp = entrega.config_ftp(CORREIO.config())
+    lote = lote_do_documento(pasta, revista, val)
+    try:
+        pasta_pacote = nome_pacote(pasta)[0]
+    except HTTPException:
+        pasta_pacote = val.get("nome_base") or "pacote"
+    acr = (revista or {}).get("acronimo") or ""
+    meta = entrega.metadados(val)
+    assunto, corpo = entrega.email_deposito(revista or {}, meta, lote, ftp["colecao_sigla"], f"{pasta_pacote}.zip",
+                                            entrega.caminho_ftp(ftp, acr))
+    ano = entrega.ano_do_volume(meta)
     return templates.TemplateResponse(request, "entrega.html", {
         "id": doc_id, "r": val, "usuario": usuario, "revista": revista, "conferencia": conferencia,
-        "ftp": entrega.config_ftp(CORREIO.config()), "email_scielo": entrega.EMAIL_SCIELO,
+        "ftp": ftp, "email_scielo": entrega.EMAIL_SCIELO,
         "mensagem": mensagem, "erro": erro, "etapa": cfg.get("etapa") or "recebido",
         "colecoes": entrega.COLECOES_ATESTADO,
+        "lote": lote, "lote_gravado": cfg.get("lote"), "pasta_pacote": pasta_pacote,
+        "codigo_lote": entrega.codigo_lote(lote, ano) if (lote and ano) else "????",
+        "continua": entrega.continua(revista or {}), "assunto": assunto, "corpo": corpo,
+        "caminho_ftp": entrega.caminho_ftp(ftp, acr), "caminho_ftp_correcao": entrega.caminho_ftp(ftp, acr, True),
     })
 
 
@@ -1547,11 +1690,21 @@ async def entrega_deposita(request: Request, doc_id: str, usuario: dict = Depend
         falhas = "; ".join(i["que"] for i in conf["itens"] if not i["ok"])
         return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(
             f"O pacote não passa na conferência do guia ({falhas}). Corrija antes de depositar."), status_code=303)
-    r = await run_in_threadpool(entrega.deposita, CORREIO.config(), str(zipe), correcao)
+    acr = revista.get("acronimo") or ""
+    r = await run_in_threadpool(entrega.deposita, CORREIO.config(), str(zipe), correcao, acronimo=acr)
     if not r["ok"]:
         return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote(r["mensagem"]), status_code=303)
-    assunto, corpo = entrega.email_deposito(zipe.stem, revista, val, correcao=correcao)
-    CORREIO.cria(entrega.EMAIL_SCIELO, assunto, corpo, caixa="rascunhos", tipo="scielo", por=usuario["nome"])
+    ftp = entrega.config_ftp(CORREIO.config())
+    lote = lote_do_documento(pasta, revista or None, val)
+    meta = entrega.metadados(val)
+    assunto, corpo = entrega.email_deposito(revista, meta, lote, ftp["colecao_sigla"], zipe.name,
+                                            entrega.caminho_ftp(ftp, acr, correcao), correcao=correcao)
+    # o guia manda avisar a SciELO com cópia à equipe editorial da revista
+    para = [entrega.EMAIL_SCIELO] + ([revista["email_editorial"]] if revista.get("email_editorial") else [])
+    CORREIO.cria(para, assunto, corpo, caixa="rascunhos", tipo="scielo", por=usuario["nome"])
+    if lote is not None and revista and not correcao:
+        registra_lote(revista, meta, lote, doc_id, zipe.name)
+        cfg["lote"] = lote
     cfg["etapa"] = "entregue"
     cfg.setdefault("historico_etapas", []).append({"etapa": "entregue", "por": usuario["nome"], "em": tempo.agora_iso(),
                                                    "nota": f"depositado no FTP da SciELO ({zipe.name})"})
@@ -1560,6 +1713,24 @@ async def entrega_deposita(request: Request, doc_id: str, usuario: dict = Depend
     grava_json(pasta / "config.json", cfg)
     return RedirectResponse(url=f"/doc/{doc_id}/entrega?mensagem=" + urllib.parse.quote(
         r["mensagem"] + " O aviso já está como rascunho no correio, pronto para revisar e enviar."), status_code=303)
+
+
+@app.post("/doc/{doc_id}/entrega/lote")
+async def entrega_lote(request: Request, doc_id: str, usuario: dict = Depends(exige_admin)):
+    """Número do lote deste depósito (SPS 1.10: sequência por volume/número em publicação contínua)."""
+    pasta = _pasta(doc_id, usuario)
+    form = await request.form()
+    bruto = str(form.get("lote") or "").strip()
+    if not bruto.isdigit() or not (1 <= int(bruto) <= 999):
+        return RedirectResponse(url=f"/doc/{doc_id}/entrega?erro=" + urllib.parse.quote("Lote: número inteiro de 1 a 999."),
+                                status_code=303)
+    cfg = le_json(pasta / "config.json", {}) or {}
+    cfg["lote"] = int(bruto)
+    grava_json(pasta / "config.json", cfg)
+    for velho in pasta.glob("*.zip"):  # o nome do pacote muda com o lote
+        velho.unlink()
+    return RedirectResponse(url=f"/doc/{doc_id}/entrega?mensagem=" + urllib.parse.quote(f"Lote {int(bruto):02d} guardado."),
+                            status_code=303)
 
 
 @app.post("/admin/config/ftp")
@@ -1760,10 +1931,18 @@ async def entrar(request: Request):
     form = await request.form()
     email, senha, proximo = str(form.get("email") or ""), str(form.get("senha") or ""), str(form.get("proximo") or "/")
     CONTAS.garante_admin(os.environ.get("APP_SENHA"))
+    ip, navegador = de_onde(request)
+    chaves = (f"login:ip:{ip}", f"login:email:{email.strip().lower()}")
+    espera = max((freio_conta(k, FREIO_LIMITE) or 0) for k in chaves)
+    if espera:
+        return templates.TemplateResponse(request, "entrar.html", {"proximo": proximo, "usuario": None, "email": email, "erro": (
+            f"Muitas tentativas seguidas. Aguarde {freio_minutos(espera)} e tente de novo.")}, status_code=429)
     u = CONTAS.autentica(email, senha)
     if not u:
+        for k in chaves:
+            freio_marca(k)
         return templates.TemplateResponse(request, "entrar.html", {"proximo": proximo, "usuario": None, "email": email, "erro": "E-mail ou senha não conferem."}, status_code=401)
-    ip, navegador = de_onde(request)
+    freio_limpa(chaves[1])
     CONTAS.registra_login(u["id"], ip, navegador)
     resp = RedirectResponse(url=proximo if proximo.startswith("/") else "/", status_code=303)
     resp.set_cookie(COOKIE, CONTAS.assina_sessao(u["id"]), httponly=True, samesite="lax", secure=request.url.scheme == "https", max_age=12 * 3600, path="/")
@@ -1782,13 +1961,18 @@ def registrar_form(request: Request):
 async def registrar(request: Request):
     form = dict((await request.form()).items())
     CONTAS.garante_admin(os.environ.get("APP_SENHA"))
+    ip, navegador = de_onde(request)
+    espera = freio_conta(f"registro:ip:{ip}", FREIO_REGISTROS)
+    if espera:
+        return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "form": form, "erro": (
+            f"Muitas contas criadas deste endereço em pouco tempo. Aguarde {freio_minutos(espera)} e tente de novo.")}, status_code=429)
     if (form.get("senha") or "") != (form.get("senha2") or ""):
         return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": "As duas senhas não são iguais.", "form": form}, status_code=400)
     try:
         u = CONTAS.cria(form.get("email", ""), form.get("nome", ""), form.get("senha", ""), "cliente")
     except ValueError as e:
         return templates.TemplateResponse(request, "registrar.html", {"usuario": None, "erro": str(e), "form": form}, status_code=400)
-    ip, navegador = de_onde(request)
+    freio_marca(f"registro:ip:{ip}")
     CONTAS.registra_login(u["id"], ip, navegador)
     try:
         envia_confirmacao(u, por="registro", request=request)
@@ -2087,6 +2271,8 @@ def admin(request: Request, usuario: dict = Depends(exige_admin), dono: str = ""
         docs = [d for d in docs if (d.get("criado_em") or "") >= desde]
     por_revista, por_etapa, bloq, por_usuario, por_dia = _metricas(docs)
     prontos = [d for d in docs if d.get("pronto")]
+    medidos = [d["duracao_s"] for d in docs if isinstance(d.get("duracao_s"), (int, float))]
+    tempo_medio = round(sum(medidos) / len(medidos), 1) if medidos else None
     uso = _uso_por_usuario(docs, usuarios)
     dias = sorted(por_dia.items())[-14:]
     return templates.TemplateResponse(request, "admin.html", {
@@ -2097,6 +2283,7 @@ def admin(request: Request, usuario: dict = Depends(exige_admin), dono: str = ""
         "recentes": docs[:8], "uso": uso, "dias": dias, "filtros": {"dono": dono, "desde": desde},
         "filtro_ativo": bool(dono or desde),
         "online": sum(1 for x in uso if tempo.online(x["ultimo_acesso"])),
+        "tempo_medio": tempo_medio, "medidos": len(medidos),
     })
 
 

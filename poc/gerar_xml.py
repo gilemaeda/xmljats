@@ -1,7 +1,7 @@
 """
 model.json -> XML JATS/SciELO PS -> validacao packtools (DTD + Schematron SPS) -> comparacao com XML oficial (se houver).
 
-Uso:  python poc/gerar_xml.py [--sps 1.9|1.10] "poc/saida/*.model.json"
+Uso:  python poc/gerar_xml.py [--sps 1.10|1.9] "poc/saida/*.model.json"   (padrao: 1.10)
 Saidas: poc/saida/xml/<nome-base>.xml, poc/saida/xml/<nome>.validacao.md, poc/saida/xml/relatorio_xml.md
 """
 import glob
@@ -17,6 +17,12 @@ from extrator import xml_jats  # noqa: E402
 from extrator.util import normaliza  # noqa: E402
 
 XML_NS = "{http://www.w3.org/XML/1998/namespace}"
+
+
+# O packtools 4.16 empacota o Schematron da SPS 1.10 (catalogs/scielo-style-1.10.sch), mas a lista de versoes
+# aceitas pelo XMLValidator vem de PACKTOOLS_SUPPORTED_SPS_VERSIONS e, por padrao, para em 1.9. Sem isto o XML
+# "sps-1.10" era recusado no parse e ficava sem validacao de estilo.
+SPS_SUPORTADAS = ["sps-1.8", "sps-1.9", "sps-1.10"]
 
 
 def _prepara_catalogo():
@@ -66,7 +72,7 @@ def valida_packtools(caminho):
         return dtd_ok, None, erros + [f"packtools indisponível: {e}"], "; ".join(detalhe)
     xv = None
     try:
-        xv = XMLValidator.parse(caminho)
+        xv = XMLValidator.parse(caminho, supported_sps_versions=SPS_SUPORTADAS)
         detalhe.append("packtools com DOCTYPE")
     except Exception as e1:  # noqa: BLE001
         try:
@@ -75,7 +81,7 @@ def valida_packtools(caminho):
             tmp = caminho + ".semdoctype.xml"
             with io.open(tmp, "w", encoding="utf-8") as f:
                 f.write("".join(linhas))
-            xv = XMLValidator.parse(tmp, no_doctype=True)
+            xv = XMLValidator.parse(tmp, no_doctype=True, supported_sps_versions=SPS_SUPORTADAS)
             detalhe.append(f"packtools sem DOCTYPE (parse com DOCTYPE falhou: {str(e1)[:80]})")
             try:
                 os.remove(tmp)
@@ -153,7 +159,7 @@ def compara_com_oficial(gerado, oficial):
 
 
 def main(args):
-    versao = "1.9"
+    versao = "1.10"  # versão vigente da SPS; --sps 1.9 continua aceito
     if "--sps" in args:
         i = args.index("--sps")
         versao = args[i + 1]

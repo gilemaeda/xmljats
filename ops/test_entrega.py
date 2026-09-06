@@ -2,8 +2,11 @@
 import io
 import json
 import os
+import re
 import shutil
 import sys
+if hasattr(sys.stdout, "reconfigure"):  # console cp1252 do Windows nao imprime todo Unicode e derrubava o teste
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 import tempfile
 import threading
 import zipfile
@@ -51,6 +54,28 @@ ok("underline" in (E.confere_nome("artigo_1.xml") or ""), "nome com underline é
 ok("ponto" in (E.confere_nome("artigo.v2.xml") or ""), "nome com ponto extra é recusado")
 ok("espaço" in (E.confere_nome("meu artigo.xml") or ""), "nome com espaço é recusado")
 ok("extensão" in (E.confere_nome("pacote.rar") or ""), ".rar não está na lista de formatos do guia")
+ok(E.confere_nome_pasta("2179-8966-rdp-17-03-0126") is None and "underline" in (E.confere_nome_pasta("rdp_17") or "")
+   and "ponto" in (E.confere_nome_pasta("rdp.17") or ""), "regras de nome de pasta (SPS 1.10)")
+
+# ---------------------------------------------------------------- nome do pacote, lote e título do e-mail (SPS 1.10)
+REV_PC = {"acronimo": "scie", "issn_epub": "0124-4567", "modo_publicacao": "continua"}
+REV_REG = dict(REV_PC, modo_publicacao="regular")
+DOC = {"volume": "10", "numero": "3", "ano": "2025"}
+ok(E.codigo_lote(3, "2025") == "0325" and E.codigo_lote(47, "2026") == "4726" and E.codigo_lote(103, "2026") == "10326",
+   "código do lote: sequência com dois dígitos + dois do ano (0325, 4726, 10326)")
+ok(E.nome_pasta(REV_PC, DOC, 1) == "0124-4567-scie-10-03-0125", f"pasta em publicação contínua: {E.nome_pasta(REV_PC, DOC, 1)}")
+ok(E.nome_pasta(REV_REG, DOC) == "0124-4567-scie-10-03", f"pasta na modalidade regular: {E.nome_pasta(REV_REG, DOC)}")
+ok(E.nome_pasta(REV_PC, DOC, None) is None, "publicação contínua sem lote não tem nome de pasta")
+ok(E.identificador_entrega(REV_PC, DOC, 16, "BR") == "scie v10n3 Lote 1625 - BR", "identificador em publicação contínua")
+ok(E.identificador_entrega(REV_REG, DOC, None, "BR/PS") == "scie v10n3 2025 - BR/PS", "identificador na modalidade regular")
+ok(E.titulo_email(REV_REG, dict(DOC, ano="2026"), None, "BR") == "Entrega | scie v10n3 2026 - BR", "título do e-mail de atualização")
+ok(E.titulo_email(REV_REG, dict(DOC, ano="1999"), None, "RE") == "Retrô Entrega | scie v10n3 1999 - RE", "pacote retrospectivo vira 'Retrô Entrega |'")
+ok(E.ano_do_volume({"datas": {"publicado": "2026-02-10"}}) == "2026", "sem 'ano', o ano do volume sai da data de publicação")
+ok(E.caminho_ftp({"tipo_conta": "prestador"}, "rdp") == "Entrega" and E.caminho_ftp({"tipo_conta": "scielo"}, "rdp") == "rdp/Entrega"
+   and E.caminho_ftp({"tipo_conta": "scielo"}, "rdp", True) == "rdp/Correcao", "pasta no FTP conforme o tipo de conta")
+_a, _c = E.email_deposito(REV_PC, dict(DOC, titulo="T", doi="10.1/x"), 1, "BR", "0124-4567-scie-10-03-0125.zip", "Entrega")
+ok(_a == "Entrega | scie v10n3 Lote 0125 - BR" and "Informo que o .zip com a marcação XML do periódico “scie v10n3 Lote 0125 - BR”, foi disponibilizado no FTP." in _c
+   and "- Total de XMLs = 1." in _c, "corpo do e-mail começa com a frase fixa da SPS 1.10")
 
 # ---------------------------------------------------------------- documento de verdade
 c = TestClient(app, follow_redirects=False)
@@ -82,6 +107,7 @@ for campo in pend:
         continue
     else:
         form.setdefault(campo, "Preenchido")
+form["ano"] = "2026"  # ano do volume: entra no lote e no título do e-mail
 r = c2.post(f"/doc/{doc}/editar", data=form)
 ok(r.status_code == 303, "documento completo e validado")
 val = json.load(io.open(pasta / "validacao.json", encoding="utf-8"))
@@ -92,8 +118,11 @@ z = c2.get(f"/doc/{doc}/pacote.zip")
 ok(z.status_code == 200, "pacote .zip baixa")
 with zipfile.ZipFile(io.BytesIO(z.content)) as arq:
     nomes = arq.namelist()
-ok(all("/" not in n for n in nomes), f"arquivos na raiz do .zip: {nomes}")
-ok(any(n.endswith("-relatorio.html") for n in nomes), "relatório de validação vai dentro do pacote")
+topos = {n.split("/")[0] for n in nomes}
+ok(len(topos) == 1 and all("/" in n for n in nomes) and re.match(r"^2179-8966-rdp-17-03-01\d\d$", next(iter(topos))),
+   f"uma pasta com o nome do pacote (ISSN-acrônimo-volume-número-lote) dentro do .zip: {nomes}")
+ok(any(n.endswith("/xpm.html") for n in nomes), "relatório de validação xpm.html dentro da pasta")
+ok(z.headers.get("content-disposition", "").endswith(f'{next(iter(topos))}.zip"'), "o .zip baixa com o nome da pasta")
 ok(any(n.endswith(".xml") for n in nomes) and any(n.endswith(".pdf") for n in nomes), "XML e PDF no pacote")
 
 pag = c.get(f"/doc/{doc}/entrega").text
@@ -134,6 +163,14 @@ c.post("/admin/config/ftp", data={"servidor": "127.0.0.1", "porta": str(PORTA_FT
 cfg = json.load(io.open(os.path.join(tmp, "config.json"), encoding="utf-8"))
 ok(cfg["scielo_ftp"]["senha"] == "segredo-do-ftp", "senha em branco no formulário mantém a senha salva")
 
+# ---------------------------------------------------------------- e-mail da equipe editorial entra em cópia
+rdp = next(x for x in M.carrega_revistas() if x["acronimo"] == "rdp")
+form_rev = {k: v for k, v in rdp.items() if isinstance(v, str)}
+form_rev["na_scielo"] = "sim" if rdp.get("na_scielo") else "nao"
+form_rev["email_editorial"] = "editoria@rdp.org"
+r = c.post("/revistas/rdp", data=form_rev)
+ok(r.status_code == 303 and "erro" not in r.headers.get("location", ""), f"cadastro da revista aceita o e-mail editorial ({r.status_code})")
+
 # ---------------------------------------------------------------- depósito de verdade
 r = c.post(f"/doc/{doc}/entrega")
 ok(r.status_code == 303 and "mensagem" in r.headers["location"], f"depósito aceito: {r.headers['location'][:120]}")
@@ -147,6 +184,16 @@ ok(cfg_doc.get("entrega", {}).get("arquivo") == zipe.name, "o depósito fica reg
 rascunhos = M.CORREIO.lista("rascunhos")
 aviso = next((m for m in rascunhos if E.EMAIL_SCIELO in m["para"]), None)
 ok(aviso is not None, "o aviso obrigatório fica como rascunho no correio")
+ok(aviso is not None and "editoria@rdp.org" in aviso["para"], f"a equipe editorial da revista entra em cópia: {aviso and aviso['para']}")
+if aviso:
+    ok(re.match(r"^Entrega \| rdp v17n3 Lote 01\d\d - BR$", aviso["assunto"]), f"título no formato da SPS 1.10: {aviso['assunto']}")
+    ok("Informo que o .zip com a marcação XML do periódico “rdp v17n3 Lote 01" in aviso["texto"] and "- Total de XMLs = 1." in aviso["texto"],
+       "corpo começa pela frase fixa e informa o total de XMLs")
+ok(re.match(r"^2179-8966-rdp-17-03-01\d\d\.zip$", zipe.name), f"o .zip depositado tem o nome da pasta: {zipe.name}")
+lotes = json.load(io.open(os.path.join(tmp, "lotes.json"), encoding="utf-8"))
+ok(lotes.get("rdp|17|3", {}).get("proximo") == 2, f"o registro de lotes avança para o próximo: {lotes.get('rdp|17|3')}")
+ok(json.load(io.open(pasta / "config.json", encoding="utf-8")).get("lote") == 1, "o lote fica gravado no documento")
+ok("Lote 01" in c.get(f"/doc/{doc}/entrega").text, "a tela de entrega mostra o lote")
 if aviso:
     ok("2179-8966" in aviso["texto"] and zipe.stem in aviso["texto"], "o aviso traz ISSN e nome do pacote")
     ok("Entrega" in aviso["texto"], "o aviso diz em que pasta foi depositado")
@@ -154,6 +201,25 @@ if aviso:
 # correção vai para a outra pasta
 r = c.post(f"/doc/{doc}/entrega", data={"correcao": "1"})
 ok(os.path.exists(os.path.join(ftproot, "Correcao", zipe.name)), "correção vai para a pasta Correcao")
+ok(json.load(io.open(os.path.join(tmp, "lotes.json"), encoding="utf-8")).get("rdp|17|3", {}).get("proximo") == 2,
+   "correção não consome lote novo")
+
+# conta da própria revista no FTP da SciELO: deposita em <acrônimo>/Entrega
+os.makedirs(os.path.join(ftproot, "rdp", "Entrega"), exist_ok=True)
+os.makedirs(os.path.join(ftproot, "rdp", "Correcao"), exist_ok=True)
+r = c.post("/admin/config/ftp", data={"servidor": "127.0.0.1", "porta": str(PORTA_FTP), "usuario": "provedor", "senha": "",
+                                      "tipo_conta": "scielo", "colecao_sigla": "br/sp"})
+ok(r.status_code == 303 and "mensagem" in r.headers["location"], "tipo de conta e sigla da coleção salvos")
+ok(E.config_ftp(M.CORREIO.config())["colecao_sigla"] == "BR/SP", "a sigla é guardada em maiúsculas")
+r = c.post("/admin/config/ftp", data={"servidor": "127.0.0.1", "porta": str(PORTA_FTP), "usuario": "provedor", "senha": "",
+                                      "colecao_sigla": "XX"})
+ok("erro" in r.headers["location"], "sigla de coleção desconhecida é recusada")
+r = c.post(f"/doc/{doc}/entrega")
+ok(r.status_code == 303 and "mensagem" in r.headers["location"], "depósito pela conta da revista aceito")
+ok(os.path.exists(os.path.join(ftproot, "rdp", "Entrega", zipe.name)), "com a conta da revista, o pacote vai para rdp/Entrega")
+avisos = [m["assunto"] for m in M.CORREIO.lista("rascunhos") if E.EMAIL_SCIELO in m["para"]]
+ok(any(a.endswith(" - BR/SP") for a in avisos), f"o título usa a sigla configurada: {avisos}")
+ok("rdp/Entrega" in c.get(f"/doc/{doc}/entrega").text, "a tela mostra a pasta acrônimo/Entrega")
 
 # ---------------------------------------------------------------- pedido do atestado
 r = c.post("/admin/config/atestado", data={"empresa": "", "cnpj": ""})
